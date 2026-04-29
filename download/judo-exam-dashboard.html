@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exameneisen Kyu-graden - Judoclub Michigami Steenbergen</title>
+  <style>
+    /* Reset and Base */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f8f8f8;
+    }
+
+    /* Club Colors */
+    :root {
+      --primary: #8B0000;
+      --secondary: #DC143C;
+      --accent: #FFD700;
+      --dark: #1a1a1a;
+      --light: #f8f8f8;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+      color: white;
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logo {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: var(--accent);
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .header h1 {
+      font-size: 1.75rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .header .subtitle {
+      color: var(--accent);
+      font-size: 0.9rem;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+
+    /* Control Panel */
+    .control-panel {
+      background: white;
+      border-radius: 0.75rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border-left: 4px solid var(--secondary);
+    }
+
+    .control-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .control-grid {
+        grid-template-columns: 2fr 1fr 1fr;
+      }
+    }
+
+    .control-group label {
+      display: block;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+      font-size: 0.875rem;
+    }
+
+    /* Belt Buttons */
+    .belt-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .belt-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 0.5rem;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .belt-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .belt-btn.active {
+      transform: scale(1.15);
+      box-shadow: 0 0 0 3px var(--secondary), 0 4px 8px rgba(0,0,0,0.3);
+    }
+
+    .belt-btn.slip::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      right: -4px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #666;
+      border: 2px solid white;
+    }
+
+    .selected-info {
+      margin-top: 0.5rem;
+      font-size: 0.875rem;
+      color: #333;
+    }
+
+    .selected-info strong {
+      color: var(--dark);
+    }
+
+    /* Toggle Buttons */
+    .toggle-group {
+      display: flex;
+      border-radius: 0.5rem;
+      overflow: hidden;
+      border: 1px solid var(--primary);
+    }
+
+    .toggle-btn {
+      flex: 1;
+      padding: 0.5rem 1rem;
+      border: none;
+      background: white;
+      color: #333;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s, color 0.2s;
+      font-size: 0.875rem;
+    }
+
+    .toggle-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* Select Dropdown */
+    .select-dropdown {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid var(--primary);
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      color: #333;
+      background: white;
+    }
+
+    /* Direct Transition */
+    .direct-transition {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      background: #ccc;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .toggle-switch.active {
+      background: var(--secondary);
+    }
+
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.2s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .toggle-switch.active::after {
+      transform: translateX(20px);
+    }
+
+    /* Main Content Card */
+    .main-card {
+      background: white;
+      border-radius: 0.75rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    .main-card-header {
+      background: var(--primary);
+      color: white;
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .main-card-header h2 {
+      font-size: 1.25rem;
+    }
+
+    .expand-buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .expand-btn {
+      padding: 0.25rem 0.75rem;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: none;
+      border-radius: 0.25rem;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .expand-btn:hover {
+      background: rgba(255,255,255,0.3);
+    }
+
+    /* Category Items */
+    .category-list {
+      border-bottom: 1px solid #eee;
+    }
+
+    .category-header {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      text-align: left;
+    }
+
+    .category-header:hover {
+      background: #f5f5f5;
+    }
+
+    .category-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .category-icon {
+      font-size: 1.5rem;
+    }
+
+    .category-title {
+      font-weight: 700;
+      color: var(--dark);
+      font-size: 1.1rem;
+    }
+
+    .category-japanese {
+      font-size: 0.875rem;
+      color: var(--primary);
+    }
+
+    .category-count {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .count-number {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--secondary);
+    }
+
+    .new-badge {
+      font-size: 0.75rem;
+      color: #16a34a;
+      font-weight: 600;
+    }
+
+    .chevron {
+      width: 24px;
+      height: 24px;
+      color: var(--primary);
+      transition: transform 0.2s;
+    }
+
+    .chevron.expanded {
+      transform: rotate(180deg);
+    }
+
+    /* Technique List */
+    .technique-list {
+      padding: 0 1.5rem 1.5rem;
+      background: #fafafa;
+    }
+
+    .technique-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+      padding-top: 0.5rem;
+    }
+
+    @media (min-width: 640px) {
+      .technique-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .technique-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .technique-item {
+      padding: 0.5rem 0.75rem;
+      background: white;
+      border-radius: 0.25rem;
+      border-left: 3px solid var(--secondary);
+      font-size: 0.875rem;
+    }
+
+    .technique-item.forbidden {
+      border-left-color: #dc2626;
+      color: #dc2626;
+    }
+
+    .technique-item .translation {
+      color: #666;
+      margin-left: 0.5rem;
+    }
+
+    .forbidden-tag {
+      font-size: 0.7rem;
+      color: #dc2626;
+      font-weight: 600;
+      margin-left: 0.5rem;
+    }
+
+    /* Extra Items */
+    .extra-section {
+      padding: 1.5rem;
+      background: #fafafa;
+      border-top: 2px solid var(--primary);
+    }
+
+    .extra-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    @media (min-width: 640px) {
+      .extra-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .extra-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .extra-item h4 {
+      color: var(--dark);
+      font-weight: 700;
+    }
+
+    .extra-item p {
+      font-size: 0.8rem;
+      color: #666;
+    }
+
+    .extra-item .number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--secondary);
+    }
+
+    /* Footer */
+    .footer {
+      background: var(--dark);
+      color: white;
+      text-align: center;
+      padding: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .footer p:first-child {
+      font-weight: 600;
+    }
+
+    .footer p:last-child {
+      font-size: 0.875rem;
+      opacity: 0.7;
+      margin-top: 0.25rem;
+    }
+
+    /* Hidden class */
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <div class="logo">JC</div>
+      <div>
+        <h1>Judoclub Michigami Steenbergen</h1>
+        <p class="subtitle">Exameneisen Kyu-graden</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="container">
+    <!-- Control Panel -->
+    <div class="control-panel">
+      <div class="control-grid">
+        <!-- Belt Selection -->
+        <div class="control-group">
+          <label>Selecteer examen niveau</label>
+          <div class="belt-buttons" id="beltButtons">
+            <!-- Belt buttons will be generated by JS -->
+          </div>
+          <p class="selected-info">
+            Geselecteerd: <strong id="selectedBeltName">Witte band</strong>
+            <span id="selectedKyu"></span>
+          </p>
+        </div>
+
+        <!-- View Mode & Detail Level -->
+        <div class="control-group">
+          <label>Weergave</label>
+          <div class="toggle-group" id="viewModeToggle">
+            <button class="toggle-btn active" data-mode="all">Alles</button>
+            <button class="toggle-btn" data-mode="new">Nieuw</button>
+          </div>
+          <div style="margin-top: 1rem;">
+            <label>Detailniveau</label>
+            <select class="select-dropdown" id="detailLevel">
+              <option value="counts">Alleen aantallen</option>
+              <option value="techniques" selected>Technieken</option>
+              <option value="full">Met vertaling</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Direct Transition -->
+        <div class="control-group">
+          <label>Directe overgang</label>
+          <div class="direct-transition">
+            <div class="toggle-switch" id="directTransitionToggle"></div>
+            <span style="font-size: 0.875rem;">Band → band</span>
+          </div>
+          <select class="select-dropdown hidden" id="fromBeltSelect">
+            <!-- Options will be generated by JS -->
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content Card -->
+    <div class="main-card">
+      <div class="main-card-header">
+        <h2 id="mainTitle">Exameneisen Witte band</h2>
+        <div class="expand-buttons">
+          <button class="expand-btn" id="expandAllBtn">Alles open</button>
+          <button class="expand-btn" id="collapseAllBtn">Alles dicht</button>
+        </div>
+      </div>
+      <div id="categoryList">
+        <!-- Categories will be generated by JS -->
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>Judoclub Michigami Steenbergen</p>
+    <p>Exameneisen Dashboard</p>
+  </footer>
+
+  <script>
+    // ============================================================================
+    // DATA - Alle exameneisen
+    // ============================================================================
+    
+    const BELT_LEVELS = [
+      { id: 'wit', name: 'Witte band', kyu: 6, color: '#FFFFFF', isSlip: false },
+      { id: 'wit-gele-slip', name: 'Witte band met gele slip', kyu: null, color: '#FFFF00', isSlip: true, parentBelt: 'wit' },
+      { id: 'geel', name: 'Gele band', kyu: 5, color: '#FFFF00', isSlip: false },
+      { id: 'geel-oranje-slip', name: 'Gele band met oranje slip', kyu: null, color: '#FFA500', isSlip: true, parentBelt: 'geel' },
+      { id: 'oranje', name: 'Oranje band', kyu: 4, color: '#FFA500', isSlip: false },
+      { id: 'oranje-groene-slip', name: 'Oranje band met groene slip', kyu: null, color: '#008000', isSlip: true, parentBelt: 'oranje' },
+      { id: 'groen', name: 'Groene band', kyu: 3, color: '#008000', isSlip: false },
+      { id: 'groen-blauwe-slip', name: 'Groene band met blauwe slip', kyu: null, color: '#0000FF', isSlip: true, parentBelt: 'groen' },
+      { id: 'blauw', name: 'Blauwe band', kyu: 2, color: '#0000FF', isSlip: false },
+      { id: 'blauw-bruine-slip', name: 'Blauwe band met bruine slip', kyu: null, color: '#8B4513', isSlip: true, parentBelt: 'blauw' },
+      { id: 'bruin', name: 'Bruine band', kyu: 1, color: '#8B4513', isSlip: false },
+    ];
+
+    const CATEGORIES = {
+      'ukemi-waza': {
+        nameNl: 'Valbreektechnieken',
+        nameJa: 'Ukemi-waza',
+        icon: '🛡️',
+        techniques: [
+          { id: 'ukemi-1', nameJa: 'Ushiro-ukemi', nameNl: 'Achterwaarts vallen' },
+          { id: 'ukemi-2', nameJa: 'Yoko-ukemi', nameNl: 'Zijwaarts vallen' },
+          { id: 'ukemi-3', nameJa: 'Mae-ukemi', nameNl: 'Voorwaarts vallen' },
+          { id: 'ukemi-4', nameJa: 'Zenpo-kaiten', nameNl: 'Voorwaarts rollen' },
+        ]
+      },
+      'ashi-waza': {
+        nameNl: 'Beenworpen',
+        nameJa: 'Ashi-waza',
+        icon: '🦵',
+        techniques: [
+          { id: 'ashi-1', nameJa: 'O-soto-gari', nameNl: 'Grote buitenwaartse veeg' },
+          { id: 'ashi-2', nameJa: 'De-ashi-barai', nameNl: 'Voorwaartse voetveeg' },
+          { id: 'ashi-3', nameJa: 'Hiza-guruma', nameNl: 'Knie-wiel' },
+          { id: 'ashi-4', nameJa: 'Ko-soto-gake', nameNl: 'Kleine binnenwaartse haak' },
+          { id: 'ashi-5', nameJa: 'O-uchi-gari', nameNl: 'Grote binnenwaartse veeg' },
+          { id: 'ashi-6', nameJa: 'Ko-uchi-gari', nameNl: 'Kleine binnenwaartse veeg' },
+          { id: 'ashi-7', nameJa: 'Okuri-ashi-barai', nameNl: 'Dubbele voetveeg' },
+          { id: 'ashi-8', nameJa: 'O-soto-guruma', nameNl: 'Grote buitenwaartse wiel' },
+          { id: 'ashi-9', nameJa: 'O-soto-otoshi', nameNl: 'Grote buitenwaartse val' },
+          { id: 'ashi-10', nameJa: 'Ko-soto-gari', nameNl: 'Kleine buitenwaartse veeg' },
+          { id: 'ashi-11', nameJa: 'Sasae-tsurikomi-ashi', nameNl: 'Ondersteunende oplichtende voet' },
+          { id: 'ashi-12', nameJa: 'Harai-tsurikomi-ashi', nameNl: 'Veeg-oplichtende voet' },
+          { id: 'ashi-13', nameJa: 'Soto-gake', nameNl: 'Buitenwaartse haak' },
+          { id: 'ashi-14', nameJa: 'Ko-uchi-makikomi', nameNl: 'Kleine binnenwaartse meidraai' },
+          { id: 'ashi-15', nameJa: 'Ashi-guruma', nameNl: 'Been-wiel' },
+        ]
+      },
+      'koshi-waza': {
+        nameNl: 'Heupworpen',
+        nameJa: 'Koshi-waza',
+        icon: '🔄',
+        techniques: [
+          { id: 'koshi-1', nameJa: 'Uki-goshi', nameNl: 'Zwevende heupworp' },
+          { id: 'koshi-2', nameJa: 'Kubi-nage', nameNl: 'Nekworp' },
+          { id: 'koshi-3', nameJa: 'Tsuri-goshi', nameNl: 'Opgetilde heupworp' },
+          { id: 'koshi-4', nameJa: 'Koshi-guruma', nameNl: 'Heup-wiel' },
+          { id: 'koshi-5', nameJa: 'Harai-goshi', nameNl: 'Heupveeg' },
+          { id: 'koshi-6', nameJa: 'Hane-goshi', nameNl: 'Springende heupworp' },
+          { id: 'koshi-7', nameJa: 'Ushiro-goshi', nameNl: 'Achterwaartse heupworp' },
+          { id: 'koshi-8', nameJa: 'Tsurikomi-goshi', nameNl: 'Opgetilde heupworp' },
+          { id: 'koshi-9', nameJa: 'Utsuri-goshi', nameNl: 'Veranderende heupworp' },
+          { id: 'koshi-10', nameJa: 'Uchi-mata', nameNl: 'Binnenwaartse dijworp' },
+          { id: 'koshi-11', nameJa: 'O-goshi', nameNl: 'Grote heupworp' },
+          { id: 'koshi-12', nameJa: 'Ko-tsuri-goshi', nameNl: 'Kleine opgetilde heupworp' },
+          { id: 'koshi-13', nameJa: 'O-guruma', nameNl: 'Groot wiel' },
+          { id: 'koshi-14', nameJa: 'Yama-arashi', nameNl: 'Bergstorm' },
+          { id: 'koshi-15', nameJa: 'Obi-goshi', nameNl: 'Riemplaats heupworp' },
+        ]
+      },
+      'kata-waza': {
+        nameNl: 'Schouderworpen',
+        nameJa: 'Kata-waza',
+        icon: '💪',
+        techniques: [
+          { id: 'kata-1', nameJa: 'Ippon-seoi-nage', nameNl: 'Eenarmige schouderworp' },
+          { id: 'kata-2', nameJa: 'Seoi-nage', nameNl: 'Schouderworp' },
+          { id: 'kata-3', nameJa: 'Kata-guruma', nameNl: 'Schouder-wiel' },
+          { id: 'kata-4', nameJa: 'Seoi-otoshi', nameNl: 'Schouderval' },
+          { id: 'kata-5', nameJa: 'Hidari-kata-seoi', nameNl: 'Linker schouderworp' },
+          { id: 'kata-6', nameJa: 'Seoi-age', nameNl: 'Schouder optilling' },
+        ]
+      },
+      'te-waza': {
+        nameNl: 'Armworpen',
+        nameJa: 'Te-waza',
+        icon: '🤚',
+        techniques: [
+          { id: 'te-1', nameJa: 'Tai-otoshi', nameNl: 'Lichaamsval' },
+          { id: 'te-2', nameJa: 'Uki-otoshi', nameNl: 'Zwevende val' },
+          { id: 'te-3', nameJa: 'Hiji-otoshi', nameNl: 'Elleboogval' },
+          { id: 'te-4', nameJa: 'Sukui-nage', nameNl: 'Scheppende worp' },
+          { id: 'te-5', nameJa: 'Mochiage-otoshi', nameNl: 'Optillende val' },
+          { id: 'te-6', nameJa: 'Sumi-otoshi', nameNl: 'Hoekval' },
+          { id: 'te-7', nameJa: 'Obi-otoshi', nameNl: 'Riemval' },
+          { id: 'te-8', nameJa: 'Kata-ashi-dori', nameNl: 'Eenbeenshouderworp' },
+          { id: 'te-9', nameJa: 'Ryo-ashi-dori', nameNl: 'Tweebenenschouderworp' },
+        ]
+      },
+      'sutemi-waza': {
+        nameNl: 'Offerworpen',
+        nameJa: 'Sutemi-waza',
+        icon: '⬇️',
+        techniques: [
+          { id: 'sutemi-1', nameJa: 'Tomoe-nage', nameNl: 'Cirkelworp' },
+          { id: 'sutemi-2', nameJa: 'Yoko-tomoe', nameNl: 'Zijwaartse cirkelworp' },
+          { id: 'sutemi-3', nameJa: 'Maki-tomoe', nameNl: 'Oprollende cirkelworp' },
+          { id: 'sutemi-4', nameJa: 'Soto-makikomi', nameNl: 'Buitenwaartse meidraai' },
+          { id: 'sutemi-5', nameJa: 'Yoko-gake', nameNl: 'Zijwaartse val' },
+          { id: 'sutemi-6', nameJa: 'Tani-otoshi', nameNl: 'Vallei-val' },
+          { id: 'sutemi-7', nameJa: 'Sumi-gaeshi', nameNl: 'Hoekomdraaiing' },
+          { id: 'sutemi-8', nameJa: 'Uki-waza', nameNl: 'Zwevende worp' },
+          { id: 'sutemi-9', nameJa: 'Kani-basami', nameNl: 'Schaarworp', forbidden: true },
+          { id: 'sutemi-10', nameJa: 'Yoko-otoshi', nameNl: 'Zijwaartse val' },
+          { id: 'sutemi-11', nameJa: 'Hane-makikomi', nameNl: 'Springende meidraai' },
+          { id: 'sutemi-12', nameJa: 'Ura-nage', nameNl: 'Achterwaartse worp' },
+          { id: 'sutemi-13', nameJa: 'Yoko-guruma', nameNl: 'Zijwaarts wiel' },
+          { id: 'sutemi-14', nameJa: 'Yoko-wakare', nameNl: 'Zijwaartse scheiding' },
+          { id: 'sutemi-15', nameJa: 'Tawara-gaeshi', nameNl: 'Rijstbal-omdraaiing' },
+        ]
+      },
+      'osaekomi-waza': {
+        nameNl: 'Houdgrepen',
+        nameJa: 'Osaekomi-waza',
+        icon: '🔒',
+        techniques: [
+          { id: 'osaekomi-1', nameJa: 'Kesa-gatame', nameNl: 'Scarf-houdgreep' },
+          { id: 'osaekomi-2', nameJa: 'Kuzure-kesa-gatame', nameNl: 'Gewijzigde scarf-houdgreep' },
+          { id: 'osaekomi-3', nameJa: 'Kata-gatame', nameNl: 'Schouder-houdgreep' },
+          { id: 'osaekomi-4', nameJa: 'Ushiro-kesa-gatame', nameNl: 'Achterwaartse scarf-houdgreep' },
+          { id: 'osaekomi-5', nameJa: 'Makura-kesa-gatame', nameNl: 'Kussen scarf-houdgreep' },
+          { id: 'osaekomi-6', nameJa: 'Yoko-shiho-gatame', nameNl: 'Zijwaartse vierpunt-houdgreep' },
+          { id: 'osaekomi-7', nameJa: 'Kuzure-yoko-shiho-gatame', nameNl: 'Gewijzigde zijwaartse vierpunt-houdgreep' },
+          { id: 'osaekomi-8', nameJa: 'Kami-shiho-gatame', nameNl: 'Boven vierpunt-houdgreep' },
+          { id: 'osaekomi-9', nameJa: 'Kuzure-kami-shiho-gatame', nameNl: 'Gewijzigde boven vierpunt-houdgreep' },
+          { id: 'osaekomi-10', nameJa: 'Tate-shiho-gatame', nameNl: 'Verticale vierpunt-houdgreep' },
+          { id: 'osaekomi-11', nameJa: 'Kuzure-tate-shiho-gatame', nameNl: 'Gewijzigde verticale vierpunt-houdgreep' },
+          { id: 'osaekomi-12', nameJa: 'Uki-gatame', nameNl: 'Zwevende houdgreep' },
+          { id: 'osaekomi-13', nameJa: 'Ura-gatame', nameNl: 'Achterwaartse houdgreep' },
+          { id: 'osaekomi-14', nameJa: 'Sankaku-gatame', nameNl: 'Driehoek-houdgreep' },
+        ]
+      },
+      'shime-waza': {
+        nameNl: 'Wurgingen',
+        nameJa: 'Shime-waza',
+        icon: '😤',
+        techniques: [
+          { id: 'shime-1', nameJa: 'Nami-juji-jime', nameNl: 'Gewone kruisverwurging' },
+          { id: 'shime-2', nameJa: 'Gyaku-juji-jime', nameNl: 'Omgekeerde kruisverwurging' },
+          { id: 'shime-3', nameJa: 'Kata-juji-jime', nameNl: 'Eenarmige kruisverwurging' },
+          { id: 'shime-4', nameJa: 'Hadaka-jime', nameNl: 'Naakte verwurging' },
+          { id: 'shime-5', nameJa: 'Okuri-eri-jime', nameNl: 'Dubbele reversverwurging' },
+          { id: 'shime-6', nameJa: 'Kataha-jime', nameNl: 'Eenzijdige vleugelverwurging' },
+          { id: 'shime-7', nameJa: 'Katate-jime', nameNl: 'Eenhandige verwurging' },
+          { id: 'shime-8', nameJa: 'Ryote-jime', nameNl: 'Tweehandige verwurging' },
+          { id: 'shime-9', nameJa: 'Sode-guruma-jime', nameNl: 'Mouw-wiel verwurging' },
+          { id: 'shime-10', nameJa: 'Tsukkomi-jime', nameNl: 'Stoot-verwurging' },
+          { id: 'shime-11', nameJa: 'Sankaku-jime', nameNl: 'Driehoek-verwurging' },
+          { id: 'shime-12', nameJa: 'Do-jime', nameNl: 'Romp-verwurging', forbidden: true },
+        ]
+      },
+      'kansetsu-waza': {
+        nameNl: 'Armklemmen',
+        nameJa: 'Kansetsu-waza',
+        icon: '💪',
+        techniques: [
+          { id: 'kansetsu-1', nameJa: 'Juji-gatame', nameNl: 'Kruis-armklem' },
+          { id: 'kansetsu-2', nameJa: 'Ude-garami', nameNl: 'Gekruiste armklem' },
+          { id: 'kansetsu-3', nameJa: 'Ude-gatame', nameNl: 'Arm-houdgreep' },
+          { id: 'kansetsu-4', nameJa: 'Hiza-gatame', nameNl: 'Knie-armklem' },
+          { id: 'kansetsu-5', nameJa: 'Waki-gatame', nameNl: 'Oksel-armklem' },
+          { id: 'kansetsu-6', nameJa: 'Hara-gatame', nameNl: 'Buik-armklem' },
+          { id: 'kansetsu-7', nameJa: 'Ashi-gatame', nameNl: 'Been-armklem' },
+          { id: 'kansetsu-8', nameJa: 'Te-gatame', nameNl: 'Hand-armklem' },
+          { id: 'kansetsu-9', nameJa: 'Sankaku-gatame', nameNl: 'Driehoek-armklem' },
+          { id: 'kansetsu-10', nameJa: 'Ashi-garami', nameNl: 'Been-klem', forbidden: true },
+        ]
+      }
+    };
+
+    const CATEGORY_ORDER = ['ukemi-waza', 'ashi-waza', 'koshi-waza', 'kata-waza', 'te-waza', 'sutemi-waza', 'osaekomi-waza', 'shime-waza', 'kansetsu-waza'];
+
+    const BELT_REQUIREMENTS = {
+      'wit': { counts: { 'ashi-waza': 1, 'koshi-waza': 1, 'kata-waza': 1, 'te-waza': 1, 'sutemi-waza': 0, 'osaekomi-waza': 2, 'shime-waza': 0, 'kansetsu-waza': 0 }, nageKomi: 3, kantelTechnieken: 0 },
+      'wit-gele-slip': { counts: { 'ashi-waza': 2, 'koshi-waza': 2, 'kata-waza': 1, 'te-waza': 1, 'sutemi-waza': 0, 'osaekomi-waza': 3, 'shime-waza': 0, 'kansetsu-waza': 0 }, nageKomi: 5, kantelTechnieken: 1 },
+      'geel': { counts: { 'ashi-waza': 3, 'koshi-waza': 3, 'kata-waza': 2, 'te-waza': 2, 'sutemi-waza': 0, 'osaekomi-waza': 4, 'shime-waza': 0, 'kansetsu-waza': 0 }, nageKomi: 7, kantelTechnieken: 2 },
+      'geel-oranje-slip': { counts: { 'ashi-waza': 4, 'koshi-waza': 4, 'kata-waza': 3, 'te-waza': 3, 'sutemi-waza': 0, 'osaekomi-waza': 5, 'shime-waza': 0, 'kansetsu-waza': 0 }, nageKomi: 9, kantelTechnieken: 3 },
+      'oranje': { counts: { 'ashi-waza': 6, 'koshi-waza': 6, 'kata-waza': 3, 'te-waza': 4, 'sutemi-waza': 0, 'osaekomi-waza': 7, 'shime-waza': 0, 'kansetsu-waza': 0 }, nageKomi: 11, kantelTechnieken: 3 },
+      'oranje-groene-slip': { counts: { 'ashi-waza': 7, 'koshi-waza': 7, 'kata-waza': 4, 'te-waza': 5, 'sutemi-waza': 1, 'osaekomi-waza': 8, 'shime-waza': 2, 'kansetsu-waza': 2 }, nageKomi: 13, kantelTechnieken: 2 },
+      'groen': { counts: { 'ashi-waza': 9, 'koshi-waza': 9, 'kata-waza': 4, 'te-waza': 6, 'sutemi-waza': 3, 'osaekomi-waza': 9, 'shime-waza': 4, 'kansetsu-waza': 3 }, nageKomi: 15, kantelTechnieken: 3 },
+      'groen-blauwe-slip': { counts: { 'ashi-waza': 10, 'koshi-waza': 10, 'kata-waza': 5, 'te-waza': 7, 'sutemi-waza': 6, 'osaekomi-waza': 10, 'shime-waza': 6, 'kansetsu-waza': 5 }, nageKomi: 17, kantelTechnieken: 4 },
+      'blauw': { counts: { 'ashi-waza': 12, 'koshi-waza': 12, 'kata-waza': 5, 'te-waza': 8, 'sutemi-waza': 9, 'osaekomi-waza': 11, 'shime-waza': 8, 'kansetsu-waza': 6 }, nageKomi: 18, kantelTechnieken: 4 },
+      'blauw-bruine-slip': { counts: { 'ashi-waza': 13, 'koshi-waza': 13, 'kata-waza': 6, 'te-waza': 9, 'sutemi-waza': 12, 'osaekomi-waza': 13, 'shime-waza': 10, 'kansetsu-waza': 8 }, nageKomi: 19, kantelTechnieken: 5 },
+      'bruin': { counts: { 'ashi-waza': 15, 'koshi-waza': 15, 'kata-waza': 6, 'te-waza': 9, 'sutemi-waza': 15, 'osaekomi-waza': 14, 'shime-waza': 12, 'kansetsu-waza': 10 }, nageKomi: 20, kantelTechnieken: 5 },
+    };
+
+    // ============================================================================
+    // STATE
+    // ============================================================================
+    
+    let state = {
+      selectedBeltId: 'wit',
+      viewMode: 'all',
+      detailLevel: 'techniques',
+      showDirectTransition: false,
+      fromBeltId: 'wit',
+      expandedCategories: new Set()
+    };
+
+    // ============================================================================
+    // HELPER FUNCTIONS
+    // ============================================================================
+
+    function getBeltStyle(belt) {
+      if (belt.isSlip && belt.parentBelt) {
+        const parent = BELT_LEVELS.find(b => b.id === belt.parentBelt);
+        const parentColor = parent ? parent.color : '#FFFFFF';
+        return `background: linear-gradient(90deg, ${parentColor} 0%, ${parentColor} 40%, ${belt.color} 45%, ${belt.color} 55%, ${parentColor} 60%, ${parentColor} 100%); border: 2px solid #666;`;
+      }
+      return `background-color: ${belt.color}; border: ${belt.id === 'wit' ? '2px solid #666' : 'none'};`;
+    }
+
+    function getPreviousBeltId(beltId) {
+      const index = BELT_LEVELS.findIndex(b => b.id === beltId);
+      return index > 0 ? BELT_LEVELS[index - 1].id : null;
+    }
+
+    function getRequirements(beltId) {
+      return BELT_REQUIREMENTS[beltId] || { counts: {}, nageKomi: 0, kantelTechnieken: 0 };
+    }
+
+    // ============================================================================
+    // RENDER FUNCTIONS
+    // ============================================================================
+
+    function renderBeltButtons() {
+      const container = document.getElementById('beltButtons');
+      container.innerHTML = BELT_LEVELS.map(belt => `
+        <button 
+          class="belt-btn ${belt.isSlip ? 'slip' : ''} ${state.selectedBeltId === belt.id ? 'active' : ''}"
+          style="${getBeltStyle(belt)}"
+          data-belt-id="${belt.id}"
+          title="${belt.name}"
+        ></button>
+      `).join('');
+
+      // Add event listeners
+      container.querySelectorAll('.belt-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.selectedBeltId = btn.dataset.beltId;
+          render();
+        });
+      });
+    }
+
+    function renderFromBeltSelect() {
+      const select = document.getElementById('fromBeltSelect');
+      const onlyBelts = BELT_LEVELS.filter(b => !b.isSlip);
+      
+      select.innerHTML = onlyBelts.map(belt => `
+        <option value="${belt.id}" ${state.fromBeltId === belt.id ? 'selected' : ''}>
+          ${belt.name}
+        </option>
+      `).join('');
+    }
+
+    function renderCategories() {
+      const container = document.getElementById('categoryList');
+      const beltReq = getRequirements(state.selectedBeltId);
+      const prevBeltId = state.showDirectTransition ? state.fromBeltId : getPreviousBeltId(state.selectedBeltId);
+      const prevReq = prevBeltId ? getRequirements(prevBeltId) : { counts: {} };
+
+      let html = '';
+
+      CATEGORY_ORDER.forEach(catId => {
+        const cat = CATEGORIES[catId];
+        const totalCount = catId === 'ukemi-waza' ? 4 : (beltReq.counts[catId] || 0);
+        const prevCount = catId === 'ukemi-waza' ? 0 : (prevReq.counts[catId] || 0);
+        const newCount = Math.max(0, totalCount - prevCount);
+        
+        // Determine what to show based on view mode
+        const displayCount = state.viewMode === 'new' ? newCount : totalCount;
+        
+        // Skip if no requirements and view mode is new
+        if (catId !== 'ukemi-waza' && displayCount === 0 && state.viewMode === 'new') return;
+
+        const isExpanded = state.expandedCategories.has(catId);
+
+        html += `
+          <div class="category-list">
+            <button class="category-header" data-category-id="${catId}">
+              <div class="category-info">
+                <span class="category-icon">${cat.icon}</span>
+                <div>
+                  <div class="category-title">${cat.nameNl}</div>
+                  <div class="category-japanese">${cat.nameJa}</div>
+                </div>
+              </div>
+              <div class="category-count">
+                ${state.viewMode === 'new' && newCount > 0 && catId !== 'ukemi-waza' ? `<span class="new-badge">+${newCount} nieuw</span>` : ''}
+                <span class="count-number">${displayCount}</span>
+                <svg class="chevron ${isExpanded ? 'expanded' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </div>
+            </button>
+            ${isExpanded && state.detailLevel !== 'counts' ? renderTechniques(catId, totalCount, prevCount) : ''}
+          </div>
+        `;
+      });
+
+      // Add Nage-komi and Kanteltechnieken
+      html += `
+        <div class="extra-section">
+          <div class="extra-grid">
+            <div class="extra-item">
+              <div>
+                <h4>Nage-komi</h4>
+                <p>Worpen in 1 minuut</p>
+              </div>
+              <span class="number">${beltReq.nageKomi}</span>
+            </div>
+            <div class="extra-item">
+              <div>
+                <h4>Kanteltechnieken</h4>
+                <p>Nader te specificeren</p>
+              </div>
+              <span class="number">${beltReq.kantelTechnieken}</span>
+            </div>
+          </div>
+        </div>
+      `;
+
+      container.innerHTML = html;
+
+      // Add event listeners to category headers
+      container.querySelectorAll('.category-header').forEach(header => {
+        header.addEventListener('click', () => {
+          const catId = header.dataset.categoryId;
+          if (state.expandedCategories.has(catId)) {
+            state.expandedCategories.delete(catId);
+          } else {
+            state.expandedCategories.add(catId);
+          }
+          renderCategories();
+        });
+      });
+    }
+
+    function renderTechniques(catId, totalCount, prevCount) {
+      const cat = CATEGORIES[catId];
+      const techniques = cat.techniques;
+      
+      let techniquesToShow;
+      let startIndex;
+      
+      if (catId === 'ukemi-waza') {
+        techniquesToShow = techniques.slice(0, 4);
+        startIndex = 0;
+      } else if (state.viewMode === 'new') {
+        techniquesToShow = techniques.slice(prevCount, totalCount);
+        startIndex = prevCount;
+      } else {
+        techniquesToShow = techniques.slice(0, totalCount);
+        startIndex = 0;
+      }
+
+      if (techniquesToShow.length === 0) return '';
+
+      return `
+        <div class="technique-list">
+          <div class="technique-grid">
+            ${techniquesToShow.map((tech, idx) => `
+              <div class="technique-item ${tech.forbidden ? 'forbidden' : ''}">
+                <span class="font-medium">${startIndex + idx + 1}. ${tech.nameJa}</span>
+                ${state.detailLevel === 'full' ? `<span class="translation">(${tech.nameNl})</span>` : ''}
+                ${tech.forbidden ? '<span class="forbidden-tag">*verboden</span>' : ''}
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function updateUI() {
+      // Update selected belt info
+      const belt = BELT_LEVELS.find(b => b.id === state.selectedBeltId);
+      document.getElementById('selectedBeltName').textContent = belt.name;
+      document.getElementById('selectedKyu').textContent = belt.kyu ? ` (${belt.kyu}e kyu)` : '';
+
+      // Update main title
+      const fromBelt = BELT_LEVELS.find(b => b.id === state.fromBeltId);
+      const title = state.showDirectTransition 
+        ? `${fromBelt.name} → ${belt.name}`
+        : `Exameneisen ${belt.name}`;
+      document.getElementById('mainTitle').textContent = title;
+
+      // Update view mode toggle
+      document.querySelectorAll('#viewModeToggle .toggle-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.mode === state.viewMode);
+      });
+
+      // Update detail level select
+      document.getElementById('detailLevel').value = state.detailLevel;
+
+      // Update direct transition toggle
+      const toggle = document.getElementById('directTransitionToggle');
+      toggle.classList.toggle('active', state.showDirectTransition);
+      document.getElementById('fromBeltSelect').classList.toggle('hidden', !state.showDirectTransition);
+    }
+
+    function render() {
+      renderBeltButtons();
+      renderFromBeltSelect();
+      renderCategories();
+      updateUI();
+    }
+
+    // ============================================================================
+    // EVENT LISTENERS
+    // ============================================================================
+
+    function initEventListeners() {
+      // View mode toggle
+      document.querySelectorAll('#viewModeToggle .toggle-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.viewMode = btn.dataset.mode;
+          render();
+        });
+      });
+
+      // Detail level select
+      document.getElementById('detailLevel').addEventListener('change', (e) => {
+        state.detailLevel = e.target.value;
+        renderCategories();
+        updateUI();
+      });
+
+      // Direct transition toggle
+      document.getElementById('directTransitionToggle').addEventListener('click', () => {
+        state.showDirectTransition = !state.showDirectTransition;
+        render();
+      });
+
+      // From belt select
+      document.getElementById('fromBeltSelect').addEventListener('change', (e) => {
+        state.fromBeltId = e.target.value;
+        renderCategories();
+        updateUI();
+      });
+
+      // Expand all
+      document.getElementById('expandAllBtn').addEventListener('click', () => {
+        state.expandedCategories = new Set(CATEGORY_ORDER);
+        renderCategories();
+      });
+
+      // Collapse all
+      document.getElementById('collapseAllBtn').addEventListener('click', () => {
+        state.expandedCategories = new Set();
+        renderCategories();
+      });
+    }
+
+    // ============================================================================
+    // INIT
+    // ============================================================================
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initEventListeners();
+      render();
+    });
+  </script>
+</body>
+</html>
