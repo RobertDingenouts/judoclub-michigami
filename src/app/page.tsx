@@ -13,6 +13,7 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Switch } from '@/components/ui/switch';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { ExamDashboard } from '@/components/sections/ExamDashboard';
 import { agendaItems, type AgendaItem } from '@/data/agenda';
 import { techniqueCategories, type TechniqueCategory, type Technique } from '@/data/techniques';
 import { judoTerms, type JudoTerm } from '@/data/judo-terms';
@@ -124,7 +125,7 @@ export default function MichigamiApp() {
             {activeSection === 'home' && <HomeSection onNavigate={setActiveSection} />}
             {activeSection === 'agenda' && <AgendaSection />}
             {activeSection === 'technieken' && <TechniquesSection />}
-            {activeSection === 'exameneisen' && <ExamRequirementsSection />}
+            {activeSection === 'exameneisen' && <ExamDashboard />}
             {activeSection === 'cursusjapans' && <ExamDashboardSection />}
             {activeSection === 'formulieren' && <FormsSection />}
             {activeSection === 'info' && <InfoSection />}
