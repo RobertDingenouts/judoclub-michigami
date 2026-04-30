@@ -1,8 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// Judoclub Michigami Steenbergen - Database Schema
+// Provider: SQLite (local development)
 
 generator client {
   provider = "prisma-client-js"
@@ -13,20 +10,152 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ============================================================================
+// USERS & AUTH
+// ============================================================================
+
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  role          Role      @default(MEMBER)
+  kyuGrade      String?   // Current belt level (e.g., "geel", "oranje")
+  joinDate      DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // Relations
+  lessons       LessonAttendance[]
+  
+  @@index([email])
 }
 
-model Post {
+enum Role {
+  MEMBER
+  PARENT
+  INSTRUCTOR
+  ADMIN
+}
+
+// ============================================================================
+// AGENDA & EVENTS
+// ============================================================================
+
+model Event {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  date        DateTime
+  location    String?
+  locationUrl String?  // Google Maps link
+  time        String?  // e.g., "19:30"
+  type        EventType
+  isCancelled Boolean @default(false)
+  emoji       String?  // For visual display
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([date])
+}
+
+enum EventType {
+  LESSON
+  TOURNAMENT
+  EXAM
+  MEETING
+  SPECIAL
+}
+
+// ============================================================================
+// MEMBERSHIP & ATTENDANCE
+// ============================================================================
+
+model Member {
+  id          String   @id @default(cuid())
+  firstName   String
+  lastName    String
+  email       String?
+  phone       String?
+  dateOfBirth DateTime?
+  kyuGrade    String?  // Current belt
+  joinDate    DateTime @default(now())
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  attendance  LessonAttendance[]
+  
+  @@index([lastName, firstName])
+}
+
+model LessonAttendance {
   id        String   @id @default(cuid())
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  authorId  String
+  memberId  String
+  lessonId  String?  // Optional - for specific lessons
+  date      DateTime
+  notes     String?
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  
+  member    Member   @relation(fields: [memberId], references: [id])
+  
+  @@unique([memberId, date])
+}
+
+// ============================================================================
+// TECHNIQUES & EXAMS (from exam-requirements.ts)
+// ============================================================================
+
+model Technique {
+  id         String   @id @default(cuid())
+  nameJa     String   // Japanese name
+  nameNl     String   // Dutch translation
+  category   String   // e.g., "ashi-waza", "koshi-waza"
+  mainCategory String // e.g., "nage-waza", "katame-waza"
+  forbidden  Boolean  @default(false) // Competition forbidden?
+  description String?
+  videoUrl   String?
+  imageUrl   String?
+  order      Int      // Display order
+  
+  @@unique([nameJa, category])
+}
+
+model ExamRecord {
+  id          String   @id @default(cuid())
+  memberId    String
+  beltId      String   // e.g., "geel", "oranje"
+  examDate    DateTime?
+  passed      Boolean?
+  notes       String?
+  examiner    String?  // Who conducted the exam
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  member      Member   @relation(fields: [memberId], references: [id])
+  
+  @@index([memberId, beltId])
+}
+
+// ============================================================================
+// CONTENT & PAGES (for dynamic content)
+// ============================================================================
+
+model Page {
+  id          String   @id @default(cuid())
+  slug        String   @unique // e.g., "lid-worden", "lestijden"
+  title       String
+  content     String   // Markdown or HTML content
+  isPublished Boolean  @default(true)
+  order       Int      // Menu order
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Image {
+  id          String   @id @default(cuid())
+  filename    String
+  url         String
+  alt         String?
+  category    String?  // e.g., "gallery", "techniques", "events"
+  createdAt   DateTime @default(now())
 }
