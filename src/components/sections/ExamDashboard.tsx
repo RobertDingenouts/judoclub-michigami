@@ -24,6 +24,21 @@ const CLUB_COLORS = {
   text: '#333333',
 };
 
+// Belt colors mapping - exact Kimi design
+const BELT_COLORS: Record<string, { bg: string; belt: string; text: string; border: string }> = {
+  'wit': { bg: '#FFFFFF', belt: '#FFFFFF', text: '#333333', border: '#CCCCCC' },
+  'wit-gele-slip': { bg: '#FFFFFF', belt: '#FFD700', text: '#333333', border: '#FFD700' },
+  'geel': { bg: '#FFD700', belt: '#FFD700', text: '#333333', border: '#E6C200' },
+  'geel-oranje-slip': { bg: '#FFD700', belt: '#FF8C00', text: '#333333', border: '#FF8C00' },
+  'oranje': { bg: '#FF8C00', belt: '#FF8C00', text: '#FFFFFF', border: '#E67A00' },
+  'oranje-groene-slip': { bg: '#FF8C00', belt: '#228B22', text: '#FFFFFF', border: '#228B22' },
+  'groen': { bg: '#228B22', belt: '#228B22', text: '#FFFFFF', border: '#1A6B1A' },
+  'groen-blauwe-slip': { bg: '#228B22', belt: '#1E90FF', text: '#FFFFFF', border: '#1E90FF' },
+  'blauw': { bg: '#1E90FF', belt: '#1E90FF', text: '#FFFFFF', border: '#1A7BD9' },
+  'blauw-bruine-slip': { bg: '#1E90FF', belt: '#8B4513', text: '#FFFFFF', border: '#8B4513' },
+  'bruin': { bg: '#8B4513', belt: '#8B4513', text: '#FFFFFF', border: '#6B3410' },
+};
+
 // All categories in order for unified view
 const ALL_CATEGORIES = [
   { id: 'ukemi-waza', mainCategory: null, order: 0 },
@@ -82,7 +97,6 @@ export function ExamDashboard() {
       const toReqs = beltRequirements.find(r => r.beltId === selectedBeltId);
       if (!fromReqs || !toReqs) return [];
 
-      // Convert object requirements to array format
       return Object.entries(toReqs.requirements).map(([categoryId, count]) => {
         const fromCount = fromReqs.requirements[categoryId] || 0;
         return {
@@ -98,7 +112,6 @@ export function ExamDashboard() {
     const currentReqs = beltRequirements.find(r => r.beltId === selectedBeltId);
     if (!currentReqs) return [];
 
-    // Convert object requirements to array format
     const currentReqsArray = Object.entries(currentReqs.requirements).map(([categoryId, count]) => ({
       categoryId,
       totalCount: count,
@@ -130,16 +143,17 @@ export function ExamDashboard() {
 
   // Get belt color style
   const getBeltColorStyle = (belt: BeltLevel) => {
+    const colors = BELT_COLORS[belt.id] || BELT_COLORS['wit'];
     if (belt.isSlip && getParentBelt(belt.id)) {
-      const parentColor = getParentBelt(belt.id)?.color || '#FFFFFF';
+      const parentColors = BELT_COLORS[getParentBelt(belt.id)?.id || 'wit'] || BELT_COLORS['wit'];
       return {
-        background: `linear-gradient(90deg, ${parentColor} 0%, ${parentColor} 40%, ${belt.color} 45%, ${belt.color} 55%, ${parentColor} 60%, ${parentColor} 100%)`,
-        border: belt.id === 'wit' || belt.id === 'wit-gele-slip' ? '2px solid #666' : 'none',
+        background: `linear-gradient(90deg, ${parentColors.belt} 0%, ${parentColors.belt} 35%, ${colors.belt} 40%, ${colors.belt} 60%, ${parentColors.belt} 65%, ${parentColors.belt} 100%)`,
+        border: `2px solid ${colors.border}`,
       };
     }
     return {
-      backgroundColor: belt.color,
-      border: belt.id === 'wit' ? '2px solid #666' : 'none',
+      backgroundColor: colors.bg,
+      border: `2px solid ${colors.border}`,
     };
   };
 
@@ -150,7 +164,6 @@ export function ExamDashboard() {
 
   // Get techniques for display
   const getTechniquesForDisplay = (categoryId: string, totalCount: number, prevCount: number) => {
-    // techniques is a Record<string, Technique[]> so access by category key
     const allTechs = examTechniques[categoryId] || [];
 
     return {
@@ -163,23 +176,24 @@ export function ExamDashboard() {
   const ukemiWaza = getCategoryInfoHelper('ukemi-waza');
 
   return (
-    <div className="space-y-4">
-      {/* Belt Selector Bar */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-3">
-        <div className="flex gap-1.5 overflow-x-auto pb-1 custom-scrollbar">
+    <div className="space-y-4 max-w-full overflow-x-hidden">
+      {/* Belt Selector Bar - Kimi style with better mobile support */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-3 md:p-4">
+        <div className="flex gap-2 overflow-x-auto pb-2" style={{ scrollbarWidth: 'thin', WebkitOverflowScrolling: 'touch' }}>
           {examBeltLevels.map((belt) => {
             const isActive = selectedBeltId === belt.id;
+            const colors = BELT_COLORS[belt.id] || BELT_COLORS['wit'];
             return (
               <button
                 key={belt.id}
                 onClick={() => setSelectedBeltId(belt.id)}
-                className={`flex-shrink-0 w-12 h-12 rounded-lg transition-all ${
+                className={`flex-shrink-0 w-14 h-14 md:w-16 md:h-16 rounded-lg transition-all ${
                   isActive ? 'ring-2 ring-[#a90000] ring-offset-2 scale-110 shadow-md' : 'hover:scale-105 opacity-70 hover:opacity-100'
                 }`}
                 style={getBeltColorStyle(belt)}
                 title={belt.name}
               >
-                <span className="text-xs font-bold" style={{ color: belt.color === '#FFFFFF' ? '#333' : 'white' }}>
+                <span className="text-xs md:text-sm font-bold" style={{ color: colors.text }}>
                   {belt.kyu || ''}
                 </span>
               </button>
@@ -187,7 +201,7 @@ export function ExamDashboard() {
           })}
         </div>
         <div className="mt-2 text-center">
-          <span className="text-sm font-medium" style={{ color: CLUB_COLORS.primary }}>
+          <span className="text-sm md:text-base font-medium" style={{ color: CLUB_COLORS.primary }}>
             {selectedBelt?.name}
           </span>
           {selectedBelt?.kyu && (
@@ -197,8 +211,8 @@ export function ExamDashboard() {
       </div>
 
       {/* Controls Row */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-3 md:p-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
           {/* Weergave toggle */}
           <div className="flex items-center justify-between gap-2 p-2 rounded-lg bg-gray-50">
             <span className="text-xs font-medium text-gray-600">Weergave</span>
@@ -237,9 +251,9 @@ export function ExamDashboard() {
           </div>
 
           {/* Direct transition toggle */}
-          <div className="flex items-center justify-between gap-2 p-2 rounded-lg bg-gray-50 col-span-2 md:col-span-2">
+          <div className="flex items-center justify-between gap-2 p-2 rounded-lg bg-gray-50 col-span-1 sm:col-span-2 md:col-span-2">
             <span className="text-xs font-medium text-gray-600">Directe overgang</span>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <select
                 value={fromBeltId}
                 onChange={(e) => setFromBeltId(e.target.value)}
@@ -265,20 +279,20 @@ export function ExamDashboard() {
       {/* Main Content - Unified Overview */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         {/* Header with expand/collapse buttons */}
-        <div className="p-4 flex items-center justify-between" style={{ backgroundColor: CLUB_COLORS.primary }}>
-          <h2 className="text-xl font-bold text-white">
+        <div className="p-3 md:p-4 flex items-center justify-between flex-wrap gap-2" style={{ backgroundColor: CLUB_COLORS.primary }}>
+          <h2 className="text-lg md:text-xl font-bold text-white">
             {showDirectTransition ? `${fromBelt?.name} → ${selectedBelt?.name}` : `Exameneisen ${selectedBelt?.name}`}
           </h2>
           <div className="flex gap-2">
             <button
               onClick={expandAll}
-              className="px-3 py-1 rounded text-sm font-medium transition-colors bg-white/20 text-white hover:bg-white/30"
+              className="px-3 py-1 rounded text-xs md:text-sm font-medium transition-colors bg-white/20 text-white hover:bg-white/30"
             >
               Alles open
             </button>
             <button
               onClick={collapseAll}
-              className="px-3 py-1 rounded text-sm font-medium transition-colors bg-white/20 text-white hover:bg-white/30"
+              className="px-3 py-1 rounded text-xs md:text-sm font-medium transition-colors bg-white/20 text-white hover:bg-white/30"
             >
               Alles dicht
             </button>
@@ -293,14 +307,12 @@ export function ExamDashboard() {
             const newCount = req?.newCount || 0;
             const prevCount = req?.previousCount || 0;
 
-            // Get special counts for ukemi-waza and nage-komi, kantel
             const isUkemi = catInfo.id === 'ukemi-waza';
             const displayCount = isUkemi ? 4 : count;
             const isExpanded = expandedCategories.has(catInfo.id);
             const categoryInfo = getCategoryInfoHelper(catInfo.id);
             const techniques = getTechniquesForDisplay(catInfo.id, req?.totalCount || 0, prevCount);
 
-            // Skip if no requirements and view mode is new
             if (!isUkemi && count === 0 && viewMode === 'new') return null;
 
             return (
@@ -308,22 +320,26 @@ export function ExamDashboard() {
                 {/* Category Header - Clickable */}
                 <button
                   onClick={() => toggleCategory(catInfo.id)}
-                  className="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+                  className="w-full p-3 md:p-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="text-2xl">{categoryInfo.icon}</span>
-                    <div className="text-left">
-                      <h3 className="font-bold text-lg" style={{ color: CLUB_COLORS.dark }}>
-                        {categoryInfo.nameNl}
+                    <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+                      <span className="text-sm font-bold" style={{ color: CLUB_COLORS.primary }}>
+                        {isUkemi ? '🥋' : '⚔️'}
+                      </span>
+                    </div>
+                    <div className="text-left min-w-0">
+                      <h3 className="font-bold text-base md:text-lg truncate" style={{ color: CLUB_COLORS.dark }}>
+                        {categoryInfo?.nameNl}
                       </h3>
-                      <p className="text-sm" style={{ color: CLUB_COLORS.primary }}>
-                        {categoryInfo.nameJa}
+                      <p className="text-xs md:text-sm truncate" style={{ color: CLUB_COLORS.primary }}>
+                        {categoryInfo?.nameJa}
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
                     <span
-                      className="text-2xl font-bold"
+                      className="text-xl md:text-2xl font-bold"
                       style={{
                         color: viewMode === 'new' && newCount > 0 ? '#16a34a' : CLUB_COLORS.secondary,
                       }}
@@ -331,10 +347,10 @@ export function ExamDashboard() {
                       {displayCount}
                     </span>
                     {viewMode === 'new' && newCount > 0 && !isUkemi && (
-                      <span className="text-sm text-green-600 font-medium">(+{newCount} nieuw)</span>
+                      <span className="text-xs text-green-600 font-medium hidden sm:inline">(+{newCount} nieuw)</span>
                     )}
                     <svg
-                      className={`w-5 h-5 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                      className={`w-4 h-4 md:w-5 md:h-5 transition-transform flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -347,21 +363,21 @@ export function ExamDashboard() {
 
                 {/* Expanded Content */}
                 {isExpanded && detailLevel !== 'counts' && (
-                  <div className="px-4 pb-4 bg-gray-50">
+                  <div className="px-3 md:px-4 pb-3 md:pb-4 bg-gray-50">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 pt-2">
                       {isUkemi ? (
                         // Ukemi-waza always shows all 4 techniques
-                        ukemiWaza.techniques.map((tech, idx) => (
+                        examTechniques['ukemi-waza']?.map((tech, idx) => (
                           <div
                             key={tech.id}
                             className="p-2 bg-white rounded border-l-2"
                             style={{ borderColor: CLUB_COLORS.secondary }}
                           >
-                            <span className="font-medium" style={{ color: CLUB_COLORS.dark }}>
+                            <span className="font-medium text-sm md:text-base" style={{ color: CLUB_COLORS.dark }}>
                               {idx + 1}. {tech.nameJa}
                             </span>
                             {detailLevel === 'full' && (
-                              <span className="text-sm ml-2" style={{ color: '#666' }}>
+                              <span className="text-xs md:text-sm ml-2" style={{ color: '#666' }}>
                                 ({tech.nameNl})
                               </span>
                             )}
@@ -376,7 +392,7 @@ export function ExamDashboard() {
                             style={{ borderColor: tech.forbidden ? '#dc2626' : CLUB_COLORS.secondary }}
                           >
                             <span
-                              className="font-medium"
+                              className="font-medium text-sm md:text-base"
                               style={{
                                 color: tech.forbidden ? '#dc2626' : CLUB_COLORS.dark,
                               }}
@@ -384,7 +400,7 @@ export function ExamDashboard() {
                               {(viewMode === 'new' ? prevCount : 0) + idx + 1}. {tech.nameJa}
                             </span>
                             {detailLevel === 'full' && (
-                              <span className="text-sm ml-2" style={{ color: '#666' }}>
+                              <span className="text-xs md:text-sm ml-2" style={{ color: '#666' }}>
                                 ({tech.nameNl})
                               </span>
                             )}
@@ -403,23 +419,23 @@ export function ExamDashboard() {
 
           {/* Nage-komi and Kanteltechnieken */}
           <div className="border-t-2" style={{ borderColor: CLUB_COLORS.primary }}>
-            <div className="p-4 bg-gray-50">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="p-3 md:p-4 bg-gray-50">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                 <div className="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm">
                   <div>
-                    <h4 className="font-bold" style={{ color: CLUB_COLORS.dark }}>Nage-komi</h4>
-                    <p className="text-sm" style={{ color: '#666' }}>Worpen in 1 minuut</p>
+                    <h4 className="font-bold text-sm md:text-base" style={{ color: CLUB_COLORS.dark }}>Nage-komi</h4>
+                    <p className="text-xs md:text-sm" style={{ color: '#666' }}>Worpen in 1 minuut</p>
                   </div>
-                  <span className="text-3xl font-bold" style={{ color: CLUB_COLORS.secondary }}>
+                  <span className="text-2xl md:text-3xl font-bold" style={{ color: CLUB_COLORS.secondary }}>
                     {beltReq?.nageKomi || 0}
                   </span>
                 </div>
                 <div className="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm">
                   <div>
-                    <h4 className="font-bold" style={{ color: CLUB_COLORS.dark }}>Kanteltechnieken</h4>
-                    <p className="text-sm" style={{ color: '#666' }}>Nader te specificeren</p>
+                    <h4 className="font-bold text-sm md:text-base" style={{ color: CLUB_COLORS.dark }}>Kanteltechnieken</h4>
+                    <p className="text-xs md:text-sm" style={{ color: '#666' }}>Nader te specificeren</p>
                   </div>
-                  <span className="text-3xl font-bold" style={{ color: CLUB_COLORS.secondary }}>
+                  <span className="text-2xl md:text-3xl font-bold" style={{ color: CLUB_COLORS.secondary }}>
                     {beltReq?.kantelTechnieken || 0}
                   </span>
                 </div>
