@@ -82,13 +82,13 @@ export function ExamDashboard() {
       const toReqs = beltRequirements.find(r => r.beltId === selectedBeltId);
       if (!fromReqs || !toReqs) return [];
 
-      return toReqs.requirements.map(toReq => {
-        const fromReq = fromReqs.requirements.find(r => r.categoryId === toReq.categoryId);
-        const fromCount = fromReq?.count || 0;
+      // Convert object requirements to array format
+      return Object.entries(toReqs.requirements).map(([categoryId, count]) => {
+        const fromCount = fromReqs.requirements[categoryId] || 0;
         return {
-          categoryId: toReq.categoryId,
-          totalCount: toReq.count,
-          newCount: Math.max(0, toReq.count - fromCount),
+          categoryId,
+          totalCount: count,
+          newCount: Math.max(0, count - fromCount),
           previousCount: fromCount,
         };
       });
@@ -98,34 +98,30 @@ export function ExamDashboard() {
     const currentReqs = beltRequirements.find(r => r.beltId === selectedBeltId);
     if (!currentReqs) return [];
 
+    // Convert object requirements to array format
+    const currentReqsArray = Object.entries(currentReqs.requirements).map(([categoryId, count]) => ({
+      categoryId,
+      totalCount: count,
+      newCount: count,
+      previousCount: 0,
+    }));
+
     if (viewMode === 'all') {
-      return currentReqs.requirements.map(req => ({
-        categoryId: req.categoryId,
-        totalCount: req.count,
-        newCount: req.count,
-        previousCount: 0,
-      }));
+      return currentReqsArray;
     } else {
       if (beltIndex === 0) {
-        return currentReqs.requirements.map(req => ({
-          categoryId: req.categoryId,
-          totalCount: req.count,
-          newCount: req.count,
-          previousCount: 0,
-        }));
+        return currentReqsArray;
       }
 
       const prevBelt = examBeltLevels[beltIndex - 1];
       const prevReqs = beltRequirements.find(r => r.beltId === prevBelt.id);
       if (!prevReqs) return [];
 
-      return currentReqs.requirements.map(req => {
-        const prevReq = prevReqs.requirements.find(r => r.categoryId === req.categoryId);
-        const prevCount = prevReq?.count || 0;
+      return currentReqsArray.map(req => {
+        const prevCount = prevReqs.requirements[req.categoryId] || 0;
         return {
-          categoryId: req.categoryId,
-          totalCount: req.count,
-          newCount: Math.max(0, req.count - prevCount),
+          ...req,
+          newCount: Math.max(0, req.totalCount - prevCount),
           previousCount: prevCount,
         };
       });
