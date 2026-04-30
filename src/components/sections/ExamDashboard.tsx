@@ -150,8 +150,8 @@ export function ExamDashboard() {
 
   // Get techniques for display
   const getTechniquesForDisplay = (categoryId: string, totalCount: number, prevCount: number) => {
-    const categoryInfo = getCategoryInfoHelper(categoryId);
-    const allTechs = examTechniques.filter(t => t.category === categoryId);
+    // techniques is a Record<string, Technique[]> so access by category key
+    const allTechs = examTechniques[categoryId] || [];
 
     return {
       all: allTechs.slice(0, totalCount),
