@@ -253,19 +253,19 @@ function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
       </Card>
 
       {/* Quick Links Grid */}
-      <div className="grid grid-cols-2 gap-2 sm:gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {[
-          { key: 'agenda' as Section, label: 'Agenda', desc: 'Komende evenementen', icon: <Calendar className="w-5 h-5 sm:w-6 sm:h-6" />, color: 'from-[#a90000] to-[#c00000]' },
-          { key: 'technieken' as Section, label: 'Technieken', desc: 'Alle judotechnieken', icon: <Swords className="w-5 h-5 sm:w-6 sm:h-6" />, color: 'from-[#f37021] to-[#d35400]' },
-          { key: 'exameneisen' as Section, label: 'Exameneisen', desc: 'Eisen per band bekijken', icon: <Target className="w-5 h-5 sm:w-6 sm:h-6" />, color: 'from-[#0054a6] to-[#003d7a]' },
-          { key: 'cursusjapans' as Section, label: 'Cursus Japans', desc: 'Japans leren + quiz', icon: <BookOpen className="w-5 h-5 sm:w-6 sm:h-6" />, color: 'from-[#7c3aed] to-[#5b21b6]' },
+          { key: 'agenda' as Section, label: 'Agenda', desc: 'Komende evenementen', icon: <Calendar className="w-6 h-6" />, color: 'from-[#a90000] to-[#c00000]' },
+          { key: 'technieken' as Section, label: 'Technieken', desc: 'Alle judotechnieken', icon: <Swords className="w-6 h-6" />, color: 'from-[#f37021] to-[#d35400]' },
+          { key: 'exameneisen' as Section, label: 'Exameneisen', desc: 'Eisen per band bekijken', icon: <Target className="w-6 h-6" />, color: 'from-[#0054a6] to-[#003d7a]' },
+          { key: 'cursusjapans' as Section, label: 'Cursus Japans', desc: 'Japans leren + quiz', icon: <BookOpen className="w-6 h-6" />, color: 'from-[#7c3aed] to-[#5b21b6]' },
         ].map((item) => (
-          <div key={item.key} onClick={() => onNavigate(item.key)} className="cursor-pointer bg-white rounded-lg sm:rounded-xl shadow-sm hover:shadow-lg transition-all p-2 sm:p-3 md:p-4 border border-gray-100">
-            <div className={`w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg bg-gradient-to-br ${item.color} text-white flex items-center justify-center mb-2`}>
+          <div key={item.key} onClick={() => onNavigate(item.key)} className="cursor-pointer bg-white rounded-xl shadow-sm hover:shadow-lg transition-all p-4 border border-gray-100">
+            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${item.color} text-white flex items-center justify-center mb-3`}>
               {item.icon}
             </div>
-            <h3 className="font-semibold text-gray-800 text-[11px] sm:text-xs md:text-sm leading-tight truncate">{item.label}</h3>
-            <p className="text-[9px] sm:text-[10px] md:text-xs text-gray-500 mt-0.5 line-clamp-1">{item.desc}</p>
+            <h3 className="font-semibold text-gray-800 text-sm">{item.label}</h3>
+            <p className="text-xs text-gray-500 mt-1">{item.desc}</p>
           </div>
         ))}
       </div>
