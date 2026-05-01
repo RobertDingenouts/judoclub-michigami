@@ -510,20 +510,21 @@ function TechniquesSection() {
         <p className="text-white/80 mt-1 text-xs sm:text-sm">Alle judotechnieken met video-uitleg</p>
       </div>
 
-      {/* Category Tabs */}
-      <div className="flex gap-2 overflow-x-auto pb-2 custom-scrollbar">
+     {/* Category Tabs - Horizontal scroll on mobile */}
+      <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0 flex-wrap sm:flex-nowrap" style={{ scrollbarWidth: 'thin', WebkitOverflowScrolling: 'touch' }}>
         {techniqueCategories.map((cat, idx) => (
           <button
-            key={cat.key}
-            onClick={() => { setActiveCategory(idx); setExpandedTech(null); }}
-            className={`px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all ${
-              idx === activeCategory
+            key={idx}
+            onClick={() => setActiveCategory(idx)}
+            className={`flex-shrink-0 px-3 py-2 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
+              activeCategory === idx
                 ? 'bg-[#a90000] text-white shadow-md'
-                : 'bg-white text-gray-600 hover:bg-[#fdf6f6] hover:text-[#a90000] border border-[#e8eaed]'
+                : 'bg-white text-gray-600 hover:bg-[#fdf6f6] border border-gray-200'
             }`}
           >
-            {cat.label}
-            <span className="ml-1 text-xs opacity-70">{cat.labelJp}</span>
+            <span className="mr-1 sm:mr-2">{cat.icon}</span>
+            <span className="hidden sm:inline">{cat.name}</span>
+            <span className="sm:hidden">{cat.name.split(' ')[0]}</span>
           </button>
         ))}
       </div>
