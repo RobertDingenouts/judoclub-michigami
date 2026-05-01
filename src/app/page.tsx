@@ -120,8 +120,8 @@ export default function MichigamiApp() {
 
       {/* Main Content */}
       <main className="flex-1 md:ml-64 mt-14 md:mt-0 pb-28 sm:pb-20 md:pb-0 w-full min-w-0 max-w-full">
-        <ScrollArea className="h-[calc(100vh-3.5rem)] md:h-screen w-full">
-          <div className="p-3 sm:p-4 md:p-8 max-w-4xl sm:max-w-5xl md:max-w-6xl mx-auto w-full">
+        <ScrollArea className="h-[calc(100vh-7.5rem)] sm:h-[calc(100vh-3.5rem)] md:h-screen w-full">
+          <div className="p-3 sm:p-4 md:p-8 max-w-4xl sm:max-w-5xl md:max-w-6xl mx-auto w-full pb-16 sm:pb-0">
             {activeSection === 'home' && <HomeSection onNavigate={setActiveSection} />}
             {activeSection === 'agenda' && <AgendaSection />}
             {activeSection === 'technieken' && <TechniquesSection />}
@@ -134,8 +134,8 @@ export default function MichigamiApp() {
         </ScrollArea>
       </main>
 
-      {/* Mobile Bottom Nav */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-[#e8eaed] shadow-[0_-2px_10px_rgba(0,0,0,0.1)] w-full">
+    {/* Bottom Navigation - Mobile only */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-[#e8eaed] shadow-[0_-2px_10px_rgba(0,0,0,0.1)] w-full safe-area-bottom">
         <div className="flex items-center justify-around h-16 px-1 max-w-full">
           {mobileNavItems.map((item) => (
             <button
