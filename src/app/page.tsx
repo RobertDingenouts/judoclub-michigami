@@ -121,7 +121,7 @@ export default function MichigamiApp() {
       {/* Main Content */}
       <main className="flex-1 md:ml-64 mt-14 md:mt-0 pb-28 sm:pb-20 md:pb-0 w-full min-w-0 max-w-full">
         <ScrollArea className="h-[calc(100vh-7.5rem)] sm:h-[calc(100vh-3.5rem)] md:h-screen w-full">
-          <div className="p-3 sm:p-4 md:p-8 max-w-4xl sm:max-w-5xl md:max-w-6xl mx-auto w-full pb-16 sm:pb-0">
+          <div className="p-2 sm:p-3 md:p-8 max-w-full sm:max-w-4xl md:max-w-6xl mx-auto w-full pb-16 sm:pb-0">
             {activeSection === 'home' && <HomeSection onNavigate={setActiveSection} />}
             {activeSection === 'agenda' && <AgendaSection />}
             {activeSection === 'technieken' && <TechniquesSection />}
@@ -253,7 +253,7 @@ function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
       </Card>
 
       {/* Quick Links Grid */}
-      <div className="grid grid-cols-2 gap-2 sm:gap-3">
+      <div className="grid grid-cols-2 gap-1.5 sm:gap-3">
         {[
           { key: 'agenda' as Section, label: 'Agenda', desc: 'Komende evenementen', icon: <Calendar className="w-5 h-5 sm:w-6 sm:h-6" />, color: 'from-[#a90000] to-[#c00000]' },
           { key: 'technieken' as Section, label: 'Technieken', desc: 'Alle judotechnieken', icon: <Swords className="w-5 h-5 sm:w-6 sm:h-6" />, color: 'from-[#f37021] to-[#d35400]' },
@@ -261,7 +261,7 @@ function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
           { key: 'cursusjapans' as Section, label: 'Cursus Japans', desc: 'Japans leren + quiz', icon: <BookOpen className="w-5 h-5 sm:w-6 sm:h-6" />, color: 'from-[#7c3aed] to-[#5b21b6]' },
         ].map((item) => (
           <Card key={item.key} className="cursor-pointer hover:shadow-lg transition-all border-0 overflow-hidden group" onClick={() => onNavigate(item.key)}>
-            <CardContent className="p-2.5 sm:p-3 md:p-4">
+            <CardContent className="p-2 sm:p-3 md:p-4">
               <div className={`w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg sm:rounded-xl bg-gradient-to-br ${item.color} text-white flex items-center justify-center mb-2 sm:mb-3 group-hover:scale-110 transition-transform`}>
                 {item.icon}
               </div>
