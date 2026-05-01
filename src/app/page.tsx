@@ -253,7 +253,7 @@ function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
       </Card>
 
       {/* Quick Links Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
         {[
           { key: 'agenda' as Section, label: 'Agenda', desc: 'Komende evenementen', icon: <Calendar className="w-6 h-6" />, color: 'from-[#a90000] to-[#c00000]' },
           { key: 'technieken' as Section, label: 'Technieken', desc: 'Alle judotechnieken', icon: <Swords className="w-6 h-6" />, color: 'from-[#f37021] to-[#d35400]' },
@@ -261,12 +261,12 @@ function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
           { key: 'cursusjapans' as Section, label: 'Cursus Japans', desc: 'Japans leren + quiz', icon: <BookOpen className="w-6 h-6" />, color: 'from-[#7c3aed] to-[#5b21b6]' },
         ].map((item) => (
           <Card key={item.key} className="cursor-pointer hover:shadow-lg transition-all hover:-translate-y-1 border-0 overflow-hidden group" onClick={() => onNavigate(item.key)}>
-            <CardContent className="p-4">
-              <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${item.color} text-white flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
+            <CardContent className="p-3 md:p-4">
+              <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br ${item.color} text-white flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
                 {item.icon}
               </div>
-              <h3 className="font-semibold text-gray-800 text-sm">{item.label}</h3>
-              <p className="text-xs text-gray-500 mt-0.5">{item.desc}</p>
+              <h3 className="font-semibold text-gray-800 text-xs md:text-sm">{item.label}</h3>
+              <p className="text-[10px] md:text-xs text-gray-500 mt-0.5">{item.desc}</p>
             </CardContent>
           </Card>
         ))}
@@ -307,7 +307,7 @@ function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
       </Card>
 
       {/* Club Info Summary */}
-      <div className="grid md:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <Card className="border-0 shadow-sm">
           <CardContent className="p-4 text-center">
             <div className="w-12 h-12 mx-auto rounded-full bg-[#fdf6f6] flex items-center justify-center mb-2">
@@ -529,31 +529,31 @@ function TechniquesSection() {
       </div>
 
       {/* Techniques Grid */}
-      <div className="grid md:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {category.techniques.map((tech) => (
           <Card key={tech.id} className="border-0 shadow-sm overflow-hidden">
             <CardContent className="p-0">
               <button
                 onClick={() => setExpandedTech(expandedTech === tech.id ? null : tech.id)}
-                className="w-full text-left p-4 hover:bg-[#fdf6f6] transition-colors"
+                className="w-full text-left p-3 md:p-4 hover:bg-[#fdf6f6] transition-colors"
               >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-bold text-[#a90000]">{tech.name}</h3>
-                    <p className="text-sm text-gray-500 mt-0.5">{tech.dutch}</p>
+                <div className="flex items-center justify-between gap-2">
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-bold text-[#a90000] text-sm md:text-base truncate">{tech.name}</h3>
+                    <p className="text-xs md:text-sm text-gray-500 mt-0.5 truncate">{tech.dutch}</p>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-lg text-gray-300 font-light">{tech.japanese}</span>
+                  <div className="flex items-center gap-1 md:gap-2 flex-shrink-0">
+                    <span className="text-base md:text-lg text-gray-300 font-light">{tech.japanese}</span>
                     {expandedTech === tech.id ? <ChevronLeft className="w-4 h-4 text-gray-400" /> : <ChevronRight className="w-4 h-4 text-gray-400" />}
                   </div>
                 </div>
               </button>
               {expandedTech === tech.id && tech.youtubeId && (
                 <div className="border-t border-[#e8eaed]">
-                  <div className="flex items-center justify-between px-4 py-2 bg-[#fdf6f6]">
+                  <div className="flex items-center justify-between px-3 md:px-4 py-2 bg-[#fdf6f6]">
                     <span className="text-xs text-gray-500 flex items-center gap-1"><Play className="w-3 h-3" /> Video</span>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-gray-400">Toon video</span>
+                      <span className="text-xs text-gray-400 hidden sm:inline">Toon video</span>
                       <Switch
                         checked={showVideo[tech.id] || false}
                         onCheckedChange={(v) => setShowVideo(prev => ({ ...prev, [tech.id]: v }))}
@@ -656,7 +656,7 @@ function ExamRequirementsSection() {
                 <button
                   key={belt.id}
                   onClick={() => setSelectedBeltId(belt.id)}
-                  className={`flex-shrink-0 relative px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
+                  className={`flex-shrink-0 relative px-2 py-1.5 md:px-3 md:py-2 rounded-xl text-[10px] md:text-xs font-semibold transition-all ${
                     isActive
                       ? 'ring-2 ring-[#a90000] ring-offset-1 shadow-md scale-105'
                       : 'hover:scale-105 opacity-80 hover:opacity-100'
@@ -760,7 +760,7 @@ function ExamRequirementsSection() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="text-center p-3 rounded-xl bg-[#fdf6f6]">
                 <p className="text-2xl font-bold text-[#a90000]">{beltReq.ukemiWaza}</p>
                 <p className="text-xs text-gray-500 mt-1">Ukemi-waza</p>
@@ -976,7 +976,7 @@ function ExamRequirementsSection() {
         </CardHeader>
         <CardContent>
           {showTechniqueNames ? (
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {(displayTechs["ukemi-waza"] || examTechniques["ukemi-waza"]).map(tech => (
                 <div key={tech.id} className="flex items-center gap-2 p-2 rounded-lg bg-[#f8f9fa]">
                   <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0" />
@@ -1002,7 +1002,7 @@ function ExamRequirementsSection() {
             <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-2">
               <List className="w-4 h-4 text-[#a90000]" /> Samenvatting
             </h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
               {Object.entries(beltReq.requirements).map(([catId, count]) => {
                 if (count === 0) return null;
                 const catInfo = getCategoryInfo(catId);
