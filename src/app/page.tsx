@@ -90,38 +90,38 @@ export default function MichigamiApp() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-[#f8f9fa]">
+    <div className="min-h-screen flex flex-col md:flex-row bg-[#f8f9fa] w-full overflow-x-hidden">
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex flex-col w-64 bg-white border-r border-[#e8eaed] min-h-screen fixed left-0 top-0 z-40">
         <SidebarContent activeSection={activeSection} onSelect={(s) => setActiveSection(s)} />
       </aside>
 
       {/* Mobile Header */}
-      <header className="md:hidden fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-[#a90000] to-[#8c0000] text-white shadow-lg">
-        <div className="flex items-center justify-between px-4 h-14">
-          <div className="flex items-center gap-2">
-            <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-1.5 rounded-lg hover:bg-white/20 transition-colors">
+      <header className="md:hidden fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-[#a90000] to-[#8c0000] text-white shadow-lg w-full">
+        <div className="flex items-center justify-between px-4 h-14 max-w-full">
+          <div className="flex items-center gap-2 min-w-0">
+            <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-1.5 rounded-lg hover:bg-white/20 transition-colors flex-shrink-0">
               {sidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
-            <span className="font-bold text-lg tracking-wide">道 Michigami</span>
+            <span className="font-bold text-lg tracking-wide truncate">道 Michigami</span>
           </div>
-          <span className="text-xs opacity-80">Judoclub</span>
+          <span className="text-xs opacity-80 flex-shrink-0 ml-2">Judoclub</span>
         </div>
       </header>
 
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
         <div className="md:hidden fixed inset-0 z-40 bg-black/50" onClick={() => setSidebarOpen(false)}>
-          <aside className="w-72 bg-white min-h-screen shadow-xl" onClick={(e) => e.stopPropagation()}>
+          <aside className="w-72 bg-white min-h-screen shadow-xl max-w-[calc(100vw-1rem)]" onClick={(e) => e.stopPropagation()}>
             <SidebarContent activeSection={activeSection} onSelect={(s) => { setActiveSection(s); setSidebarOpen(false); }} />
           </aside>
         </div>
       )}
 
       {/* Main Content */}
-      <main className="flex-1 md:ml-64 mt-14 md:mt-0 pb-20 md:pb-0">
-        <ScrollArea className="h-[calc(100vh-3.5rem)] md:h-screen">
-          <div className="p-4 md:p-8 max-w-6xl mx-auto">
+      <main className="flex-1 md:ml-64 mt-14 md:mt-0 pb-20 md:pb-0 w-full min-w-0 max-w-full">
+        <ScrollArea className="h-[calc(100vh-3.5rem)] md:h-screen w-full">
+          <div className="p-3 sm:p-4 md:p-8 max-w-4xl sm:max-w-5xl md:max-w-6xl mx-auto w-full">
             {activeSection === 'home' && <HomeSection onNavigate={setActiveSection} />}
             {activeSection === 'agenda' && <AgendaSection />}
             {activeSection === 'technieken' && <TechniquesSection />}
@@ -135,28 +135,28 @@ export default function MichigamiApp() {
       </main>
 
       {/* Mobile Bottom Nav */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-[#e8eaed] shadow-[0_-2px_10px_rgba(0,0,0,0.1)]">
-        <div className="flex items-center justify-around h-16 px-1">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-[#e8eaed] shadow-[0_-2px_10px_rgba(0,0,0,0.1)] w-full">
+        <div className="flex items-center justify-around h-16 px-1 max-w-full">
           {mobileNavItems.map((item) => (
             <button
               key={item.key}
               onClick={() => setActiveSection(item.key)}
-              className={`flex flex-col items-center justify-center gap-0.5 px-2 py-1 rounded-lg transition-all ${
+              className={`flex flex-col items-center justify-center gap-0.5 px-1.5 py-1 rounded-lg transition-all ${
                 activeSection === item.key
                   ? 'text-[#a90000] bg-[#fdf6f6]'
                   : 'text-gray-500 hover:text-gray-700'
               }`}
             >
               {item.icon}
-              <span className="text-[10px] font-medium">{item.label}</span>
+              <span className="text-[10px] font-medium truncate">{item.label}</span>
             </button>
           ))}
           <button
             onClick={() => setSidebarOpen(true)}
-            className="flex flex-col items-center justify-center gap-0.5 px-2 py-1 rounded-lg text-gray-500 hover:text-gray-700"
+            className="flex flex-col items-center justify-center gap-0.5 px-1.5 py-1 rounded-lg text-gray-500 hover:text-gray-700"
           >
             <Menu className="w-5 h-5" />
-            <span className="text-[10px] font-medium">Meer</span>
+            <span className="text-[10px] font-medium truncate">Meer</span>
           </button>
         </div>
       </nav>
@@ -225,27 +225,27 @@ function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
   return (
     <div className="space-y-6">
       {/* Hero Banner */}
-      <Card className="overflow-hidden border-0 shadow-lg">
-        <div className="relative bg-gradient-to-br from-[#a90000] via-[#8c0000] to-[#7a0000] text-white p-8 md:p-12">
-          <ToriiGate className="absolute top-0 right-0 w-48 h-48 text-white opacity-[0.07]" />
+      <Card className="overflow-hidden border-0 shadow-sm sm:shadow-lg">
+        <div className="relative bg-gradient-to-br from-[#a90000] via-[#8c0000] to-[#7a0000] text-white p-4 sm:p-6 md:p-12">
+          <ToriiGate className="absolute top-0 right-0 w-32 sm:w-48 h-32 sm:h-48 text-white opacity-[0.07]" />
           <div className="relative z-10">
-            <div className="flex items-center gap-3 mb-3">
-              <span className="text-4xl">柔道</span>
-              <div className="h-10 w-px bg-white/30" />
-              <div>
-                <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Judoclub Michigami</h1>
-                <p className="text-white/80 text-sm md:text-base mt-1">Steenbergen</p>
+            <div className="flex items-center gap-2 sm:gap-3 mb-3 flex-wrap">
+              <span className="text-2xl sm:text-3xl md:text-4xl">柔道</span>
+              <div className="h-6 sm:h-8 md:h-10 w-px bg-white/30 flex-shrink-0" />
+              <div className="min-w-0 flex-1">
+                <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight truncate">Judoclub Michigami</h1>
+                <p className="text-white/80 text-xs sm:text-sm md:text-base mt-1">Steenbergen</p>
               </div>
             </div>
-            <p className="text-lg md:text-xl font-light max-w-xl mt-4 leading-relaxed">
+            <p className="text-sm sm:text-base md:text-lg font-light max-w-xl mt-3 sm:mt-4 leading-relaxed">
               Judo voor jong en oud, voor beginners en gevorderden — recreatief of prestatiegericht
             </p>
-            <div className="flex flex-wrap gap-3 mt-6">
-              <Button onClick={() => onNavigate('info')} variant="secondary" className="bg-white/20 hover:bg-white/30 text-white border-white/30">
-                <Info className="w-4 h-4 mr-2" /> Meer over ons
+            <div className="flex flex-wrap gap-2 sm:gap-3 mt-4 sm:mt-6">
+              <Button onClick={() => onNavigate('info')} variant="secondary" size="sm" className="bg-white/20 hover:bg-white/30 text-white border-white/30 text-xs sm:text-sm">
+                <Info className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" /> Meer over ons
               </Button>
-              <Button onClick={() => onNavigate('agenda')} variant="outline" className="bg-transparent border-white/40 text-white hover:bg-white/10">
-                <Calendar className="w-4 h-4 mr-2" /> Bekijk agenda
+              <Button onClick={() => onNavigate('agenda')} variant="outline" size="sm" className="bg-transparent border-white/40 text-white hover:bg-white/10 text-xs sm:text-sm">
+                <Calendar className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" /> Bekijk agenda
               </Button>
             </div>
           </div>
@@ -359,11 +359,11 @@ function AgendaSection() {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-6 md:p-8 text-white shadow-lg">
-        <ToriiGate className="absolute top-0 right-0 w-32 h-32 text-white opacity-[0.06] relative" />
-        <h1 className="text-2xl md:text-3xl font-bold">Judoclub Michigami</h1>
-        <p className="text-white/80 mt-1">Activiteitenkalender <span className="font-bold text-[#fce0e0]">2026</span></p>
-        <div className="w-16 h-1 bg-white/30 rounded-full mt-3" />
+      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-4 sm:p-6 md:p-8 text-white shadow-lg relative overflow-hidden">
+        <ToriiGate className="absolute top-0 right-0 w-24 sm:w-32 h-24 sm:h-32 text-white opacity-[0.06] relative" />
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">Judoclub Michigami</h1>
+        <p className="text-white/80 mt-1 text-xs sm:text-sm">Activiteitenkalender <span className="font-bold text-[#fce0e0]">2026</span></p>
+        <div className="w-12 sm:w-16 h-0.5 sm:h-1 bg-white/30 rounded-full mt-2 sm:mt-3" />
       </div>
 
       {/* Desktop Table */}
@@ -505,9 +505,9 @@ function TechniquesSection() {
 
   return (
     <div className="space-y-4">
-      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-6 text-white shadow-lg">
-        <h1 className="text-2xl font-bold flex items-center gap-2"><Swords className="w-6 h-6" /> Technieken</h1>
-        <p className="text-white/80 mt-1">Alle judotechnieken met video-uitleg</p>
+      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-4 sm:p-6 text-white shadow-lg">
+        <h1 className="text-xl sm:text-2xl font-bold flex items-center gap-2"><Swords className="w-5 h-5 sm:w-6 sm:h-6" /> Technieken</h1>
+        <p className="text-white/80 mt-1 text-xs sm:text-sm">Alle judotechnieken met video-uitleg</p>
       </div>
 
       {/* Category Tabs */}
@@ -634,14 +634,14 @@ function ExamRequirementsSection() {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-6 md:p-8 text-white shadow-lg relative overflow-hidden">
-        <ToriiGate className="absolute top-0 right-0 w-48 h-48 text-white opacity-[0.07]" />
+      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-4 sm:p-6 md:p-8 text-white shadow-lg relative overflow-hidden">
+        <ToriiGate className="absolute top-0 right-0 w-32 sm:w-48 h-32 sm:h-48 text-white opacity-[0.07]" />
         <div className="relative z-10">
-          <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-2">
-            <Target className="w-7 h-7" /> Exameneisen
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold flex items-center gap-2">
+            <Target className="w-5 h-5 sm:w-6 sm:h-6" /> Exameneisen
           </h1>
-          <p className="text-white/80 mt-1">Overzicht van exameneisen per bandniveau</p>
-          <div className="w-16 h-1 bg-white/30 rounded-full mt-3" />
+          <p className="text-white/80 mt-1 text-xs sm:text-sm">Overzicht van exameneisen per bandniveau</p>
+          <div className="w-12 sm:w-16 h-0.5 sm:h-1 bg-white/30 rounded-full mt-2 sm:mt-3" />
         </div>
       </div>
 
@@ -1128,11 +1128,11 @@ function ExamDashboardSection() {
   if (!selectedBelt) {
     return (
       <div className="space-y-5">
-        <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-6 md:p-8 text-white shadow-lg text-center">
-          <ToriiGate className="absolute top-0 right-0 w-32 h-32 text-white opacity-[0.06] relative" />
-          <h1 className="text-3xl md:text-4xl font-bold tracking-wide uppercase">Cursus Japans</h1>
-          <p className="text-white/80 mt-2 text-lg">Leer Japanse judo-terminologie</p>
-          <div className="w-20 h-1 bg-white/30 rounded-full mx-auto mt-4" />
+        <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-4 sm:p-6 md:p-8 text-white shadow-lg text-center relative overflow-hidden">
+          <ToriiGate className="absolute top-0 right-0 w-24 sm:w-32 h-24 sm:h-32 text-white opacity-[0.06] relative" />
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-wide uppercase">Cursus Japans</h1>
+          <p className="text-white/80 mt-2 text-sm sm:text-base md:text-lg">Leer Japanse judo-terminologie</p>
+          <div className="w-16 sm:w-20 h-0.5 sm:h-1 bg-white/30 rounded-full mx-auto mt-3 sm:mt-4" />
         </div>
 
         <h2 className="text-xl font-bold text-gray-800 text-center">Kies een bandniveau</h2>
