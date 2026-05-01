@@ -119,9 +119,9 @@ export default function MichigamiApp() {
       )}
 
       {/* Main Content */}
-      <main className="flex-1 md:ml-64 mt-14 md:mt-0 pb-28 sm:pb-20 md:pb-0 w-full min-w-0 max-w-full">
+      <main className="flex-1 md:ml-64 mt-14 md:mt-0 pb-28 sm:pb-20 md:pb-0 w-full min-w-0">
         <ScrollArea className="h-[calc(100vh-7.5rem)] sm:h-[calc(100vh-3.5rem)] md:h-screen w-full">
-          <div className="p-2 sm:p-3 md:p-8 max-w-full sm:max-w-4xl md:max-w-6xl mx-auto w-full pb-16 sm:pb-0">
+          <div className="p-2 sm:p-4 md:p-8 max-w-[100vw] mx-auto w-full pb-16 sm:pb-0">
             {activeSection === 'home' && <HomeSection onNavigate={setActiveSection} />}
             {activeSection === 'agenda' && <AgendaSection />}
             {activeSection === 'technieken' && <TechniquesSection />}
