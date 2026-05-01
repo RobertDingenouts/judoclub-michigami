@@ -210,16 +210,16 @@ export function ExamDashboard() {
         </div>
       </div>
 
-      {/* Controls Row */}
+       {/* Controls Row */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-3 md:p-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
           {/* Weergave toggle */}
           <div className="flex items-center justify-between gap-2 p-2 rounded-lg bg-gray-50">
             <span className="text-xs font-medium text-gray-600">Weergave</span>
             <div className="flex gap-1">
               <button
                 onClick={() => setViewMode('all')}
-                className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
+                className={`px-2 py-1 rounded text-[11px] sm:text-xs font-medium transition-colors ${
                   viewMode === 'all' ? 'bg-[#a90000] text-white' : 'bg-white text-gray-600 hover:bg-gray-100'
                 }`}
               >
@@ -227,7 +227,7 @@ export function ExamDashboard() {
               </button>
               <button
                 onClick={() => setViewMode('new')}
-                className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
+                className={`px-2 py-1 rounded text-[11px] sm:text-xs font-medium transition-colors ${
                   viewMode === 'new' ? 'bg-[#a90000] text-white' : 'bg-white text-gray-600 hover:bg-gray-100'
                 }`}
               >
@@ -242,7 +242,7 @@ export function ExamDashboard() {
             <select
               value={detailLevel}
               onChange={(e) => setDetailLevel(e.target.value as any)}
-              className="text-xs bg-white border border-gray-200 rounded px-2 py-1"
+              className="text-[11px] sm:text-xs bg-white border border-gray-200 rounded px-2 py-1"
             >
               <option value="counts">Aantallen</option>
               <option value="techniques">Technieken</option>
@@ -251,13 +251,13 @@ export function ExamDashboard() {
           </div>
 
           {/* Direct transition toggle */}
-          <div className="flex items-center justify-between gap-2 p-2 rounded-lg bg-gray-50 col-span-1 sm:col-span-2 md:col-span-2">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-2 rounded-lg bg-gray-50 sm:col-span-2">
             <span className="text-xs font-medium text-gray-600">Directe overgang</span>
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
               <select
                 value={fromBeltId}
                 onChange={(e) => setFromBeltId(e.target.value)}
-                className="text-xs bg-white border border-gray-200 rounded px-2 py-1"
+                className="text-[11px] sm:text-xs bg-white border border-gray-200 rounded px-2 py-1"
                 disabled={!showDirectTransition}
               >
                 {examBeltLevels.filter(b => !b.isSlip).map(b => (
@@ -278,21 +278,21 @@ export function ExamDashboard() {
 
       {/* Main Content - Unified Overview */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        {/* Header with expand/collapse buttons */}
+          {/* Header with expand/collapse buttons */}
         <div className="p-3 md:p-4 flex items-center justify-between flex-wrap gap-2" style={{ backgroundColor: CLUB_COLORS.primary }}>
-          <h2 className="text-lg md:text-xl font-bold text-white">
+          <h2 className="text-base sm:text-lg md:text-xl font-bold text-white min-w-0 truncate flex-1">
             {showDirectTransition ? `${fromBelt?.name} → ${selectedBelt?.name}` : `Exameneisen ${selectedBelt?.name}`}
           </h2>
-          <div className="flex gap-2">
+          <div className="flex gap-1.5 sm:gap-2 flex-shrink-0">
             <button
               onClick={expandAll}
-              className="px-3 py-1 rounded text-xs md:text-sm font-medium transition-colors bg-white/20 text-white hover:bg-white/30"
+              className="px-2 py-1 sm:px-3 sm:py-1 rounded text-[11px] sm:text-xs md:text-sm font-medium transition-colors bg-white/20 text-white hover:bg-white/30 whitespace-nowrap"
             >
               Alles open
             </button>
             <button
               onClick={collapseAll}
-              className="px-3 py-1 rounded text-xs md:text-sm font-medium transition-colors bg-white/20 text-white hover:bg-white/30"
+              className="px-2 py-1 sm:px-3 sm:py-1 rounded text-[11px] sm:text-xs md:text-sm font-medium transition-colors bg-white/20 text-white hover:bg-white/30 whitespace-nowrap"
             >
               Alles dicht
             </button>
@@ -320,26 +320,26 @@ export function ExamDashboard() {
                 {/* Category Header - Clickable */}
                 <button
                   onClick={() => toggleCategory(catInfo.id)}
-                  className="w-full p-3 md:p-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+                  className="w-full p-2.5 sm:p-3 md:p-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
-                      <span className="text-sm font-bold" style={{ color: CLUB_COLORS.primary }}>
+                  <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+                      <span className="text-xs sm:text-sm font-bold" style={{ color: CLUB_COLORS.primary }}>
                         {isUkemi ? '🥋' : '⚔️'}
                       </span>
                     </div>
-                    <div className="text-left min-w-0">
-                      <h3 className="font-bold text-base md:text-lg truncate" style={{ color: CLUB_COLORS.dark }}>
+                    <div className="text-left min-w-0 flex-1">
+                      <h3 className="font-bold text-sm sm:text-base md:text-lg truncate" style={{ color: CLUB_COLORS.dark }}>
                         {categoryInfo?.nameNl}
                       </h3>
-                      <p className="text-xs md:text-sm truncate" style={{ color: CLUB_COLORS.primary }}>
+                      <p className="text-[10px] sm:text-xs md:text-sm truncate" style={{ color: CLUB_COLORS.primary }}>
                         {categoryInfo?.nameJa}
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
+                  <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 flex-shrink-0">
                     <span
-                      className="text-xl md:text-2xl font-bold"
+                      className="text-lg sm:text-xl md:text-2xl font-bold"
                       style={{
                         color: viewMode === 'new' && newCount > 0 ? '#16a34a' : CLUB_COLORS.secondary,
                       }}
@@ -347,7 +347,7 @@ export function ExamDashboard() {
                       {displayCount}
                     </span>
                     {viewMode === 'new' && newCount > 0 && !isUkemi && (
-                      <span className="text-xs text-green-600 font-medium hidden sm:inline">(+{newCount} nieuw)</span>
+                      <span className="text-[10px] sm:text-xs text-green-600 font-medium hidden sm:inline">(+{newCount} nieuw)</span>
                     )}
                     <svg
                       className={`w-4 h-4 md:w-5 md:h-5 transition-transform flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`}
@@ -363,8 +363,8 @@ export function ExamDashboard() {
 
                 {/* Expanded Content */}
                 {isExpanded && detailLevel !== 'counts' && (
-                  <div className="px-3 md:px-4 pb-3 md:pb-4 bg-gray-50">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 pt-2">
+                  <div className="px-2.5 sm:px-3 md:px-4 pb-2.5 sm:pb-3 md:pb-4 bg-gray-50">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-1.5 sm:gap-2 pt-1.5 sm:pt-2">
                       {isUkemi ? (
                         // Ukemi-waza always shows all 4 techniques
                         examTechniques['ukemi-waza']?.map((tech, idx) => (
@@ -420,22 +420,22 @@ export function ExamDashboard() {
           {/* Nage-komi and Kanteltechnieken */}
           <div className="border-t-2" style={{ borderColor: CLUB_COLORS.primary }}>
             <div className="p-3 md:p-4 bg-gray-50">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-                <div className="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm">
-                  <div>
-                    <h4 className="font-bold text-sm md:text-base" style={{ color: CLUB_COLORS.dark }}>Nage-komi</h4>
-                    <p className="text-xs md:text-sm" style={{ color: '#666' }}>Worpen in 1 minuut</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 md:gap-4">
+                <div className="flex items-center justify-between p-2.5 sm:p-3 bg-white rounded-lg shadow-sm min-w-0">
+                  <div className="min-w-0 flex-1">
+                    <h4 className="font-bold text-xs sm:text-sm md:text-base truncate" style={{ color: CLUB_COLORS.dark }}>Nage-komi</h4>
+                    <p className="text-[10px] sm:text-xs md:text-sm" style={{ color: '#666' }}>Worpen in 1 minuut</p>
                   </div>
-                  <span className="text-2xl md:text-3xl font-bold" style={{ color: CLUB_COLORS.secondary }}>
+                  <span className="text-xl sm:text-2xl md:text-3xl font-bold flex-shrink-0 ml-2" style={{ color: CLUB_COLORS.secondary }}>
                     {beltReq?.nageKomi || 0}
                   </span>
                 </div>
-                <div className="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm">
-                  <div>
-                    <h4 className="font-bold text-sm md:text-base" style={{ color: CLUB_COLORS.dark }}>Kanteltechnieken</h4>
-                    <p className="text-xs md:text-sm" style={{ color: '#666' }}>Nader te specificeren</p>
+                <div className="flex items-center justify-between p-2.5 sm:p-3 bg-white rounded-lg shadow-sm min-w-0">
+                  <div className="min-w-0 flex-1">
+                    <h4 className="font-bold text-xs sm:text-sm md:text-base truncate" style={{ color: CLUB_COLORS.dark }}>Kanteltechnieken</h4>
+                    <p className="text-[10px] sm:text-xs md:text-sm" style={{ color: '#666' }}>Nader te specificeren</p>
                   </div>
-                  <span className="text-2xl md:text-3xl font-bold" style={{ color: CLUB_COLORS.secondary }}>
+                  <span className="text-xl sm:text-2xl md:text-3xl font-bold flex-shrink-0 ml-2" style={{ color: CLUB_COLORS.secondary }}>
                     {beltReq?.kantelTechnieken || 0}
                   </span>
                 </div>

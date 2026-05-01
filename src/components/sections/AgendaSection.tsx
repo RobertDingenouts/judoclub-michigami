@@ -44,13 +44,13 @@ export function AgendaSection() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-judo-red-darker via-judo-red to-judo-red-bright text-white p-6 md:p-8">
-        <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[8rem] leading-none opacity-[0.06] font-serif select-none" aria-hidden="true">
+      <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-judo-red-darker via-judo-red to-judo-red-bright text-white p-4 sm:p-6 md:p-8">
+        <div className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 text-[5rem] sm:text-[7rem] md:text-[8rem] leading-none opacity-[0.06] font-serif select-none max-w-full" aria-hidden="true">
           柔道
         </div>
         <div className="relative z-10">
-          <h1 className="text-2xl md:text-3xl font-bold">Activiteitenkalender 2026</h1>
-          <p className="mt-1 text-white/80">Judoclub Michigami Steenbergen</p>
+          <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">Activiteitenkalender 2026</h1>
+          <p className="mt-1 text-xs sm:text-sm text-white/80">Judoclub Michigami Steenbergen</p>
         </div>
       </div>
 

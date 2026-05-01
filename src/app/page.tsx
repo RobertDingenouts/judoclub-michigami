@@ -226,11 +226,11 @@ function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
     <div className="space-y-6">
       {/* Hero Banner */}
       <Card className="overflow-hidden border-0 shadow-sm sm:shadow-lg">
-        <div className="relative bg-gradient-to-br from-[#a90000] via-[#8c0000] to-[#7a0000] text-white p-4 sm:p-6 md:p-12">
-          <ToriiGate className="absolute top-0 right-0 w-32 sm:w-48 h-32 sm:h-48 text-white opacity-[0.07]" />
+        <div className="relative bg-gradient-to-br from-[#a90000] via-[#8c0000] to-[#7a0000] text-white p-4 sm:p-6 md:p-12 overflow-hidden">
+          <ToriiGate className="absolute top-0 right-0 w-24 sm:w-32 md:w-48 h-24 sm:h-32 md:h-48 text-white opacity-[0.07]" />
           <div className="relative z-10">
             <div className="flex items-center gap-2 sm:gap-3 mb-3 flex-wrap">
-              <span className="text-2xl sm:text-3xl md:text-4xl">柔道</span>
+              <span className="text-2xl sm:text-3xl md:text-4xl flex-shrink-0">柔道</span>
               <div className="h-6 sm:h-8 md:h-10 w-px bg-white/30 flex-shrink-0" />
               <div className="min-w-0 flex-1">
                 <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight truncate">Judoclub Michigami</h1>
@@ -359,11 +359,11 @@ function AgendaSection() {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-4 sm:p-6 md:p-8 text-white shadow-lg relative overflow-hidden">
-        <ToriiGate className="absolute top-0 right-0 w-24 sm:w-32 h-24 sm:h-32 text-white opacity-[0.06] relative" />
-        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">Judoclub Michigami</h1>
+      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
+        <ToriiGate className="absolute top-0 right-0 w-20 sm:w-24 md:w-32 h-20 sm:h-24 md:h-32 text-white opacity-[0.06] relative" />
+        <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">Judoclub Michigami</h1>
         <p className="text-white/80 mt-1 text-xs sm:text-sm">Activiteitenkalender <span className="font-bold text-[#fce0e0]">2026</span></p>
-        <div className="w-12 sm:w-16 h-0.5 sm:h-1 bg-white/30 rounded-full mt-2 sm:mt-3" />
+        <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-full mt-2 sm:mt-3" />
       </div>
 
       {/* Desktop Table */}
@@ -505,26 +505,26 @@ function TechniquesSection() {
 
   return (
     <div className="space-y-4">
-      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-4 sm:p-6 text-white shadow-lg">
-        <h1 className="text-xl sm:text-2xl font-bold flex items-center gap-2"><Swords className="w-5 h-5 sm:w-6 sm:h-6" /> Technieken</h1>
+      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-4 sm:p-5 text-white shadow-lg overflow-hidden">
+        <h1 className="text-lg sm:text-xl md:text-2xl font-bold flex items-center gap-1.5 sm:gap-2 truncate"><Swords className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" /> Technieken</h1>
         <p className="text-white/80 mt-1 text-xs sm:text-sm">Alle judotechnieken met video-uitleg</p>
       </div>
 
-     {/* Category Tabs - Horizontal scroll on mobile */}
-      <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0 flex-wrap sm:flex-nowrap" style={{ scrollbarWidth: 'thin', WebkitOverflowScrolling: 'touch' }}>
+     {/* Category Tabs - Horizontal scroll on mobile, wrap on larger screens */}
+      <div className="flex gap-1.5 sm:gap-2 overflow-x-auto pb-2 sm:pb-0 flex-wrap sm:flex-nowrap" style={{ scrollbarWidth: 'thin', WebkitOverflowScrolling: 'touch' }}>
         {techniqueCategories.map((cat, idx) => (
           <button
             key={idx}
             onClick={() => setActiveCategory(idx)}
-            className={`flex-shrink-0 px-3 py-2 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
+            className={`flex-shrink-0 px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl text-[11px] sm:text-sm font-medium transition-all whitespace-nowrap ${
               activeCategory === idx
                 ? 'bg-[#a90000] text-white shadow-md'
                 : 'bg-white text-gray-600 hover:bg-[#fdf6f6] border border-gray-200'
             }`}
           >
-            <span className="mr-1 sm:mr-2">{cat.icon}</span>
+            <span className="mr-1">{cat.icon}</span>
             <span className="hidden sm:inline">{cat.name}</span>
-            <span className="sm:hidden">{cat.name.split(' ')[0]}</span>
+            <span className="sm:hidden truncate max-w-[80px]">{cat.name.split(' ')[0]}</span>
           </button>
         ))}
       </div>
@@ -635,14 +635,14 @@ function ExamRequirementsSection() {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-4 sm:p-6 md:p-8 text-white shadow-lg relative overflow-hidden">
-        <ToriiGate className="absolute top-0 right-0 w-32 sm:w-48 h-32 sm:h-48 text-white opacity-[0.07]" />
+      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
+        <ToriiGate className="absolute top-0 right-0 w-24 sm:w-32 md:w-48 h-24 sm:h-32 md:h-48 text-white opacity-[0.07]" />
         <div className="relative z-10">
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold flex items-center gap-2">
-            <Target className="w-5 h-5 sm:w-6 sm:h-6" /> Exameneisen
+          <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold flex items-center gap-1.5 sm:gap-2 truncate">
+            <Target className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" /> Exameneisen
           </h1>
           <p className="text-white/80 mt-1 text-xs sm:text-sm">Overzicht van exameneisen per bandniveau</p>
-          <div className="w-12 sm:w-16 h-0.5 sm:h-1 bg-white/30 rounded-full mt-2 sm:mt-3" />
+          <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-full mt-2 sm:mt-3" />
         </div>
       </div>
 
@@ -682,11 +682,11 @@ function ExamRequirementsSection() {
 
       {/* Toggle Controls */}
       <Card className="border-0 shadow-sm">
-        <CardContent className="p-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <CardContent className="p-3 sm:p-4">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
             {/* Alles / Alleen nieuw */}
             <div className="flex items-center justify-between gap-2 p-2 rounded-lg bg-[#f8f9fa]">
-              <span className="text-xs font-medium text-gray-600">{showOnlyNew ? 'Alleen nieuw' : 'Alles'}</span>
+              <span className="text-xs font-medium text-gray-600 truncate">{showOnlyNew ? 'Alleen nieuw' : 'Alles'}</span>
               <Switch
                 checked={showOnlyNew}
                 onCheckedChange={setShowOnlyNew}
@@ -694,7 +694,7 @@ function ExamRequirementsSection() {
             </div>
             {/* Aantallen / Technieken */}
             <div className="flex items-center justify-between gap-2 p-2 rounded-lg bg-[#f8f9fa]">
-              <span className="text-xs font-medium text-gray-600">{showTechniqueNames ? 'Technieken' : 'Aantallen'}</span>
+              <span className="text-xs font-medium text-gray-600 truncate">{showTechniqueNames ? 'Technieken' : 'Aantallen'}</span>
               <Switch
                 checked={showTechniqueNames}
                 onCheckedChange={setShowTechniqueNames}
@@ -702,7 +702,7 @@ function ExamRequirementsSection() {
             </div>
             {/* Nederlandse vertaling */}
             <div className="flex items-center justify-between gap-2 p-2 rounded-lg bg-[#f8f9fa]">
-              <span className="text-xs font-medium text-gray-600">Ned. vertaling</span>
+              <span className="text-xs font-medium text-gray-600 truncate">Ned. vertaling</span>
               <Switch
                 checked={showDutchTranslation}
                 onCheckedChange={setShowDutchTranslation}
@@ -710,7 +710,7 @@ function ExamRequirementsSection() {
             </div>
             {/* Video / Illustraties */}
             <div className="flex items-center justify-between gap-2 p-2 rounded-lg bg-[#f8f9fa]">
-              <span className="text-xs font-medium text-gray-600 flex items-center gap-1"><Video className="w-3 h-3" /> Video&apos;s</span>
+              <span className="text-xs font-medium text-gray-600 flex items-center gap-1 truncate"><Video className="w-3 h-3 flex-shrink-0" /> Video&apos;s</span>
               <Switch
                 checked={showVideoPlaceholders}
                 onCheckedChange={setShowVideoPlaceholders}
@@ -999,24 +999,24 @@ function ExamRequirementsSection() {
       {/* Summary Stats */}
       {beltReq && (
         <Card className="border-0 shadow-sm bg-gradient-to-r from-[#fdf6f6] to-white">
-          <CardContent className="p-4">
-            <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-2">
-              <List className="w-4 h-4 text-[#a90000]" /> Samenvatting
+          <CardContent className="p-3 sm:p-4">
+            <h3 className="text-xs sm:text-sm font-bold text-gray-500 uppercase tracking-wider mb-2 sm:mb-3 flex items-center gap-2">
+              <List className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#a90000] flex-shrink-0" /> Samenvatting
             </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-1.5 sm:gap-2">
               {Object.entries(beltReq.requirements).map(([catId, count]) => {
                 if (count === 0) return null;
                 const catInfo = getCategoryInfo(catId);
                 return (
-                  <div key={catId} className="text-center p-2 rounded-lg bg-white border border-[#e8eaed]">
-                    <p className="text-lg font-bold text-[#a90000]">{count}</p>
-                    <p className="text-[10px] text-gray-500">{catInfo?.nameJa || catId}</p>
+                  <div key={catId} className="text-center p-1.5 sm:p-2 rounded-lg bg-white border border-[#e8eaed]">
+                    <p className="text-base sm:text-lg font-bold text-[#a90000]">{count}</p>
+                    <p className="text-[10px] sm:text-xs text-gray-500 truncate">{catInfo?.nameJa || catId}</p>
                   </div>
                 );
               })}
             </div>
-            <div className="mt-3 p-2 rounded-lg bg-white border border-[#e8eaed] text-center">
-              <span className="text-sm text-gray-600">
+            <div className="mt-2 sm:mt-3 p-2 rounded-lg bg-white border border-[#e8eaed] text-center">
+              <span className="text-xs sm:text-sm text-gray-600 break-words">
                 Totaal: <span className="font-bold text-[#a90000]">{Object.values(beltReq.requirements).reduce((a, b) => a + b, 0)}</span> technieken + {beltReq.ukemiWaza} ukemi + {beltReq.nageKomi} nage-komi + {beltReq.kantelTechnieken} kantel
               </span>
             </div>
@@ -1129,11 +1129,11 @@ function ExamDashboardSection() {
   if (!selectedBelt) {
     return (
       <div className="space-y-5">
-        <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-4 sm:p-6 md:p-8 text-white shadow-lg text-center relative overflow-hidden">
-          <ToriiGate className="absolute top-0 right-0 w-24 sm:w-32 h-24 sm:h-32 text-white opacity-[0.06] relative" />
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-wide uppercase">Cursus Japans</h1>
-          <p className="text-white/80 mt-2 text-sm sm:text-base md:text-lg">Leer Japanse judo-terminologie</p>
-          <div className="w-16 sm:w-20 h-0.5 sm:h-1 bg-white/30 rounded-full mx-auto mt-3 sm:mt-4" />
+        <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg text-center relative overflow-hidden">
+          <ToriiGate className="absolute top-0 right-0 w-20 sm:w-24 md:w-32 h-20 sm:h-24 md:h-32 text-white opacity-[0.06] relative" />
+          <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-wide uppercase truncate">Cursus Japans</h1>
+          <p className="text-white/80 mt-2 text-xs sm:text-sm md:text-base">Leer Japanse judo-terminologie</p>
+          <div className="w-12 sm:w-16 md:w-20 h-0.5 sm:h-1 bg-white/30 rounded-full mx-auto mt-2 sm:mt-3" />
         </div>
 
         <h2 className="text-xl font-bold text-gray-800 text-center">Kies een bandniveau</h2>
@@ -1208,16 +1208,16 @@ function ExamDashboardSection() {
         <Progress value={quizPct} className="h-2.5" />
 
         <Card className="border-0 shadow-lg">
-          <CardContent className="p-6 md:p-8 text-center">
-            <Badge className="mb-4" style={{ backgroundColor: beltLevels.find(b => b.key === selectedBelt)?.color, color: beltLevels.find(b => b.key === selectedBelt)?.textColor }}>
+          <CardContent className="p-4 sm:p-6 md:p-8 text-center">
+            <Badge className="mb-3 sm:mb-4 text-[10px] sm:text-xs" style={{ backgroundColor: beltLevels.find(b => b.key === selectedBelt)?.color, color: beltLevels.find(b => b.key === selectedBelt)?.textColor }}>
               {currentQ.categorie}
             </Badge>
-            <h2 className="text-3xl md:text-4xl font-bold text-[#a90000] mb-8">{currentQ.uitspraak}</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-lg mx-auto">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#a90000] mb-4 sm:mb-8 break-words">{currentQ.uitspraak}</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3 max-w-lg mx-auto">
               {currentQ.options.map((opt, idx) => {
                 const isCorrect = opt === currentQ.nederlands;
                 const isSelected = quizAnswer === idx;
-                let cls = 'p-4 md:p-5 rounded-xl border-2 text-sm font-medium cursor-pointer transition-all ';
+                let cls = 'p-3 md:p-5 rounded-xl border-2 text-xs sm:text-sm font-medium cursor-pointer transition-all ';
                 if (quizAnswer !== null) {
                   if (isCorrect) cls += 'border-green-500 bg-green-50 text-green-700 scale-[1.02]';
                   else if (isSelected) cls += 'border-red-500 bg-red-50 text-red-700';
@@ -1249,10 +1249,10 @@ function ExamDashboardSection() {
         </button>
 
         {/* Mode selector */}
-        <div className="flex bg-gray-100 rounded-full p-1">
-          <button onClick={() => setMode('overview')} className="flex-1 py-2.5 rounded-full text-sm font-bold transition-all bg-[#a90000] text-white shadow">Overzicht</button>
-          <button onClick={() => { setMode('learn'); setCurrentCard(0); setFlipped(false); }} className="flex-1 py-2.5 rounded-full text-sm font-bold transition-all text-gray-500">Leren</button>
-          <button onClick={() => termsForBelt.length >= 4 && startQuiz()} className="flex-1 py-2.5 rounded-full text-sm font-bold transition-all text-gray-500">Quiz</button>
+        <div className="flex bg-gray-100 rounded-full p-0.5 sm:p-1 gap-0.5 sm:gap-0">
+          <button onClick={() => setMode('overview')} className="flex-1 py-2 rounded-full text-[11px] sm:text-sm font-bold transition-all bg-[#a90000] text-white shadow whitespace-nowrap">Overzicht</button>
+          <button onClick={() => { setMode('learn'); setCurrentCard(0); setFlipped(false); }} className="flex-1 py-2 rounded-full text-[11px] sm:text-sm font-bold transition-all text-gray-500 whitespace-nowrap">Leren</button>
+          <button onClick={() => termsForBelt.length >= 4 && startQuiz()} className="flex-1 py-2 rounded-full text-[11px] sm:text-sm font-bold transition-all text-gray-500 whitespace-nowrap">Quiz</button>
         </div>
 
         {/* Progress */}
@@ -1368,10 +1368,10 @@ function ExamDashboardSection() {
       </button>
 
       {/* Mode selector */}
-      <div className="flex bg-gray-100 rounded-full p-1">
-        <button onClick={() => setMode('overview')} className="flex-1 py-2.5 rounded-full text-sm font-bold transition-all text-gray-500">Overzicht</button>
-        <button onClick={() => { setMode('learn'); setCurrentCard(0); setFlipped(false); }} className="flex-1 py-2.5 rounded-full text-sm font-bold transition-all bg-[#a90000] text-white shadow">Leren</button>
-        <button onClick={() => termsForBelt.length >= 4 && startQuiz()} className={`flex-1 py-2.5 rounded-full text-sm font-bold transition-all ${termsForBelt.length < 4 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-500'}`}>Quiz</button>
+      <div className="flex bg-gray-100 rounded-full p-0.5 sm:p-1 gap-0.5 sm:gap-0">
+        <button onClick={() => setMode('overview')} className="flex-1 py-2 rounded-full text-[11px] sm:text-sm font-bold transition-all text-gray-500 whitespace-nowrap">Overzicht</button>
+        <button onClick={() => { setMode('learn'); setCurrentCard(0); setFlipped(false); }} className="flex-1 py-2 rounded-full text-[11px] sm:text-sm font-bold transition-all bg-[#a90000] text-white shadow whitespace-nowrap">Leren</button>
+        <button onClick={() => termsForBelt.length >= 4 && startQuiz()} className={`flex-1 py-2 rounded-full text-[11px] sm:text-sm font-bold transition-all ${termsForBelt.length < 4 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-500'} whitespace-nowrap`}>Quiz</button>
       </div>
 
       {/* Progress */}
@@ -1384,13 +1384,13 @@ function ExamDashboardSection() {
         <>
           {/* Flashcard */}
           <div
-            className="min-h-[300px] md:min-h-[340px] cursor-pointer select-none"
+            className="min-h-[260px] sm:min-h-[300px] md:min-h-[340px] cursor-pointer select-none"
             onClick={() => setFlipped(!flipped)}
           >
             <Card className={`border-0 shadow-lg h-full transition-all duration-500 ${flipped ? 'bg-[#fdf6f6]' : 'bg-white'}`}>
-              <CardContent className="p-6 md:p-10 h-full flex flex-col justify-center items-center text-center relative">
+              <CardContent className="p-4 sm:p-6 md:p-10 h-full flex flex-col justify-center items-center text-center relative">
                 <Badge
-                  className="absolute top-4 right-4"
+                  className="absolute top-3 right-3 sm:top-4 sm:right-4 text-[10px] sm:text-xs"
                   style={{ backgroundColor: beltLevels.find(b => b.key === selectedBelt)?.color, color: beltLevels.find(b => b.key === selectedBelt)?.textColor }}
                 >
                   {term.categorie}
@@ -1398,13 +1398,13 @@ function ExamDashboardSection() {
 
                 {!flipped ? (
                   <div className="animate-in fade-in duration-300">
-                    <h2 className="text-4xl md:text-5xl font-bold text-[#a90000] mb-3">{term.uitspraak}</h2>
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#a90000] mb-2 sm:mb-3 break-words">{term.uitspraak}</h2>
                     <p className="text-sm text-gray-400 mt-6">Tik om de vertaling te zien</p>
                   </div>
                 ) : (
                   <div className="animate-in fade-in duration-300">
-                    <p className="text-3xl md:text-4xl font-semibold text-gray-800 mb-2">{term.nederlands}</p>
-                    <p className="text-sm text-gray-400 mt-4">Tik om de Japanse term te zien</p>
+                    <p className="text-2xl sm:text-3xl md:text-4xl font-semibold text-gray-800 mb-1.5 sm:mb-2 break-words">{term.nederlands}</p>
+                    <p className="text-xs sm:text-sm text-gray-400 mt-3 sm:mt-4">Tik om de Japanse term te zien</p>
                   </div>
                 )}
               </CardContent>
@@ -1519,9 +1519,9 @@ function FormsSection() {
 
   return (
     <div className="space-y-4">
-      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-6 text-white shadow-lg">
-        <h1 className="text-2xl font-bold flex items-center gap-2"><FileText className="w-6 h-6" /> Formulieren</h1>
-        <p className="text-white/80 mt-1">Inschrijven en formulieren invullen</p>
+      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-4 sm:p-5 md:p-6 text-white shadow-lg overflow-hidden">
+        <h1 className="text-lg sm:text-xl md:text-2xl font-bold flex items-center gap-1.5 sm:gap-2 truncate"><FileText className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" /> Formulieren</h1>
+        <p className="text-white/80 mt-1 text-xs sm:text-sm">Inschrijven en formulieren invullen</p>
       </div>
 
       <Card className="border-0 shadow-sm">
@@ -1531,7 +1531,7 @@ function FormsSection() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
               <div className="space-y-2">
                 <Label htmlFor="naam">Naam *</Label>
                 <Input id="naam" required value={formData.naam} onChange={(e) => setFormData(p => ({ ...p, naam: e.target.value }))} />
@@ -1564,7 +1564,7 @@ function FormsSection() {
 
             <Separator className="my-4" />
             <p className="text-sm text-gray-500 font-medium">Indien jonger dan 18 jaar:</p>
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
               <div className="space-y-2">
                 <Label htmlFor="ouderNaam">Naam ouder/voogd</Label>
                 <Input id="ouderNaam" value={formData.ouderNaam} onChange={(e) => setFormData(p => ({ ...p, ouderNaam: e.target.value }))} />
@@ -1610,23 +1610,23 @@ function InfoSection() {
 
   return (
     <div className="space-y-4">
-      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-6 text-white shadow-lg">
-        <h1 className="text-2xl font-bold flex items-center gap-2"><Info className="w-6 h-6" /> Clubinformatie</h1>
-        <p className="text-white/80 mt-1">Alles over Judoclub Michigami</p>
+      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-4 sm:p-5 md:p-6 text-white shadow-lg overflow-hidden">
+        <h1 className="text-lg sm:text-xl md:text-2xl font-bold flex items-center gap-1.5 sm:gap-2 truncate"><Info className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" /> Clubinformatie</h1>
+        <p className="text-white/80 mt-1 text-xs sm:text-sm">Alles over Judoclub Michigami</p>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="info">Info</TabsTrigger>
-          <TabsTrigger value="lestijden">Lestijden</TabsTrigger>
-          <TabsTrigger value="lidworden">Lid worden</TabsTrigger>
-          <TabsTrigger value="contact">Contact</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4">
+          <TabsTrigger value="info" className="text-xs sm:text-sm">Info</TabsTrigger>
+          <TabsTrigger value="lestijden" className="text-xs sm:text-sm">Lestijden</TabsTrigger>
+          <TabsTrigger value="lidworden" className="text-xs sm:text-sm">Lid worden</TabsTrigger>
+          <TabsTrigger value="contact" className="text-xs sm:text-sm">Contact</TabsTrigger>
         </TabsList>
 
         <TabsContent value="info" className="mt-4">
           <Card className="border-0 shadow-sm">
-            <CardContent className="p-6 prose prose-sm max-w-none">
-              <h2 className="text-xl font-bold text-[#a90000] mb-3">Over Judoclub Michigami</h2>
+            <CardContent className="p-4 sm:p-6 prose prose-sm max-w-none">
+              <h2 className="text-lg sm:text-xl font-bold text-[#a90000] mb-2 sm:mb-3">Over Judoclub Michigami</h2>
               <p className="text-gray-600 leading-relaxed">
                 Judoclub Michigami is in 1993 opgericht door Koos van Wezel in Steenbergen. De training vindt al sinds het begin plaats in Sportcentrum De Knotwilg in Steenbergen. Er worden judolessen gegeven voor alle leeftijden.
               </p>
@@ -1698,9 +1698,9 @@ function InfoSection() {
             <CardContent className="p-6 space-y-4">
               <h2 className="text-xl font-bold text-[#a90000] mb-4">Contact</h2>
               <div className="space-y-3">
-                <a href="mailto:judoclub_michigami@hotmail.com" className="flex items-center gap-3 p-3 rounded-xl bg-[#fdf6f6] hover:bg-[#fce0e0] transition-colors">
-                  <Mail className="w-5 h-5 text-[#a90000]" />
-                  <span className="text-gray-700">judoclub_michigami@hotmail.com</span>
+                <a href="mailto:judoclub_michigami@hotmail.com" className="flex items-center gap-3 p-3 rounded-xl bg-[#fdf6f6] hover:bg-[#fce0e0] transition-colors min-w-0">
+                  <Mail className="w-5 h-5 text-[#a90000] flex-shrink-0" />
+                  <span className="text-gray-700 text-sm truncate break-all">judoclub_michigami@hotmail.com</span>
                 </a>
                 <a href="https://www.facebook.com/judoclubmichigami" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-xl bg-[#fdf6f6] hover:bg-[#fce0e0] transition-colors">
                   <Facebook className="w-5 h-5 text-[#a90000]" />
@@ -1791,9 +1791,9 @@ function LoginSection() {
 
   return (
     <div className="space-y-4">
-      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-6 text-white shadow-lg">
-        <h1 className="text-2xl font-bold flex items-center gap-2"><User className="w-6 h-6" /> {isRegister ? 'Account aanmaken' : 'Inloggen'}</h1>
-        <p className="text-white/80 mt-1">Toegang tot je persoonlijke dashboard</p>
+      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-4 sm:p-5 md:p-6 text-white shadow-lg overflow-hidden">
+        <h1 className="text-lg sm:text-xl md:text-2xl font-bold flex items-center gap-1.5 sm:gap-2 truncate"><User className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" /> {isRegister ? 'Account aanmaken' : 'Inloggen'}</h1>
+        <p className="text-white/80 mt-1 text-xs sm:text-sm">Toegang tot je persoonlijke dashboard</p>
       </div>
 
       <Card className="border-0 shadow-sm max-w-md mx-auto">
