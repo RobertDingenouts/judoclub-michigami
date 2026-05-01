@@ -119,7 +119,7 @@ export default function MichigamiApp() {
       )}
 
       {/* Main Content */}
-      <main className="flex-1 md:ml-64 mt-14 md:mt-0 pb-20 md:pb-0 w-full min-w-0 max-w-full">
+      <main className="flex-1 md:ml-64 mt-14 md:mt-0 pb-28 sm:pb-20 md:pb-0 w-full min-w-0 max-w-full">
         <ScrollArea className="h-[calc(100vh-3.5rem)] md:h-screen w-full">
           <div className="p-3 sm:p-4 md:p-8 max-w-4xl sm:max-w-5xl md:max-w-6xl mx-auto w-full">
             {activeSection === 'home' && <HomeSection onNavigate={setActiveSection} />}
@@ -223,7 +223,7 @@ function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
   const upcomingEvents = agendaItems.filter(i => !i.cancelled && new Date(i.compareDate) >= today).slice(0, 3);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-4 sm:pb-0">
       {/* Hero Banner */}
       <Card className="overflow-hidden border-0 shadow-sm sm:shadow-lg">
         <div className="relative bg-gradient-to-br from-[#a90000] via-[#8c0000] to-[#7a0000] text-white p-4 sm:p-6 md:p-12 overflow-hidden">
