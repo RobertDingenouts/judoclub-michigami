@@ -589,12 +589,17 @@ function TechniquesSection() {
                 className="w-full text-left p-3 md:p-4 hover:bg-[#fdf6f6] transition-colors"
               >
                 <div className="flex items-center justify-between gap-2">
-                  <div className="min-w-0 flex-1">
-                    <h3 className="font-bold text-[#a90000] text-sm md:text-base truncate">{tech.name}</h3>
-                    <p className="text-xs md:text-sm text-gray-500 mt-0.5 truncate">{tech.dutch}</p>
+                  <div className="min-w-0 flex-1 flex items-center gap-2">
+                    <span className="flex-shrink-0 w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#a90000]/10 text-[#a90000] font-bold text-xs sm:text-sm flex items-center justify-center border border-[#a90000]/20">
+                      {tech.id}
+                    </span>
+                    <div className="min-w-0">
+                      <h3 className="font-bold text-[#a90000] text-sm md:text-base truncate">{tech.name}</h3>
+                      <p className="text-xs md:text-sm text-gray-500 mt-0.5 truncate">{tech.dutch}</p>
+                    </div>
                   </div>
                   <div className="flex items-center gap-1 md:gap-2 flex-shrink-0">
-                    <span className="text-base md:text-lg text-gray-300 font-light">{tech.japanese}</span>
+                    <span className="text-base md:text-lg text-gray-300 font-light hidden sm:inline">{tech.japanese}</span>
                     {expandedTech === tech.id ? <ChevronLeft className="w-4 h-4 text-gray-400" /> : <ChevronRight className="w-4 h-4 text-gray-400" />}
                   </div>
                 </div>
