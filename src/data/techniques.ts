@@ -39,6 +39,12 @@ export const techniqueCategories: TechniqueCategory[] = [
       { id: 7, name: 'Ushiro-goshi', japanese: '後腰', dutch: 'Achterwaartse heupworp' },
       { id: 8, name: 'Tsurikomi-goshi', japanese: '釣込腰', dutch: 'Trekken en optillen heup' },
       { id: 9, name: 'Utsuri-goshi', japanese: '移腰', dutch: 'Verplaatsende heupworp' },
+      { id: 10, name: 'Uchi-mata', japanese: '内股', dutch: 'Binnenwaartse dij' },
+      { id: 11, name: 'O-goshi', japanese: '大腰', dutch: 'Grote heupworp' },
+      { id: 12, name: 'Ko-tsuri-goshi', japanese: '小釣腰', dutch: 'Kleine optil heup' },
+      { id: 13, name: 'O-guruma', japanese: '大車', dutch: 'Groot wiel' },
+      { id: 14, name: 'Yama-arashi', japanese: '山嵐', dutch: 'Bergstorm' },
+      { id: 15, name: 'Obi-goshi', japanese: '帯腰', dutch: 'Gordel heupworp' },
     ]
   },
   {
@@ -55,6 +61,12 @@ export const techniqueCategories: TechniqueCategory[] = [
       { id: 7, name: 'Okuri-ashi-barai', japanese: '送足払', dutch: 'Beide benen vegen' },
       { id: 8, name: 'O-soto-guruma', japanese: '大外車', dutch: 'Groot buitenwaarts wiel' },
       { id: 9, name: 'O-soto-otoshi', japanese: '大外落', dutch: 'Groot buitenwaarts laten vallen' },
+      { id: 10, name: 'Ko-soto-gari', japanese: '小外刈', dutch: 'Klein buitenwaarts maaien' },
+      { id: 11, name: 'Sasae-tsurikomi-ashi', japanese: '支釣込足', dutch: 'Blokkeren trekken optillen been' },
+      { id: 12, name: 'Harai-tsurikomi-ashi', japanese: '払釣込足', dutch: 'Vegen trekken optillen been' },
+      { id: 13, name: 'Soto-gake', japanese: '外掛', dutch: 'Buitenwaarts haken' },
+      { id: 14, name: 'Ko-uchi-makikomi', japanese: '小内巻込', dutch: 'Klein binnenwaarts oprollen' },
+      { id: 15, name: 'Ashi-guruma', japanese: '足車', dutch: 'Been wiel' },
     ]
   },
   {
@@ -98,6 +110,12 @@ export const techniqueCategories: TechniqueCategory[] = [
       { id: 6, name: 'Tani-otoshi', japanese: '谷落', dutch: 'Dal laten vallen' },
       { id: 7, name: 'Sumi-gaeshi', japanese: '隅返', dutch: 'Hoek draaien' },
       { id: 8, name: 'Uki-waza', japanese: '浮技', dutch: 'Zwevende techniek' },
+      { id: 9, name: 'Yoko-otoshi', japanese: '横落', dutch: 'Zijwaarts laten vallen' },
+      { id: 10, name: 'Hane-makikomi', japanese: '跳巻込', dutch: 'Springend oprollen' },
+      { id: 11, name: 'Ura-nage', japanese: '裏投', dutch: 'Achterwaartse worp' },
+      { id: 12, name: 'Yoko-guruma', japanese: '横車', dutch: 'Zijwaarts wiel' },
+      { id: 13, name: 'Yoko-wakare', japanese: '横分', dutch: 'Zijwaartse scheiding' },
+      { id: 14, name: 'Tawara-gaeshi', japanese: '俵返', dutch: 'Hooibaler draaien' },
     ]
   },
   {
@@ -114,6 +132,11 @@ export const techniqueCategories: TechniqueCategory[] = [
       { id: 7, name: 'Kuzure-yoko-shiho-gatame / Mune-gatame', japanese: '崩横四方固', dutch: 'Afgebroken zijwaartse vierpuntsgreep' },
       { id: 8, name: 'Kami-shiho-gatame', japanese: '上四方固', dutch: 'Bovenwaartse vierpuntsgreep' },
       { id: 9, name: 'Kuzure-kami-shiho-gatame', japanese: '崩上四方固', dutch: 'Afgebroken bovenwaartse vierpuntsgreep' },
+      { id: 10, name: 'Tate-shiho-gatame', japanese: '縦四方固', dutch: 'Langwaartse vierpuntsgreep' },
+      { id: 11, name: 'Kuzure-tate-shiho-gatame', japanese: '崩縦四方固', dutch: 'Afgebroken langwaartse vierpuntsgreep' },
+      { id: 12, name: 'Uki-gatame', japanese: '浮固', dutch: 'Zwevende greep' },
+      { id: 13, name: 'Ura-gatame', japanese: '裏固', dutch: 'Achterwaartse greep' },
+      { id: 14, name: 'Sankaku-gatame', japanese: '三角固', dutch: 'Driehoeksgreep' },
     ]
   },
   {
@@ -130,6 +153,8 @@ export const techniqueCategories: TechniqueCategory[] = [
       { id: 7, name: 'Katate-jime', japanese: '片手絞', dutch: 'Enkelhandige verwurging' },
       { id: 8, name: 'Ryote-jime', japanese: '両手絞', dutch: 'Tweehandige verwurging' },
       { id: 9, name: 'Sode-guruma-jime', japanese: '袖車絞', dutch: 'Mouw wiel verwurging' },
+      { id: 10, name: 'Tsukkomi-jime', japanese: '突込絞', dutch: 'Indrukken verwurging' },
+      { id: 11, name: 'Sankaku-jime', japanese: '三角絞', dutch: 'Driehoeksverwurging' },
     ]
   },
   {
