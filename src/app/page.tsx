@@ -14,6 +14,24 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Switch } from '@/components/ui/switch';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { ExamDashboard } from '@/components/sections/ExamDashboard';
+import { HomeSection } from '@/components/sections/HomeSection';
+import { AgendaSection } from '@/components/sections/AgendaSection';
+import { TechniquesSection } from '@/components/sections/TechniquesSection';
+import { ExamDashboardSection } from '@/components/sections/ExamDashboardSection';
+import { FormsSection } from '@/components/sections/FormsSection';
+import { InfoSection } from '@/components/sections/InfoSection';
+import { LoginSection } from '@/components/sections/LoginSection';
+import { MembershipSection } from '@/components/sections/MembershipSection';
+import { ScheduleSection } from '@/components/sections/ScheduleSection';
+import { BeltKnotsSection } from '@/components/sections/BeltKnotsSection';
+import { PhotoGallery } from '@/components/gallery/PhotoGallery';
+import { VideoGallery } from '@/components/gallery/VideoGallery';
+import { LocationSection } from '@/components/sections/LocationSection';
+import { ContactSection } from '@/components/sections/ContactSection';
+import { NewsSection } from '@/components/sections/NewsSection';
+import { TechniquesCardSection } from '@/components/sections/TechniquesCardSection';
+import { EventArchiveSection } from '@/components/sections/EventArchiveSection';
+import { LegalSection } from '@/components/sections/LegalSection';
 import { agendaItems, type AgendaItem } from '@/data/agenda';
 import { techniqueCategories, type TechniqueCategory, type Technique } from '@/data/techniques';
 import { judoTerms, type JudoTerm } from '@/data/judo-terms';
@@ -40,7 +58,26 @@ import {
 } from 'lucide-react';
 
 // ============ TYPES ============
-type Section = 'home' | 'agenda' | 'technieken' | 'exameneisen' | 'cursusjapans' | 'formulieren' | 'info' | 'login';
+type Section = 
+  | 'home' 
+  | 'agenda' 
+  | 'technieken' 
+  | 'exameneisen' 
+  | 'cursusjapans' 
+  | 'formulieren' 
+  | 'info' 
+  | 'login'
+  | 'leden'
+  | 'lestijden'
+  | 'band-knopen'
+  | 'foto-galerij'
+  | 'video-galerij'
+  | 'locatie'
+  | 'contact'
+  | 'nieuws'
+  | 'techniekenkaart'
+  | 'evenementen'
+  | 'juridisch';
 
 interface NavItem {
   key: Section;
@@ -54,12 +91,23 @@ const navItems: NavItem[] = [
   { key: 'technieken', label: 'Technieken', icon: <Swords className="w-5 h-5" /> },
   { key: 'exameneisen', label: 'Exameneisen', icon: <Target className="w-5 h-5" /> },
   { key: 'cursusjapans', label: 'Cursus Japans', icon: <BookOpen className="w-5 h-5" /> },
+  { key: 'leden', label: 'Lid Worden', icon: <Users className="w-5 h-5" /> },
+  { key: 'lestijden', label: 'Lestijden', icon: <Clock className="w-5 h-5" /> },
+  { key: 'band-knopen', label: 'Band Knopen', icon: <Shield className="w-5 h-5" /> },
+  { key: 'foto-galerij', label: 'Foto\'s', icon: <Camera className="w-5 h-5" /> },
+  { key: 'video-galerij', label: 'Video\'s', icon: <Video className="w-5 h-5" /> },
+  { key: 'locatie', label: 'Locatie', icon: <MapPin className="w-5 h-5" /> },
+  { key: 'contact', label: 'Contact', icon: <Mail className="w-5 h-5" /> },
+  { key: 'nieuws', label: 'Nieuws', icon: <Sparkles className="w-5 h-5" /> },
+  { key: 'techniekenkaart', label: 'Techniekenkaart', icon: <Layers className="w-5 h-5" /> },
+  { key: 'evenementen', label: 'Evenementen', icon: <Trophy className="w-5 h-5" /> },
+  { key: 'juridisch', label: 'Juridisch', icon: <FileText className="w-5 h-5" /> },
   { key: 'formulieren', label: 'Formulieren', icon: <FileText className="w-5 h-5" /> },
   { key: 'info', label: 'Info', icon: <Info className="w-5 h-5" /> },
   { key: 'login', label: 'Inloggen', icon: <User className="w-5 h-5" /> },
 ];
 
-const mobileNavItems: NavItem[] = navItems.slice(0, 5);
+const mobileNavItems: NavItem[] = navItems.slice(0, 7);
 
 // ============ EMOJI MAP ============
 function getEmojiIcon(emoji: string, className = "w-5 h-5") {
@@ -130,6 +178,17 @@ export default function MichigamiApp() {
             {activeSection === 'formulieren' && <FormsSection />}
             {activeSection === 'info' && <InfoSection />}
             {activeSection === 'login' && <LoginSection />}
+            {activeSection === 'leden' && <MembershipSection />}
+            {activeSection === 'lestijden' && <ScheduleSection />}
+            {activeSection === 'band-knopen' && <BeltKnotsSection />}
+            {activeSection === 'foto-galerij' && <PhotoGallery />}
+            {activeSection === 'video-galerij' && <VideoGallery />}
+            {activeSection === 'locatie' && <LocationSection />}
+            {activeSection === 'contact' && <ContactSection />}
+            {activeSection === 'nieuws' && <NewsSection />}
+            {activeSection === 'techniekenkaart' && <TechniquesCardSection />}
+            {activeSection === 'evenementen' && <EventArchiveSection />}
+            {activeSection === 'juridisch' && <LegalSection />}
           </div>
         </ScrollArea>
       </main>

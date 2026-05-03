@@ -68,4 +68,8 @@ export const clubInfo = {
 Bij judo leer je om de kracht van je tegenstander te gebruiken ten eigen voordeel. Je leert vallen, werpen en controleren. Judo is niet alleen een sport, maar ook een levenswijze met respect en discipline als kernwaarden.
 
 Judoclub Michigami biedt judo aan voor alle leeftijden en niveaus. Of je nu recreatief wilt sporten of prestatiegericht wilt deelnemen aan toernooien — bij ons ben je welkom!`,
+  // Additional content from Weebly pages
+  history: `Judoclub Michigami is in 1993 opgericht door Koos van Wezel in Steenbergen. De training vindt al sinds het begin plaats in Sportcentrum De Knotwilg in Steenbergen. Er worden judolessen gegeven voor alle leeftijden.`,
+  philosophy: `Vanaf 6 jaar kan eigenlijk iedereen aan judo gaan doen. Ongeacht of je jongen of meisje, man of vrouw bent. Naar gelang je leeftijd word je ingedeeld in een bepaalde groep. Tot 12 jarige leeftijd wordt er speciaal jeugd judo gegeven. Hierbij zijn de moeilijke grepen en worpen weggelaten of aangepast, zodat iedereen het kan volgen.`,
+  lessonStructure: `Voor de les begint, trek je een wit judopak (judogi) aan. Kom je voor het eerst, trek dan iets aan zonder scherpe delen als gespen, knopen e.d. Een joggingpak of trainingspak is dan nog het meest geschikt. Wanneer de leraar (Sensei) "Matte, judozit" roept, gaan alle judoka's op volgorde van band naast elkaar, tegenover de leraar zitten. Daarna groeten zij de leraar, door een diepe buiging te maken. Ook de leraar groet terug. Aan het begin van de les worden allerlei oefeningen gedaan om warm te worden. Vaak zijn dit spelletjes waarbij ook al enkele judovormen voorkomen. Bij judo is goed kunnen vallen erg belangrijk. Hier wordt altijd eerst mee begonnen.`,
 };
