@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, Play, X } from 'lucide-react';
 
 // ==========================================================================
 // TYPES
@@ -11,6 +11,7 @@ interface Technique {
   nameJa: string;
   nameNl: string;
   forbidden?: boolean;
+  youtubeId?: string;
 }
 
 interface Category {
@@ -57,10 +58,10 @@ const CATEGORIES: Record<string, Category> = {
     nameJa: 'Ukemi-waza',
     icon: '🛡️',
     techniques: [
-      { id: 'ukemi-1', nameJa: 'Ushiro-ukemi', nameNl: 'Achterwaarts vallen' },
-      { id: 'ukemi-2', nameJa: 'Yoko-ukemi', nameNl: 'Zijwaarts vallen' },
-      { id: 'ukemi-3', nameJa: 'Mae-ukemi', nameNl: 'Voorwaarts vallen' },
-      { id: 'ukemi-4', nameJa: 'Zenpo-kaiten', nameNl: 'Voorwaarts rollen' },
+      { id: 'ukemi-1', nameJa: 'Ushiro-ukemi', nameNl: 'Achterwaarts vallen', youtubeId: '_g7rvsxTkz8' },
+      { id: 'ukemi-2', nameJa: 'Yoko-ukemi', nameNl: 'Zijwaarts vallen', youtubeId: 'JCwK1Ia4jsc' },
+      { id: 'ukemi-3', nameJa: 'Mae-ukemi', nameNl: 'Voorwaarts vallen', youtubeId: 'veM5RFdjo0U' },
+      { id: 'ukemi-4', nameJa: 'Zenpo-kaiten', nameNl: 'Voorwaarts rollen', youtubeId: 'kbiLot6laks' },
     ]
   },
   'ashi-waza': {
@@ -68,20 +69,20 @@ const CATEGORIES: Record<string, Category> = {
     nameJa: 'Ashi-waza',
     icon: '🦵',
     techniques: [
-      { id: 'ashi-1', nameJa: 'O-soto-gari', nameNl: 'Grote buitenwaartse veeg' },
-      { id: 'ashi-2', nameJa: 'De-ashi-barai', nameNl: 'Voorwaartse voetveeg' },
-      { id: 'ashi-3', nameJa: 'Hiza-guruma', nameNl: 'Knie-wiel' },
-      { id: 'ashi-4', nameJa: 'Ko-soto-gake', nameNl: 'Kleine binnenwaartse haak' },
-      { id: 'ashi-5', nameJa: 'O-uchi-gari', nameNl: 'Grote binnenwaartse veeg' },
-      { id: 'ashi-6', nameJa: 'Ko-uchi-gari', nameNl: 'Kleine binnenwaartse veeg' },
-      { id: 'ashi-7', nameJa: 'Okuri-ashi-barai', nameNl: 'Dubbele voetveeg' },
-      { id: 'ashi-8', nameJa: 'O-soto-guruma', nameNl: 'Grote buitenwaartse wiel' },
-      { id: 'ashi-9', nameJa: 'O-soto-otoshi', nameNl: 'Grote buitenwaartse val' },
-      { id: 'ashi-10', nameJa: 'Ko-soto-gari', nameNl: 'Kleine buitenwaartse veeg' },
-      { id: 'ashi-11', nameJa: 'Sasae-tsurikomi-ashi', nameNl: 'Ondersteunende oplichtende voet' },
-      { id: 'ashi-12', nameJa: 'Harai-tsurikomi-ashi', nameNl: 'Veeg-oplichtende voet' },
-      { id: 'ashi-13', nameJa: 'Soto-gake', nameNl: 'Buitenwaartse haak' },
-      { id: 'ashi-14', nameJa: 'Ko-uchi-makikomi', nameNl: 'Kleine binnenwaartse meidraai' },
+      { id: 'ashi-1', nameJa: 'O-soto-gari', nameNl: 'Grote buitenwaartse veeg', youtubeId: 'c-A_nP7mKAc' },
+      { id: 'ashi-2', nameJa: 'De-ashi-barai', nameNl: 'Voorwaartse voetveeg', youtubeId: '4BUUvqxi_Kk' },
+      { id: 'ashi-3', nameJa: 'Hiza-guruma', nameNl: 'Knie-wiel', youtubeId: 'JPJx9-oAVns' },
+      { id: 'ashi-4', nameJa: 'Ko-soto-gake', nameNl: 'Kleine binnenwaartse haak', youtubeId: '8b6kY4s4zH4' },
+      { id: 'ashi-5', nameJa: 'O-uchi-gari', nameNl: 'Grote binnenwaartse veeg', youtubeId: '0itJFhV9pDQ' },
+      { id: 'ashi-6', nameJa: 'Ko-uchi-gari', nameNl: 'Kleine binnenwaartse veeg', youtubeId: '3Jb3tZvr9Ng' },
+      { id: 'ashi-7', nameJa: 'Okuri-ashi-barai', nameNl: 'Dubbele voetveeg', youtubeId: 'nw1ZdRjrdRI' },
+      { id: 'ashi-8', nameJa: 'O-soto-guruma', nameNl: 'Grote buitenwaartse wiel', youtubeId: '92KbCm6pQeI' },
+      { id: 'ashi-9', nameJa: 'O-soto-otoshi', nameNl: 'Grote buitenwaartse val', youtubeId: '2DsVvDw7b8g' },
+      { id: 'ashi-10', nameJa: 'Ko-soto-gari', nameNl: 'Kleine buitenwaartse veeg', youtubeId: 'jeQ541ScLB4' },
+      { id: 'ashi-11', nameJa: 'Sasae-tsurikomi-ashi', nameNl: 'Ondersteunende oplichtende voet', youtubeId: '699i--pvYmE' },
+      { id: 'ashi-12', nameJa: 'Harai-tsurikomi-ashi', nameNl: 'Veeg-oplichtende voet', youtubeId: 'gGPXvWL8VbE' },
+      { id: 'ashi-13', nameJa: 'Soto-gake', nameNl: 'Buitenwaartse haak', youtubeId: '_1eygIXLD_w' },
+      { id: 'ashi-14', nameJa: 'Ko-uchi-makikomi', nameNl: 'Kleine binnenwaartse meidraai', youtubeId: 'ROeayhvom9U' },
       { id: 'ashi-15', nameJa: 'Ashi-guruma', nameNl: 'Been-wiel' },
     ]
   },
@@ -90,19 +91,19 @@ const CATEGORIES: Record<string, Category> = {
     nameJa: 'Koshi-waza',
     icon: '🔄',
     techniques: [
-      { id: 'koshi-1', nameJa: 'Uki-goshi', nameNl: 'Zwevende heupworp' },
-      { id: 'koshi-2', nameJa: 'Kubi-nage', nameNl: 'Nekworp' },
-      { id: 'koshi-3', nameJa: 'Tsuri-goshi', nameNl: 'Opgetilde heupworp' },
-      { id: 'koshi-4', nameJa: 'Koshi-guruma', nameNl: 'Heup-wiel' },
-      { id: 'koshi-5', nameJa: 'Harai-goshi', nameNl: 'Heupveeg' },
-      { id: 'koshi-6', nameJa: 'Hane-goshi', nameNl: 'Springende heupworp' },
-      { id: 'koshi-7', nameJa: 'Ushiro-goshi', nameNl: 'Achterwaartse heupworp' },
-      { id: 'koshi-8', nameJa: 'Tsurikomi-goshi', nameNl: 'Opgetilde heupworp' },
-      { id: 'koshi-9', nameJa: 'Utsuri-goshi', nameNl: 'Veranderende heupworp' },
-      { id: 'koshi-10', nameJa: 'Uchi-mata', nameNl: 'Binnenwaartse dijworp' },
-      { id: 'koshi-11', nameJa: 'O-goshi', nameNl: 'Grote heupworp' },
-      { id: 'koshi-12', nameJa: 'Ko-tsuri-goshi', nameNl: 'Kleine opgetilde heupworp' },
-      { id: 'koshi-13', nameJa: 'O-guruma', nameNl: 'Groot wiel' },
+      { id: 'koshi-1', nameJa: 'Uki-goshi', nameNl: 'Zwevende heupworp', youtubeId: 'bPKwtB4lyOQ' },
+      { id: 'koshi-2', nameJa: 'Kubi-nage', nameNl: 'Nekworp', youtubeId: 'F-4fyNwx52w' },
+      { id: 'koshi-3', nameJa: 'Tsuri-goshi', nameNl: 'Opgetilde heupworp', youtubeId: '51Htlp7xEvE' },
+      { id: 'koshi-4', nameJa: 'Koshi-guruma', nameNl: 'Heup-wiel', youtubeId: 'SU7Id6uVJ44' },
+      { id: 'koshi-5', nameJa: 'Harai-goshi', nameNl: 'Heupveeg', youtubeId: 'qTo8HlAAkOo' },
+      { id: 'koshi-6', nameJa: 'Hane-goshi', nameNl: 'Springende heupworp', youtubeId: 'M9_7De6A1kk' },
+      { id: 'koshi-7', nameJa: 'Ushiro-goshi', nameNl: 'Achterwaartse heupworp', youtubeId: 'ORIYstuxYT8' },
+      { id: 'koshi-8', nameJa: 'Tsurikomi-goshi', nameNl: 'Opgetilde heupworp', youtubeId: 'McfzA0yRVt4' },
+      { id: 'koshi-9', nameJa: 'Utsuri-goshi', nameNl: 'Veranderende heupworp', youtubeId: '4pQd_bEnlf0' },
+      { id: 'koshi-10', nameJa: 'Uchi-mata', nameNl: 'Binnenwaartse dijworp', youtubeId: 'iUpSu5J-bgw' },
+      { id: 'koshi-11', nameJa: 'O-goshi', nameNl: 'Grote heupworp', youtubeId: 'yhu1mfy2vJ4' },
+      { id: 'koshi-12', nameJa: 'Ko-tsuri-goshi', nameNl: 'Kleine opgetilde heupworp', youtubeId: 'SnZciTAY9vc' },
+      { id: 'koshi-13', nameJa: 'O-guruma', nameNl: 'Groot wiel', youtubeId: 'MGlyKmSuzdc' },
       { id: 'koshi-14', nameJa: 'Yama-arashi', nameNl: 'Bergstorm' },
       { id: 'koshi-15', nameJa: 'Obi-goshi', nameNl: 'Riemplaats heupworp' },
     ]
@@ -112,10 +113,10 @@ const CATEGORIES: Record<string, Category> = {
     nameJa: 'Kata-waza',
     icon: '💪',
     techniques: [
-      { id: 'kata-1', nameJa: 'Ippon-seoi-nage', nameNl: 'Eenarmige schouderworp' },
-      { id: 'kata-2', nameJa: 'Seoi-nage', nameNl: 'Schouderworp' },
-      { id: 'kata-3', nameJa: 'Kata-guruma', nameNl: 'Schouder-wiel' },
-      { id: 'kata-4', nameJa: 'Seoi-otoshi', nameNl: 'Schouderval' },
+      { id: 'kata-1', nameJa: 'Ippon-seoi-nage', nameNl: 'Eenarmige schouderworp', youtubeId: 'FQnOlCxo4oI' },
+      { id: 'kata-2', nameJa: 'Seoi-nage', nameNl: 'Schouderworp', youtubeId: 'zIq0xI0ogxk' },
+      { id: 'kata-3', nameJa: 'Kata-guruma', nameNl: 'Schouder-wiel', youtubeId: 'cnHRhSy8yi4' },
+      { id: 'kata-4', nameJa: 'Seoi-otoshi', nameNl: 'Schouderval', youtubeId: 'vu1TMVNnq34' },
       { id: 'kata-5', nameJa: 'Hidari-kata-seoi', nameNl: 'Linker schouderworp' },
       { id: 'kata-6', nameJa: 'Seoi-age', nameNl: 'Schouder optilling' },
     ]
@@ -125,15 +126,15 @@ const CATEGORIES: Record<string, Category> = {
     nameJa: 'Te-waza',
     icon: '🤚',
     techniques: [
-      { id: 'te-1', nameJa: 'Tai-otoshi', nameNl: 'Lichaamsval' },
-      { id: 'te-2', nameJa: 'Uki-otoshi', nameNl: 'Zwevende val' },
-      { id: 'te-3', nameJa: 'Hiji-otoshi', nameNl: 'Elleboogval' },
-      { id: 'te-4', nameJa: 'Sukui-nage', nameNl: 'Scheppende worp' },
-      { id: 'te-5', nameJa: 'Mochiage-otoshi', nameNl: 'Optillende val' },
-      { id: 'te-6', nameJa: 'Sumi-otoshi', nameNl: 'Hoekval' },
-      { id: 'te-7', nameJa: 'Obi-otoshi', nameNl: 'Riemval' },
-      { id: 'te-8', nameJa: 'Kata-ashi-dori', nameNl: 'Eenbeenshouderworp' },
-      { id: 'te-9', nameJa: 'Ryo-ashi-dori', nameNl: 'Tweebenenschouderworp' },
+      { id: 'te-1', nameJa: 'Tai-otoshi', nameNl: 'Lichaamsval', youtubeId: '4x6S3Q-Ktv8' },
+      { id: 'te-2', nameJa: 'Uki-otoshi', nameNl: 'Zwevende val', youtubeId: '6H5tmncOY4Q' },
+      { id: 'te-3', nameJa: 'Hiji-otoshi', nameNl: 'Elleboogval', youtubeId: 'oEI1bdbubVU' },
+      { id: 'te-4', nameJa: 'Sukui-nage', nameNl: 'Scheppende worp', youtubeId: 'vU6aJ2kFxoI' },
+      { id: 'te-5', nameJa: 'Mochiage-otoshi', nameNl: 'Optillende val', youtubeId: '5lFXv3crN30' },
+      { id: 'te-6', nameJa: 'Sumi-otoshi', nameNl: 'Hoekval', youtubeId: 'lLU9wv52ni0' },
+      { id: 'te-7', nameJa: 'Obi-otoshi', nameNl: 'Riemval', youtubeId: 'ff8U2TVZIYI' },
+      { id: 'te-8', nameJa: 'Kata-ashi-dori', nameNl: 'Eenbeenshouderworp', youtubeId: 'VVoMqFNVGfc' },
+      { id: 'te-9', nameJa: 'Ryo-ashi-dori', nameNl: 'Tweebenenschouderworp', youtubeId: 'gYwnUP0Uz-w' },
     ]
   },
   'sutemi-waza': {
@@ -141,21 +142,21 @@ const CATEGORIES: Record<string, Category> = {
     nameJa: 'Sutemi-waza',
     icon: '⬇️',
     techniques: [
-      { id: 'sutemi-1', nameJa: 'Tomoe-nage', nameNl: 'Cirkelworp' },
-      { id: 'sutemi-2', nameJa: 'Yoko-tomoe', nameNl: 'Zijwaartse cirkelworp' },
-      { id: 'sutemi-3', nameJa: 'Maki-tomoe', nameNl: 'Oprollende cirkelworp' },
-      { id: 'sutemi-4', nameJa: 'Soto-makikomi', nameNl: 'Buitenwaartse meidraai' },
-      { id: 'sutemi-5', nameJa: 'Yoko-gake', nameNl: 'Zijwaartse val' },
-      { id: 'sutemi-6', nameJa: 'Tani-otoshi', nameNl: 'Vallei-val' },
-      { id: 'sutemi-7', nameJa: 'Sumi-gaeshi', nameNl: 'Hoekomdraaiing' },
-      { id: 'sutemi-8', nameJa: 'Uki-waza', nameNl: 'Zwevende worp' },
-      { id: 'sutemi-9', nameJa: 'Kani-basami', nameNl: 'Schaarworp', forbidden: true },
-      { id: 'sutemi-10', nameJa: 'Yoko-otoshi', nameNl: 'Zijwaartse val' },
-      { id: 'sutemi-11', nameJa: 'Hane-makikomi', nameNl: 'Springende meidraai' },
-      { id: 'sutemi-12', nameJa: 'Ura-nage', nameNl: 'Achterwaartse worp' },
-      { id: 'sutemi-13', nameJa: 'Yoko-guruma', nameNl: 'Zijwaarts wiel' },
-      { id: 'sutemi-14', nameJa: 'Yoko-wakare', nameNl: 'Zijwaartse scheiding' },
-      { id: 'sutemi-15', nameJa: 'Tawara-gaeshi', nameNl: 'Rijstbal-omdraaiing' },
+      { id: 'sutemi-1', nameJa: 'Tomoe-nage', nameNl: 'Cirkelworp', youtubeId: '880WbHvHv6A' },
+      { id: 'sutemi-2', nameJa: 'Yoko-tomoe', nameNl: 'Zijwaartse cirkelworp', youtubeId: 'lNzMK4hk-zQ' },
+      { id: 'sutemi-3', nameJa: 'Maki-tomoe', nameNl: 'Oprollende cirkelworp', youtubeId: 'H8rnXEfyZsU' },
+      { id: 'sutemi-4', nameJa: 'Soto-makikomi', nameNl: 'Buitenwaartse meidraai', youtubeId: 'bWG9O1BVKtQ' },
+      { id: 'sutemi-5', nameJa: 'Yoko-gake', nameNl: 'Zijwaartse val', youtubeId: 'tP1Sj1uDfSo' },
+      { id: 'sutemi-6', nameJa: 'Tani-otoshi', nameNl: 'Vallei-val', youtubeId: '3b9Me3Fohpk' },
+      { id: 'sutemi-7', nameJa: 'Sumi-gaeshi', nameNl: 'Hoekomdraaiing', youtubeId: '5VhduA5xkbA' },
+      { id: 'sutemi-8', nameJa: 'Uki-waza', nameNl: 'Zwevende worp', youtubeId: 'weVOpJ63gII' },
+      { id: 'sutemi-9', nameJa: 'Kani-basami', nameNl: 'Schaarworp', forbidden: true, youtubeId: 'OR-HGHnarYc' },
+      { id: 'sutemi-10', nameJa: 'Yoko-otoshi', nameNl: 'Zijwaartse val', youtubeId: 'MnNG67pF_a0' },
+      { id: 'sutemi-11', nameJa: 'Hane-makikomi', nameNl: 'Springende meidraai', youtubeId: '6CRBGLGz9j8' },
+      { id: 'sutemi-12', nameJa: 'Ura-nage', nameNl: 'Achterwaartse worp', youtubeId: 'Fgi9b8DJ5sQ' },
+      { id: 'sutemi-13', nameJa: 'Yoko-guruma', nameNl: 'Zijwaarts wiel', youtubeId: 'MehP6I5cY2c' },
+      { id: 'sutemi-14', nameJa: 'Yoko-wakare', nameNl: 'Zijwaartse scheiding', youtubeId: 'bp1tscHlePI' },
+      { id: 'sutemi-15', nameJa: 'Tawara-gaeshi', nameNl: 'Rijstbal-omdraaiing', youtubeId: 'TmTWgrmViZc' },
     ]
   },
   'osaekomi-waza': {
@@ -163,20 +164,20 @@ const CATEGORIES: Record<string, Category> = {
     nameJa: 'Osaekomi-waza',
     icon: '🔒',
     techniques: [
-      { id: 'osaekomi-1', nameJa: 'Kesa-gatame', nameNl: 'Scarf-houdgreep' },
-      { id: 'osaekomi-2', nameJa: 'Kuzure-kesa-gatame', nameNl: 'Gewijzigde scarf-houdgreep' },
-      { id: 'osaekomi-3', nameJa: 'Kata-gatame', nameNl: 'Schouder-houdgreep' },
-      { id: 'osaekomi-4', nameJa: 'Ushiro-kesa-gatame', nameNl: 'Achterwaartse scarf-houdgreep' },
-      { id: 'osaekomi-5', nameJa: 'Makura-kesa-gatame', nameNl: 'Kussen scarf-houdgreep' },
-      { id: 'osaekomi-6', nameJa: 'Yoko-shiho-gatame', nameNl: 'Zijwaartse vierpunt-houdgreep' },
-      { id: 'osaekomi-7', nameJa: 'Kuzure-yoko-shiho-gatame', nameNl: 'Gewijzigde zijwaartse vierpunt-houdgreep' },
-      { id: 'osaekomi-8', nameJa: 'Kami-shiho-gatame', nameNl: 'Boven vierpunt-houdgreep' },
-      { id: 'osaekomi-9', nameJa: 'Kuzure-kami-shiho-gatame', nameNl: 'Gewijzigde boven vierpunt-houdgreep' },
-      { id: 'osaekomi-10', nameJa: 'Tate-shiho-gatame', nameNl: 'Verticale vierpunt-houdgreep' },
-      { id: 'osaekomi-11', nameJa: 'Kuzure-tate-shiho-gatame', nameNl: 'Gewijzigde verticale vierpunt-houdgreep' },
-      { id: 'osaekomi-12', nameJa: 'Uki-gatame', nameNl: 'Zwevende houdgreep' },
-      { id: 'osaekomi-13', nameJa: 'Ura-gatame', nameNl: 'Achterwaartse houdgreep' },
-      { id: 'osaekomi-14', nameJa: 'Sankaku-gatame', nameNl: 'Driehoek-houdgreep' },
+      { id: 'osaekomi-1', nameJa: 'Kesa-gatame', nameNl: 'Scarf-houdgreep', youtubeId: 'NDaQuJOFBYk' },
+      { id: 'osaekomi-2', nameJa: 'Kuzure-kesa-gatame', nameNl: 'Gewijzigde scarf-houdgreep', youtubeId: 'Q2fb9jaoUFQ' },
+      { id: 'osaekomi-3', nameJa: 'Kata-gatame', nameNl: 'Schouder-houdgreep', youtubeId: 'zQR3IOXxO_Q' },
+      { id: 'osaekomi-4', nameJa: 'Ushiro-kesa-gatame', nameNl: 'Achterwaartse scarf-houdgreep', youtubeId: 'SBapox2M2dE' },
+      { id: 'osaekomi-5', nameJa: 'Makura-kesa-gatame', nameNl: 'Kussen scarf-houdgreep', youtubeId: '2z_vnz6W-mo' },
+      { id: 'osaekomi-6', nameJa: 'Yoko-shiho-gatame', nameNl: 'Zijwaartse vierpunt-houdgreep', youtubeId: 'TT7XJVSEQxA' },
+      { id: 'osaekomi-7', nameJa: 'Kuzure-yoko-shiho-gatame', nameNl: 'Gewijzigde zijwaartse vierpunt-houdgreep', youtubeId: 'lIt5vywPBF0' },
+      { id: 'osaekomi-8', nameJa: 'Kami-shiho-gatame', nameNl: 'Boven vierpunt-houdgreep', youtubeId: 'HFuMjOv0WN8' },
+      { id: 'osaekomi-9', nameJa: 'Kuzure-kami-shiho-gatame', nameNl: 'Gewijzigde boven vierpunt-houdgreep', youtubeId: 'YUrogQWdwiY' },
+      { id: 'osaekomi-10', nameJa: 'Tate-shiho-gatame', nameNl: 'Verticale vierpunt-houdgreep', youtubeId: '55-rFmBx53g' },
+      { id: 'osaekomi-11', nameJa: 'Kuzure-tate-shiho-gatame', nameNl: 'Gewijzigde verticale vierpunt-houdgreep', youtubeId: 'i9VUQhqxYJU' },
+      { id: 'osaekomi-12', nameJa: 'Uki-gatame', nameNl: 'Zwevende houdgreep', youtubeId: 'e_lAjik1SUM' },
+      { id: 'osaekomi-13', nameJa: 'Ura-gatame', nameNl: 'Achterwaartse houdgreep', youtubeId: 'eeAHZB0v3XY' },
+      { id: 'osaekomi-14', nameJa: 'Sankaku-gatame', nameNl: 'Driehoek-houdgreep', youtubeId: 'fcnFgWDY0p0' },
     ]
   },
   'shime-waza': {
@@ -184,18 +185,18 @@ const CATEGORIES: Record<string, Category> = {
     nameJa: 'Shime-waza',
     icon: '😤',
     techniques: [
-      { id: 'shime-1', nameJa: 'Nami-juji-jime', nameNl: 'Gewone kruisverwurging' },
-      { id: 'shime-2', nameJa: 'Gyaku-juji-jime', nameNl: 'Omgekeerde kruisverwurging' },
-      { id: 'shime-3', nameJa: 'Kata-juji-jime', nameNl: 'Eenarmige kruisverwurging' },
-      { id: 'shime-4', nameJa: 'Hadaka-jime', nameNl: 'Naakte verwurging' },
-      { id: 'shime-5', nameJa: 'Okuri-eri-jime', nameNl: 'Dubbele reversverwurging' },
-      { id: 'shime-6', nameJa: 'Kataha-jime', nameNl: 'Eenzijdige vleugelverwurging' },
-      { id: 'shime-7', nameJa: 'Katate-jime', nameNl: 'Eenhandige verwurging' },
-      { id: 'shime-8', nameJa: 'Ryote-jime', nameNl: 'Tweehandige verwurging' },
-      { id: 'shime-9', nameJa: 'Sode-guruma-jime', nameNl: 'Mouw-wiel verwurging' },
-      { id: 'shime-10', nameJa: 'Tsukkomi-jime', nameNl: 'Stoot-verwurging' },
-      { id: 'shime-11', nameJa: 'Sankaku-jime', nameNl: 'Driehoek-verwurging' },
-      { id: 'shime-12', nameJa: 'Do-jime', nameNl: 'Romp-verwurging', forbidden: true },
+      { id: 'shime-1', nameJa: 'Nami-juji-jime', nameNl: 'Gewone kruisverwurging', youtubeId: 'k2cHry9HByQ' },
+      { id: 'shime-2', nameJa: 'Gyaku-juji-jime', nameNl: 'Omgekeerde kruisverwurging', youtubeId: 't3tQriIPdlI' },
+      { id: 'shime-3', nameJa: 'Kata-juji-jime', nameNl: 'Eenarmige kruisverwurging', youtubeId: '3VZVUAmiMD8' },
+      { id: 'shime-4', nameJa: 'Hadaka-jime', nameNl: 'Naakte verwurging', youtubeId: '9f0n8jez7iA' },
+      { id: 'shime-5', nameJa: 'Okuri-eri-jime', nameNl: 'Dubbele reversverwurging', youtubeId: 'EiqyoVcIAi8' },
+      { id: 'shime-6', nameJa: 'Kataha-jime', nameNl: 'Eenzijdige vleugelverwurging', youtubeId: 'yaTGgRjnwB8' },
+      { id: 'shime-7', nameJa: 'Katate-jime', nameNl: 'Eenhandige verwurging', youtubeId: 'cHeIs-fSqwE' },
+      { id: 'shime-8', nameJa: 'Ryote-jime', nameNl: 'Tweehandige verwurging', youtubeId: '-RHC4V7TQiY' },
+      { id: 'shime-9', nameJa: 'Sode-guruma-jime', nameNl: 'Mouw-wiel verwurging', youtubeId: 'E3nvQzClcAU' },
+      { id: 'shime-10', nameJa: 'Tsukkomi-jime', nameNl: 'Stoot-verwurging', youtubeId: 'dKKpnD3eLcY' },
+      { id: 'shime-11', nameJa: 'Sankaku-jime', nameNl: 'Driehoek-verwurging', youtubeId: 'lq1CUBRAm7s' },
+      { id: 'shime-12', nameJa: 'Do-jime', nameNl: 'Romp-verwurging', forbidden: true, youtubeId: 'D_0fFcoIbvY' },
     ]
   },
   'kansetsu-waza': {
@@ -203,15 +204,15 @@ const CATEGORIES: Record<string, Category> = {
     nameJa: 'Kansetsu-waza',
     icon: '🦾',
     techniques: [
-      { id: 'kansetsu-1', nameJa: 'Juji-gatame', nameNl: 'Kruis-armklem' },
-      { id: 'kansetsu-2', nameJa: 'Ude-garami', nameNl: 'Gekruiste armklem' },
-      { id: 'kansetsu-3', nameJa: 'Ude-gatame', nameNl: 'Arm-houdgreep' },
-      { id: 'kansetsu-4', nameJa: 'Hiza-gatame', nameNl: 'Knie-armklem' },
-      { id: 'kansetsu-5', nameJa: 'Waki-gatame', nameNl: 'Oksel-armklem' },
-      { id: 'kansetsu-6', nameJa: 'Hara-gatame', nameNl: 'Buik-armklem' },
-      { id: 'kansetsu-7', nameJa: 'Ashi-gatame', nameNl: 'Been-armklem' },
-      { id: 'kansetsu-8', nameJa: 'Te-gatame', nameNl: 'Hand-armklem' },
-      { id: 'kansetsu-9', nameJa: 'Sankaku-gatame', nameNl: 'Driehoek-armklem' },
+      { id: 'kansetsu-1', nameJa: 'Juji-gatame', nameNl: 'Kruis-armklem', youtubeId: 'OWgSOlCuMXw' },
+      { id: 'kansetsu-2', nameJa: 'Ude-garami', nameNl: 'Gekruiste armklem', youtubeId: 'AIlTvZb4RlE' },
+      { id: 'kansetsu-3', nameJa: 'Ude-gatame', nameNl: 'Arm-houdgreep', youtubeId: 'SBf0aTma1VI' },
+      { id: 'kansetsu-4', nameJa: 'Hiza-gatame', nameNl: 'Knie-armklem', youtubeId: 'H2HtAJdiJcE' },
+      { id: 'kansetsu-5', nameJa: 'Waki-gatame', nameNl: 'Oksel-armklem', youtubeId: '8F5p1zuJRG0' },
+      { id: 'kansetsu-6', nameJa: 'Hara-gatame', nameNl: 'Buik-armklem', youtubeId: 'ZzEycg8R_9M' },
+      { id: 'kansetsu-7', nameJa: 'Ashi-gatame', nameNl: 'Been-armklem', youtubeId: 'ClY7g_pX-4s' },
+      { id: 'kansetsu-8', nameJa: 'Te-gatame', nameNl: 'Hand-armklem', youtubeId: '6DnvhY0tQVM' },
+      { id: 'kansetsu-9', nameJa: 'Sankaku-gatame', nameNl: 'Driehoek-armklem', youtubeId: 'WefAmW4azhk' },
       { id: 'kansetsu-10', nameJa: 'Ashi-garami', nameNl: 'Been-klem', forbidden: true },
     ]
   }
@@ -258,6 +259,7 @@ export function ExamDashboard() {
   const [showDirectTransition, setShowDirectTransition] = useState(false);
   const [fromBeltId, setFromBeltId] = useState('wit');
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
+  const [videoModal, setVideoModal] = useState<{ youtubeId: string; nameJa: string; nameNl: string } | null>(null);
 
   const selectedBelt = BELT_LEVELS.find(b => b.id === selectedBeltId)!;
   const fromBelt = BELT_LEVELS.find(b => b.id === fromBeltId);
@@ -392,9 +394,20 @@ export function ExamDashboard() {
 
                       return (
                         <div key={tech.id} className={`p-2 sm:p-3 rounded-lg border-l-4 shadow-sm hover:shadow-md transition-all ${tech.forbidden ? 'border-l-red-500 bg-red-50' : 'border-l-[#a90000] bg-white'}`}>
-                          <span className={`font-semibold text-sm ${tech.forbidden ? 'text-red-500' : 'text-gray-800'}`}>
-                            {num}. {tech.nameJa}
-                          </span>
+                          <div className="flex items-start gap-2">
+                            <span className={`font-semibold text-sm flex-1 ${tech.forbidden ? 'text-red-500' : 'text-gray-800'}`}>
+                              {num}. {tech.nameJa}
+                            </span>
+                            {tech.youtubeId && (
+                              <button
+                                onClick={() => setVideoModal({ youtubeId: tech.youtubeId!, nameJa: tech.nameJa, nameNl: tech.nameNl })}
+                                className="flex-shrink-0 w-7 h-7 rounded-full bg-[#a90000] hover:bg-[#8c0000] text-white flex items-center justify-center transition-colors shadow"
+                                title={`Video: ${tech.nameJa}`}
+                              >
+                                <Play className="w-3.5 h-3.5 ml-0.5" />
+                              </button>
+                            )}
+                          </div>
                           {detailLevel === 'full' && (
                             <span className="block text-xs text-gray-500 mt-0.5">{tech.nameNl}</span>
                           )}
@@ -544,6 +557,38 @@ export function ExamDashboard() {
           </div>
         </div>
       </div>
+
+      {/* Video Modal */}
+      {videoModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4" onClick={() => setVideoModal(null)}>
+          <div className="relative w-full max-w-3xl bg-white rounded-2xl overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] p-4 flex items-center justify-between">
+              <div>
+                <h3 className="text-white font-bold text-lg">{videoModal.nameJa}</h3>
+                <p className="text-white/80 text-sm">{videoModal.nameNl}</p>
+              </div>
+              <button
+                onClick={() => setVideoModal(null)}
+                className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
+              >
+                <X className="w-5 h-5 text-white" />
+              </button>
+            </div>
+
+            {/* Video Embed */}
+            <div className="aspect-video w-full">
+              <iframe
+                src={`https://www.youtube.com/embed/${videoModal.youtubeId}?rel=0`}
+                title={videoModal.nameJa}
+                className="w-full h-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
