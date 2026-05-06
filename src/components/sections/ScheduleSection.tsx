@@ -1,6 +1,7 @@
 'use client';
 
 import { scheduleInfo } from '@/data/schedule';
+import { Clock } from 'lucide-react';
 
 export function ScheduleSection() {
   return (
@@ -36,15 +37,11 @@ export function ScheduleSection() {
               <div key={sIdx} className="p-4 sm:p-5 hover:bg-[#fdf6f6] transition-colors">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                   {/* Time */}
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#a90000] to-[#c00000] text-white flex items-center justify-center text-sm font-bold">
-                      {session.startTime.split(':')[0]}
-                    </div>
-                    <div>
-                      <span className="text-sm font-bold text-[#8c0000]">{session.startTime}</span>
-                      <span className="text-xs text-gray-400 mx-1">→</span>
-                      <span className="text-sm font-bold text-[#8c0000]">{session.endTime}</span>
-                    </div>
+                  <div className="flex items-center gap-1 flex-shrink-0">
+                    <Clock className="w-4 h-4 text-[#a90000]" />
+                    <span className="text-sm font-bold text-[#8c0000]">{session.startTime}</span>
+                    <span className="text-xs text-gray-400 mx-1">→</span>
+                    <span className="text-sm font-bold text-[#8c0000]">{session.endTime}</span>
                   </div>
 
                   {/* Group Info */}

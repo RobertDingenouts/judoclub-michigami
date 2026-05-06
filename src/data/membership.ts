@@ -29,7 +29,7 @@ export const membershipInfo: MembershipInfo = {
       price: '€42',
       pricePeriod: 'per kwartaal',
       benefits: [
-        '3x per week lessen (vrijdagavond)',
+        '2x per week lessen (woensdag & vrijdag)',
         'Speciaal jeugdprogramma',
         'Veilige en leuke omgeving',
         'Examens voor bandverhoging',
@@ -42,7 +42,7 @@ export const membershipInfo: MembershipInfo = {
       price: '€42',
       pricePeriod: 'per kwartaal',
       benefits: [
-        '3x per week lessen (vrijdagavond)',
+        '2x per week lessen (woensdag & vrijdag)',
         'Recreatief of competitief trainen',
         'Delen aan toernooien',
         'Examens voor bandverhoging',

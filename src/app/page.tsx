@@ -1811,18 +1811,18 @@ function InfoSection() {
           <Card className="border-0 shadow-sm">
             <CardContent className="p-6">
               <h2 className="text-xl font-bold text-[#a90000] mb-4">Lestijden</h2>
-              <p className="text-gray-500 mb-4">Twee keer per week — Sportcentrum De Knotwilg, Steenbergen</p>
+              <p className="text-gray-500 mb-4">Twee keer per week — twee locaties</p>
               <div className="space-y-3">
                 {[
-                  { dag: 'Woensdag', groep: 'Algemene training', leeftijd: 'Alle leeftijden', tijd: '19:30 - 20:30', color: '#0054a6' },
-                  { dag: 'Vrijdag', groep: 'Groep 1', leeftijd: '6 t/m 9 jaar', tijd: '18:45 - 19:45', color: '#f9c500' },
-                  { dag: 'Vrijdag', groep: 'Groep 2', leeftijd: '9 t/m 12 jaar', tijd: '19:45 - 20:45', color: '#f37021' },
-                  { dag: 'Vrijdag', groep: 'Groep 3', leeftijd: '13 jaar en ouder', tijd: '20:45 - 21:45', color: '#009444' },
+                  { dag: 'Woensdag', groep: 'Algemene training', leeftijd: 'Alle leeftijden', tijd: '19:00 - 20:00', locatie: 'De Vossenkuil, Oud-Vossemeer', color: '#0054a6' },
+                  { dag: 'Vrijdag', groep: 'Groep 1', leeftijd: '6 t/m 9 jaar', tijd: '18:45 - 19:45', locatie: 'De Knotwilg, Steenbergen', color: '#f9c500' },
+                  { dag: 'Vrijdag', groep: 'Groep 2+', leeftijd: '9 jaar en ouder', tijd: '19:45 - 20:45', locatie: 'De Knotwilg, Steenbergen', color: '#f37021' },
                 ].map((g, idx) => (
                   <div key={idx} className="flex items-center gap-4 p-4 rounded-xl bg-[#fdf6f6] border-l-4" style={{ borderLeftColor: g.color }}>
                     <div>
                       <p className="font-bold text-gray-800">{g.groep} <span className="text-xs font-normal text-gray-500">({g.dag})</span></p>
                       <p className="text-sm text-gray-500">{g.leeftijd}</p>
+                      <p className="text-xs text-gray-400">{g.locatie}</p>
                     </div>
                     <div className="ml-auto text-right">
                       <p className="font-bold text-[#a90000]">{g.tijd}</p>
@@ -1830,7 +1830,6 @@ function InfoSection() {
                   </div>
                 ))}
               </div>
-              <p className="text-sm text-gray-500 mt-4">Ook in Oud-Vossemeer (De Vossenkuil) worden lessen gegeven. Zie de agenda voor details.</p>
             </CardContent>
           </Card>
         </TabsContent>
