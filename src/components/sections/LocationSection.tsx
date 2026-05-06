@@ -1,13 +1,7 @@
 'use client';
 
-import dynamic from 'next/dynamic';
 import { locationData, directions } from '@/data/location';
-
-// Dynamisch laden om SSR issues te voorkomen (Leaflet gebruikt window)
-const InteractiveMap = dynamic(
-  () => import('./InteractiveMap').then(mod => ({ default: mod.InteractiveMap })),
-  { ssr: false, loading: () => <div className="w-full h-56 sm:h-72 md:h-80 rounded-2xl bg-[#e8eaed] animate-pulse flex items-center justify-center text-gray-400 text-sm">Kaart laden...</div> }
-);
+import { GoogleMapEmbed } from './GoogleMapEmbed';
 
 export function LocationSection() {
   return (
@@ -36,7 +30,7 @@ export function LocationSection() {
         {locationData.map((location, idx) => (
           <div key={idx} className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] overflow-hidden">
             {/* Map */}
-            <InteractiveMap
+            <GoogleMapEmbed
               center={[location.coordinates.lat, location.coordinates.lng]}
               address={`${location.address}${location.postalCode ? `, ${location.postalCode} ` : ''}${location.city}`}
               name={location.name}
@@ -58,7 +52,7 @@ export function LocationSection() {
                   </p>
                 </div>
                 <a
-                  href={`https://www.openstreetmap.org/directions/to/${location.coordinates.lat},${location.coordinates.lng}`}
+                  href={location.mapsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 text-[#a90000] hover:text-[#8c0000] font-semibold text-sm transition-colors flex-shrink-0"

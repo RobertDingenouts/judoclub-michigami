@@ -21,12 +21,12 @@ export const locationData: LocationInfo[] = [
     isPrimary: true,
   },
   {
-    name: "Sporthal De Vossenkuil",
-    address: "Oud-Vossemeer",
-    postalCode: "",
+    name: "Dorpshuis De Vossenkuil",
+    address: "Bou Kooijmanstraat 48",
+    postalCode: "4698 AM",
     city: "Oud-Vossemeer",
-    mapsUrl: "https://maps.google.com/?q=De+Vossenkuil+Oud-Vossemeer",
-    coordinates: { lat: 51.55, lng: 4.28 },
+    mapsUrl: "https://maps.app.goo.gl/RWhUtS4PggtXPWfw6",
+    coordinates: { lat: 51.5372, lng: 4.3047 },
     isPrimary: false,
   },
 ];
