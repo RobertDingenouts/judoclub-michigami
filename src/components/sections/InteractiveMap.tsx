@@ -12,9 +12,6 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
 });
 
-// OpenFreeMap tile layer (gratis, geen API key nodig!)
-const OPENFREE_MAP_TILES = 'https://openfreemap.org/tiles/bright/{z}/{x}/{y}.png';
-
 interface MapProps {
   center: [number, number];
   address: string;
@@ -30,18 +27,29 @@ export function InteractiveMap({ center, address, name }: MapProps) {
 
     const map = L.map(mapRef.current, {
       zoomControl: false,
-      scrollWheelZoom: false,
     }).setView(center, 15);
 
-    L.tileLayer(OPENFREE_MAP_TILES, {
+    // OpenStreetMap tiles (gratis, geen API key nodig)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
-      attribution: '&copy; <a href="https://openfreemap.org/">OpenFreeMap</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(map);
 
-    L.marker(center).addTo(map).bindPopup(
-      `<div style="font-family:sans-serif;padding:4px;">
-        <strong>${name}</strong><br/>
-        <span style="font-size:0.9em;color:#555;">${address}</span>
+    // Custom red marker style
+    const redIcon = L.divIcon({
+      className: 'custom-marker',
+      html: `<div style="background:#a90000;width:28px;height:28px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;">
+        <div style="width:8px;height:8px;background:white;border-radius:50%;transform:rotate(45deg);"></div>
+      </div>`,
+      iconSize: [28, 28],
+      iconAnchor: [14, 28],
+      popupAnchor: [0, -28],
+    });
+
+    L.marker(center, { icon: redIcon }).addTo(map).bindPopup(
+      `<div style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;padding:6px 10px;min-width:150px;">
+        <strong style="font-size:14px;color:#a90000;">${name}</strong><br/>
+        <span style="font-size:12px;color:#555;line-height:1.4;">${address.replace(/,/g, '<br/>')}</span>
       </div>`
     );
 
@@ -58,7 +66,7 @@ export function InteractiveMap({ center, address, name }: MapProps) {
   return (
     <div
       ref={mapRef}
-      className="w-full h-56 sm:h-72 md:h-80 rounded-t-2xl overflow-hidden z-[1]"
+      className="w-full h-56 sm:h-72 md:h-80 rounded-t-2xl overflow-hidden"
     />
   );
 }
