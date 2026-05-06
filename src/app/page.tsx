@@ -376,7 +376,7 @@ function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
             <p className="text-sm text-gray-500 mt-1">18:45 - 21:45</p>
           </CardContent>
         </Card>
-        <Card className="border-0 shadow-sm">
+        <Card className="border-0 shadow-sm cursor-pointer hover:shadow-md transition-shadow" onClick={() => onNavigate('locatie')}>
           <CardContent className="p-4 text-center">
             <div className="w-12 h-12 mx-auto rounded-full bg-[#fdf6f6] flex items-center justify-center mb-2">
               <MapPin className="w-6 h-6 text-[#a90000]" />

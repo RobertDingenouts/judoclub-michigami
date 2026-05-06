@@ -1,24 +1,17 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { locationData, directions } from '@/data/location';
 
-function MapEmbed({ location }: { location: (typeof locationData)[number] }) {
-  return (
-    <div className="relative rounded-2xl overflow-hidden shadow-sm border border-[#e8eaed]">
-      <iframe
-        src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyDummy&q=${encodeURIComponent(location.address + ', ' + location.city)}`}
-        className="w-full h-64 sm:h-80 bg-[#f5f5f0]"
-        allowFullScreen
-        loading="lazy"
-        referrerPolicy="no-referrer-when-downgrade"
-      />
-    </div>
-  );
-}
+// Dynamisch laden om SSR issues te voorkomen (Leaflet gebruikt window)
+const InteractiveMap = dynamic(
+  () => import('./InteractiveMap').then(mod => ({ default: mod.InteractiveMap })),
+  { ssr: false, loading: () => <div className="w-full h-56 sm:h-72 md:h-80 rounded-2xl bg-[#e8eaed] animate-pulse flex items-center justify-center text-gray-400 text-sm">Kaart laden...</div> }
+);
 
 export function LocationSection() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 pb-4 sm:pb-0">
       {/* Header */}
       <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
         <svg
@@ -31,7 +24,7 @@ export function LocationSection() {
           <rect x="20" y="18" width="6" height="58" rx="1" />
           <rect x="74" y="18" width="6" height="58" rx="1" />
         </svg>
-        <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">Locatie</h1>
+        <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold">Locatie</h1>
         <p className="text-white/80 mt-1 text-xs sm:text-sm">
           Waar je onze trainingen kunt vinden
         </p>
@@ -39,74 +32,81 @@ export function LocationSection() {
       </div>
 
       {/* Location Cards */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="space-y-8">
         {locationData.map((location, idx) => (
-          <div key={idx} className="lg:col-span-2 space-y-4">
-            <h2 className="text-xl sm:text-2xl font-bold text-[#8c0000]">{location.name}</h2>
+          <div key={idx} className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] overflow-hidden">
+            {/* Map */}
+            <InteractiveMap
+              center={[location.coordinates.lat, location.coordinates.lng]}
+              address={`${location.address}${location.postalCode ? `, ${location.postalCode} ` : ''}${location.city}`}
+              name={location.name}
+            />
 
-            {location.image && (
-              <div className="rounded-2xl overflow-hidden shadow-sm border border-[#e8eaed]">
-                <img
-                  src={location.image}
-                  alt={location.name}
-                  className="w-full h-48 sm:h-64 object-cover"
-                />
+            {/* Info */}
+            <div className="p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                <div>
+                  <h2 className="text-xl sm:text-2xl font-bold text-[#a90000]">{location.name}</h2>
+                  <p className="text-sm sm:text-base text-gray-700 mt-2 leading-relaxed">
+                    {location.address}
+                    {location.postalCode && (
+                      <>
+                        <br />
+                        {location.postalCode} {location.city}
+                      </>
+                    )}
+                  </p>
+                </div>
+                <a
+                  href={`https://www.openstreetmap.org/directions/to/${location.coordinates.lat},${location.coordinates.lng}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-[#a90000] hover:text-[#8c0000] font-semibold text-sm transition-colors flex-shrink-0"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  Routebeschrijving
+                </a>
               </div>
-            )}
 
-            <div className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] p-4 sm:p-6">
-              <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
-                <strong>{location.name}</strong>
-                <br />
-                {location.address}
-                {location.postalCode && (
-                  <>
-                    <br />
-                    {location.postalCode} {location.city}
-                  </>
-                )}
-              </p>
-              <a
-                href={location.mapsUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 mt-4 text-[#a90000] hover:text-[#8c0000] font-semibold text-sm transition-colors"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                Routebeschrijving
-              </a>
+              {location.isPrimary && (
+                <div className="mt-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#fdf6f6] text-[#a90000] text-xs font-semibold">
+                  <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  Hoofdlocatie
+                </div>
+              )}
             </div>
-
-            <MapEmbed location={location} />
           </div>
         ))}
+      </div>
 
-        {/* Directions sidebar */}
-        <div className="space-y-4">
-          <h2 className="text-lg sm:text-xl font-bold text-[#8c0000]">
-            Routebeschrijving
-          </h2>
-          <div className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] p-4 sm:p-6">
-            <ul className="space-y-3">
-              {directions.map((dir, idx) => (
-                <li key={idx} className="flex items-start gap-3 text-sm text-gray-600">
-                  <svg
-                    className="w-5 h-5 text-[#a90000] flex-shrink-0 mt-0.5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span>{dir}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
+      {/* Directions */}
+      <div className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] p-4 sm:p-6">
+        <h2 className="text-lg sm:text-xl font-bold text-[#a90000] mb-4 flex items-center gap-2">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 7m0 13V7" />
+          </svg>
+          Routebeschrijving
+        </h2>
+        <ul className="space-y-3">
+          {directions.map((dir, idx) => (
+            <li key={idx} className="flex items-start gap-3 text-sm text-gray-600">
+              <svg
+                className="w-5 h-5 text-[#a90000] flex-shrink-0 mt-0.5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>{dir}</span>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
