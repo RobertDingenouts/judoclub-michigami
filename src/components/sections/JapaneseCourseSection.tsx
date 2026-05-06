@@ -517,23 +517,23 @@ export function JapaneseCourseSection() {
         </div>
 
         {mode === 'learn' ? (
-          <div className="space-y-4">
+          <div className="space-y-4 relative">
             <Flashcard
               term={currentTerm}
               onFlip={() => sounds.flip()}
             />
 
             {/* Card navigation */}
-            <div className="flex items-center justify-center gap-4">
+            <div className="flex items-center justify-center gap-4 relative z-10 pointer-events-auto">
               <button
                 onClick={() => navigateCard('prev')}
                 disabled={cardIndex === 0}
-                className="p-2 rounded-lg bg-white border border-[#e8eaed] hover:bg-[#fdf6f6] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                className="p-2.5 rounded-lg bg-white border border-[#e8eaed] hover:bg-[#fdf6f6] transition-colors disabled:opacity-30 disabled:cursor-not-allowed shadow-sm pointer-events-auto"
               >
                 <ChevronLeft className="w-5 h-5 text-[#a90000]" />
               </button>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg shadow-sm border border-[#e8eaed]">
                 <span className="text-sm font-bold text-[#a90000]">{cardIndex + 1}</span>
                 <div className="w-16 h-2 bg-gray-100 rounded-full overflow-hidden">
                   <div
@@ -547,7 +547,7 @@ export function JapaneseCourseSection() {
               <button
                 onClick={() => navigateCard('next')}
                 disabled={cardIndex === selectedLevel.terms.length - 1}
-                className="p-2 rounded-lg bg-white border border-[#e8eaed] hover:bg-[#fdf6f6] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                className="p-2.5 rounded-lg bg-white border border-[#e8eaed] hover:bg-[#fdf6f6] transition-colors disabled:opacity-30 disabled:cursor-not-allowed shadow-sm pointer-events-auto"
               >
                 <ChevronRight className="w-5 h-5 text-[#a90000]" />
               </button>
