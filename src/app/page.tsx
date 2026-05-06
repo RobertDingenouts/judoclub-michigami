@@ -47,7 +47,7 @@ import {
   Play, Eye, EyeOff, CheckCircle2, XCircle, Award, Trophy, Ban,
   Flame, Star, Users, Mail, Facebook, Youtube, ArrowRight,
   BookOpen, Shield, CircleDot, Sparkles, Video, Camera, Filter,
-  Plus, List, Layers
+  Plus, List, Layers, Search
 } from 'lucide-react';
 
 // ============ TYPES ============
@@ -78,29 +78,64 @@ interface NavItem {
   icon: React.ReactNode;
 }
 
-const navItems: NavItem[] = [
+interface NavGroup {
+  label: string;
+  emoji: string;
+  items: NavItem[];
+}
+
+const navGroups: NavGroup[] = [
+  {
+    label: 'Club',
+    emoji: '🏠',
+    items: [
+      { key: 'home', label: 'Home', icon: <Home className="w-4 h-4" /> },
+      { key: 'agenda', label: 'Agenda', icon: <Calendar className="w-4 h-4" /> },
+      { key: 'leden', label: 'Lid Worden', icon: <Users className="w-4 h-4" /> },
+    ],
+  },
+  {
+    label: 'Judo School',
+    emoji: '🥋',
+    items: [
+      { key: 'technieken', label: 'Technieken', icon: <Swords className="w-4 h-4" /> },
+      { key: 'exameneisen', label: 'Exameneisen', icon: <Target className="w-4 h-4" /> },
+      { key: 'cursusjapans', label: 'Cursus Japans', icon: <BookOpen className="w-4 h-4" /> },
+      { key: 'techniekenkaart', label: 'Techniekenkaart', icon: <Layers className="w-4 h-4" /> },
+    ],
+  },
+  {
+    label: 'Info',
+    emoji: 'ℹ️',
+    items: [
+      { key: 'lestijden', label: 'Lestijden', icon: <Clock className="w-4 h-4" /> },
+      { key: 'locatie', label: 'Locatie', icon: <MapPin className="w-4 h-4" /> },
+      { key: 'contact', label: 'Contact', icon: <Mail className="w-4 h-4" /> },
+      { key: 'band-knopen', label: 'Band Knopen', icon: <Shield className="w-4 h-4" /> },
+      { key: 'nieuws', label: 'Nieuws', icon: <Sparkles className="w-4 h-4" /> },
+      { key: 'evenementen', label: 'Evenementen', icon: <Trophy className="w-4 h-4" /> },
+    ],
+  },
+  {
+    label: 'Media',
+    emoji: '📸',
+    items: [
+      { key: 'foto-galerij', label: 'Foto\'s', icon: <Camera className="w-4 h-4" /> },
+      { key: 'video-galerij', label: 'Video\'s', icon: <Video className="w-4 h-4" /> },
+    ],
+  },
+];
+
+// Alle items voor search
+const allNavItems: NavItem[] = navGroups.flatMap(g => g.items);
+
+const mobileNavItems: NavItem[] = [
   { key: 'home', label: 'Home', icon: <Home className="w-5 h-5" /> },
   { key: 'agenda', label: 'Agenda', icon: <Calendar className="w-5 h-5" /> },
   { key: 'technieken', label: 'Technieken', icon: <Swords className="w-5 h-5" /> },
   { key: 'exameneisen', label: 'Exameneisen', icon: <Target className="w-5 h-5" /> },
-  { key: 'cursusjapans', label: 'Cursus Japans', icon: <BookOpen className="w-5 h-5" /> },
   { key: 'leden', label: 'Lid Worden', icon: <Users className="w-5 h-5" /> },
-  { key: 'lestijden', label: 'Lestijden', icon: <Clock className="w-5 h-5" /> },
-  { key: 'band-knopen', label: 'Band Knopen', icon: <Shield className="w-5 h-5" /> },
-  { key: 'foto-galerij', label: 'Foto\'s', icon: <Camera className="w-5 h-5" /> },
-  { key: 'video-galerij', label: 'Video\'s', icon: <Video className="w-5 h-5" /> },
-  { key: 'locatie', label: 'Locatie', icon: <MapPin className="w-5 h-5" /> },
-  { key: 'contact', label: 'Contact', icon: <Mail className="w-5 h-5" /> },
-  { key: 'nieuws', label: 'Nieuws', icon: <Sparkles className="w-5 h-5" /> },
-  { key: 'techniekenkaart', label: 'Techniekenkaart', icon: <Layers className="w-5 h-5" /> },
-  { key: 'evenementen', label: 'Evenementen', icon: <Trophy className="w-5 h-5" /> },
-  { key: 'juridisch', label: 'Juridisch', icon: <FileText className="w-5 h-5" /> },
-  { key: 'formulieren', label: 'Formulieren', icon: <FileText className="w-5 h-5" /> },
-  { key: 'info', label: 'Info', icon: <Info className="w-5 h-5" /> },
-  { key: 'login', label: 'Inloggen', icon: <User className="w-5 h-5" /> },
 ];
-
-const mobileNavItems: NavItem[] = navItems.slice(0, 7);
 
 // ============ EMOJI MAP ============
 function getEmojiIcon(emoji: string, className = "w-5 h-5") {
@@ -218,51 +253,119 @@ export default function MichigamiApp() {
 
 // ============ SIDEBAR ============
 function SidebarContent({ activeSection, onSelect }: { activeSection: Section; onSelect: (s: Section) => void }) {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
+
+  const toggleGroup = (label: string) => {
+    setCollapsedGroups(prev => ({ ...prev, [label]: !prev[label] }));
+  };
+
+  // Filter items by search
+  const filteredGroups = searchQuery.trim()
+    ? navGroups
+        .map(g => ({
+          ...g,
+          items: g.items.filter(item =>
+            item.label.toLowerCase().includes(searchQuery.toLowerCase())
+          ),
+        }))
+        .filter(g => g.items.length > 0)
+    : navGroups;
+
   return (
     <div className="flex flex-col h-full">
       {/* Logo / Brand */}
-      <div className="p-6 border-b border-[#e8eaed]">
+      <div className="p-4 border-b border-[#e8eaed]">
         <div className="relative">
-          <ToriiGate className="absolute -top-2 -right-2 w-24 h-24 text-[#a90000]" />
-          <h1 className="text-2xl font-bold text-[#a90000] tracking-tight">道 Michigami</h1>
-          <p className="text-sm text-gray-500 mt-1">Judoclub Steenbergen</p>
-          <div className="w-12 h-1 bg-gradient-to-r from-[#a90000] to-[#d90000] rounded-full mt-2" />
+          <ToriiGate className="absolute -top-1 -right-1 w-16 h-16 text-[#a90000]" />
+          <h1 className="text-xl font-bold text-[#a90000] tracking-tight">道 Michigami</h1>
+          <p className="text-xs text-gray-500 mt-0.5">Judoclub Steenbergen</p>
+        </div>
+      </div>
+
+      {/* Search Bar */}
+      <div className="px-3 py-2">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Zoek..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-9 pr-3 py-2 text-sm bg-[#f8f9fa] border border-[#e8eaed] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#a90000]/30 focus:border-[#a90000] placeholder:text-gray-400"
+          />
         </div>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-3 space-y-1">
-        {navItems.map((item) => (
-          <button
-            key={item.key}
-            onClick={() => onSelect(item.key)}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
-              activeSection === item.key
-                ? 'bg-gradient-to-r from-[#a90000] to-[#8c0000] text-white shadow-md shadow-red-200'
-                : 'text-gray-600 hover:bg-[#fdf6f6] hover:text-[#a90000]'
-            }`}
-          >
-            {item.icon}
-            {item.label}
-            {activeSection === item.key && <ChevronRight className="w-4 h-4 ml-auto" />}
-          </button>
-        ))}
-      </nav>
+      <ScrollArea className="flex-1 px-2 py-1">
+        <div className="space-y-1">
+          {filteredGroups.map((group) => (
+            <div key={group.label}>
+              {/* Group Header */}
+              {!searchQuery.trim() && (
+                <button
+                  onClick={() => toggleGroup(group.label)}
+                  className="w-full flex items-center gap-2 px-2 py-1.5 text-xs font-semibold text-gray-400 uppercase tracking-wider hover:text-gray-600 transition-colors"
+                >
+                  <span className="text-sm">{group.emoji}</span>
+                  <span>{group.label}</span>
+                  <ChevronRight
+                    className={`w-3 h-3 ml-auto transition-transform ${
+                      !collapsedGroups[group.label] ? 'rotate-90' : ''
+                    }`}
+                  />
+                </button>
+              )}
+
+              {/* Group Items */}
+              {(!collapsedGroups[group.label] || searchQuery.trim()) && (
+                <div className="space-y-0.5">
+                  {group.items.map((item) => (
+                    <button
+                      key={item.key}
+                      onClick={() => onSelect(item.key)}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all ${
+                        activeSection === item.key
+                          ? 'bg-[#fdf6f6] text-[#a90000] font-medium'
+                          : 'text-gray-600 hover:bg-[#f8f9fa] hover:text-gray-800'
+                      }`}
+                    >
+                      {item.icon}
+                      <span className="truncate">{item.label}</span>
+                      {activeSection === item.key && (
+                        <div className="w-1 h-1 rounded-full bg-[#a90000] ml-auto flex-shrink-0" />
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {/* Separator */}
+              {!searchQuery.trim() && (
+                <div className="px-2 py-1">
+                  <div className="h-px bg-[#e8eaed]" />
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </ScrollArea>
 
       {/* Footer */}
-      <div className="p-4 border-t border-[#e8eaed]">
-        <div className="flex items-center gap-3 justify-center">
-          <a href="https://www.facebook.com/judoclubmichigami" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg hover:bg-[#fdf6f6] text-gray-400 hover:text-[#a90000] transition-colors">
+      <div className="p-3 border-t border-[#e8eaed]">
+        <div className="flex items-center gap-2 justify-center">
+          <a href="https://www.facebook.com/judoclubmichigami" target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-md hover:bg-[#f8f9fa] text-gray-400 hover:text-[#a90000] transition-colors">
             <Facebook className="w-4 h-4" />
           </a>
-          <a href="mailto:judoclub_michigami@hotmail.com" className="p-2 rounded-lg hover:bg-[#fdf6f6] text-gray-400 hover:text-[#a90000] transition-colors">
+          <a href="mailto:judoclub_michigami@hotmail.com" className="p-1.5 rounded-md hover:bg-[#f8f9fa] text-gray-400 hover:text-[#a90000] transition-colors">
             <Mail className="w-4 h-4" />
           </a>
-          <a href="https://www.youtube.com/channel/UC8tXSKppIMF6awS2cj7w50A" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg hover:bg-[#fdf6f6] text-gray-400 hover:text-[#a90000] transition-colors">
+          <a href="https://www.youtube.com/channel/UC8tXSKppIMF6awS2cj7w50A" target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-md hover:bg-[#f8f9fa] text-gray-400 hover:text-[#a90000] transition-colors">
             <Youtube className="w-4 h-4" />
           </a>
         </div>
-        <p className="text-[10px] text-gray-400 text-center mt-2">Opgericht in 1993</p>
+        <p className="text-[10px] text-gray-400 text-center mt-1.5">Opgericht in 1993</p>
       </div>
     </div>
   );
