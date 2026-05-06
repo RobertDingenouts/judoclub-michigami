@@ -467,8 +467,8 @@ function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
             <div className="w-12 h-12 mx-auto rounded-full bg-[#fdf6f6] flex items-center justify-center mb-2">
               <Clock className="w-6 h-6 text-[#a90000]" />
             </div>
-            <h3 className="font-semibold text-gray-800">Vrijdagavond</h3>
-            <p className="text-sm text-gray-500 mt-1">18:45 - 21:45</p>
+            <h3 className="font-semibold text-gray-800">Training</h3>
+            <p className="text-sm text-gray-500 mt-1">Woensdag & vrijdagavond</p>
           </CardContent>
         </Card>
         <Card className="border-0 shadow-sm cursor-pointer hover:shadow-md transition-shadow" onClick={() => onNavigate('locatie')}>
@@ -1778,7 +1778,13 @@ function InfoSection() {
             <CardContent className="p-4 sm:p-6 prose prose-sm max-w-none">
               <h2 className="text-lg sm:text-xl font-bold text-[#a90000] mb-2 sm:mb-3">Over Judoclub Michigami</h2>
               <p className="text-gray-600 leading-relaxed">
-                Judoclub Michigami is in 1993 opgericht door Koos van Wezel in Steenbergen. De training vindt al sinds het begin plaats in Sportcentrum De Knotwilg in Steenbergen. Er worden judolessen gegeven voor alle leeftijden.
+                Judoclub Michigami is in 1993 opgericht door Koos van Wezel in Steenbergen. De training vindt al sinds het begin plaats in Sportcentrum De Knotwilg in Steenbergen. Er worden judolessen gegeven voor alle leeftijden, twee keer per week — woensdag- en vrijdagavond.
+              </p>
+
+              <h3 className="text-lg font-bold text-[#a90000] mt-6 mb-2">Onze geschiedenis</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Michigami groeide uit uit OVJV (Oud-Vossemeerse Judo Vereniging), een club met een rijke traditie in de regio. 
+                In 2024 vierde OVJV haar 50-jarig jubileum — een mijlpaal waar we trots op zijn. Onder de naam Michigami zetten we deze judotraditie voort met dezelfde passie en toewijding voor de sport.
               </p>
 
               <h3 className="text-lg font-bold text-[#a90000] mt-6 mb-2">Wat is judo?</h3>
@@ -1805,16 +1811,17 @@ function InfoSection() {
           <Card className="border-0 shadow-sm">
             <CardContent className="p-6">
               <h2 className="text-xl font-bold text-[#a90000] mb-4">Lestijden</h2>
-              <p className="text-gray-500 mb-4">Vrijdagavond — Sportcentrum De Knotwilg, Steenbergen</p>
+              <p className="text-gray-500 mb-4">Twee keer per week — Sportcentrum De Knotwilg, Steenbergen</p>
               <div className="space-y-3">
                 {[
-                  { groep: 'Groep 1', leeftijd: '6 t/m 9 jaar', tijd: '18:45 - 19:45', color: '#f9c500' },
-                  { groep: 'Groep 2', leeftijd: '9 t/m 12 jaar', tijd: '19:45 - 20:45', color: '#f37021' },
-                  { groep: 'Groep 3', leeftijd: '13 jaar en ouder', tijd: '20:45 - 21:45', color: '#009444' },
-                ].map((g) => (
-                  <div key={g.groep} className="flex items-center gap-4 p-4 rounded-xl bg-[#fdf6f6] border-l-4" style={{ borderLeftColor: g.color }}>
+                  { dag: 'Woensdag', groep: 'Algemene training', leeftijd: 'Alle leeftijden', tijd: '19:30 - 20:30', color: '#0054a6' },
+                  { dag: 'Vrijdag', groep: 'Groep 1', leeftijd: '6 t/m 9 jaar', tijd: '18:45 - 19:45', color: '#f9c500' },
+                  { dag: 'Vrijdag', groep: 'Groep 2', leeftijd: '9 t/m 12 jaar', tijd: '19:45 - 20:45', color: '#f37021' },
+                  { dag: 'Vrijdag', groep: 'Groep 3', leeftijd: '13 jaar en ouder', tijd: '20:45 - 21:45', color: '#009444' },
+                ].map((g, idx) => (
+                  <div key={idx} className="flex items-center gap-4 p-4 rounded-xl bg-[#fdf6f6] border-l-4" style={{ borderLeftColor: g.color }}>
                     <div>
-                      <p className="font-bold text-gray-800">{g.groep}</p>
+                      <p className="font-bold text-gray-800">{g.groep} <span className="text-xs font-normal text-gray-500">({g.dag})</span></p>
                       <p className="text-sm text-gray-500">{g.leeftijd}</p>
                     </div>
                     <div className="ml-auto text-right">

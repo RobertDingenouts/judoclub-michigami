@@ -20,8 +20,21 @@ export interface ScheduleInfo {
 
 export const scheduleInfo: ScheduleInfo = {
   title: 'Lestijden',
-  subtitle: 'Judoclub Michigami — vrijdagavond',
+  subtitle: 'Judoclub Michigami — woensdag & vrijdag',
   days: [
+    {
+      day: 'woensdag',
+      dayLabel: 'Woensdagavond',
+      sessions: [
+        {
+          groupName: 'Algemene training',
+          ageRange: 'Alle leeftijden',
+          startTime: '19:30',
+          endTime: '20:30',
+          location: 'De Knotwilg, Steenbergen',
+        },
+      ],
+    },
     {
       day: 'vrijdag',
       dayLabel: 'Vrijdagavond',
