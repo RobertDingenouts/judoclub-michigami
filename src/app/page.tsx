@@ -95,7 +95,6 @@ const navGroups: NavGroup[] = [
       { key: 'lestijden', label: 'Lestijden', icon: <Clock className="w-4 h-4" /> },
       { key: 'locatie', label: 'Locatie', icon: <MapPin className="w-4 h-4" /> },
       { key: 'contact', label: 'Contact', icon: <Mail className="w-4 h-4" /> },
-      { key: 'band-knopen', label: 'Band Knopen', icon: <Shield className="w-4 h-4" /> },
     ],
   },
   {
@@ -106,6 +105,7 @@ const navGroups: NavGroup[] = [
       { key: 'exameneisen', label: 'Exameneisen', icon: <Target className="w-4 h-4" /> },
       { key: 'cursusjapans', label: 'Cursus Japans', icon: <BookOpen className="w-4 h-4" /> },
       { key: 'techniekenkaart', label: 'Techniekenkaart', icon: <Layers className="w-4 h-4" /> },
+      { key: 'band-knopen', label: 'Band Knopen', icon: <Shield className="w-4 h-4" /> },
     ],
   },
   {

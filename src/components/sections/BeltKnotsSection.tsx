@@ -57,21 +57,6 @@ export function BeltKnotsSection() {
             />
           </div>
 
-          {/* Steps */}
-          <div>
-            <h3 className="font-bold text-[#8c0000] text-base sm:text-lg mb-3">Stappen</h3>
-            <ol className="space-y-2">
-              {beltKnotInfo.steps.map((step, idx) => (
-                <li key={idx} className="flex items-start gap-3 text-sm text-gray-700">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-gradient-to-br from-[#a90000] to-[#c00000] text-white text-xs font-bold flex items-center justify-center mt-0.5">
-                    {idx + 1}
-                  </span>
-                  <span>{step}</span>
-                </li>
-              ))}
-            </ol>
-          </div>
-
           {/* Tips */}
           <div className="mt-4 sm:mt-6">
             <h3 className="font-bold text-[#8c0000] text-base sm:text-lg mb-3">Tips</h3>
