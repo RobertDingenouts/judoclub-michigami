@@ -92,6 +92,10 @@ const navGroups: NavGroup[] = [
       { key: 'home', label: 'Home', icon: <Home className="w-4 h-4" /> },
       { key: 'agenda', label: 'Agenda', icon: <Calendar className="w-4 h-4" /> },
       { key: 'leden', label: 'Lid Worden', icon: <Users className="w-4 h-4" /> },
+      { key: 'lestijden', label: 'Lestijden', icon: <Clock className="w-4 h-4" /> },
+      { key: 'locatie', label: 'Locatie', icon: <MapPin className="w-4 h-4" /> },
+      { key: 'contact', label: 'Contact', icon: <Mail className="w-4 h-4" /> },
+      { key: 'band-knopen', label: 'Band Knopen', icon: <Shield className="w-4 h-4" /> },
     ],
   },
   {
@@ -102,18 +106,6 @@ const navGroups: NavGroup[] = [
       { key: 'exameneisen', label: 'Exameneisen', icon: <Target className="w-4 h-4" /> },
       { key: 'cursusjapans', label: 'Cursus Japans', icon: <BookOpen className="w-4 h-4" /> },
       { key: 'techniekenkaart', label: 'Techniekenkaart', icon: <Layers className="w-4 h-4" /> },
-    ],
-  },
-  {
-    label: 'Info',
-    emoji: 'ℹ️',
-    items: [
-      { key: 'lestijden', label: 'Lestijden', icon: <Clock className="w-4 h-4" /> },
-      { key: 'locatie', label: 'Locatie', icon: <MapPin className="w-4 h-4" /> },
-      { key: 'contact', label: 'Contact', icon: <Mail className="w-4 h-4" /> },
-      { key: 'band-knopen', label: 'Band Knopen', icon: <Shield className="w-4 h-4" /> },
-      { key: 'nieuws', label: 'Nieuws', icon: <Sparkles className="w-4 h-4" /> },
-      { key: 'evenementen', label: 'Evenementen', icon: <Trophy className="w-4 h-4" /> },
     ],
   },
   {
@@ -254,10 +246,10 @@ export default function MichigamiApp() {
 // ============ SIDEBAR ============
 function SidebarContent({ activeSection, onSelect }: { activeSection: Section; onSelect: (s: Section) => void }) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
+  const [openGroup, setOpenGroup] = useState<string | null>(null);
 
   const toggleGroup = (label: string) => {
-    setCollapsedGroups(prev => ({ ...prev, [label]: !prev[label] }));
+    setOpenGroup(prev => prev === label ? null : label);
   };
 
   // Filter items by search
@@ -312,14 +304,14 @@ function SidebarContent({ activeSection, onSelect }: { activeSection: Section; o
                   <span>{group.label}</span>
                   <ChevronRight
                     className={`w-3 h-3 ml-auto transition-transform ${
-                      !collapsedGroups[group.label] ? 'rotate-90' : ''
+                      openGroup === group.label ? 'rotate-90' : ''
                     }`}
                   />
                 </button>
               )}
 
               {/* Group Items */}
-              {(!collapsedGroups[group.label] || searchQuery.trim()) && (
+              {(openGroup === group.label || searchQuery.trim()) && (
                 <div className="space-y-0.5">
                   {group.items.map((item) => (
                     <button
