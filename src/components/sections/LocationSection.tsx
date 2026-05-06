@@ -1,6 +1,6 @@
 'use client';
 
-import { locationData, directions } from '@/data/location';
+import { locationData } from '@/data/location';
 import { GoogleMapEmbed } from './GoogleMapEmbed';
 
 export function LocationSection() {
@@ -38,31 +38,17 @@ export function LocationSection() {
 
             {/* Info */}
             <div className="p-4 sm:p-6">
-              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-                <div>
-                  <h2 className="text-xl sm:text-2xl font-bold text-[#a90000]">{location.name}</h2>
-                  <p className="text-sm sm:text-base text-gray-700 mt-2 leading-relaxed">
-                    {location.address}
-                    {location.postalCode && (
-                      <>
-                        <br />
-                        {location.postalCode} {location.city}
-                      </>
-                    )}
-                  </p>
-                </div>
-                <a
-                  href={location.mapsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-[#a90000] hover:text-[#8c0000] font-semibold text-sm transition-colors flex-shrink-0"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                  Routebeschrijving
-                </a>
+              <div>
+                <h2 className="text-xl sm:text-2xl font-bold text-[#a90000]">{location.name}</h2>
+                <p className="text-sm sm:text-base text-gray-700 mt-2 leading-relaxed">
+                  {location.address}
+                  {location.postalCode && (
+                    <>
+                      <br />
+                      {location.postalCode} {location.city}
+                    </>
+                  )}
+                </p>
               </div>
 
               {location.isPrimary && (
@@ -76,31 +62,6 @@ export function LocationSection() {
             </div>
           </div>
         ))}
-      </div>
-
-      {/* Directions */}
-      <div className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] p-4 sm:p-6">
-        <h2 className="text-lg sm:text-xl font-bold text-[#a90000] mb-4 flex items-center gap-2">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 7m0 13V7" />
-          </svg>
-          Routebeschrijving
-        </h2>
-        <ul className="space-y-3">
-          {directions.map((dir, idx) => (
-            <li key={idx} className="flex items-start gap-3 text-sm text-gray-600">
-              <svg
-                className="w-5 h-5 text-[#a90000] flex-shrink-0 mt-0.5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <span>{dir}</span>
-            </li>
-          ))}
-        </ul>
       </div>
     </div>
   );
