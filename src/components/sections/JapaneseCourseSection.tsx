@@ -1,8 +1,141 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { getLevels, type JudoLevel, type JudoTerm, beltColors } from '@/data/japanese-course';
+import { Lock, Unlock, Trophy, ChevronLeft, ChevronRight, RotateCcw, Volume2, VolumeX, Star } from 'lucide-react';
 
+// ==========================================================================
+// SOUND SYSTEM (Web Audio API)
+// ==========================================================================
+function useSounds() {
+  const [enabled, setEnabled] = useState(true);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+
+  const getCtx = useCallback(() => {
+    if (!audioCtxRef.current) {
+      audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+    }
+    return audioCtxRef.current;
+  }, []);
+
+  const playTone = useCallback((freq: number, duration: number, type: OscillatorType = 'sine', volume = 0.15) => {
+    if (!enabled) return;
+    try {
+      const ctx = getCtx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, ctx.currentTime);
+      gain.gain.setValueAtTime(volume, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + duration);
+    } catch {}
+  }, [enabled, getCtx]);
+
+  const sounds = {
+    flip: () => playTone(800, 0.1, 'sine', 0.08),
+    correct: () => {
+      playTone(523, 0.15, 'sine', 0.12);
+      setTimeout(() => playTone(659, 0.15, 'sine', 0.12), 100);
+      setTimeout(() => playTone(784, 0.2, 'sine', 0.12), 200);
+    },
+    wrong: () => {
+      playTone(200, 0.3, 'sawtooth', 0.08);
+    },
+    pass: () => {
+      // Victory fanfare
+      const notes = [523, 659, 784, 1047];
+      notes.forEach((n, i) => setTimeout(() => playTone(n, 0.3, 'sine', 0.15), i * 150));
+    },
+    fail: () => {
+      playTone(300, 0.4, 'sawtooth', 0.08);
+      setTimeout(() => playTone(250, 0.5, 'sawtooth', 0.08), 200);
+    },
+    unlock: () => {
+      // Sparkle sound
+      const notes = [1047, 1319, 1568, 2093];
+      notes.forEach((n, i) => setTimeout(() => playTone(n, 0.2, 'sine', 0.1), i * 100));
+    },
+    click: () => playTone(600, 0.05, 'sine', 0.06),
+  };
+
+  return { sounds, enabled, setEnabled };
+}
+
+// ==========================================================================
+// CONFETTI SYSTEM
+// ==========================================================================
+function Confetti({ active }: { active: boolean }) {
+  if (!active) return null;
+
+  const particles = Array.from({ length: 50 }, (_, i) => {
+    const left = Math.random() * 100;
+    const delay = Math.random() * 2;
+    const duration = 2 + Math.random() * 2;
+    const color = ['#a90000', '#FFD700', '#FF6B35', '#4CAF50', '#2196F3', '#9C27B0'][Math.floor(Math.random() * 6)];
+    const size = 6 + Math.random() * 8;
+    const rotation = Math.random() * 360;
+
+    return (
+      <div
+        key={i}
+        className="absolute pointer-events-none"
+        style={{
+          left: `${left}%`,
+          top: '-10px',
+          width: `${size}px`,
+          height: `${size}px`,
+          backgroundColor: color,
+          borderRadius: Math.random() > 0.5 ? '50%' : '2px',
+          transform: `rotate(${rotation}deg)`,
+          animation: `confettiFall ${duration}s ease-in ${delay}s forwards`,
+        }}
+      />
+    );
+  });
+
+  return (
+    <div className="fixed inset-0 pointer-events-none z-[9999] overflow-hidden">
+      <style>{`
+        @keyframes confettiFall {
+          0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+          100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+      `}</style>
+      {particles}
+    </div>
+  );
+}
+
+// ==========================================================================
+// PROGRESS STORAGE
+// ==========================================================================
+interface ProgressData {
+  passedLevels: Record<string | number, boolean>;
+  bestScores: Record<string | number, number>;
+  lastPlayed: Record<string | number, string>;
+}
+
+function loadProgress(): ProgressData {
+  if (typeof window === 'undefined') return { passedLevels: {}, bestScores: {}, lastPlayed: {} };
+  try {
+    const saved = localStorage.getItem('michigami-japanese-progress');
+    return saved ? JSON.parse(saved) : { passedLevels: {}, bestScores: {}, lastPlayed: {} };
+  } catch {
+    return { passedLevels: {}, bestScores: {}, lastPlayed: {} };
+  }
+}
+
+function saveProgress(data: ProgressData) {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem('michigami-japanese-progress', JSON.stringify(data));
+}
+
+// ==========================================================================
+// FLASHCARD COMPONENT
+// ==========================================================================
 function Flashcard({ term, onFlip }: { term: JudoTerm; onFlip: () => void }) {
   const [flipped, setFlipped] = useState(false);
 
@@ -20,7 +153,7 @@ function Flashcard({ term, onFlip }: { term: JudoTerm; onFlip: () => void }) {
           <span className="inline-block px-3 py-1 bg-[#a90000] text-white text-xs font-bold rounded-full mb-4">
             {term.categorie}
           </span>
-          <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#a90000] text-center">
+          <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#a90000] text-center break-words w-full">
             {term.uitspraak}
           </h3>
           <p className="text-gray-400 text-xs mt-4">Klik om te draaien</p>
@@ -33,7 +166,7 @@ function Flashcard({ term, onFlip }: { term: JudoTerm; onFlip: () => void }) {
           <span className="inline-block px-3 py-1 bg-[#a90000] text-white text-xs font-bold rounded-full mb-4">
             {term.categorie}
           </span>
-          <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 text-center">
+          <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 text-center break-words w-full">
             {term.nederlands}
           </p>
           <p className="text-gray-400 text-xs mt-4">Klik om terug te gaan</p>
@@ -43,22 +176,79 @@ function Flashcard({ term, onFlip }: { term: JudoTerm; onFlip: () => void }) {
   );
 }
 
-function QuizMode({ level }: { level: JudoLevel }) {
+// ==========================================================================
+// QUIZ MODE COMPONENT
+// ==========================================================================
+function QuizMode({ level, onPass }: { level: JudoLevel; onPass: () => void }) {
+  const allLevels = getLevels();
+  const allTerms = allLevels.flatMap((l) => l.terms);
+
   const [questions, setQuestions] = useState<JudoTerm[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
   const [finished, setFinished] = useState(false);
+  const [autoAdvanceTimer, setAutoAdvanceTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
+
+  const { sounds } = useSounds();
 
   function startQuiz() {
+    // Use all terms or a random subset of up to 15 for shorter quizzes
     const shuffled = [...level.terms].sort(() => Math.random() - 0.5);
-    setQuestions(shuffled);
+    const quizTerms = shuffled.slice(0, Math.min(15, shuffled.length));
+    setQuestions(quizTerms);
     setCurrentIndex(0);
     setScore(0);
     setSelected(null);
     setShowFeedback(false);
     setFinished(false);
+  }
+
+  // Auto-start quiz on mount
+  useEffect(() => {
+    startQuiz();
+    return () => {
+      if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer);
+    };
+  }, []);
+
+  function handleAnswer(option: string, optionIdx: number) {
+    if (showFeedback || !questions.length) return;
+    const correct = questions[currentIndex].nederlands;
+    const isCorrect = option === correct;
+
+    setSelected(option);
+    setShowFeedback(true);
+    sounds.click();
+
+    if (isCorrect) {
+      setScore((s) => s + 1);
+      sounds.correct();
+    } else {
+      sounds.wrong();
+    }
+
+    // Auto-advance after 1.5 seconds
+    const timer = setTimeout(() => {
+      if (currentIndex + 1 >= questions.length) {
+        const percentage = Math.round(((score + (isCorrect ? 1 : 0)) / questions.length) * 100);
+        const passed = percentage >= 80;
+        setFinished(true);
+        if (passed) {
+          sounds.pass();
+          onPass();
+        } else {
+          sounds.fail();
+        }
+      } else {
+        setCurrentIndex((i) => i + 1);
+        setSelected(null);
+        setShowFeedback(false);
+      }
+    }, 1500);
+
+    setAutoAdvanceTimer(timer);
   }
 
   if (level.terms.length === 0) {
@@ -69,23 +259,43 @@ function QuizMode({ level }: { level: JudoLevel }) {
     );
   }
 
+  if (!questions.length) return null;
+
+  // Results screen
   if (finished) {
     const percentage = Math.round((score / questions.length) * 100);
     const passed = percentage >= 80;
     return (
-      <div className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] p-6 sm:p-8 text-center">
-        <h3 className={`text-2xl sm:text-3xl font-bold mb-2 ${passed ? 'text-[#198754]' : 'text-[#dc3545]'}`}>
-          {passed ? 'Gefeliciteerd!' : 'Blijf oefenen!'}
-        </h3>
-        <p className="text-3xl font-bold text-[#8c0000] mb-2">{score} / {questions.length}</p>
-        <p className="text-gray-500 mb-4">{percentage}% goed</p>
-        <div className="flex justify-center gap-3">
-          <button
-            onClick={startQuiz}
-            className="bg-[#a90000] hover:bg-[#8c0000] text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition-colors"
-          >
-            Opnieuw
-          </button>
+      <div className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] p-6 sm:p-8 text-center relative overflow-hidden">
+        {passed && (
+          <div className="absolute inset-0 bg-gradient-to-br from-yellow-50 via-green-50 to-transparent opacity-50" />
+        )}
+        <div className="relative z-10">
+          <div className={`w-20 h-20 rounded-full mx-auto mb-4 flex items-center justify-center ${passed ? 'bg-gradient-to-br from-yellow-400 to-yellow-600' : 'bg-gray-200'}`}>
+            {passed ? <Trophy className="w-10 h-10 text-white" /> : <RotateCcw className="w-10 h-10 text-gray-400" />}
+          </div>
+          <h3 className={`text-2xl sm:text-3xl font-bold mb-2 ${passed ? 'text-[#198754]' : 'text-[#dc3545]'}`}>
+            {passed ? '🎉 Gefeliciteerd!' : 'Blijf oefenen!'}
+          </h3>
+          <p className="text-5xl font-bold text-[#8c0000] my-4">{score} / {questions.length}</p>
+          <div className="w-full h-4 bg-gray-100 rounded-full mb-4 overflow-hidden">
+            <div
+              className={`h-full rounded-full transition-all duration-1000 ${passed ? 'bg-gradient-to-r from-green-400 to-green-600' : 'bg-red-400'}`}
+              style={{ width: `${percentage}%` }}
+            />
+          </div>
+          <p className="text-gray-500 mb-2">{percentage}% goed — {passed ? '(≥80% geslaagd!)' : '(min. 80% nodig)'}</p>
+          {passed && (
+            <p className="text-sm text-green-600 font-semibold mt-2">Deze band is nu afgerond! Volgende band is ontgrendeld.</p>
+          )}
+          <div className="flex justify-center gap-3 mt-6">
+            <button
+              onClick={startQuiz}
+              className="bg-[#a90000] hover:bg-[#8c0000] text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition-colors"
+            >
+              Opnieuw proberen
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -94,8 +304,7 @@ function QuizMode({ level }: { level: JudoLevel }) {
   const question = questions[currentIndex];
   const correctAnswer = question.nederlands;
 
-  // Generate wrong answers from all terms
-  const allTerms = getLevels().flatMap((l) => l.terms);
+  // Generate wrong answers
   const wrongAnswers = allTerms
     .filter((t) => t.nederlands !== correctAnswer)
     .sort(() => Math.random() - 0.5)
@@ -109,18 +318,21 @@ function QuizMode({ level }: { level: JudoLevel }) {
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] p-4 sm:p-6">
       {/* Progress Bar */}
-      <div className="w-full h-3 bg-gray-100 rounded-full mb-6 overflow-hidden">
+      <div className="w-full h-3 bg-gray-100 rounded-full mb-4 overflow-hidden">
         <div
           className="h-full bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-full transition-all duration-500"
           style={{ width: `${progress}%` }}
         />
       </div>
 
-      <p className="text-xs text-gray-400 mb-2">
-        Vraag {currentIndex + 1} van {questions.length}
-      </p>
+      <div className="flex items-center justify-between mb-2">
+        <p className="text-xs text-gray-400">
+          Vraag {currentIndex + 1} van {questions.length}
+        </p>
+        <p className="text-xs font-bold text-[#a90000]">Score: {score}</p>
+      </div>
 
-      <h3 className="text-2xl sm:text-3xl font-bold text-[#8c0000] text-center mb-6">
+      <h3 className="text-2xl sm:text-3xl font-bold text-[#8c0000] text-center mb-4 break-words">
         {question.uitspraak}
       </h3>
 
@@ -131,7 +343,7 @@ function QuizMode({ level }: { level: JudoLevel }) {
           let btnClass = 'bg-white border-[#e8eaed] text-gray-700 hover:border-[#a90000] hover:text-[#a90000]';
           if (showFeedback) {
             if (option === correctAnswer) {
-              btnClass = 'bg-[#198754] border-[#198754] text-white';
+              btnClass = 'bg-[#198754] border-[#198754] text-white scale-[1.02] shadow-md';
             } else if (option === selected && option !== correctAnswer) {
               btnClass = 'bg-[#dc3545] border-[#dc3545] text-white';
             } else {
@@ -142,12 +354,7 @@ function QuizMode({ level }: { level: JudoLevel }) {
           return (
             <button
               key={idx}
-              onClick={() => {
-                if (showFeedback) return;
-                setSelected(option);
-                setShowFeedback(true);
-                if (option === correctAnswer) setScore((s) => s + 1);
-              }}
+              onClick={() => handleAnswer(option, idx)}
               disabled={showFeedback}
               className={`p-3 sm:p-4 rounded-xl border-2 font-semibold text-sm sm:text-base transition-all ${btnClass} ${!showFeedback ? 'cursor-pointer hover:shadow-sm' : 'cursor-default'}`}
             >
@@ -158,74 +365,209 @@ function QuizMode({ level }: { level: JudoLevel }) {
       </div>
 
       {showFeedback && (
-        <p className={`mt-4 text-center font-bold ${selected === correctAnswer ? 'text-[#198754]' : 'text-[#dc3545]'}`}>
-          {selected === correctAnswer ? 'Correct!' : `Juist antwoord: ${correctAnswer}`}
+        <p className={`mt-4 text-center font-bold animate-pulse ${selected === correctAnswer ? 'text-[#198754]' : 'text-[#dc3545]'}`}>
+          {selected === correctAnswer ? '✓ Correct!' : `✗ Juist antwoord: ${correctAnswer}`}
         </p>
       )}
     </div>
   );
 }
 
+// ==========================================================================
+// MAIN COMPONENT
+// ==========================================================================
 export function JapaneseCourseSection() {
   const levels = getLevels();
   const [selectedLevel, setSelectedLevel] = useState<JudoLevel | null>(null);
   const [mode, setMode] = useState<'learn' | 'quiz'>('learn');
+  const [cardIndex, setCardIndex] = useState(0);
+  const [progress, setProgressState] = useState<ProgressData>(loadProgress);
+  const [showConfetti, setShowConfetti] = useState(false);
 
+  const { sounds, enabled: soundEnabled, setEnabled: setSoundEnabled } = useSounds();
+
+  // Save progress on change
+  useEffect(() => {
+    saveProgress(progress);
+  }, [progress]);
+
+  // Belt order for unlocking (only belt levels, not special modules)
+  const beltOrder = [0, 1, 2, 3, 4, 5]; // Wit → Geel → Oranje → Groen → Blauw → Bruin
+
+  function isLevelUnlocked(level: JudoLevel): boolean {
+    // Special modules (algemeen, wedstrijd) are always unlocked
+    if (typeof level.id === 'string') return true;
+
+    // First belt (witte band = 0) is always unlocked
+    if (level.id === 0) return true;
+
+    // Check if previous belt was passed
+    const prevBelt = beltOrder[beltOrder.indexOf(level.id) - 1];
+    return !!progress.passedLevels[prevBelt];
+  }
+
+  function handlePass() {
+    if (!selectedLevel || typeof selectedLevel.id !== 'number') return;
+
+    // Save pass status
+    setProgressState(prev => ({
+      ...prev,
+      passedLevels: { ...prev.passedLevels, [selectedLevel.id]: true },
+    }));
+
+    // Check if this unlocks the next belt
+    const nextBeltIdx = beltOrder.indexOf(selectedLevel.id) + 1;
+    if (nextBeltIdx < beltOrder.length) {
+      sounds.unlock();
+    }
+
+    // Show confetti
+    setShowConfetti(true);
+    setTimeout(() => setShowConfetti(false), 4000);
+  }
+
+  function navigateCard(direction: 'prev' | 'next') {
+    if (!selectedLevel) return;
+    sounds.click();
+    setCardIndex(prev => {
+      if (direction === 'next') return Math.min(prev + 1, selectedLevel.terms.length - 1);
+      return Math.max(prev - 1, 0);
+    });
+  }
+
+  // Keyboard navigation for flashcards
+  useEffect(() => {
+    function handleKey(e: KeyboardEvent) {
+      if (!selectedLevel || mode !== 'learn') return;
+      if (e.key === 'ArrowRight') navigateCard('next');
+      if (e.key === 'ArrowLeft') navigateCard('prev');
+    }
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [selectedLevel, mode, cardIndex]);
+
+  // Level detail view
   if (selectedLevel) {
+    const currentTerm = selectedLevel.terms[cardIndex];
+    if (!currentTerm) return null;
+
     return (
       <div className="space-y-6">
-        {/* Back button */}
-        <button
-          onClick={() => setSelectedLevel(null)}
-          className="inline-flex items-center gap-2 text-[#a90000] hover:text-[#8c0000] font-semibold text-sm transition-colors"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          Terug naar modules
-        </button>
+        {/* Back button + sound toggle */}
+        <div className="flex items-center justify-between">
+          <button
+            onClick={() => { setSelectedLevel(null); setCardIndex(0); setMode('learn'); }}
+            className="inline-flex items-center gap-2 text-[#a90000] hover:text-[#8c0000] font-semibold text-sm transition-colors"
+          >
+            <ChevronLeft className="w-4 h-4" /> Terug naar modules
+          </button>
+          <button
+            onClick={() => setSoundEnabled(!soundEnabled)}
+            className={`p-2 rounded-lg transition-colors ${soundEnabled ? 'text-[#a90000] bg-[#fdf6f6]' : 'text-gray-400'}`}
+            title={soundEnabled ? 'Geluid uit' : 'Geluid aan'}
+          >
+            {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+          </button>
+        </div>
+
+        {/* Belt info header */}
+        <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-4 sm:p-5 text-white shadow-lg relative overflow-hidden">
+          <div className="flex items-center gap-3">
+            <div
+              className="w-12 h-12 rounded-xl flex items-center justify-center text-xl font-bold shadow"
+              style={{ backgroundColor: selectedLevel.color }}
+            >
+              {typeof selectedLevel.id === 'number' ? `${selectedLevel.id + 1}` : '📚'}
+            </div>
+            <div>
+              <h2 className="text-lg sm:text-xl font-bold">{selectedLevel.name}</h2>
+              <p className="text-white/70 text-xs sm:text-sm">{selectedLevel.terms.length} termen</p>
+            </div>
+            {progress.passedLevels[selectedLevel.id] && (
+              <div className="ml-auto flex items-center gap-1 bg-green-500/20 px-3 py-1 rounded-full">
+                <Star className="w-4 h-4 text-yellow-300" />
+                <span className="text-xs font-bold text-green-200">Geslaagd!</span>
+              </div>
+            )}
+          </div>
+        </div>
 
         {/* Mode selector */}
         <div className="flex bg-[#f5f5f0] rounded-xl p-1">
           <button
-            onClick={() => setMode('learn')}
+            onClick={() => { setMode('learn'); sounds.click(); }}
             className={`flex-1 py-2.5 rounded-lg font-bold text-sm uppercase transition-all ${
               mode === 'learn'
                 ? 'bg-[#a90000] text-white shadow-md'
                 : 'text-gray-500 hover:text-gray-700'
             }`}
           >
-            Leren
+            📖 Leren
           </button>
           <button
-            onClick={() => setMode('quiz')}
+            onClick={() => { setMode('quiz'); sounds.click(); }}
             className={`flex-1 py-2.5 rounded-lg font-bold text-sm uppercase transition-all ${
               mode === 'quiz'
                 ? 'bg-[#a90000] text-white shadow-md'
                 : 'text-gray-500 hover:text-gray-700'
             }`}
           >
-            Quiz
+            🎯 Examen
           </button>
         </div>
 
         {mode === 'learn' ? (
           <div className="space-y-4">
             <Flashcard
-              term={selectedLevel.terms[0]}
-              onFlip={() => {}}
+              term={currentTerm}
+              onFlip={() => sounds.flip()}
             />
+
+            {/* Card navigation */}
+            <div className="flex items-center justify-center gap-4">
+              <button
+                onClick={() => navigateCard('prev')}
+                disabled={cardIndex === 0}
+                className="p-2 rounded-lg bg-white border border-[#e8eaed] hover:bg-[#fdf6f6] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <ChevronLeft className="w-5 h-5 text-[#a90000]" />
+              </button>
+
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-bold text-[#a90000]">{cardIndex + 1}</span>
+                <div className="w-16 h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-[#a90000] rounded-full transition-all"
+                    style={{ width: `${((cardIndex + 1) / selectedLevel.terms.length) * 100}%` }}
+                  />
+                </div>
+                <span className="text-xs text-gray-400">/ {selectedLevel.terms.length}</span>
+              </div>
+
+              <button
+                onClick={() => navigateCard('next')}
+                disabled={cardIndex === selectedLevel.terms.length - 1}
+                className="p-2 rounded-lg bg-white border border-[#e8eaed] hover:bg-[#fdf6f6] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <ChevronRight className="w-5 h-5 text-[#a90000]" />
+              </button>
+            </div>
+
             <p className="text-center text-xs text-gray-400">
-              1 / {selectedLevel.terms.length}
+              ← → pijltjes op toetsenbord om te navigeren
             </p>
           </div>
         ) : (
-          <QuizMode level={selectedLevel} />
+          <QuizMode level={selectedLevel} onPass={handlePass} />
         )}
+
+        {/* Confetti */}
+        <Confetti active={showConfetti} />
       </div>
     );
   }
 
+  // Module grid view
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -240,44 +582,118 @@ export function JapaneseCourseSection() {
           <rect x="20" y="18" width="6" height="58" rx="1" />
           <rect x="74" y="18" width="6" height="58" rx="1" />
         </svg>
-        <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">Cursus Japans</h1>
-        <p className="text-white/80 mt-1 text-xs sm:text-sm">
-          Examentrainer voor de Japanse judo-terminologie
-        </p>
+        <div className="flex items-start justify-between">
+          <div>
+            <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">Cursus Japans</h1>
+            <p className="text-white/80 mt-1 text-xs sm:text-sm">
+              Examentrainer voor de Japanse judo-terminologie
+            </p>
+          </div>
+          <button
+            onClick={() => setSoundEnabled(!soundEnabled)}
+            className={`p-2 rounded-lg transition-colors ${soundEnabled ? 'text-white bg-white/20' : 'text-white/40'}`}
+            title={soundEnabled ? 'Geluid uit' : 'Geluid aan'}
+          >
+            {soundEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
+          </button>
+        </div>
         <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-full mt-2 sm:mt-3" />
       </div>
+
+      {/* Progress overview */}
+      {(() => {
+        const passedCount = beltOrder.filter(b => progress.passedLevels[b]).length;
+        const totalBelts = beltOrder.length;
+        return (
+          <div className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] p-4 sm:p-5">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="font-bold text-gray-800 text-sm">Jouw voortgang</h3>
+              <span className="text-xs font-bold text-[#a90000]">{passedCount}/{totalBelts} banden geslaagd</span>
+            </div>
+            <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-[#a90000] to-yellow-500 rounded-full transition-all duration-1000"
+                style={{ width: `${(passedCount / totalBelts) * 100}%` }}
+              />
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Module Grid */}
       <div>
         <h2 className="text-xl sm:text-2xl font-bold text-[#8c0000] mb-4">Kies een module</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {levels.map((level) => (
-            <button
-              key={level.id}
-              onClick={() => setSelectedLevel(level)}
-              className="group bg-white rounded-2xl shadow-sm border-b-4 hover:shadow-md transition-all hover:-translate-y-1 text-left"
-              style={{ borderColor: level.borderColor, borderWidth: '1px 1px 4px 1px' }}
-            >
-              <div className="p-4 sm:p-6">
-                <h3 className="text-lg sm:text-xl font-bold text-gray-800 group-hover:text-[#a90000] transition-colors">
-                  {level.name}
-                </h3>
-                <p className="text-xs sm:text-sm text-gray-400 mt-1">
-                  {level.terms.length} termen
-                </p>
-              </div>
-            </button>
-          ))}
+          {levels.map((level) => {
+            const unlocked = isLevelUnlocked(level);
+            const passed = !!progress.passedLevels[level.id];
+
+            return (
+              <button
+                key={level.id}
+                onClick={() => { if (unlocked) { setSelectedLevel(level); sounds.click(); } }}
+                disabled={!unlocked}
+                className={`group rounded-2xl shadow-sm border-b-4 transition-all text-left relative overflow-hidden ${
+                  unlocked
+                    ? 'bg-white hover:shadow-md hover:-translate-y-1 cursor-pointer'
+                    : 'bg-gray-50 opacity-60 cursor-not-allowed'
+                }`}
+                style={{ borderColor: unlocked ? level.borderColor : '#e0e0e0', borderWidth: '1px 1px 4px 1px' }}
+              >
+                {/* Locked overlay */}
+                {!unlocked && (
+                  <div className="absolute inset-0 bg-gray-100/60 flex items-center justify-center z-10">
+                    <div className="bg-white rounded-full p-3 shadow-lg">
+                      <Lock className="w-6 h-6 text-gray-400" />
+                    </div>
+                  </div>
+                )}
+
+                {/* Passed badge */}
+                {passed && (
+                  <div className="absolute top-3 right-3 z-20">
+                    <div className="bg-green-500 text-white rounded-full p-1 shadow">
+                      <Star className="w-3 h-3" />
+                    </div>
+                  </div>
+                )}
+
+                <div className="p-4 sm:p-6">
+                  <div className="flex items-center gap-2 mb-1">
+                    {unlocked ? (
+                      passed ? <Unlock className="w-4 h-4 text-green-500" /> : <Unlock className="w-4 h-4 text-[#a90000]" />
+                    ) : null}
+                    <h3 className={`text-lg sm:text-xl font-bold transition-colors ${
+                      unlocked ? 'text-gray-800 group-hover:text-[#a90000]' : 'text-gray-400'
+                    }`}>
+                      {level.name}
+                    </h3>
+                  </div>
+                  <p className="text-xs sm:text-sm text-gray-400 mt-1">
+                    {level.terms.length} termen
+                  </p>
+                  {!unlocked && (
+                    <p className="text-[10px] text-gray-400 mt-1">
+                      📌 Haal eerst de vorige band
+                    </p>
+                  )}
+                </div>
+              </button>
+            );
+          })}
         </div>
       </div>
 
       {/* Footer */}
       <div className="bg-[#fdf6f6] rounded-2xl p-4 sm:p-5 border border-[#e8eaed]">
         <p className="text-xs sm:text-sm text-gray-600 leading-relaxed text-center">
-          <strong>Ontwikkeld door AI Report</strong> — Een interactieve examentrainer voor de Japanse judo-terminologie.
-          Leer de termen voor elke band en test je kennis met de quiz-modus.
+          <strong>Hoe werkt het?</strong> — Leer de termen met flashcards, doe dan het examen (min. 80% nodig).
+          Haal je een band? Dan ontgrendel je automatisch de volgende! 🥋
         </p>
       </div>
+
+      {/* Confetti */}
+      <Confetti active={showConfetti} />
     </div>
   );
 }
