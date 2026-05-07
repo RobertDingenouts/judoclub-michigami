@@ -95,6 +95,7 @@ const navGroups: NavGroup[] = [
       { key: 'leden', label: 'Lid Worden', icon: <Users className="w-4 h-4" /> },
       { key: 'lestijden', label: 'Lestijden', icon: <Clock className="w-4 h-4" /> },
       { key: 'locatie', label: 'Locatie', icon: <MapPin className="w-4 h-4" /> },
+      { key: 'info', label: 'Over Ons', icon: <Info className="w-4 h-4" /> },
       { key: 'contact', label: 'Contact', icon: <Mail className="w-4 h-4" /> },
     ],
   },
@@ -511,7 +512,7 @@ function InfoSection() {
           <TabsTrigger value="belts" className="text-xs sm:text-sm">Banden</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="history" className="space-y-4 mt-4">
+    <TabsContent value="history" className="space-y-4 mt-4">
           <Card className="border-0 shadow-sm">
             <CardContent className="p-4 sm:p-6 space-y-4">
               <div className="flex items-start gap-3">
@@ -520,11 +521,9 @@ function InfoSection() {
                 </div>
                 <div>
                   <h3 className="font-bold text-gray-800 mb-2">Onze geschiedenis</h3>
-                  <p className="text-sm text-gray-600 leading-relaxed">{clubInfo.history}</p>
-                  <p className="text-sm text-gray-600 mt-3 leading-relaxed">
-                    De club is opgericht onder de naam OVJV (Oud-Vossemeerse Judo Vereniging) en vierde in 2024 haar 50-jarig jubileum.
-                    Sinds de fusie met Judoclub Michigami wordt er getraind in Steenbergen en Oud-Vossemeer.
-                  </p>
+                  {clubInfo.history.split('\n\n').map((paragraph, i) => (
+                    <p key={i} className="text-sm text-gray-600 leading-relaxed mb-3 last:mb-0">{paragraph}</p>
+                  ))}
                 </div>
               </div>
             </CardContent>
@@ -557,7 +556,7 @@ function InfoSection() {
                 <h3 className="font-semibold text-gray-800 text-sm">Locatie</h3>
                 <p className="text-xs text-gray-500 mt-1">{clubInfo.locations[0].address}</p>
               </CardContent>
-           </Card>
+            </Card>
           </div>
         </TabsContent>
 
@@ -714,17 +713,17 @@ function InfoSection() {
       {/* Contact CTA */}
       <Card className="border-0 shadow-sm bg-gradient-to-br from-[#fdf6f6] to-white">
         <CardContent className="p-4 sm:p-6 text-center space-y-3">
-          <h3 className="font-bold text-gray-800">Hoe kom je op de judoclub?</h3>
+          <h3 className="font-bold text-gray-800">Interesse in judo?</h3>
           <p className="text-sm text-gray-600 max-w-lg mx-auto">
-            Het beste kun je eerst samen met je ouders (afhankelijk van je leeftijd) komen kijken. 
-            Als het je wat lijkt, kun je <span className="font-semibold text-[#a90000]">{clubInfo.costs.proeflessen}</span> nemen.
+            Kom gerust eens kijken op een training - je bent van harte welkom! 
+            Als het je bevalt, kun je direct starten met <span className="font-semibold text-[#a90000]">{clubInfo.costs.proeflessen}</span>.
           </p>
           <div className="flex flex-wrap justify-center gap-2 pt-2">
             <Button onClick={() => window.open('https://forms.office.com/r/8Vw9kPcLT6', '_blank')} className="bg-[#a90000] hover:bg-[#8c0000] text-sm">
               Inschrijven
             </Button>
             <Button variant="outline" onClick={() => window.open(`mailto:${clubInfo.email}`)} className="text-sm">
-              <Mail className="w-4 h-4 mr-2" /> Neem contact op
+              <Mail className="w-4 h-4 mr-2" /> Neem contact op voor proefles
             </Button>
           </div>
         </CardContent>

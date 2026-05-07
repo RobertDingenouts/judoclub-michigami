@@ -1,6 +1,8 @@
 'use client';
 
 import { membershipInfo } from '@/data/membership';
+import { clubInfo } from '@/data/club-info';
+import { Mail } from 'lucide-react';
 
 export function MembershipSection() {
   return (
@@ -74,7 +76,14 @@ export function MembershipSection() {
       </div>
 
       {/* Signup Button */}
-      <div className="text-center">
+      <div className="text-center space-y-3">
+        <a
+          href={`mailto:${clubInfo.email}`}
+          className="inline-flex items-center gap-2 bg-white border-2 border-[#a90000] text-[#a90000] px-6 py-3 rounded-xl font-bold text-sm sm:text-base hover:bg-[#fdf6f6] transition-all"
+        >
+          <Mail className="w-4 h-4" /> Neem contact op voor proefles
+        </a>
+        <div className="text-xs text-gray-500">of</div>
         <a
           href={membershipInfo.signupUrl}
           target="_blank"

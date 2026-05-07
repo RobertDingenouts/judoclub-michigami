@@ -123,19 +123,35 @@ export function ContactSection() {
             </div>
           </div>
 
-          {/* Location Map */}
+     {/* Location Map */}
           <div className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] overflow-hidden">
             <div className="p-4 sm:p-5 border-b border-[#e8eaed]">
               <h2 className="text-lg sm:text-xl font-bold text-[#8c0000]">Onze locatie</h2>
             </div>
-            <div className="p-2">
-              <iframe
-                src="https://www.google.com/maps/embed/v1/place?key=AIzaSyDummy&q=Wipstraat+2+Steenbergen"
-                className="w-full h-48 border-0"
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
+            <div className="p-4 space-y-3">
+              <div className="flex items-start gap-3">
+                <svg className="w-5 h-5 text-[#a90000] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <div>
+                  <p className="font-semibold text-gray-800">{contactInfo.location.name}</p>
+                  <p className="text-sm text-gray-600">{contactInfo.location.address}</p>
+                  <p className="text-sm text-gray-600">{contactInfo.location.postalCode} {contactInfo.location.city}</p>
+                </div>
+              </div>
+              <a
+                href={contactInfo.location.mapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-[#a90000] hover:bg-[#8c0000] text-white px-4 py-2 rounded-xl text-sm font-semibold transition-colors w-full justify-center"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Open in Google Maps
+              </a>
             </div>
           </div>
         </div>

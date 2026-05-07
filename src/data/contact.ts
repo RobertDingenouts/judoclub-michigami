@@ -11,5 +11,6 @@ export const contactInfo = {
     address: "Wipstraat 2",
     postalCode: "4651 XW",
     city: "Steenbergen",
+    mapsUrl: "https://maps.app.goo.gl/Wipstraat+2+Steenbergen",
   },
 };

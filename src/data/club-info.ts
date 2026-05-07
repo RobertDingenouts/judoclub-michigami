@@ -67,6 +67,11 @@ export const clubInfo = {
 
 Bij judo leer je om de kracht van je tegenstander te gebruiken ten eigen voordeel. Je leert vallen, werpen en controleren. Judo is niet alleen een sport, maar ook een levenswijze met respect en discipline als kernwaarden.
 
+Onze lesmethode
+Bij Judoclub Michigami werken we met een uniek lesysteem dat drie tradities combineert: onze eigen roots van Koos van Wezel, het Mikonosuke Kawaishi-systeem (die judo populair maakte in Europa door het toegankelijker te maken), en de traditionele Kodokan-methode.
+
+Dit betekent dat je bij ons leert op een manier die zowel effectief als veilig is - met aandacht voor correcte techniek, progressie per niveau, en plezier in de sport. Of je nu 6 of 60 jaar bent, recreatief of competitief: onze methode past zich aan jouw niveau en doelen.
+
 Judoclub Michigami biedt judo aan voor alle leeftijden en niveaus. Of je nu recreatief wilt sporten of prestatiegericht wilt deelnemen aan toernooien — bij ons ben je welkom!`,
   // Additional content from Weebly pages
   history: `Judoclub Michigami is in 1993 opgericht door Koos van Wezel in Steenbergen. De naam "Michigami" heeft een diepe betekenis — Koos had jarenlang les gehad van Haku Michigami, de beroemde Japanse judomeester die ook leraar was van Anton Geesink, de legendarische Nederlandse judo-wereldkampioen uit de jaren '60.
