@@ -744,7 +744,20 @@ function AgendaSection() {
   useEffect(() => {
     if (firstFutureRef.current) {
       setTimeout(() => {
-        firstFutureRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Scroll within the ScrollArea container
+        const scrollContainer = firstFutureRef.current.closest('[data-slot="scroll-area-viewport"]') 
+          || firstFutureRef.current.closest('.ScrollAreaViewport')
+          || document.querySelector('[data-slot="scroll-area-viewport"]');
+        
+        if (scrollContainer) {
+          const elementTop = firstFutureRef.current.getBoundingClientRect().top + scrollContainer.scrollTop;
+          scrollContainer.scrollTo({
+            top: elementTop - scrollContainer.clientHeight / 3,
+            behavior: 'smooth',
+          });
+        } else {
+          firstFutureRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
       }, 300);
     }
   }, []);
