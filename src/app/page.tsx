@@ -503,8 +503,9 @@ function InfoSection() {
 
       {/* Tabs */}
       <Tabs defaultValue="history" className="w-full">
-        <TabsList className="grid w-full grid-cols-4 bg-[#f5f5f0]">
+        <TabsList className="grid w-full grid-cols-5 bg-[#f5f5f0]">
           <TabsTrigger value="history" className="text-xs sm:text-sm">Geschiedenis</TabsTrigger>
+          <TabsTrigger value="leiding" className="text-xs sm:text-sm">Leiding</TabsTrigger>
           <TabsTrigger value="judo" className="text-xs sm:text-sm">Wat is Judo?</TabsTrigger>
           <TabsTrigger value="lesson" className="text-xs sm:text-sm">Lessen</TabsTrigger>
           <TabsTrigger value="belts" className="text-xs sm:text-sm">Banden</TabsTrigger>
@@ -556,10 +557,63 @@ function InfoSection() {
                 <h3 className="font-semibold text-gray-800 text-sm">Locatie</h3>
                 <p className="text-xs text-gray-500 mt-1">{clubInfo.locations[0].address}</p>
               </CardContent>
-            </Card>
+           </Card>
           </div>
         </TabsContent>
 
+        {/* ==================== LEIDING TAB ==================== */}
+        <TabsContent value="leiding" className="space-y-4 mt-4">
+          <Card className="border-0 shadow-sm">
+            <CardContent className="p-4 sm:p-6 space-y-4">
+              <h3 className="font-bold text-gray-800 flex items-center gap-2">
+                <Users className="w-5 h-5 text-[#a90000]" /> Huidige leiding
+              </h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Sinds 2021 zorgt een nieuwe generatie voor de toekomst van Judoclub Michigami. 
+                Drie vrienden die al bijna vanaf de oprichting samen judo oefenen, regionale en internationale wedstrijden doen, 
+                en alle drie de zwarte band (3e dan) hebben behaald.
+              </p>
+              <div className="space-y-3">
+                {clubInfo.leadership.current.map((person) => (
+                  <div key={person.name} className="p-4 rounded-xl bg-[#fdf6f6] border border-[#fce0e0]">
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#a90000] to-[#c00000] text-white flex items-center justify-center flex-shrink-0 font-bold text-sm">
+                        {person.name.split(' ').map(n => n[0]).join('')}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-semibold text-gray-800">{person.name}</h4>
+                        <p className="text-xs font-medium text-[#a90000] mt-0.5">{person.dan} • {person.role}</p>
+                        <p className="text-sm text-gray-600 mt-2 leading-relaxed">{person.description}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-sm">
+            <CardContent className="p-4 sm:p-6 space-y-3">
+              <h3 className="font-bold text-gray-800 flex items-center gap-2">
+                <Award className="w-5 h-5 text-[#a90000]" /> Oprichter & Erfenis
+              </h3>
+              <div className="p-4 rounded-xl bg-gradient-to-br from-[#fdf6f6] to-white border border-[#fce0e0]">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#8c0000] to-[#a90000] text-white flex items-center justify-center flex-shrink-0 font-bold text-sm">
+                    KV
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-semibold text-gray-800">{clubInfo.leadership.founder.name}</h4>
+                    <p className="text-xs font-medium text-[#a90000] mt-0.5">{clubInfo.leadership.founder.dan} • {clubInfo.leadership.founder.role}</p>
+                    <p className="text-sm text-gray-600 mt-2 leading-relaxed">{clubInfo.leadership.founder.description}</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* ==================== WAT IS JUDO TAB ==================== */}
         <TabsContent value="judo" className="space-y-4 mt-4">
           <Card className="border-0 shadow-sm">
             <CardContent className="p-4 sm:p-6 space-y-4">
