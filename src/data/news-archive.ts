@@ -1,0 +1,268 @@
+export interface NewsArticle {
+  id: string;
+  title: string;
+  content: string;
+  date?: string; // YYYY-MM-DD or just YYYY
+  imageUrl?: string;
+}
+
+export interface NewsYear {
+  year: number;
+  articles: NewsArticle[];
+}
+
+export const newsArchive: NewsYear[] = [
+  {
+    year: 2013,
+    articles: [
+      {
+        id: "tokyokai-toernooi-2013",
+        title: "Michigami heeft weer goed gescoord op Judo Toernooi Tokyokai",
+        content:
+          "Onze 4 jonge judoka's hebben allemaal fantastisch gejudood. Quintin van de Bruggen wist een 1e plaats in de wacht te slepen. Noah van de Bruggen ging naar huis met de 3e plaats. Matthijs Schrauwen en Lamont Sterk behaalden allebei de 4e plaats. Gefeliciteerd!",
+        date: "2013-11-09",
+      },
+      {
+        id: "bandenexamens-november-2013",
+        title: "Bandenexamens november 2013",
+        content:
+          'Dit jaar organiseren wij de bandenexamens op 29 november. Ook degenen die niet voor een band op gaan kunnen natuurlijk gewoon meedoen met de les, misschien verdien je wel een slip! Ouders zijn van harte welkom om te komen kijken. Degenen die voor examen op gaan, doe je best!',
+        date: "2013-11-09",
+      },
+      {
+        id: "sinterklaastoernooi-heerle-2013",
+        title: "Judoclub Michigami haalt weer veel prijzen weg bij Sinterklaastoernooi in Heerle",
+        content:
+          "Latif Nurzad wist een 1e plaats te bemachtigen. Daarnaast zijn er 5 judoka's met de 2e plaats naar huis gegaan: Frederik Colombijn, Ricardo den Heijer, Sjoerd Buuron, Joeri Ligtenberg en Jeppe Drenth. 2 maal werd de 3e prijs gewonnen door Björn Ossenblok en Noah van den Bruggen. Bernd Engelen en Matthijs Schrauwen behaalden de 4e plaats. En ten slotte behaalden Quintin van der Bruggen en Damian Guldenmond de 5e plaats. Alle judoka's van harte gefeliciteerd met de behaalde prijzen!",
+        date: "2013-11-23",
+      },
+      {
+        id: "28-judokas-geslaagd-bandenexamens-2013",
+        title: "28 Judoka's Geslaagd voor Bandenexamens",
+        content:
+          "Afgelopen maanden hebben onze judoka's keihard getraind om alle technieken onder controle te krijgen en ze moesten ook de Japanse benamingen erbij kennen. 29 november was het dan zover, het bandenexamen. Natuurlijk waren ze allemaal erg zenuwachtig want er waren veel papa's en mama's komen kijken om te zien wat ze allemaal geleerd hadden. Maar ondanks de zenuwen hebben ze laten zien dat ze de technieken goed beheersten, ze hebben het allemaal fantastisch gedaan.\n\nDe volgende judoka's zijn allemaal geslaagd:\n\n6e kyu (witte band): Sjoerd Buuron, Sjoerd Uitdewillige, Quintin van de Bruggen, Noah van de Bruggen, Matthijs Schrauwen, Dennes Kamerman, Benjamin Beekman, Daphne Spruyt\n\n5e kyu (gele band): Björn Ossenblok, Damian Guldemond, Jeppe Drenth, Thijs Huizer, Sjors van Duijn, Frederik Colombijn, Anouk Franken, Lynn Moerenhout, Giovanni de Meijer, Dylan van Leijenhorst\n\n4e kyu (oranje band): Réno Blaauw, Lucani Spaans, Chiem Geers, Lorenz Franken, Ian Ossenblok, Lamont Sterk, Joeri Ligtenberg, Tim Saarloos\n\n3e kyu (groene band): Jacco Loos, Kjeld Springer\n\nAllemaal nogmaals gefeliciteerd, we zijn erg trots op wat jullie hebben bereikt. Op naar de volgende band!",
+        date: "2013-11-29",
+      },
+    ],
+  },
+  {
+    year: 2014,
+    articles: [
+      {
+        id: "vechtbaltoernooi-lamont-2014",
+        title: "Vechtbaltoernooi - Bericht van Lamont",
+        content:
+          'Hallo allemaal, ik vond het gisteren super dat vechtbal toernooi. Ik heb alles gewonnen. En natuurlijk de medaille vind ik het leukst, de spelletjes die we daarna deden vond ik ook leuk. Van Lamont',
+        date: "2014-03-22",
+      },
+      {
+        id: "vechtbaltoernooi-22-maart-2014",
+        title: "Vechtbaltoernooi 22 maart 2014",
+        content:
+          "Lamont Sterk was als enige van Judoclub Michigami aanwezig op het Tholense Judo en Vechtbal toernooi. Twee keer liet Lamont zich door zijn tegenstanders verrassen en bereikte uiteindelijk een gedeelde derde plaats. Met Vechtbal wist hij een tweede plaats te behalen.",
+        date: "2014-03-22",
+      },
+      {
+        id: "toernooi-berendrecht-2014",
+        title: "Mooi Toernooi in Berendrecht voor Michigami",
+        content:
+          "Het was voor Judoclub Michigami weer een mooi toernooi met 3 eerste, 2 tweede en 3 derde plaatsen. Ook was het voor 7 judokaatjes de eerste keer dat ze aan een wedstrijd meededen en ook zij hebben zich goed verdedigd! Matthijs Schrauwen wist zelfs zilver in de wacht te slepen en Daphne Spruit, Bjorn Ossenblok en Dylan Leijenhorst wisten een bronzen prijs binnen te halen. Voor de overigen was er een mooie herinneringsmedaille.\n\nDe ervaren wedstrijd judoka's wisten eveneens goed te scoren, Goud was er voor Marijn van de Berg, Damian Leijenhorst en Latif Nurzad. Zilver voor Ricardo den Heijer.",
+        date: "2014-03-31",
+      },
+      {
+        id: "paastoernooi-oud-vossemeer-2014",
+        title: "Paastoernooi Oud-Vossemeer",
+        content:
+          "Zaterdag 19 april deden 4 judoka's van JC Michigami mee aan het Paastoernooi te Oud Vossemeer en wisten weer een prijs te bemachtigen. Een tweede plaats was er voor Frederik Colombijn en Daphne Spruit. Derde plaats was voor Lamont Sterk. Mathijs Schrauwen eindigde op een vijfde plaats.",
+        date: "2014-04-19",
+      },
+      {
+        id: "slipexamens-april-2014",
+        title: "6 Judoka's Geslaagd voor Slipexamens",
+        content:
+          "De gele slip werd behaald door Quintin v/d Bruggen, Noah v/d Bruggen en Kimberly Otto. De oranje slip door Anouk Franken. En een groene slip voor Tim Saarloos en Ian Ossenblok. Gefeliciteerd!",
+        date: "2014-04-25",
+      },
+      {
+        id: "toernooi-stichting-judo-geelhoed-2014",
+        title: "Toernooi Stichting Judo Geelhoed",
+        content:
+          "Lamont Sterk was als enige van Judoclub Michigami aanwezig op het Tholense Judo en Vechtbal toernooi. Twee keer liet Lamont zich door zijn tegenstanders verrassen en bereikte uiteindelijk een gedeelde derde plaats. Met Vechtbal wist hij een tweede plaats te behalen.",
+        date: "2014-04-26",
+      },
+      {
+        id: "survivalrun-steenbergen-2014",
+        title: "Survivalrun Steenbergen",
+        content:
+          "5 judoka's van Michigami hebben meegedaan met de survivalrun in Steenbergen. Met blauwe plekken, nat en onder de modder hebben zij allemaal de finish gehaald. Stef van Dijk was als individu. Robin Hack, Robert Dingenouts, Pascal Hack en Franco Hack deden mee aan de koppelrun. Mede dankzij teamwork werden alle hindernissen overwonnen.",
+        date: "2014-04-27",
+      },
+      {
+        id: "dangraad-examens-2e-dan-2014",
+        title: "Trainers Michigami Geslaagd voor 2e Dan",
+        content:
+          "Zaterdag 7 juni werden in Steenbergen de dangraad examens gehouden van de C.J.J.F. Van judoclub Michigami waren er drie judoka's/trainers die hun examen aflegden voor de 2e Dan. Robin Hack deed examen met Robert Dingenouts en Pascal Hack met John Kok van judoclub Yoshi. De afgelopen tijd hebben zij hard ervoor getraind bij verschillende judoclubs, de examinatoren waren daarom ook erg tevreden over de kwaliteit van de afgelegde examens.",
+        date: "2014-06-07",
+      },
+      {
+        id: "toernooi-bergen-op-zoom-zomer-2014",
+        title: "Toernooi Bergen op Zoom - Zomertoernooi",
+        content:
+          "Afgelopen zaterdag was het alweer het laatste judotoernooi voor de zomerstop. 2 judoka's van Michigami wisten de 1e plaats te behalen: Ricardo den Heijer en Latif Nurzad. Tim Saarloos wist een 3e plaats te bemachtigen. Lamont Sterk eindigde op de 4e plaats, Frederik Colombijn op de 5e plaats en Dennis Kamerman werd 6e. Allemaal gefeliciteerd met de behaalde prijzen!",
+        date: "2014-06-21",
+      },
+      {
+        id: "sinterklaastoernooi-heerle-2014",
+        title: "Sinterklaastoernooi Heerle",
+        content:
+          "Afgelopen zaterdag organiseerde Judovereniging Garami weer het jaarlijkse internationaal Sinterklaastoernooi in Heerle. 6 Judoka's van Michigami streden mee voor een podiumplaats. Sjors van Duijn wist al zijn tegenstanders te verslaan en won daarmee de 1e prijs! Frederik Colombijn wist een 3e plaats te bemachtigen. Martijn Noordzij, Lorenz Franken en Ricardo den Heijer eindigden alle 3 op de 4e plaats. Sjoerd Uitdewilligen behaalde de 6e plaats. Alle judoka's weer gefeliciteerd met de behaalde plaatsen!",
+        date: "2014-11-22",
+      },
+      {
+        id: "kerstvakantie-2014",
+        title: "Kerstvakantie",
+        content:
+          "Vrijdag 19 december is alweer de laatste les van 2014! Op vrijdag 26 december 2014 en 2 januari 2015 zullen er geen judo lessen plaatsvinden. De eerste lessen van 2015 zijn op vrijdag 9 januari. Wij wensen jullie prettige kerstdagen en een plezierig en gezond judo jaar toe.\n\nNamens de trainers Koos, Robert, Pascal en Robin.",
+        date: "2014-12-19",
+      },
+    ],
+  },
+  {
+    year: 2015,
+    articles: [
+      {
+        id: "budo-kidsdag-imaf-2015",
+        title: "CJJF-BUDO / IMAF BUDO KIDSDAG 2015",
+        content:
+          "Zaterdag 17 Januari werd in de Knotwilg te Steenbergen de CJJF-BUDO / IMAF BUDO KIDSDAG gehouden. Kinderen tot en met 12 jaar, waaronder ook een aantal van judoclub Michigami, deden mee aan verschillende onderdelen zoals een wedstrijd Vechtbal, een cursus weerbaarheid waarbij je leerde hoe om te gaan met pestkoppen bijvoorbeeld, en nog enkele andere onderdelen zoals valbreken en budo reactiespelen. De kinderen hebben zich weer lekker kunnen uitleven en aan het eind kregen ze nog een leuk aandenken mee en werd er een grote groepsfoto gemaakt.",
+        date: "2015-01-17",
+      },
+      {
+        id: "shinomaki-loenhout-2015",
+        title: "Judo Toernooi Shinomaki Loenhout",
+        content:
+          "Zondag 8 februari werd in Loenhout een judotoernooi gehouden door judoclub Shinomaki. Hieraan hebben enkele judoka's van onze club meegedaan. Damian van Leijenhorst behaalde de 1e Plaats. Daphne Spruyt en Sjoert Uitdewilligen wisten beide de 2e Plaats te bemachtigen. Sjors van Duijn behaalde de 3e Plaats. Allemaal gefeliciteerd met de behaalde prijzen!",
+        date: "2015-02-08",
+      },
+      {
+        id: "dutch-open-international-2015",
+        title: "Michigami Succesvol op Dutch Open International Championships",
+        content:
+          "Zaterdag 21 maart 2015 deden 4 judoka's van judoclub Michigami weer mee aan de Dutch Open International Championships in Dalfsen. De beste judoka's van Nederland en vele andere landen komen hier naartoe om te strijden voor een plek op het podium. De judoka's hebben heel goed gepresteerd. Latif Nurzad, Ricardo den Heijer en Damian van Leijenhorst behaalden alle drie de 2e Plaats. Bernd Engelen heeft ook goed gevochten, alleen helaas door een klein foutje raakte hij gediskwalificeerd, hierdoor werd hij 5e. We zijn erg trots op onze judoka's, allemaal van harte gefeliciteerd!",
+        date: "2015-03-21",
+      },
+      {
+        id: "yoshi-bergen-op-zoom-2015",
+        title: "Judotoernooi Yoshi Bergen op Zoom",
+        content:
+          "Zaterdag 20 juni hebben onze toppers van judoclub Michigami weer vele prijzen binnengehaald op het judotoernooi van Yoshi in Bergen op Zoom. Drie maal werd de 4e plaats gehaald door Martijn Noordzij, Sjoerd Uitdewilligen en Sjors van Duijn. Dennis Kamerman wist de 3e plaats te bemachtigen. Ricardo den Heijer ging met de 2e prijs naar huis. En de 1e plaats werd behaald door Latif Nurzad en Robert Dingenouts. Gefeliciteerd allemaal!",
+        date: "2015-06-20",
+      },
+    ],
+  },
+  {
+    year: 2016,
+    articles: [
+      {
+        id: "lestijden-gewijzigd-2016",
+        title: "Let op! Lestijden zijn gewijzigd",
+        content:
+          "Vanaf vrijdag 8 januari 2016 zullen alle lessen 15 minuten later beginnen dan we gewend zijn.",
+        date: "2016-01-08",
+      },
+      {
+        id: "budo-kidsdag-aankondiging-2016",
+        title: "CJJF BUDO Kidsdag/Budodag - Aankondiging",
+        content:
+          "Dit jaar organiseren wij weer samen met de CJJF een Budo Kidsdag/Budodag. Op zaterdag 5 maart is iedereen welkom om kennis te maken met verschillende Budosporten. Voor onze leden is het dit jaar helemaal gratis! Zorg er wel voor dat je op tijd je inschrijfformulier hebt ingeleverd. Ook kun je familie, vrienden of kennissen meenemen, voor niet-leden onder de 13 jaar zijn de kosten €5,-. Vanaf 13 jaar €10,-.\n\nDe deelnemers onder 13 jaar worden om 9.30 verwacht in de tennishal in sportcentrum de Knotwilg. Voor hen zal het eindigen om 12.15. Om 12.45 worden dan de deelnemers vanaf 13 jaar verwacht en dit zal eindigen om 16.30. We hopen dat jullie er allemaal bij zijn!",
+        date: "2016-03-05",
+      },
+      {
+        id: "toernooi-yukio-tani-huijbergen-februari-2016",
+        title: "Toernooi Yukio-Tani Huijbergen",
+        content:
+          "Zaterdag 20 februari hebben 8 judoka's van Michigami meegedaan aan het beginners-toernooi van Yukio-Tani in Huijbergen. Het toernooi was goed georganiseerd en onze judoka's hebben weer vele prijzen mee naar huis genomen. Frederik Colombijn eindigde op de 4e plaats. Cosette Harmsen, Sjoerd Uitdewilligen en Ozzy Cools behaalden de 3e plaats. De 2e plaats werd behaald door Jayden van der Have, Yves Harmsen, Bram van der Zanden en Bryan Rombout. Allemaal gefeliciteerd, heel goed gedaan!",
+        date: "2016-02-20",
+      },
+    ],
+  },
+  {
+    year: 2017,
+    articles: [
+      {
+        id: "budo-kidsdag-budodag-2017",
+        title: "BUDO Kidsdag/Budodag",
+        content:
+          "Zaterdag 5 maart organiseerden wij samen met de CJJF de Budo Kidsdag/Budodag in de Knotwilg Steenbergen. Jeugd en volwassenen kregen les in verschillende Budo/Vechtsporten. Iedereen heeft ervan genoten en het was een geslaagde dag!",
+        date: "2017-03-05",
+      },
+      {
+        id: "3e-dan-geslaagd-2017",
+        title: "Judoka's/Trainers Michigami Geslaagd voor 3e Dan",
+        content:
+          "Zaterdag 4 juni werden in Steenbergen in de Knotwilg de Dan examens afgenomen van de CJJF. Na een tijd lang hard trainen gingen 4 judoka's van Michigami: Robin Hack, Pascal Hack, Robert Dingenouts en John Kok op voor hun 3e dan. Alle 4 zijn zij geslaagd en er werd bij vermeld dat het niveau wederom erg hoog lag bij alle kandidaten dit jaar.",
+        date: "2017-06-04",
+      },
+      {
+        id: "witte-gele-banden-toernooi-heerle-2017",
+        title: "Witte en gele banden toernooi Heerle",
+        content:
+          "Zaterdag 19 november werd door judovereniging Garami in Heerle het witte en gele banden toernooi georganiseerd. Er kwamen veel jonge judoka's op af vanuit Nederland, België en Engeland. Onze judoka's van Michigami hebben er goed gepresteerd en haalden vele prijzen weg. Siep van der Pligt zat in een hele sterke poule en werd na hard knokken 4e. Kjeld en Tycho Glandorf gingen allebei met de 3e plaats mee naar huis. Cosette en Amelie Harmsen en Kian van Dorst wisten de 2e plaats te bemachtigen. Brenden Snel en Tobias Plasmans wisten alle wedstrijden te winnen en behaalden de 1e plaats. Wij zijn trots op jullie!",
+        date: "2017-11-19",
+      },
+    ],
+  },
+  {
+    year: 2018,
+    articles: [
+      {
+        id: "cjjf-bondskampioenschappen-bergen-op-zoom-2018",
+        title: "CJJF Bondskampioenschappen Bergen op Zoom",
+        content:
+          "Afgelopen zaterdag 3 maart vonden de eerste van 4 bondskampioenschappen van 2018 plaats in Bergen op Zoom. Judoclub Michigami was vertegenwoordigd met 6 judoka's. Allemaal gingen zij met een mooie beker naar huis dus weer een mooie prestatie!\n\n3e plaats: Amelie Harmsen, Kjeld Glandorf\n2e plaats: Cosette Harmsen\n1e plaats: Yves Harmsen, Tycho Glandorf, Robert Dingenouts\n\nEr worden 4 bondskampioenschappen gehouden dit jaar, aan het einde van het jaar wordt gekeken wie de kampioenen zijn voor elke categorie en maken de judoka's kans op een grote wisselbeker. Ze zijn al goed op weg!",
+        date: "2018-03-03",
+      },
+      {
+        id: "paastoernooi-uitslag-2018",
+        title: "Uitslag Paastoernooi",
+        content:
+          "Ook op het paastoernooi van OVJV op 31 maart waren enkele van onze judoka's weer actief. Amelie en Yves Harmsen gingen met de 2e prijs mee naar huis. Cosette Harmsen en Tobias Plasmans wisten de 3e plaats te bemachtigen. Keurige prestatie!",
+        date: "2018-03-31",
+      },
+      {
+        id: "toernooi-yukio-tani-huijbergen-2018",
+        title: "Toernooi Yukio Tani Huijbergen",
+        content:
+          "Onze judoka's gingen wederom allemaal met een prijs naar huis op het Toernooi van Yukio Tani in Huijbergen. Met de 1e plaats voor Cosette Harmsen, 2e plaats voor Yves Harmsen, Amelie Harmsen en Kian van Dorst, 3e plaats voor Kjeld Glandorf en Tycho Glandorf. Gefeliciteerd!",
+        date: "2018",
+      },
+      {
+        id: "cjjf-bondstournooi-michigami-2018",
+        title: "CJJF Bondstournooi bij Michigami",
+        content:
+          "Dit jaar hebben we mede mogelijk gemaakt dat er in sporthal De Buitelstee in Dinteloord de CJJF bondskampioenschappen gehouden konden worden. Onze judoka's hebben allemaal na hard knokken weer mooie prijzen mee naar huis genomen!",
+        date: "2018",
+      },
+      {
+        id: "zomervakantie-2018",
+        title: "Zomervakantie 2018 weer voorbij",
+        content:
+          "Vrijdag 24 augustus beginnen de judolessen eindelijk weer. Ik hoop dat jullie een fijne vakantie hebben gehad en weer vol energie zitten om er weer keihard tegenaan te gaan, tot vrijdag!",
+        date: "2018-08-24",
+      },
+      {
+        id: "25-jaar-judoclub-michigami",
+        title: "25 Jaar Judoclub Michigami",
+        content:
+          "Dit jaar bestaat Judoclub Michigami al 25 jaar! Dat vierden wij met een judotoernooi op 6 oktober. Het was een geslaagde dag en de deelnemers gingen met mooie prijzen naar huis. Alle vrijwilligers weer bedankt voor de hulp.\n\nOok onze judoka's wisten allemaal een mooi prijsje te bemachtigen:\n\n1e plaats: Tobias Plasmans, Robert Dingenouts\n2e plaats: Yves Harmsen, Siep van der Pligt, Renske van den Berg\n3e plaats: Tycho Glandorf, Nena van Roosendaal\n4e plaats: Cosette Harmsen, Kjeld Glandorf",
+        date: "2018-10-06",
+      },
+    ],
+  },
+];
+
+export const socialLinks = {
+  facebook: "https://www.facebook.com/judoclubmichigami",
+  instagram: "https://www.instagram.com/judoclub_michigami/",
+  youtube: "https://www.youtube.com/@judoclubmichigami",
+};

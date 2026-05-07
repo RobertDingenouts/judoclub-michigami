@@ -1,6 +1,7 @@
 'use client';
 
-import { newsArticles, socialLinks } from '@/data/news';
+import { useState } from 'react';
+import { newsArchive, socialLinks } from '@/data/news-archive';
 
 function formatDate(dateStr: string): string {
   if (!dateStr) return '';
@@ -16,7 +17,7 @@ function formatDate(dateStr: string): string {
   }
 }
 
-function NewsCard({ article }: { article: (typeof newsArticles)[number] }) {
+function NewsCard({ article }: { article: (typeof newsArchive)[number]['articles'][number] }) {
   return (
     <article className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] overflow-hidden hover:shadow-md transition-shadow">
       <div className="p-4 sm:p-6">
@@ -30,8 +31,61 @@ function NewsCard({ article }: { article: (typeof newsArticles)[number] }) {
         <div className="text-sm sm:text-base text-gray-600 leading-relaxed whitespace-pre-line">
           {article.content}
         </div>
+        {article.imageUrl && (
+          <div className="mt-4 rounded-xl overflow-hidden">
+            <img
+              src={article.imageUrl}
+              alt={article.title}
+              className="w-full h-auto object-cover"
+              loading="lazy"
+            />
+          </div>
+        )}
       </div>
     </article>
+  );
+}
+
+function YearSection({ yearData }: { yearData: (typeof newsArchive)[number] }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] overflow-hidden">
+      {/* Year Header - Clickable */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center justify-between p-4 sm:p-6 hover:bg-gray-50 transition-colors text-left"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#a90000] to-[#8c0000] flex items-center justify-center text-white font-bold text-sm shadow-sm">
+            {yearData.year}
+          </div>
+          <div>
+            <h2 className="font-bold text-[#8c0000] text-base sm:text-lg">{yearData.year}</h2>
+            <p className="text-xs text-gray-400 mt-0.5">
+              {yearData.articles.length} artikel{yearData.articles.length !== 1 ? 's' : ''}
+            </p>
+          </div>
+        </div>
+        <svg
+          className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      {/* Articles - Collapsible */}
+      {isOpen && (
+        <div className="px-4 sm:px-6 pb-4 sm:pb-6 space-y-4 border-t border-gray-100 pt-4">
+          {yearData.articles.map((article) => (
+            <NewsCard key={article.id} article={article} />
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -50,9 +104,9 @@ export function NewsSection() {
           <rect x="20" y="18" width="6" height="58" rx="1" />
           <rect x="74" y="18" width="6" height="58" rx="1" />
         </svg>
-        <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">Nieuws</h1>
+        <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">Nieuwsarchief</h1>
         <p className="text-white/80 mt-1 text-xs sm:text-sm">
-          Het laatste nieuws van Judoclub Michigami
+          Historisch nieuws van Judoclub Michigami (2013-heden)
         </p>
         <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-full mt-2 sm:mt-3" />
       </div>
@@ -85,15 +139,33 @@ export function NewsSection() {
             </svg>
             Instagram
           </a>
+          <a
+            href={socialLinks.youtube}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 bg-[#FF0000] hover:bg-[#cc0000] text-white px-4 py-2 rounded-xl text-sm font-semibold transition-colors"
+          >
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+            </svg>
+            YouTube
+          </a>
         </div>
       </div>
 
-      {/* News Articles */}
-      <div className="space-y-6">
-        {newsArticles.map((article) => (
-          <NewsCard key={article.id} article={article} />
+      {/* News Archive by Year */}
+      <div className="space-y-4">
+        {newsArchive.map((yearData) => (
+          <YearSection key={yearData.year} yearData={yearData} />
         ))}
       </div>
+
+      {/* Empty state if no articles */}
+      {newsArchive.length === 0 && (
+        <div className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] p-8 text-center">
+          <p className="text-gray-500">Er is nog geen nieuws beschikbaar.</p>
+        </div>
+      )}
     </div>
   );
 }
