@@ -32,7 +32,6 @@ export const membershipInfo: MembershipInfo = {
         '2x per week lessen (woensdag & vrijdag)',
         'Speciaal jeugdprogramma',
         'Veilige en leuke omgeving',
-        'Examens voor bandverhoging',
       ],
       icon: '🥋',
     },
@@ -44,8 +43,6 @@ export const membershipInfo: MembershipInfo = {
       benefits: [
         '2x per week lessen (woensdag & vrijdag)',
         'Recreatief of competitief trainen',
-        'Delen aan toernooien',
-        'Examens voor bandverhoging',
       ],
       icon: '⚔️',
     },
@@ -65,8 +62,8 @@ export const membershipInfo: MembershipInfo = {
       price: '€15',
       pricePeriod: 'per jaar',
       benefits: [
-        'Verplichte bondsverzekering',
-        'Dekken bij blessures tijdens training en toernooien',
+        'Verplichte verzekeringsbijdrage',
+        'Dekking bij blessures tijdens training en toernooien',
       ],
       icon: '🛡️',
     },

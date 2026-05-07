@@ -26,6 +26,7 @@ import { NewsSection } from '@/components/sections/NewsSection';
 import { TechniquesCardSection } from '@/components/sections/TechniquesCardSection';
 import { EventArchiveSection } from '@/components/sections/EventArchiveSection';
 import { LegalSection } from '@/components/sections/LegalSection';
+import { clubInfo } from '@/data/club-info';
 import { agendaItems, type AgendaItem } from '@/data/agenda';
 import { techniqueCategories, type TechniqueCategory, type Technique } from '@/data/techniques';
 import {
@@ -481,6 +482,199 @@ function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
           </CardContent>
         </Card>
       </div>
+    </div>
+  );
+}
+
+// ============ INFO SECTION (Meer over ons) ============
+function InfoSection() {
+  return (
+    <div className="space-y-6">
+      {/* Hero */}
+      <Card className="overflow-hidden border-0 shadow-sm sm:shadow-lg">
+        <div className="relative bg-gradient-to-br from-[#a90000] via-[#8c0000] to-[#7a0000] text-white p-4 sm:p-6 md:p-10 overflow-hidden">
+          <ToriiGate className="absolute top-0 right-0 w-32 h-32 text-white opacity-[0.07]" />
+          <div className="relative z-10">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{clubInfo.fullName}</h1>
+            <p className="text-white/80 mt-2 text-sm sm:text-base">{clubInfo.tagline}</p>
+          </div>
+        </div>
+      </Card>
+
+      {/* Tabs */}
+      <Tabs defaultValue="history" className="w-full">
+        <TabsList className="grid w-full grid-cols-4 bg-[#f5f5f0]">
+          <TabsTrigger value="history" className="text-xs sm:text-sm">Geschiedenis</TabsTrigger>
+          <TabsTrigger value="judo" className="text-xs sm:text-sm">Wat is Judo?</TabsTrigger>
+          <TabsTrigger value="lesson" className="text-xs sm:text-sm">Lessen</TabsTrigger>
+          <TabsTrigger value="belts" className="text-xs sm:text-sm">Banden</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="history" className="space-y-4 mt-4">
+          <Card className="border-0 shadow-sm">
+            <CardContent className="p-4 sm:p-6 space-y-4">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-full bg-[#fdf6f6] flex items-center justify-center flex-shrink-0 mt-1">
+                  <Calendar className="w-5 h-5 text-[#a90000]" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-800 mb-2">Onze geschiedenis</h3>
+                  <p className="text-sm text-gray-600 leading-relaxed">{clubInfo.history}</p>
+                  <p className="text-sm text-gray-600 mt-3 leading-relaxed">
+                    De club is opgericht onder de naam OVJV (Oud-Vossemeerse Judo Vereniging) en vierde in 2024 haar 50-jarig jubileum.
+                    Sinds de fusie met Judoclub Michigami wordt er getraind in Steenbergen en Oud-Vossemeer.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <Card className="border-0 shadow-sm">
+              <CardContent className="p-4 text-center">
+                <div className="w-12 h-12 mx-auto rounded-full bg-[#fdf6f6] flex items-center justify-center mb-2">
+                  <Users className="w-6 h-6 text-[#a90000]" />
+                </div>
+                <h3 className="font-semibold text-gray-800 text-sm">Groepen</h3>
+                <p className="text-xs text-gray-500 mt-1">3 leeftijdsgroepen</p>
+              </CardContent>
+            </Card>
+            <Card className="border-0 shadow-sm">
+              <CardContent className="p-4 text-center">
+                <div className="w-12 h-12 mx-auto rounded-full bg-[#fdf6f6] flex items-center justify-center mb-2">
+                  <Clock className="w-6 h-6 text-[#a90000]" />
+                </div>
+                <h3 className="font-semibold text-gray-800 text-sm">Training</h3>
+                <p className="text-xs text-gray-500 mt-1">Woensdag & vrijdag</p>
+              </CardContent>
+            </Card>
+            <Card className="border-0 shadow-sm cursor-pointer hover:shadow-md transition-shadow" onClick={() => window.open(clubInfo.locations[0].mapsUrl, '_blank')}>
+              <CardContent className="p-4 text-center">
+                <div className="w-12 h-12 mx-auto rounded-full bg-[#fdf6f6] flex items-center justify-center mb-2">
+                  <MapPin className="w-6 h-6 text-[#a90000]" />
+                </div>
+                <h3 className="font-semibold text-gray-800 text-sm">Locatie</h3>
+                <p className="text-xs text-gray-500 mt-1">{clubInfo.locations[0].address}</p>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="judo" className="space-y-4 mt-4">
+          <Card className="border-0 shadow-sm">
+            <CardContent className="p-4 sm:p-6 space-y-4">
+              <h3 className="font-bold text-gray-800">Wat is judo?</h3>
+              {clubInfo.whatIsJudo.split('\n\n').map((paragraph, i) => (
+                <p key={i} className="text-sm text-gray-600 leading-relaxed">{paragraph}</p>
+              ))}
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-sm">
+            <CardContent className="p-4 sm:p-6 space-y-3">
+              <h3 className="font-bold text-gray-800">Voor wie is judo geschikt?</h3>
+              <p className="text-sm text-gray-600 leading-relaxed">{clubInfo.philosophy}</p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="lesson" className="space-y-4 mt-4">
+          <Card className="border-0 shadow-sm">
+            <CardContent className="p-4 sm:p-6 space-y-4">
+              <h3 className="font-bold text-gray-800">Hoe gaat zo'n judoles?</h3>
+              <p className="text-sm text-gray-600 leading-relaxed">{clubInfo.lessonStructure}</p>
+              <div className="bg-[#fdf6f6] rounded-xl p-4 space-y-2">
+                <h4 className="font-semibold text-sm text-[#a90000]">Tip voor proeflessen</h4>
+                <p className="text-xs text-gray-600">Kom je voor het eerst? Trek dan een joggingpak of trainingspak aan zonder scherpe delen (gespen, knopen). Een judopak is de eerste maand niet verplicht!</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-sm">
+            <CardContent className="p-4 sm:p-6 space-y-3">
+              <h3 className="font-bold text-gray-800">Judokleding (judogi)</h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Judo wordt beoefend in speciale kleding. Deze judopakken of judogi zijn gemaakt om aan te kunnen trekken. 
+                Let op: koop geen karatepak, daar deze niet bestand zijn tegen het trek en duwwerk van de judosport!
+              </p>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Judo wordt beoefend op de blote voeten. Zorg daarom voor schone voeten en kortgeknipte nagels.
+              </p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="belts" className="space-y-4 mt-4">
+          <Card className="border-0 shadow-sm">
+            <CardContent className="p-4 sm:p-6 space-y-4">
+              <h3 className="font-bold text-gray-800">Judobanden</h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Aan de hand van de kleur band die een judoka draagt, kun je zien hoe ver gevorderd hij/zij is. 
+                Als beginneling start je met een witte band. De volgorde van banden is:
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { color: 'bg-white border-gray-300', name: 'Wit' },
+                  { color: 'bg-yellow-400', name: 'Geel' },
+                  { color: 'bg-orange-500', name: 'Oranje' },
+                  { color: 'bg-green-600', name: 'Groen' },
+                  { color: 'bg-blue-700', name: 'Blauw' },
+                  { color: 'bg-amber-800', name: 'Bruin' },
+                  { color: 'bg-gray-900', name: 'Zwart' },
+                ].map((belt) => (
+                  <div key={belt.name} className="flex items-center gap-2 bg-white rounded-lg px-3 py-2 border border-gray-100 shadow-sm">
+                    <div className={`w-6 h-6 rounded-full ${belt.color} border`} />
+                    <span className="text-xs font-medium text-gray-700">{belt.name}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Dit zijn de zogenaamde kyu-graden. Om een andere band te verkrijgen moet je examen doen. 
+                Ben je nog geen 13, dan zijn er tevens slippen te verdienen — stukken gekleurde band die je kunt verdienen door goed je best te doen tijdens de lessen.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-sm">
+            <CardContent className="p-4 sm:p-6 space-y-3">
+              <h3 className="font-bold text-gray-800">Zwarte band (Dan-graden)</h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Na de gekleurde banden van de kyu-graden komt de zwarte band. Om hiervoor examen te mogen doen, moet je minimaal 16 jaar zijn. 
+                Je moet dan voor een judocommissie verschijnen van hele hoge judoka's. Zwarte banden noemen ze Dan-graden.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-sm">
+            <CardContent className="p-4 sm:p-6 space-y-3">
+              <h3 className="font-bold text-gray-800">Judo wedstrijden</h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Hoewel de meeste judoka's judoën om lekker bezig te zijn, zijn er ook jongens en meisjes die graag meedoen aan wedstrijden. 
+                Tijdens deze wedstrijden kun je medailles of bekers winnen. Voor de echte fanatieke judoka's is het zelfs mogelijk om aan internationale wedstrijden deel te nemen.
+              </p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+
+      {/* Contact CTA */}
+      <Card className="border-0 shadow-sm bg-gradient-to-br from-[#fdf6f6] to-white">
+        <CardContent className="p-4 sm:p-6 text-center space-y-3">
+          <h3 className="font-bold text-gray-800">Hoe kom je op de judoclub?</h3>
+          <p className="text-sm text-gray-600 max-w-lg mx-auto">
+            Het beste kun je eerst samen met je ouders (afhankelijk van je leeftijd) komen kijken. 
+            Als het je wat lijkt, kun je <span className="font-semibold text-[#a90000]">{clubInfo.costs.proeflessen}</span> nemen.
+          </p>
+          <div className="flex flex-wrap justify-center gap-2 pt-2">
+            <Button onClick={() => window.open('https://forms.office.com/r/8Vw9kPcLT6', '_blank')} className="bg-[#a90000] hover:bg-[#8c0000] text-sm">
+              Inschrijven
+            </Button>
+            <Button variant="outline" onClick={() => window.open(`mailto:${clubInfo.email}`)} className="text-sm">
+              <Mail className="w-4 h-4 mr-2" /> Neem contact op
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
