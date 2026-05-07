@@ -45,17 +45,29 @@ export function TechniquesCardSection() {
               <h3 className="font-bold text-[#8c0000] text-base sm:text-lg mb-2">{card.title}</h3>
               <p className="text-sm text-gray-600 mb-4 leading-relaxed">{card.description}</p>
 
-              {/* Download Button */}
-              <a
-                href={card.pdfUrl}
-                download
-                className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-[#a90000] to-[#c00000] text-white text-sm font-semibold rounded-xl hover:from-[#8c0000] hover:to-[#a90000] transition-colors shadow-sm"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                Bestand downloaden
-              </a>
+              {/* Download/Request Button */}
+              {card.available && card.pdfUrl ? (
+                <a
+                  href={card.pdfUrl}
+                  download
+                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-[#a90000] to-[#c00000] text-white text-sm font-semibold rounded-xl hover:from-[#8c0000] hover:to-[#a90000] transition-colors shadow-sm"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Bestand downloaden
+                </a>
+              ) : (
+                <button
+                  onClick={() => window.open(`mailto:judoclub_michigami@hotmail.com?subject=${encodeURIComponent(card.title)} opvragen`, '_blank')}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-white border-2 border-[#a90000] text-[#a90000] text-sm font-semibold rounded-xl hover:bg-[#fdf6f6] transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  Opvragen bij club
+                </button>
+              )}
             </div>
           </div>
         ))}
