@@ -582,7 +582,6 @@ function InfoSection() {
                       <div className="flex-1 min-w-0">
                         <h4 className="font-semibold text-gray-800">{person.name}</h4>
                         <p className="text-xs font-medium text-[#a90000] mt-0.5">{person.dan} • {person.role}</p>
-                        <p className="text-sm text-gray-600 mt-2 leading-relaxed">{person.description}</p>
                       </div>
                     </div>
                   </div>

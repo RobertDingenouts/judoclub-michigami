@@ -90,14 +90,14 @@ In 2021 nam een nieuwe generatie het stokje over: Robin Hack, Pascal Hack en Rob
       {
         name: "Robin Hack",
         dan: "3e Dan",
-        role: "Voorzitter & Communicatie",
-        description: "Robin is verantwoordelijk voor communicatie, contributie-administratie en contact met de judobond. Al bijna vanaf de oprichting lid van Michigami.",
+        role: "Penningmeester & Instructeur",
+        description: "Robin is verantwoordelijk voor de financiën en geeft judoles. Al bijna vanaf de oprichting lid van Michigami.",
       },
       {
         name: "Pascal Hack",
         dan: "3e Dan",
-        role: "Voorzitter & Materiaal",
-        description: "Pascal beheert het materiaal, bestellingen van pakken en banden, en helpt met de financiën. Ook al bijna vanaf de oprichting lid.",
+        role: "Voorzitter & Instructeur",
+        description: "Pascal is voorzitter van de club, beheert het materiaal en geeft judoles. Ook al bijna vanaf de oprichting lid.",
       },
       {
         name: "Robert Dingenouts",
