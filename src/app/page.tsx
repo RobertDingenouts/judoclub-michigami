@@ -170,19 +170,15 @@ export default function MichigamiApp() {
         <SidebarContent activeSection={activeSection} onSelect={(s) => setActiveSection(s)} />
       </aside>
 
-      {/* Mobile Header */}
-      <header className="md:hidden fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-[#a90000] to-[#8c0000] text-white shadow-lg w-full">
-        <div className="flex items-center justify-between px-4 h-14 max-w-full">
-          <div className="flex items-center gap-2 min-w-0">
-            <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-1.5 rounded-lg hover:bg-white/20 transition-colors flex-shrink-0">
-              {sidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-            <ClubLogo className="w-8 h-8 object-contain flex-shrink-0" alt="" />
-            <span className="font-bold text-lg tracking-wide truncate">Michigami</span>
-          </div>
-          <span className="text-xs opacity-80 flex-shrink-0 ml-2">Judoclub</span>
-        </div>
-      </header>
+      {/* Sidebar Content — Mobile: hamburger button + overlay */}
+      <div className="md:hidden fixed top-3 left-3 z-50">
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="p-2.5 rounded-xl bg-white shadow-lg border border-[#e8eaed] hover:shadow-xl transition-shadow"
+        >
+          {sidebarOpen ? <X className="w-5 h-5 text-gray-600" /> : <Menu className="w-5 h-5 text-gray-600" />}
+        </button>
+      </div>
 
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
@@ -194,8 +190,8 @@ export default function MichigamiApp() {
       )}
 
       {/* Main Content */}
-      <main className="flex-1 md:ml-64 mt-14 md:mt-0 pb-28 sm:pb-20 md:pb-0 w-full min-w-0">
-        <ScrollArea className="h-[calc(100vh-7.5rem)] sm:h-[calc(100vh-3.5rem)] md:h-screen w-full">
+      <main className="flex-1 md:ml-64 pb-28 sm:pb-20 md:pb-0 w-full min-w-0">
+        <ScrollArea className="h-[calc(100vh-3.5rem)] sm:h-[calc(100vh-3.5rem)] md:h-screen w-full">
           <div className="p-2 sm:p-4 md:p-8 max-w-[100vw] mx-auto w-full pb-16 sm:pb-0">
             {activeSection === 'home' && <HomeSection onNavigate={setActiveSection} />}
             {activeSection === 'agenda' && <AgendaSection />}
@@ -274,8 +270,10 @@ function SidebarContent({ activeSection, onSelect }: { activeSection: Section; o
     <div className="flex flex-col h-full">
       {/* Logo / Brand */}
       <div className="p-4 border-b border-[#e8eaed] flex flex-col items-center">
-        <ClubLogo className="w-20 h-20 object-contain" />
-        <p className="text-[10px] text-gray-400 mt-1">Opgericht in 1993</p>
+        <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#fdf6f6] to-white border-2 border-[#a90000]/10 flex items-center justify-center mb-2 shadow-sm">
+          <ClubLogo className="w-18 h-18 object-contain" />
+        </div>
+        <p className="text-[10px] text-gray-400">Opgericht in 1993</p>
       </div>
 
       {/* Search Bar */}
@@ -366,6 +364,69 @@ function SidebarContent({ activeSection, onSelect }: { activeSection: Section; o
   );
 }
 
+// ============ HERO SLIDER ============
+const heroImages = [
+  '/uploads/2/0/5/8/20583900/20181006-174703.jpg',
+  '/uploads/2/0/5/8/20583900/20161119-102621.jpg',
+  '/uploads/2/0/5/8/20583900/20171202-140215.jpg',
+  '/uploads/2/0/5/8/20583900/20161119-100909.jpg',
+];
+
+function HeroSlider() {
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrent(prev => (prev + 1) % heroImages.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="relative h-48 sm:h-56 md:h-72 lg:h-80 overflow-hidden rounded-2xl">
+      {heroImages.map((src, idx) => (
+        <div
+          key={idx}
+          className={`absolute inset-0 transition-opacity duration-1000 ${
+            idx === current ? 'opacity-100' : 'opacity-0'
+          }`}
+        >
+          <img
+            src={src}
+            alt=""
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+        </div>
+      ))}
+
+      {/* Content overlay */}
+      <div className="absolute inset-0 flex flex-col justify-end p-4 sm:p-6 md:p-8 text-white z-10">
+        <div className="flex items-center gap-2 sm:gap-3 mb-2">
+          <ClubLogo className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 object-contain flex-shrink-0" />
+          <div>
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight">Judoclub Michigami</h1>
+            <p className="text-white/80 text-xs sm:text-sm">Steenbergen • Opgericht in 1993</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Dots */}
+      <div className="absolute bottom-3 right-4 sm:bottom-4 sm:right-6 flex gap-1.5 z-20">
+        {heroImages.map((_, idx) => (
+          <button
+            key={idx}
+            onClick={() => setCurrent(idx)}
+            className={`w-2 h-2 rounded-full transition-all ${
+              idx === current ? 'bg-white w-5' : 'bg-white/50 hover:bg-white/80'
+            }`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ============ HOME SECTION ============
 function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
   const today = new Date();
@@ -374,32 +435,8 @@ function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
 
   return (
     <div className="space-y-6 pb-4 sm:pb-0">
-      {/* Hero Banner */}
-      <Card className="overflow-hidden border-0 shadow-sm sm:shadow-lg">
-        <div className="relative bg-gradient-to-br from-[#a90000] via-[#8c0000] to-[#7a0000] text-white p-4 sm:p-6 md:p-12 overflow-hidden">
-          <div className="relative z-10">
-            <div className="flex items-center gap-2 sm:gap-3 mb-3 flex-wrap">
-              <span className="text-2xl sm:text-3xl md:text-4xl flex-shrink-0">柔道</span>
-              <div className="h-6 sm:h-8 md:h-10 w-px bg-white/30 flex-shrink-0" />
-              <div className="min-w-0 flex-1">
-                <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight truncate">Judoclub Michigami</h1>
-                <p className="text-white/80 text-xs sm:text-sm md:text-base mt-1">Steenbergen</p>
-              </div>
-            </div>
-            <p className="text-sm sm:text-base md:text-lg font-light max-w-xl mt-3 sm:mt-4 leading-relaxed">
-              Judo voor jong en oud, voor beginners en gevorderden — recreatief of prestatiegericht
-            </p>
-            <div className="flex flex-wrap gap-2 sm:gap-3 mt-4 sm:mt-6">
-              <Button onClick={() => onNavigate('info')} variant="secondary" size="sm" className="bg-white/20 hover:bg-white/30 text-white border-white/30 text-xs sm:text-sm">
-                <Info className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" /> Meer over ons
-              </Button>
-              <Button onClick={() => onNavigate('agenda')} variant="outline" size="sm" className="bg-transparent border-white/40 text-white hover:bg-white/10 text-xs sm:text-sm">
-                <Calendar className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" /> Bekijk agenda
-              </Button>
-            </div>
-          </div>
-        </div>
-      </Card>
+      {/* Hero Slider */}
+      <HeroSlider />
 
       {/* Quick Links Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
