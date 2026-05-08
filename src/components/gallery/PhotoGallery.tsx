@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { galleryData, type GalleryImage } from '@/data/gallery';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 function ImageGrid({ images, onImageClick }: { images: GalleryImage[]; onImageClick: (images: GalleryImage[], index: number) => void }) {
   return (
@@ -71,7 +72,7 @@ function Lightbox({
         aria-label="Volgende"
       >
         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7-7-7 7" />
         </svg>
       </button>
 
@@ -92,21 +93,28 @@ function Lightbox({
 
 export function PhotoGallery() {
   const [lightbox, setLightbox] = useState<{ images: GalleryImage[]; index: number } | null>(null);
+  const [expandedAlbums, setExpandedAlbums] = useState<Set<string>>(new Set());
+
+  // Sorteer op jaartal — jongste bovenaan (Archive altijd onderaan)
+  const sortedAlbums = [...galleryData].sort((a, b) => {
+    if (a.title === 'Archive') return 1;
+    if (b.title === 'Archive') return -1;
+    return b.title.localeCompare(a.title);
+  });
+
+  const toggleAlbum = (id: string) => {
+    setExpandedAlbums(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
 
   return (
     <div className="space-y-8">
       {/* Header */}
       <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
-        <svg
-          viewBox="0 0 100 80"
-          className="absolute top-0 right-0 w-20 sm:w-24 md:w-32 h-20 sm:h-24 md:h-32 text-white opacity-[0.06]"
-          fill="currentColor"
-        >
-          <rect x="5" y="8" width="90" height="6" rx="2" />
-          <rect x="12" y="18" width="76" height="4" rx="1" />
-          <rect x="20" y="18" width="6" height="58" rx="1" />
-          <rect x="74" y="18" width="6" height="58" rx="1" />
-        </svg>
         <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">Foto&apos;s</h1>
         <p className="text-white/80 mt-1 text-xs sm:text-sm">
           Beelden van onze judoclub, toernooien en evenementen
@@ -114,17 +122,59 @@ export function PhotoGallery() {
         <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-full mt-2 sm:mt-3" />
       </div>
 
-      {/* Gallery Albums */}
-      <div className="space-y-8">
-        {galleryData.map((album) => (
-          <div key={album.id}>
-            <h2 className="text-xl sm:text-2xl font-bold text-[#8c0000] mb-4">{album.title}</h2>
-            <ImageGrid
-              images={album.images}
-              onImageClick={(images, index) => setLightbox({ images, index })}
-            />
-          </div>
-        ))}
+      {/* Gallery Albums — jongste bovenaan */}
+      <div className="space-y-4">
+        {sortedAlbums.map((album) => {
+          const isExpanded = expandedAlbums.has(album.id);
+          const thumbnail = album.images[0];
+
+          return (
+            <div key={album.id} className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] overflow-hidden">
+              {/* Album header — clickbaar om te openen/sluiten */}
+              <button
+                onClick={() => toggleAlbum(album.id)}
+                className="w-full flex items-center gap-4 p-4 hover:bg-[#fdf6f6] transition-colors text-left"
+              >
+                {/* Thumbnail */}
+                {thumbnail && (
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden flex-shrink-0 bg-[#f5f5f0] border border-[#e8eaed]">
+                    <img
+                      src={thumbnail.src}
+                      alt={album.title}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                )}
+
+                {/* Info */}
+                <div className="flex-1 min-w-0">
+                  <h2 className="text-lg sm:text-xl font-bold text-[#8c0000]">{album.title}</h2>
+                  <p className="text-sm text-gray-500 mt-0.5">{album.images.length} foto&apos;s</p>
+                </div>
+
+                {/* Toggle icon */}
+                <div className="flex-shrink-0 text-gray-400">
+                  {isExpanded ? (
+                    <ChevronUp className="w-5 h-5" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5" />
+                  )}
+                </div>
+              </button>
+
+              {/* Expanded content */}
+              {isExpanded && (
+                <div className="px-4 pb-4">
+                  <ImageGrid
+                    images={album.images}
+                    onImageClick={(images, index) => setLightbox({ images, index })}
+                  />
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
 
       {/* Footer note */}
