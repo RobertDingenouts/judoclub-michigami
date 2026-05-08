@@ -366,10 +366,10 @@ function SidebarContent({ activeSection, onSelect }: { activeSection: Section; o
 
 // ============ HERO SLIDER ============
 const heroImages = [
-  '/uploads/2/0/5/8/20583900/20181006-174703.jpg',
-  '/uploads/2/0/5/8/20583900/20161119-102621.jpg',
-  '/uploads/2/0/5/8/20583900/20171202-140215.jpg',
-  '/uploads/2/0/5/8/20583900/20161119-100909.jpg',
+  '/hero/michigami-25jaar-1.jpg',
+  '/hero/budodag-actie-1.jpg',
+  '/hero/heerle-toernooi-1.jpg',
+  '/hero/dojo-2024.jpg',
 ];
 
 function HeroSlider() {
