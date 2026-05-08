@@ -259,6 +259,107 @@ export const newsArchive: NewsYear[] = [
       },
     ],
   },
+  {
+    year: 2024,
+    articles: [
+      {
+        id: "judo-takeover-video-2024",
+        title: "Keep holding on! #judo #takeover",
+        content:
+          "Bekijk onze nieuwe video op Facebook en Instagram — een leuke kijk achter de schermen van Judoclub Michigami. Kom zelf ook eens kijken of meetrainen!",
+        date: "2024-03-20",
+      },
+      {
+        id: "vriendjesdag-2024",
+        title: "Vriendjes- en vriendinnetjesdag 2024",
+        content:
+          "Kom gezellig met ons mee trainen op vrijdagavond! Tijdens de Vriendjes- en vriendinnetjesdag mag je gratis een les judo komen proef doen. De eerste 3 lessen zijn gratis voor nieuwe leden. Kom langs in Sportcentrum de Knotwilg in Steenbergen!",
+        date: "2024-06",
+      },
+      {
+        id: "open-clubkampioenschappen-2024",
+        title: "Open Clubkampioenschappen 2024 — Wat een fantastische avond!",
+        content:
+          "Wat een fantastische avond tijdens de Open Clubkampioenschappen 2024! De sfeer was gezellig en vriendschappelijk, met fanatieke judoka's die hun beste gevechten leverden. Ook bij de senioren was er veel actie — we hadden een mooi aantal judoka's die erg aan het knokken waren.\n\nDe junioren lieten geweldige acties zien tijdens de Open Clubkampioenschappen 2024 in Steenbergen! Geniet mee van de mooiste momenten en technieken.\n\nBedankt aan alle deelnemers, ouders en vrijwilligers voor een geslaagd toernooi!",
+        date: "2024-09-27",
+      },
+      {
+        id: "rabo-clubsupport-september-2024",
+        title: "✨ Rabo ClubSupport — Stem op Judoclub Michigami!",
+        content:
+          "Het is weer zover! Judoclub Michigami doet mee aan Rabo ClubSupport. Stem tussen 1 en 23 september via de Rabo App en steun onze club!\n\nOpen de Rabo App → Ga naar Lidmaatschap > Rabo ClubSupport → Stem op Judoclub Michigami.\n\nIedere stem telt en helpt ons om mooie dingen voor de club te realiseren. Bedankt voor jouw steun!",
+        date: "2024-09-01",
+      },
+      {
+        id: "chocolade-trainers-2024",
+        title: "De trainers werden verwend met chocolade judogi 🍫",
+        content:
+          "De trainers werden verwend door een creatieve judoka met een lekkere reep chocola, prachtig verpakt als een judogi. Wat een heerlijke en attente verrassing! Dankjewel voor deze leuke attentie.",
+        date: "2024-10",
+      },
+      {
+        id: "sinterklaas-video-2024",
+        title: "Belangrijk bericht van Sinterklaas! 🎅",
+        content:
+          "Sinterklaas is langs geweest bij Judoclub Michigami! Bekijk de video op onze Facebook pagina voor een belangrijk bericht aan alle judoka's. Sinterklaas herinnert iedereen eraan om door te trainen en hun best te doen!",
+        date: "2024-11-30",
+      },
+    ],
+  },
+  {
+    year: 2025,
+    articles: [
+      {
+        id: "lintjestoernooi-januari-2025",
+        title: "Eerste Lintjestoernooi van 2025 — Trots op onze judoka's!",
+        content:
+          "Vandaag vond het eerste lintjestoernooi van 2025 plaats bij Budoschool Cor Schuurbiers in Roosendaal. Onze judoka's hebben hard gevochten en veel ervaring opgedaan.\n\nTrots op onze judoka's! Afgelopen zondag lieten ze weer mooie prestaties zien op de mat.",
+        date: "2025-01-12",
+      },
+      {
+        id: "examen-resultaten-januari-2025",
+        title: "Trots op onze judoka's — Examenresultaten",
+        content:
+          "Hard werken en doorzetten wordt beloond. We zijn trots op de mooie vooruitgang die onze judoka's vorige week hebben laten zien:\n\n⚪ 4x Witte band\n🟡 3x Gele slip\n🟠 2x Oranje band\n🟢 3x Groene slip\n\nGefeliciteerd allemaal! Deze resultaten zijn dik verdiend na maanden van hard trainen.",
+        date: "2025-01",
+      },
+      {
+        id: "examen-februari-2025",
+        title: "Twee judoka's geslaagd — Gele slip, gele band en oranje band!",
+        content:
+          "Gisteren waren er weer examens! Twee judoka's haalden hun gele slip, één de gele band en één zelfs de oranje band!\n\nEn ook Lola geslaagd voor de Witte Band! Keurig examen afgelegd — dik verdiend!\n\nFeliciteringen aan alle geslaagden!",
+        date: "2025-02",
+      },
+      {
+        id: "vriendjesdag-september-2025",
+        title: "Vriendjesdag 2025 — Kom gratis judo proef doen!",
+        content:
+          "Kom gezellig met ons mee trainen op vrijdagavond! Tijdens de Vriendjesdag mag je gratis een les judo komen proef doen. De eerste 3 lessen zijn gratis voor nieuwe leden. Kom langs in Sportcentrum de Knotwilg in Steenbergen of De Vossenkuil in Oud-Vossemeer!",
+        date: "2025-06",
+      },
+      {
+        id: "rabo-clubsupport-september-2025",
+        title: "✨ Rabo ClubSupport 2025 — Stem op Judoclub Michigami!",
+        content:
+          "Het is weer zover! Judoclub Michigami doet mee aan Rabo ClubSupport. Stem tussen 1 en 23 september via de Rabo App en steun onze club!\n\nOpen de Rabo App → Ga naar Lidmaatschap > Rabo ClubSupport → Stem op Judoclub Michigami.\n\nIedere stem telt en helpt ons om mooie dingen voor de club te realiseren. Bedankt voor jouw steun!",
+        date: "2025-09-01",
+      },
+      {
+        id: "lintjestoernooi-mika-lotte-vive-luuk-2025",
+        title: "Mika, Lotte, Vive en Luuk — Lintjestoernooi resultaten",
+        content:
+          "Gisteren hebben Mika, Lotte, Vive en Luuk weer hard gevochten en veel ervaring opgedaan bij het Lintjestoernooi. Ze hebben het alle vier goed gedaan!\n\nDe behaalde punten:\n• Vive — 174 punten\n• Lotte — 61 punten\n• Mika — 59 punten\n• Luuk — 40 punten\n\nMika en Luuk hebben gisteren hun gele lintje behaald, gefeliciteerd! Op 8 maart is de volgende editie. Wil je ook meedoen? Inschrijven via: https://budoschool-corschuurbiers.nl/3-3/",
+        date: "2025",
+      },
+      {
+        id: "laatsteseizoen-spelletjesdag-examens-2025",
+        title: "Laatste judoles van het seizoen — Spelletjesdag + Examens!",
+        content:
+          "De laatste judoles van het seizoen was niet alleen een gezellige spelletjesdag, maar ook een dag vol examens! Twee judoka's haalden hun gele slip, één de gele band en één zelfs de oranje band!\n\nNa beide een net examen afgelegd te hebben mochten ze hun bruine band omknopen. Gefeliciteerd allemaal!",
+        date: "2025",
+      },
+    ],
+  },
 ];
 
 export const socialLinks = {
