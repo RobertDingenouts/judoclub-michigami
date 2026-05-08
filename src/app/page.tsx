@@ -158,6 +158,17 @@ function ToriiGate({ className = "" }: { className?: string }) {
 export default function MichigamiApp() {
   const [activeSection, setActiveSection] = useState<Section>('home');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const scrollAreaRef = useRef(null);
+
+  // Scroll naar boven bij sectie-wissel (behalve agenda)
+  useEffect(() => {
+    if (activeSection !== 'agenda') {
+      const viewport = document.querySelector('[data-slot="scroll-area-viewport"]');
+      if (viewport) {
+        viewport.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+  }, [activeSection]);
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-[#f8f9fa] w-full overflow-x-hidden">
