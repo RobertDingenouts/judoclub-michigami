@@ -27,6 +27,7 @@ import { TechniquesCardSection } from '@/components/sections/TechniquesCardSecti
 import { LegalSection } from '@/components/sections/LegalSection';
 import { clubInfo } from '@/data/club-info';
 import { agendaItems, type AgendaItem } from '@/data/agenda';
+import { newsArchive } from '@/data/news-archive';
 import { techniqueCategories, type TechniqueCategory, type Technique } from '@/data/techniques';
 import {
   beltLevels as examBeltLevels,
@@ -433,92 +434,117 @@ function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
   today.setHours(0, 0, 0, 0);
   const upcomingEvents = agendaItems.filter(i => !i.cancelled && new Date(i.compareDate) >= today).slice(0, 3);
 
+  // Haal nieuwste nieuwsberichten (laatste 3 uit meest recente jaar)
+  const latestNews = [];
+  for (const year of [...newsArchive].reverse()) {
+    latestNews.push(...year.articles.slice(0, 3));
+    if (latestNews.length >= 3) break;
+  }
+
   return (
     <div className="space-y-6 pb-4 sm:pb-0">
       {/* Hero Slider */}
       <HeroSlider />
 
-      {/* Quick Links Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {[
-          { key: 'agenda' as Section, label: 'Agenda', desc: 'Komende evenementen', icon: <Calendar className="w-6 h-6" />, color: 'from-[#a90000] to-[#c00000]' },
-          { key: 'technieken' as Section, label: 'Technieken', desc: 'Alle judotechnieken', icon: <Swords className="w-6 h-6" />, color: 'from-[#f37021] to-[#d35400]' },
-          { key: 'exameneisen' as Section, label: 'Exameneisen', desc: 'Eisen per band bekijken', icon: <Target className="w-6 h-6" />, color: 'from-[#0054a6] to-[#003d7a]' },
-          { key: 'cursusjapans' as Section, label: 'Cursus Japans', desc: 'Japans leren + quiz', icon: <BookOpen className="w-6 h-6" />, color: 'from-[#7c3aed] to-[#5b21b6]' },
-        ].map((item) => (
-          <div key={item.key} onClick={() => onNavigate(item.key)} className="cursor-pointer bg-white rounded-xl shadow-sm hover:shadow-lg transition-all p-4 border border-gray-100">
-            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${item.color} text-white flex items-center justify-center mb-3`}>
-              {item.icon}
-            </div>
-            <h3 className="font-semibold text-gray-800 text-sm">{item.label}</h3>
-            <p className="text-xs text-gray-500 mt-1">{item.desc}</p>
-          </div>
-        ))}
+      {/* Quick Links — met mooie icoontjes */}
+      <div>
+        <h2 className="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
+          <Sparkles className="w-5 h-5 text-[#a90000]" /> Snel naar...
+        </h2>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {[
+            { key: 'agenda' as Section, label: 'Agenda', desc: 'Evenementen', icon: Calendar, color: '#a90000', bg: '#fdf6f6' },
+            { key: 'technieken' as Section, label: 'Technieken', desc: 'Alle technieken', icon: Swords, color: '#e67e22', bg: '#fef5ee' },
+            { key: 'exameneisen' as Section, label: 'Examens', desc: 'Per bandniveau', icon: Target, color: '#0054a6', bg: '#eef4fb' },
+            { key: 'leden' as Section, label: 'Lid Worden', desc: 'Meld je aan', icon: Users, color: '#27ae60', bg: '#eefbf3' },
+            { key: 'lestijden' as Section, label: 'Lestijden', desc: 'Wo & Vr', icon: Clock, color: '#8e44ad', bg: '#f4eef9' },
+            { key: 'locatie' as Section, label: 'Locaties', desc: '2 locaties', icon: MapPin, color: '#d35400', bg: '#fdf0ea' },
+            { key: 'cursusjapans' as Section, label: 'Cursus Japans', desc: 'Leer + quiz', icon: BookOpen, color: '#2980b9', bg: '#eef6fb' },
+            { key: 'contact' as Section, label: 'Contact', desc: 'Neem contact op', icon: Mail, color: '#c0392b', bg: '#fdecea' },
+          ].map((item) => (
+            <button
+              key={item.key}
+              onClick={() => onNavigate(item.key)}
+              className="flex flex-col items-center gap-2 p-4 rounded-2xl border transition-all hover:shadow-md hover:-translate-y-0.5 active:scale-95"
+              style={{ backgroundColor: item.bg, borderColor: item.color + '20' }}
+            >
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: item.color + '15' }}>
+                <item.icon className="w-6 h-6" style={{ color: item.color }} />
+              </div>
+              <span className="font-semibold text-sm" style={{ color: item.color }}>{item.label}</span>
+              <span className="text-xs text-gray-500">{item.desc}</span>
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Upcoming Events */}
-      <Card className="border-0 shadow-sm">
-        <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-[#a90000]" /> Komende evenementen
-            </CardTitle>
-            <Button variant="ghost" size="sm" className="text-[#a90000]" onClick={() => onNavigate('agenda')}>
-              Alles bekijken <ArrowRight className="w-4 h-4 ml-1" />
-            </Button>
+      {/* Widgets row — Agenda + Nieuws */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Agenda Widget */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between" style={{ background: 'linear-gradient(135deg, #fdf6f6 0%, white 100%)' }}>
+            <h3 className="font-bold text-gray-800 flex items-center gap-2">
+              <Calendar className="w-4 h-4" style={{ color: '#a90000' }} /> Agenda
+            </h3>
+            <button onClick={() => onNavigate('agenda')} className="text-xs font-medium hover:underline" style={{ color: '#a90000' }}>
+              Alles →
+            </button>
           </div>
-        </CardHeader>
-        <CardContent className="space-y-2">
-          {upcomingEvents.length === 0 ? (
-            <p className="text-gray-500 text-sm">Geen komende evenementen.</p>
-          ) : upcomingEvents.map((item, idx) => (
-            <div key={idx} className="flex items-center gap-3 p-3 rounded-xl bg-[#fdf6f6] hover:bg-[#fce0e0] transition-colors">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#a90000] to-[#c00000] text-white flex items-center justify-center flex-shrink-0">
-                {getEmojiIcon(item.emoji, "w-5 h-5")}
+          <div className="p-4 space-y-3">
+            {upcomingEvents.length === 0 ? (
+              <p className="text-sm text-gray-400 text-center py-4">Geen komende evenementen</p>
+            ) : upcomingEvents.map((item, idx) => (
+              <div key={idx} className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-[#fdf6f6] transition-colors">
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 text-white" style={{ background: 'linear-gradient(135deg, #a90000, #c00000)' }}>
+                  {getEmojiIcon(item.emoji, "w-5 h-5")}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-gray-800 truncate">{item.event}</p>
+                  <p className="text-xs text-gray-500 mt-0.5">{item.displayDate} {item.time !== '-' && `• ${item.time}`}</p>
+                </div>
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-semibold text-sm text-gray-800 truncate">{item.event} {item.eventSub && <span className="font-normal text-gray-500">{item.eventSub}</span>}</p>
-                <p className="text-xs text-gray-500">{item.displayDate} {item.time !== '-' && `• ${item.time}`}</p>
-              </div>
-              {item.inschrijfUrl && (
-                <a href={item.inschrijfUrl} target="_blank" rel="noopener noreferrer" className="text-xs bg-[#d90000] text-white px-3 py-1.5 rounded-lg hover:bg-[#b20000] transition-colors font-semibold flex-shrink-0">
-                  Inschrijven
-                </a>
-              )}
-            </div>
-          ))}
-        </CardContent>
-      </Card>
+            ))}
+          </div>
+        </div>
 
-      {/* Club Info Summary */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <Card className="border-0 shadow-sm">
-          <CardContent className="p-4 text-center">
-            <div className="w-12 h-12 mx-auto rounded-full bg-[#fdf6f6] flex items-center justify-center mb-2">
-              <Users className="w-6 h-6 text-[#a90000]" />
+        {/* Nieuws Widget */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between" style={{ background: 'linear-gradient(135deg, #eef6fb 0%, white 100%)' }}>
+            <h3 className="font-bold text-gray-800 flex items-center gap-2">
+              <Sparkles className="w-4 h-4" style={{ color: '#2980b9' }} /> Nieuws
+            </h3>
+            <button onClick={() => onNavigate('nieuws')} className="text-xs font-medium hover:underline" style={{ color: '#2980b9' }}>
+              Alles →
+            </button>
+          </div>
+          <div className="p-4 space-y-3">
+            {latestNews.length === 0 ? (
+              <p className="text-sm text-gray-400 text-center py-4">Geen nieuwsberichten</p>
+            ) : latestNews.map((article, idx) => (
+              <div key={idx} className="p-2.5 rounded-xl hover:bg-[#eef6fb] transition-colors cursor-pointer" onClick={() => onNavigate('nieuws')}>
+                <p className="text-sm font-semibold text-gray-800 line-clamp-2">{article.title}</p>
+                <p className="text-xs text-gray-400 mt-1">{article.date || ''}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Training Info */}
+      <div className="grid grid-cols-3 gap-3">
+        {[
+          { icon: Users, label: 'Groepen', value: '6-9, 9-12, 13+', color: '#a90000' },
+          { icon: Clock, label: 'Training', value: 'Woensdag & vrijdag', color: '#e67e22' },
+          { icon: MapPin, label: 'Locaties', value: 'Steenbergen & Oud-Vossemeer', color: '#0054a6' },
+        ].map((item) => (
+          <div key={item.label} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 text-center">
+            <div className="w-10 h-10 mx-auto rounded-xl flex items-center justify-center mb-2" style={{ backgroundColor: item.color + '15' }}>
+              <item.icon className="w-5 h-5" style={{ color: item.color }} />
             </div>
-            <h3 className="font-semibold text-gray-800">Groepen</h3>
-            <p className="text-sm text-gray-500 mt-1">6-9, 9-12 en 13+ jaar</p>
-          </CardContent>
-        </Card>
-        <Card className="border-0 shadow-sm">
-          <CardContent className="p-4 text-center">
-            <div className="w-12 h-12 mx-auto rounded-full bg-[#fdf6f6] flex items-center justify-center mb-2">
-              <Clock className="w-6 h-6 text-[#a90000]" />
-            </div>
-            <h3 className="font-semibold text-gray-800">Training</h3>
-            <p className="text-sm text-gray-500 mt-1">Woensdag & vrijdagavond</p>
-          </CardContent>
-        </Card>
-        <Card className="border-0 shadow-sm cursor-pointer hover:shadow-md transition-shadow" onClick={() => onNavigate('locatie')}>
-          <CardContent className="p-4 text-center">
-            <div className="w-12 h-12 mx-auto rounded-full bg-[#fdf6f6] flex items-center justify-center mb-2">
-              <MapPin className="w-6 h-6 text-[#a90000]" />
-            </div>
-            <h3 className="font-semibold text-gray-800">Locaties</h3>
-            <p className="text-sm text-gray-500 mt-1">Steenbergen & Oud-Vossemeer</p>
-          </CardContent>
-        </Card>
+            <p className="text-xs font-medium text-gray-500">{item.label}</p>
+            <p className="text-sm font-semibold text-gray-800 mt-1 leading-tight">{item.value}</p>
+          </div>
+        ))}
       </div>
     </div>
   );
