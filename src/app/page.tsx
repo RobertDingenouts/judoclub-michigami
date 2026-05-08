@@ -530,21 +530,55 @@ function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
         </div>
       </div>
 
-      {/* Training Info */}
-      <div className="grid grid-cols-3 gap-3">
-        {[
-          { icon: Users, label: 'Groepen', value: '6-9, 9-12, 13+', color: '#a90000' },
-          { icon: Clock, label: 'Training', value: 'Woensdag & vrijdag', color: '#e67e22' },
-          { icon: MapPin, label: 'Locaties', value: 'Steenbergen & Oud-Vossemeer', color: '#0054a6' },
-        ].map((item) => (
-          <div key={item.label} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 text-center">
-            <div className="w-10 h-10 mx-auto rounded-xl flex items-center justify-center mb-2" style={{ backgroundColor: item.color + '15' }}>
-              <item.icon className="w-5 h-5" style={{ color: item.color }} />
+      {/* Training Info — 2 locaties */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Woensdag */}
+        <div className="bg-gradient-to-br from-[#fdf6f6] to-white rounded-2xl shadow-sm border border-[#a90000]/10 p-5">
+          <div className="flex items-start gap-4">
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#a9000015' }}>
+              <Clock className="w-7 h-7" style={{ color: '#a90000' }} />
             </div>
-            <p className="text-xs font-medium text-gray-500">{item.label}</p>
-            <p className="text-sm font-semibold text-gray-800 mt-1 leading-tight">{item.value}</p>
+            <div className="flex-1">
+              <h3 className="font-bold text-gray-800 text-lg">Woensdagavond</h3>
+              <p className="text-sm text-gray-500 mt-0.5">Algemene training — alle leeftijden</p>
+              <div className="flex items-center gap-3 mt-3">
+                <span className="text-sm font-bold" style={{ color: '#a90000' }}>19:00 - 20:00</span>
+                <span className="text-xs text-gray-400">•</span>
+                <span className="text-xs text-gray-500 flex items-center gap-1">
+                  <MapPin className="w-3 h-3" /> Oud-Vossemeer
+                </span>
+              </div>
+            </div>
           </div>
-        ))}
+        </div>
+
+        {/* Vrijdag */}
+        <div className="bg-gradient-to-br from-[#eef6fb] to-white rounded-2xl shadow-sm border border-[#2980b9]/10 p-5">
+          <div className="flex items-start gap-4">
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#2980b915' }}>
+              <Clock className="w-7 h-7" style={{ color: '#2980b9' }} />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-bold text-gray-800 text-lg">Vrijdagavond</h3>
+              <div className="space-y-2 mt-1.5">
+                <div className="flex items-center gap-3">
+                  <span className="text-sm font-bold" style={{ color: '#2980b9' }}>18:45 - 19:45</span>
+                  <span className="text-xs text-gray-400">•</span>
+                  <span className="text-xs text-gray-500">Groep 1 (6-9 jaar)</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-sm font-bold" style={{ color: '#2980b9' }}>19:45 - 20:45</span>
+                  <span className="text-xs text-gray-400">•</span>
+                  <span className="text-xs text-gray-500">Groep 2+ (9+ jaar)</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 mt-3">
+                <MapPin className="w-3 h-3" style={{ color: '#2980b9' }} />
+                <span className="text-xs text-gray-500">Steenbergen</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
