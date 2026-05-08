@@ -179,7 +179,7 @@ function Flashcard({ term, onFlip }: { term: JudoTerm; onFlip: () => void }) {
 // ==========================================================================
 // QUIZ MODE COMPONENT
 // ==========================================================================
-function QuizMode({ level, onPass }: { level: JudoLevel; onPass: () => void }) {
+function QuizMode({ level, onPass, onNext, onPrev }: { level: JudoLevel; onPass: () => void; onNext?: () => void; onPrev?: () => void }) {
   const allLevels = getLevels();
   const allTerms = allLevels.flatMap((l) => l.terms);
 
@@ -288,10 +288,26 @@ function QuizMode({ level, onPass }: { level: JudoLevel; onPass: () => void }) {
           {passed && (
             <p className="text-sm text-green-600 font-semibold mt-2">Deze band is nu afgerond! Volgende band is ontgrendeld.</p>
           )}
-          <div className="flex justify-center gap-3 mt-6">
+          <div className="flex flex-col sm:flex-row justify-center gap-3 mt-6">
+            {passed && onNext && (
+              <button
+                onClick={onNext}
+                className="bg-gradient-to-r from-[#a90000] to-[#8c0000] hover:from-[#8c0000] hover:to-[#700000] text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-md hover:shadow-lg"
+              >
+                Volgende band →
+              </button>
+            )}
+            {passed && onPrev && (
+              <button
+                onClick={onPrev}
+                className="bg-white border-2 border-[#a90000] text-[#a90000] hover:bg-[#fdf6f6] px-6 py-2.5 rounded-xl font-semibold text-sm transition-colors"
+              >
+                ← Terug naar modules
+              </button>
+            )}
             <button
               onClick={startQuiz}
-              className="bg-[#a90000] hover:bg-[#8c0000] text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition-colors"
+              className="bg-white border-2 border-gray-200 hover:border-[#a90000] text-gray-600 hover:text-[#a90000] px-6 py-2.5 rounded-xl font-semibold text-sm transition-colors"
             >
               Opnieuw proberen
             </button>
@@ -558,7 +574,28 @@ export function JapaneseCourseSection() {
             </p>
           </div>
         ) : (
-          <QuizMode level={selectedLevel} onPass={handlePass} />
+          <QuizMode
+            level={selectedLevel}
+            onPass={handlePass}
+            onNext={() => {
+              if (typeof selectedLevel.id === 'number') {
+                const nextIdx = beltOrder.indexOf(selectedLevel.id) + 1;
+                if (nextIdx < beltOrder.length) {
+                  const nextLevel = levels.find(l => l.id === nextIdx);
+                  if (nextLevel) {
+                    setSelectedLevel(nextLevel);
+                    setCardIndex(0);
+                    setMode('learn');
+                  }
+                }
+              }
+            }}
+            onPrev={() => {
+              setSelectedLevel(null);
+              setCardIndex(0);
+              setMode('learn');
+            }}
+          />
         )}
 
         {/* Confetti */}
