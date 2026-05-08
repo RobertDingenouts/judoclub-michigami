@@ -21,7 +21,11 @@ export const metadata: Metadata = {
   keywords: ["Judo", "Judoclub", "Michigami", "Steenbergen", "Sport", "Judovereniging", "Vechtsport", "Kawaishi", "Kodokan"],
   authors: [{ name: "Judoclub Michigami" }],
   icons: {
-    icon: "/logo.svg",
+    icon: [
+      { url: "/favicon.ico", sizes: "32x32" },
+      { url: "/apple-touch-icon.png", sizes: "192x192" },
+    ],
+    apple: "/apple-touch-icon.png",
   },
 };
 
