@@ -361,9 +361,9 @@ function QuizMode({ level, onPass, onNext, onPrev }: { level: JudoLevel; onPass:
             if (option === correctAnswer) {
               btnClass = 'bg-[#198754] border-[#198754] text-white scale-[1.02] shadow-md';
             } else if (option === selected && option !== correctAnswer) {
-              btnClass = 'bg-[#dc3545] border-[#dc3545] text-white';
+              btnClass = 'bg-[#dc3545] border-[#dc3545] text-white scale-[1.02] shadow-md ring-4 ring-red-200';
             } else {
-              btnClass = 'bg-white border-[#e8eaed] text-gray-400';
+              btnClass = 'bg-gray-50 border-[#e8eaed] text-gray-300';
             }
           }
 
@@ -372,8 +372,10 @@ function QuizMode({ level, onPass, onNext, onPrev }: { level: JudoLevel; onPass:
               key={idx}
               onClick={() => handleAnswer(option, idx)}
               disabled={showFeedback}
-              className={`p-3 sm:p-4 rounded-xl border-2 font-semibold text-sm sm:text-base transition-all ${btnClass} ${!showFeedback ? 'cursor-pointer hover:shadow-sm' : 'cursor-default'}`}
+              className={`p-3 sm:p-4 rounded-xl border-2 font-semibold text-sm sm:text-base transition-all flex items-center justify-center gap-2 ${btnClass} ${!showFeedback ? 'cursor-pointer hover:shadow-sm' : 'cursor-default'}`}
             >
+              {showFeedback && option === correctAnswer && <span className="text-lg">✓</span>}
+              {showFeedback && option === selected && option !== correctAnswer && <span className="text-lg">✗</span>}
               {option}
             </button>
           );
