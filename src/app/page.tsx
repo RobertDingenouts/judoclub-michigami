@@ -24,7 +24,6 @@ import { LocationSection } from '@/components/sections/LocationSection';
 import { ContactSection } from '@/components/sections/ContactSection';
 import { NewsSection } from '@/components/sections/NewsSection';
 import { TechniquesCardSection } from '@/components/sections/TechniquesCardSection';
-import { EventArchiveSection } from '@/components/sections/EventArchiveSection';
 import { LegalSection } from '@/components/sections/LegalSection';
 import { clubInfo } from '@/data/club-info';
 import { agendaItems, type AgendaItem } from '@/data/agenda';
@@ -70,7 +69,6 @@ type Section =
   | 'contact'
   | 'nieuws'
   | 'techniekenkaart'
-  | 'evenementen'
   | 'juridisch';
 
 interface NavItem {
@@ -97,6 +95,7 @@ const navGroups: NavGroup[] = [
       { key: 'locatie', label: 'Locatie', icon: <MapPin className="w-4 h-4" /> },
       { key: 'info', label: 'Over Ons', icon: <Info className="w-4 h-4" /> },
       { key: 'contact', label: 'Contact', icon: <Mail className="w-4 h-4" /> },
+      { key: 'juridisch', label: 'Juridisch', icon: <Shield className="w-4 h-4" /> },
     ],
   },
   {
@@ -117,14 +116,6 @@ const navGroups: NavGroup[] = [
       { key: 'nieuws', label: 'Nieuws', icon: <Sparkles className="w-4 h-4" /> },
       { key: 'foto-galerij', label: 'Foto\'s', icon: <Camera className="w-4 h-4" /> },
       { key: 'video-galerij', label: 'Video\'s', icon: <Video className="w-4 h-4" /> },
-    ],
-  },
-  {
-    label: 'Overig',
-    emoji: '📋',
-    items: [
-      { key: 'evenementen', label: 'Evenementen', icon: <Calendar className="w-4 h-4" /> },
-      { key: 'juridisch', label: 'Juridisch', icon: <Shield className="w-4 h-4" /> },
     ],
   },
 ];
@@ -223,7 +214,6 @@ export default function MichigamiApp() {
             {activeSection === 'contact' && <ContactSection />}
             {activeSection === 'nieuws' && <NewsSection />}
             {activeSection === 'techniekenkaart' && <TechniquesCardSection />}
-            {activeSection === 'evenementen' && <EventArchiveSection />}
             {activeSection === 'juridisch' && <LegalSection />}
           </div>
         </ScrollArea>
