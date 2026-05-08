@@ -114,8 +114,17 @@ const navGroups: NavGroup[] = [
     label: 'Media',
     emoji: '📸',
     items: [
+      { key: 'nieuws', label: 'Nieuws', icon: <Sparkles className="w-4 h-4" /> },
       { key: 'foto-galerij', label: 'Foto\'s', icon: <Camera className="w-4 h-4" /> },
       { key: 'video-galerij', label: 'Video\'s', icon: <Video className="w-4 h-4" /> },
+    ],
+  },
+  {
+    label: 'Overig',
+    emoji: '📋',
+    items: [
+      { key: 'evenementen', label: 'Evenementen', icon: <Calendar className="w-4 h-4" /> },
+      { key: 'juridisch', label: 'Juridisch', icon: <Shield className="w-4 h-4" /> },
     ],
   },
 ];
