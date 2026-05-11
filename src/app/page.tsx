@@ -94,10 +94,10 @@ const navGroups: NavGroup[] = [
     items: [
       { key: 'home', label: 'Home', icon: <Home className="w-4 h-4" /> },
       { key: 'agenda', label: 'Agenda', icon: <Calendar className="w-4 h-4" /> },
+      { key: 'info', label: 'Over Ons', icon: <Info className="w-4 h-4" /> },
       { key: 'leden', label: 'Lid Worden', icon: <Users className="w-4 h-4" /> },
       { key: 'lestijden', label: 'Lestijden', icon: <Clock className="w-4 h-4" /> },
       { key: 'locatie', label: 'Locatie', icon: <MapPin className="w-4 h-4" /> },
-      { key: 'info', label: 'Over Ons', icon: <Info className="w-4 h-4" /> },
       { key: 'contact', label: 'Contact', icon: <Mail className="w-4 h-4" /> },
       { key: 'juridisch', label: 'Juridisch', icon: <Shield className="w-4 h-4" /> },
     ],
@@ -427,13 +427,79 @@ function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
       {/* Hero Slider */}
       <HeroSlider />
 
-      {/* Quick Links — met mooie icoontjes */}
+      {/* Nieuws — bovenaan met slider */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between" style={{ background: 'linear-gradient(135deg, #fff2f2 0%, white 100%)' }}>
+          <h3 className="font-bold text-gray-800 flex items-center gap-2">
+            <Sparkles className="w-4 h-4" style={{ color: '#c00000' }} /> Nieuws
+          </h3>
+          <button onClick={() => onNavigate('nieuws')} className="text-xs font-medium hover:underline" style={{ color: '#c00000' }}>
+            Alles →
+          </button>
+        </div>
+        <div className="p-3 space-y-3">
+          {latestNews.length === 0 ? (
+            <p className="text-sm text-gray-400 text-center py-4">Geen nieuwsberichten</p>
+          ) : latestNews.slice(0, 3).map((article, idx) => (
+            <div
+              key={idx}
+              className="flex gap-3 p-2.5 rounded-xl hover:bg-[#fff2f2] transition-colors cursor-pointer"
+              onClick={() => onNavigate('nieuws')}
+            >
+              {article.imageUrl && (
+                <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
+                  <img
+                    src={article.imageUrl}
+                    alt=""
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
+              )}
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-gray-800 line-clamp-2 leading-tight">{article.title}</p>
+                <p className="text-xs text-gray-400 mt-1.5">{article.date || ''}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Agenda — eerstvolgende evenement */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between" style={{ background: 'linear-gradient(135deg, #fff2f2 0%, white 100%)' }}>
+          <h3 className="font-bold text-gray-800 flex items-center gap-2">
+            <Calendar className="w-4 h-4" style={{ color: '#c00000' }} /> Agenda
+          </h3>
+          <button onClick={() => onNavigate('agenda')} className="text-xs font-medium hover:underline" style={{ color: '#c00000' }}>
+            Alles →
+          </button>
+        </div>
+        <div className="p-4 space-y-3">
+          {upcomingEvents.length === 0 ? (
+            <p className="text-sm text-gray-400 text-center py-4">Geen komende evenementen</p>
+          ) : upcomingEvents.slice(0, 2).map((item, idx) => (
+            <div key={idx} className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-[#fff2f2] transition-colors">
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 text-white" style={{ background: 'linear-gradient(135deg, #c00000, #a90000)' }}>
+                {getEmojiIcon(item.emoji, "w-5 h-5")}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-gray-800 truncate">{item.event}</p>
+                <p className="text-xs text-gray-500 mt-0.5">{item.displayDate} {item.time !== '-' && `• ${item.time}`}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Quick Links — met Over Ons als eerste */}
       <div>
         <h2 className="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
           <Sparkles className="w-5 h-5 text-[#c00000]" /> Snel naar...
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
+            { key: 'info' as Section, label: 'Over Ons', desc: 'Geschiedenis & leiding', icon: Info, color: '#c00000', bg: '#fff2f2' },
             { key: 'agenda' as Section, label: 'Agenda', desc: 'Evenementen', icon: Calendar, color: '#c00000', bg: '#fff2f2' },
             { key: 'technieken' as Section, label: 'Technieken', desc: 'Alle technieken', icon: Swords, color: '#8c0000', bg: '#fff2f2' },
             { key: 'exameneisen' as Section, label: 'Examens', desc: 'Per bandniveau', icon: Target, color: '#c00000', bg: '#fce8e8' },
@@ -441,7 +507,6 @@ function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
             { key: 'lestijden' as Section, label: 'Lestijden', desc: 'Wo & Vr', icon: Clock, color: '#c00000', bg: '#fce8e8' },
             { key: 'locatie' as Section, label: 'Locaties', desc: '2 locaties', icon: MapPin, color: '#8c0000', bg: '#fff2f2' },
             { key: 'cursusjapans' as Section, label: 'Cursus Japans', desc: 'Leer + quiz', icon: BookOpen, color: '#c00000', bg: '#fce8e8' },
-            { key: 'contact' as Section, label: 'Contact', desc: 'Neem contact op', icon: Mail, color: '#8c0000', bg: '#fff2f2' },
           ].map((item) => (
             <button
               key={item.key}
@@ -456,74 +521,6 @@ function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
               <span className="text-xs text-gray-500">{item.desc}</span>
             </button>
           ))}
-        </div>
-      </div>
-
-      {/* Widgets row — Agenda + Nieuws */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Agenda Widget */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between" style={{ background: 'linear-gradient(135deg, #fdf6f6 0%, white 100%)' }}>
-            <h3 className="font-bold text-gray-800 flex items-center gap-2">
-              <Calendar className="w-4 h-4" style={{ color: '#c00000' }} /> Agenda
-            </h3>
-            <button onClick={() => onNavigate('agenda')} className="text-xs font-medium hover:underline" style={{ color: '#c00000' }}>
-              Alles →
-            </button>
-          </div>
-          <div className="p-4 space-y-3">
-            {upcomingEvents.length === 0 ? (
-              <p className="text-sm text-gray-400 text-center py-4">Geen komende evenementen</p>
-            ) : upcomingEvents.map((item, idx) => (
-              <div key={idx} className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-[#fdf6f6] transition-colors">
-                <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 text-white" style={{ background: 'linear-gradient(135deg, #a90000, #c00000)' }}>
-                  {getEmojiIcon(item.emoji, "w-5 h-5")}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-gray-800 truncate">{item.event}</p>
-                  <p className="text-xs text-gray-500 mt-0.5">{item.displayDate} {item.time !== '-' && `• ${item.time}`}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Nieuws Feed — horizontaal scrollbaar met foto's */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between" style={{ background: 'linear-gradient(135deg, #fdf6f6 0%, white 100%)' }}>
-            <h3 className="font-bold text-gray-800 flex items-center gap-2">
-              <Sparkles className="w-4 h-4" style={{ color: '#c00000' }} /> Nieuws
-            </h3>
-            <button onClick={() => onNavigate('nieuws')} className="text-xs font-medium hover:underline" style={{ color: '#c00000' }}>
-              Alles →
-            </button>
-          </div>
-          <div className="p-3 space-y-3">
-            {latestNews.length === 0 ? (
-              <p className="text-sm text-gray-400 text-center py-4">Geen nieuwsberichten</p>
-            ) : latestNews.map((article, idx) => (
-              <div
-                key={idx}
-                className="flex gap-3 p-2.5 rounded-xl hover:bg-[#fdf6f6] transition-colors cursor-pointer"
-                onClick={() => onNavigate('nieuws')}
-              >
-                {article.imageUrl && (
-                  <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
-                    <img
-                      src={article.imageUrl}
-                      alt=""
-                      className="w-full h-full object-cover"
-                      loading="lazy"
-                    />
-                  </div>
-                )}
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-gray-800 line-clamp-2 leading-tight">{article.title}</p>
-                  <p className="text-xs text-gray-400 mt-1.5">{article.date || ''}</p>
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
 
