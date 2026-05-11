@@ -152,14 +152,23 @@ function ClubLogo({ className = "", alt = "Judoclub Michigami" }: { className?: 
 export default function MichigamiApp() {
   const [activeSection, setActiveSection] = useState<Section>('home');
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const scrollAreaRef = useRef(null);
 
   // Scroll naar boven bij sectie-wissel (behalve agenda)
   useEffect(() => {
     if (activeSection !== 'agenda') {
-      const viewport = document.querySelector('[data-slot="scroll-area-viewport"]');
-      if (viewport) {
-        viewport.scrollTo({ top: 0, behavior: 'smooth' });
+      const tryScroll = () => {
+        const viewport = document.querySelector('[data-slot="scroll-area-viewport"]');
+        if (viewport) {
+          viewport.scrollTo({ top: 0, behavior: 'smooth' });
+          return true;
+        }
+        return false;
+      };
+      
+      // Probeer direct, als het niet lukt dan na DOM update
+      if (!tryScroll()) {
+        const timer = setTimeout(tryScroll, 100);
+        return () => clearTimeout(timer);
       }
     }
   }, [activeSection]);
