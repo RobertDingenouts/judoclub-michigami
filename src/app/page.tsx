@@ -153,20 +153,6 @@ export default function MichigamiApp() {
   const [activeSection, setActiveSection] = useState<Section>('home');
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // Scroll naar boven bij sectie-wissel (behalve agenda)
-  useEffect(() => {
-    if (activeSection !== 'agenda') {
-      // Gebruik requestAnimationFrame voor betrouwbare scroll na render
-      const raf = requestAnimationFrame(() => {
-        const viewport = document.querySelector('[data-radix-scroll-area-viewport]');
-        if (viewport) {
-          viewport.scrollTop = 0;
-        }
-      });
-      return () => cancelAnimationFrame(raf);
-    }
-  }, [activeSection]);
-
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-[#f8f9fa] w-full overflow-x-hidden">
       {/* Desktop Sidebar */}
@@ -195,7 +181,7 @@ export default function MichigamiApp() {
 
       {/* Main Content */}
       <main className="flex-1 md:ml-64 pb-28 sm:pb-20 md:pb-0 w-full min-w-0">
-        <ScrollArea className="h-[calc(100vh-3.5rem)] sm:h-[calc(100vh-3.5rem)] md:h-screen w-full">
+        <ScrollArea key={activeSection} className="h-[calc(100vh-3.5rem)] sm:h-[calc(100vh-3.5rem)] md:h-screen w-full">
           <div className="p-2 sm:p-4 md:p-8 max-w-[100vw] mx-auto w-full pb-16 sm:pb-0">
             {activeSection === 'home' && <HomeSection onNavigate={setActiveSection} />}
             {activeSection === 'agenda' && <AgendaSection />}
