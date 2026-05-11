@@ -220,7 +220,7 @@ export default function MichigamiApp() {
               onClick={() => setActiveSection(item.key)}
               className={`flex flex-col items-center justify-center gap-0.5 px-1.5 py-1 rounded-lg transition-all ${
                 activeSection === item.key
-                  ? 'text-[#a90000] bg-[#fdf6f6]'
+                  ? 'text-[#c00000] bg-[#fdf6f6]'
                   : 'text-gray-500 hover:text-gray-700'
               }`}
             >
@@ -272,7 +272,7 @@ function SidebarContent({ activeSection, onSelect }: { activeSection: Section; o
     <div className="flex flex-col h-full">
       {/* Logo / Brand */}
       <div className="p-4 border-b border-[#e8eaed] flex flex-col items-center">
-        <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#fdf6f6] to-white border-2 border-[#a90000]/10 flex items-center justify-center mb-2 shadow-sm">
+        <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#fdf6f6] to-white border-2 border-[#c00000]/10 flex items-center justify-center mb-2 shadow-sm">
           <ClubLogo className="w-18 h-18 object-contain" />
         </div>
         <p className="text-[10px] text-gray-400">Opgericht in 1993</p>
@@ -287,7 +287,7 @@ function SidebarContent({ activeSection, onSelect }: { activeSection: Section; o
             placeholder="Zoek..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 text-sm bg-[#f8f9fa] border border-[#e8eaed] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#a90000]/30 focus:border-[#a90000] placeholder:text-gray-400"
+            className="w-full pl-9 pr-3 py-2 text-sm bg-[#f8f9fa] border border-[#e8eaed] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#c00000]/30 focus:border-[#a90000] placeholder:text-gray-400"
           />
         </div>
       </div>
@@ -329,7 +329,7 @@ function SidebarContent({ activeSection, onSelect }: { activeSection: Section; o
                       onClick={() => onSelect(item.key)}
                       className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all ${
                         activeSection === item.key
-                          ? 'bg-[#fdf6f6] text-[#a90000] font-medium'
+                          ? 'bg-[#fdf6f6] text-[#c00000] font-medium'
                           : 'text-gray-600 hover:bg-[#f8f9fa] hover:text-gray-800'
                       }`}
                     >
@@ -357,13 +357,13 @@ function SidebarContent({ activeSection, onSelect }: { activeSection: Section; o
       {/* Footer */}
       <div className="p-3 border-t border-[#e8eaed]">
         <div className="flex items-center gap-2 justify-center">
-          <a href="https://www.facebook.com/judoclubmichigami" target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-md hover:bg-[#f8f9fa] text-gray-400 hover:text-[#a90000] transition-colors">
+          <a href="https://www.facebook.com/judoclubmichigami" target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-md hover:bg-[#f8f9fa] text-gray-400 hover:text-[#c00000] transition-colors">
             <Facebook className="w-4 h-4" />
           </a>
-          <a href="mailto:judoclub_michigami@hotmail.com" className="p-1.5 rounded-md hover:bg-[#f8f9fa] text-gray-400 hover:text-[#a90000] transition-colors">
+          <a href="mailto:judoclub_michigami@hotmail.com" className="p-1.5 rounded-md hover:bg-[#f8f9fa] text-gray-400 hover:text-[#c00000] transition-colors">
             <Mail className="w-4 h-4" />
           </a>
-          <a href="https://www.youtube.com/channel/UC8tXSKppIMF6awS2cj7w50A" target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-md hover:bg-[#f8f9fa] text-gray-400 hover:text-[#a90000] transition-colors">
+          <a href="https://www.youtube.com/channel/UC8tXSKppIMF6awS2cj7w50A" target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-md hover:bg-[#f8f9fa] text-gray-400 hover:text-[#c00000] transition-colors">
             <Youtube className="w-4 h-4" />
           </a>
         </div>
@@ -457,18 +457,18 @@ function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
       {/* Quick Links — met mooie icoontjes */}
       <div>
         <h2 className="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-[#a90000]" /> Snel naar...
+          <Sparkles className="w-5 h-5 text-[#c00000]" /> Snel naar...
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
-            { key: 'agenda' as Section, label: 'Agenda', desc: 'Evenementen', icon: Calendar, color: '#a90000', bg: '#fdf6f6' },
-            { key: 'technieken' as Section, label: 'Technieken', desc: 'Alle technieken', icon: Swords, color: '#8c0000', bg: '#fdf6f6' },
-            { key: 'exameneisen' as Section, label: 'Examens', desc: 'Per bandniveau', icon: Target, color: '#a90000', bg: '#fffdf0' },
-            { key: 'leden' as Section, label: 'Lid Worden', desc: 'Meld je aan', icon: Users, color: '#8c0000', bg: '#fdf6f6' },
-            { key: 'lestijden' as Section, label: 'Lestijden', desc: 'Wo & Vr', icon: Clock, color: '#a90000', bg: '#fffdf0' },
-            { key: 'locatie' as Section, label: 'Locaties', desc: '2 locaties', icon: MapPin, color: '#8c0000', bg: '#fdf6f6' },
-            { key: 'cursusjapans' as Section, label: 'Cursus Japans', desc: 'Leer + quiz', icon: BookOpen, color: '#a90000', bg: '#fffdf0' },
-            { key: 'contact' as Section, label: 'Contact', desc: 'Neem contact op', icon: Mail, color: '#8c0000', bg: '#fdf6f6' },
+            { key: 'agenda' as Section, label: 'Agenda', desc: 'Evenementen', icon: Calendar, color: '#c00000', bg: '#fff2f2' },
+            { key: 'technieken' as Section, label: 'Technieken', desc: 'Alle technieken', icon: Swords, color: '#8c0000', bg: '#fff2f2' },
+            { key: 'exameneisen' as Section, label: 'Examens', desc: 'Per bandniveau', icon: Target, color: '#c00000', bg: '#fce8e8' },
+            { key: 'leden' as Section, label: 'Lid Worden', desc: 'Meld je aan', icon: Users, color: '#8c0000', bg: '#fff2f2' },
+            { key: 'lestijden' as Section, label: 'Lestijden', desc: 'Wo & Vr', icon: Clock, color: '#c00000', bg: '#fce8e8' },
+            { key: 'locatie' as Section, label: 'Locaties', desc: '2 locaties', icon: MapPin, color: '#8c0000', bg: '#fff2f2' },
+            { key: 'cursusjapans' as Section, label: 'Cursus Japans', desc: 'Leer + quiz', icon: BookOpen, color: '#c00000', bg: '#fce8e8' },
+            { key: 'contact' as Section, label: 'Contact', desc: 'Neem contact op', icon: Mail, color: '#8c0000', bg: '#fff2f2' },
           ].map((item) => (
             <button
               key={item.key}
@@ -492,9 +492,9 @@ function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
           <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between" style={{ background: 'linear-gradient(135deg, #fdf6f6 0%, white 100%)' }}>
             <h3 className="font-bold text-gray-800 flex items-center gap-2">
-              <Calendar className="w-4 h-4" style={{ color: '#a90000' }} /> Agenda
+              <Calendar className="w-4 h-4" style={{ color: '#c00000' }} /> Agenda
             </h3>
-            <button onClick={() => onNavigate('agenda')} className="text-xs font-medium hover:underline" style={{ color: '#a90000' }}>
+            <button onClick={() => onNavigate('agenda')} className="text-xs font-medium hover:underline" style={{ color: '#c00000' }}>
               Alles →
             </button>
           </div>
@@ -519,9 +519,9 @@ function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
           <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between" style={{ background: 'linear-gradient(135deg, #fdf6f6 0%, white 100%)' }}>
             <h3 className="font-bold text-gray-800 flex items-center gap-2">
-              <Sparkles className="w-4 h-4" style={{ color: '#a90000' }} /> Nieuws
+              <Sparkles className="w-4 h-4" style={{ color: '#c00000' }} /> Nieuws
             </h3>
-            <button onClick={() => onNavigate('nieuws')} className="text-xs font-medium hover:underline" style={{ color: '#a90000' }}>
+            <button onClick={() => onNavigate('nieuws')} className="text-xs font-medium hover:underline" style={{ color: '#c00000' }}>
               Alles →
             </button>
           </div>
@@ -557,16 +557,16 @@ function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
       {/* Training Info — 2 locaties */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Woensdag */}
-        <div className="bg-gradient-to-br from-[#fdf6f6] to-white rounded-2xl shadow-sm border border-[#a90000]/10 p-5">
+        <div className="bg-gradient-to-br from-[#fdf6f6] to-white rounded-2xl shadow-sm border border-[#c00000]/10 p-5">
           <div className="flex items-start gap-4">
             <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#a9000015' }}>
-              <Clock className="w-7 h-7" style={{ color: '#a90000' }} />
+              <Clock className="w-7 h-7" style={{ color: '#c00000' }} />
             </div>
             <div className="flex-1">
               <h3 className="font-bold text-gray-800 text-lg">Woensdagavond</h3>
               <p className="text-sm text-gray-500 mt-0.5">Algemene training — alle leeftijden</p>
               <div className="flex items-center gap-3 mt-3">
-                <span className="text-sm font-bold" style={{ color: '#a90000' }}>19:00 - 20:00</span>
+                <span className="text-sm font-bold" style={{ color: '#c00000' }}>19:00 - 20:00</span>
                 <span className="text-xs text-gray-400">•</span>
                 <span className="text-xs text-gray-500 flex items-center gap-1">
                   <MapPin className="w-3 h-3" /> Oud-Vossemeer
@@ -637,7 +637,7 @@ function InfoSection() {
             <CardContent className="p-4 sm:p-6 space-y-4">
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-full bg-[#fdf6f6] flex items-center justify-center flex-shrink-0 mt-1">
-                  <Calendar className="w-5 h-5 text-[#a90000]" />
+                  <Calendar className="w-5 h-5 text-[#c00000]" />
                 </div>
                 <div>
                   <h3 className="font-bold text-gray-800 mb-2">Onze geschiedenis</h3>
@@ -653,7 +653,7 @@ function InfoSection() {
             <Card className="border-0 shadow-sm">
               <CardContent className="p-4 text-center">
                 <div className="w-12 h-12 mx-auto rounded-full bg-[#fdf6f6] flex items-center justify-center mb-2">
-                  <Users className="w-6 h-6 text-[#a90000]" />
+                  <Users className="w-6 h-6 text-[#c00000]" />
                 </div>
                 <h3 className="font-semibold text-gray-800 text-sm">Groepen</h3>
                 <p className="text-xs text-gray-500 mt-1">3 leeftijdsgroepen</p>
@@ -662,7 +662,7 @@ function InfoSection() {
             <Card className="border-0 shadow-sm">
               <CardContent className="p-4 text-center">
                 <div className="w-12 h-12 mx-auto rounded-full bg-[#fdf6f6] flex items-center justify-center mb-2">
-                  <Clock className="w-6 h-6 text-[#a90000]" />
+                  <Clock className="w-6 h-6 text-[#c00000]" />
                 </div>
                 <h3 className="font-semibold text-gray-800 text-sm">Training</h3>
                 <p className="text-xs text-gray-500 mt-1">Woensdag & vrijdag</p>
@@ -671,7 +671,7 @@ function InfoSection() {
             <Card className="border-0 shadow-sm cursor-pointer hover:shadow-md transition-shadow" onClick={() => window.open(clubInfo.locations[0].mapsUrl, '_blank')}>
               <CardContent className="p-4 text-center">
                 <div className="w-12 h-12 mx-auto rounded-full bg-[#fdf6f6] flex items-center justify-center mb-2">
-                  <MapPin className="w-6 h-6 text-[#a90000]" />
+                  <MapPin className="w-6 h-6 text-[#c00000]" />
                 </div>
                 <h3 className="font-semibold text-gray-800 text-sm">Locatie</h3>
                 <p className="text-xs text-gray-500 mt-1">{clubInfo.locations[0].address}</p>
@@ -685,7 +685,7 @@ function InfoSection() {
           <Card className="border-0 shadow-sm">
             <CardContent className="p-4 sm:p-6 space-y-4">
               <h3 className="font-bold text-gray-800 flex items-center gap-2">
-                <Users className="w-5 h-5 text-[#a90000]" /> Huidige leiding
+                <Users className="w-5 h-5 text-[#c00000]" /> Huidige leiding
               </h3>
               <p className="text-sm text-gray-600 leading-relaxed">
                 Sinds 2021 zorgt een nieuwe generatie voor de toekomst van Judoclub Michigami. 
@@ -701,7 +701,7 @@ function InfoSection() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="font-semibold text-gray-800">{person.name}</h4>
-                        <p className="text-xs font-medium text-[#a90000] mt-0.5">{person.dan} • {person.role}</p>
+                        <p className="text-xs font-medium text-[#c00000] mt-0.5">{person.dan} • {person.role}</p>
                       </div>
                     </div>
                   </div>
@@ -713,7 +713,7 @@ function InfoSection() {
           <Card className="border-0 shadow-sm">
             <CardContent className="p-4 sm:p-6 space-y-3">
               <h3 className="font-bold text-gray-800 flex items-center gap-2">
-                <Award className="w-5 h-5 text-[#a90000]" /> Oprichter & Erfenis
+                <Award className="w-5 h-5 text-[#c00000]" /> Oprichter & Erfenis
               </h3>
               <div className="p-4 rounded-xl bg-gradient-to-br from-[#fdf6f6] to-white border border-[#fce0e0]">
                 <div className="flex items-start gap-3">
@@ -722,7 +722,7 @@ function InfoSection() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <h4 className="font-semibold text-gray-800">{clubInfo.leadership.founder.name}</h4>
-                    <p className="text-xs font-medium text-[#a90000] mt-0.5">{clubInfo.leadership.founder.dan} • {clubInfo.leadership.founder.role}</p>
+                    <p className="text-xs font-medium text-[#c00000] mt-0.5">{clubInfo.leadership.founder.dan} • {clubInfo.leadership.founder.role}</p>
                     <p className="text-sm text-gray-600 mt-2 leading-relaxed">{clubInfo.leadership.founder.description}</p>
                   </div>
                 </div>
@@ -756,7 +756,7 @@ function InfoSection() {
               <h3 className="font-bold text-gray-800">Hoe gaat zo'n judoles?</h3>
               <p className="text-sm text-gray-600 leading-relaxed">{clubInfo.lessonStructure}</p>
               <div className="bg-[#fdf6f6] rounded-xl p-4 space-y-2">
-                <h4 className="font-semibold text-sm text-[#a90000]">Tip voor proeflessen</h4>
+                <h4 className="font-semibold text-sm text-[#c00000]">Tip voor proeflessen</h4>
                 <p className="text-xs text-gray-600">Kom je voor het eerst? Trek dan een joggingpak of trainingspak aan zonder scherpe delen (gespen, knopen). Een judopak is de eerste maand niet verplicht!</p>
               </div>
             </CardContent>
@@ -835,7 +835,7 @@ function InfoSection() {
           <h3 className="font-bold text-gray-800">Interesse in judo?</h3>
           <p className="text-sm text-gray-600 max-w-lg mx-auto">
             Kom gerust eens kijken op een training - je bent van harte welkom! 
-            Als het je bevalt, kun je direct starten met <span className="font-semibold text-[#a90000]">{clubInfo.costs.proeflessen}</span>.
+            Als het je bevalt, kun je direct starten met <span className="font-semibold text-[#c00000]">{clubInfo.costs.proeflessen}</span>.
           </p>
           <div className="flex flex-wrap justify-center gap-2 pt-2">
             <Button onClick={() => window.open('https://forms.office.com/r/8Vw9kPcLT6', '_blank')} className="bg-[#a90000] hover:bg-[#8c0000] text-sm">
@@ -1063,11 +1063,11 @@ function TechniquesSection() {
               >
                 <div className="flex items-center justify-between gap-2">
                   <div className="min-w-0 flex-1 flex items-center gap-2">
-                    <span className="flex-shrink-0 w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#a90000]/10 text-[#a90000] font-bold text-xs sm:text-sm flex items-center justify-center border border-[#a90000]/20">
+                    <span className="flex-shrink-0 w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#a90000]/10 text-[#c00000] font-bold text-xs sm:text-sm flex items-center justify-center border border-[#a90000]/20">
                       {tech.id}
                     </span>
                     <div className="min-w-0">
-                      <h3 className="font-bold text-[#a90000] text-sm md:text-base truncate">{tech.name}</h3>
+                      <h3 className="font-bold text-[#c00000] text-sm md:text-base truncate">{tech.name}</h3>
                       <p className="text-xs md:text-sm text-gray-500 mt-0.5 truncate">{tech.dutch}</p>
                     </div>
                   </div>
@@ -1284,23 +1284,23 @@ function ExamRequirementsSection() {
         <Card className="border-0 shadow-sm">
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
-              <Layers className="w-4 h-4 text-[#a90000]" /> Algemene eisen
+              <Layers className="w-4 h-4 text-[#c00000]" /> Algemene eisen
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="text-center p-3 rounded-xl bg-[#fdf6f6]">
-                <p className="text-2xl font-bold text-[#a90000]">{beltReq.ukemiWaza}</p>
+                <p className="text-2xl font-bold text-[#c00000]">{beltReq.ukemiWaza}</p>
                 <p className="text-xs text-gray-500 mt-1">Ukemi-waza</p>
                 <p className="text-[10px] text-gray-400">Valbreektechnieken</p>
               </div>
               <div className="text-center p-3 rounded-xl bg-[#fdf6f6]">
-                <p className="text-2xl font-bold text-[#a90000]">{beltReq.nageKomi}</p>
+                <p className="text-2xl font-bold text-[#c00000]">{beltReq.nageKomi}</p>
                 <p className="text-xs text-gray-500 mt-1">Nage-komi</p>
                 <p className="text-[10px] text-gray-400">Worpen in 1 min</p>
               </div>
               <div className="text-center p-3 rounded-xl bg-[#fdf6f6]">
-                <p className="text-2xl font-bold text-[#a90000]">{beltReq.kantelTechnieken}</p>
+                <p className="text-2xl font-bold text-[#c00000]">{beltReq.kantelTechnieken}</p>
                 <p className="text-xs text-gray-500 mt-1">Kanteltechnieken</p>
                 <p className="text-[10px] text-gray-400">Omkeertechnieken</p>
               </div>
@@ -1312,7 +1312,7 @@ function ExamRequirementsSection() {
       {/* Nage-waza Section */}
       <div className="space-y-3">
         <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider flex items-center gap-2 px-1">
-          <Swords className="w-4 h-4 text-[#a90000]" /> Nage-waza — Werptechnieken
+          <Swords className="w-4 h-4 text-[#c00000]" /> Nage-waza — Werptechnieken
         </h3>
         {nageSubCategories.map(cat => {
           const reqCount = beltReq?.requirements[cat.id] || 0;
@@ -1326,7 +1326,7 @@ function ExamRequirementsSection() {
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-base flex items-center gap-2">
-                    <span className="text-[#a90000] font-bold">{cat.nameJa}</span>
+                    <span className="text-[#c00000] font-bold">{cat.nameJa}</span>
                     {showDutchTranslation && <span className="text-gray-400 font-normal text-sm">— {cat.nameNl}</span>}
                   </CardTitle>
                   <Badge variant="secondary" className="text-xs">
@@ -1353,7 +1353,7 @@ function ExamRequirementsSection() {
                               <Badge className="bg-[#a90000] text-white text-[10px] px-1.5 py-0 flex-shrink-0">NIEUW</Badge>
                             )}
                             <div className="flex-1 min-w-0">
-                              <span className="font-semibold text-sm text-[#a90000]">{tech.nameJa}</span>
+                              <span className="font-semibold text-sm text-[#c00000]">{tech.nameJa}</span>
                               {showDutchTranslation && (
                                 <span className="text-xs text-gray-500 ml-2">{tech.nameNl}</span>
                               )}
@@ -1403,7 +1403,7 @@ function ExamRequirementsSection() {
       {/* Katame-waza Section */}
       <div className="space-y-3">
         <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider flex items-center gap-2 px-1">
-          <Shield className="w-4 h-4 text-[#a90000]" /> Katame-waza — Controletechnieken
+          <Shield className="w-4 h-4 text-[#c00000]" /> Katame-waza — Controletechnieken
         </h3>
         {katameSubCategories.map(cat => {
           const reqCount = beltReq?.requirements[cat.id] || 0;
@@ -1417,7 +1417,7 @@ function ExamRequirementsSection() {
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-base flex items-center gap-2">
-                    <span className="text-[#a90000] font-bold">{cat.nameJa}</span>
+                    <span className="text-[#c00000] font-bold">{cat.nameJa}</span>
                     {showDutchTranslation && <span className="text-gray-400 font-normal text-sm">— {cat.nameNl}</span>}
                   </CardTitle>
                   <Badge variant="secondary" className="text-xs">
@@ -1444,7 +1444,7 @@ function ExamRequirementsSection() {
                               <Badge className="bg-[#a90000] text-white text-[10px] px-1.5 py-0 flex-shrink-0">NIEUW</Badge>
                             )}
                             <div className="flex-1 min-w-0">
-                              <span className="font-semibold text-sm text-[#a90000]">{tech.nameJa}</span>
+                              <span className="font-semibold text-sm text-[#c00000]">{tech.nameJa}</span>
                               {showDutchTranslation && (
                                 <span className="text-xs text-gray-500 ml-2">{tech.nameNl}</span>
                               )}
@@ -1496,7 +1496,7 @@ function ExamRequirementsSection() {
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
             <CardTitle className="text-base flex items-center gap-2">
-              <span className="text-[#a90000] font-bold">Ukemi-waza</span>
+              <span className="text-[#c00000] font-bold">Ukemi-waza</span>
               {showDutchTranslation && <span className="text-gray-400 font-normal text-sm">— Valbreektechnieken</span>}
             </CardTitle>
             <Badge variant="secondary" className="text-xs">4</Badge>
@@ -1509,7 +1509,7 @@ function ExamRequirementsSection() {
                 <div key={tech.id} className="flex items-center gap-2 p-2 rounded-lg bg-[#f8f9fa]">
                   <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0" />
                   <div>
-                    <span className="font-semibold text-sm text-[#a90000]">{tech.nameJa}</span>
+                    <span className="font-semibold text-sm text-[#c00000]">{tech.nameJa}</span>
                     {showDutchTranslation && (
                       <span className="text-xs text-gray-500 ml-1">{tech.nameNl}</span>
                     )}
@@ -1528,7 +1528,7 @@ function ExamRequirementsSection() {
         <Card className="border-0 shadow-sm bg-gradient-to-r from-[#fdf6f6] to-white">
           <CardContent className="p-3 sm:p-4">
             <h3 className="text-xs sm:text-sm font-bold text-gray-500 uppercase tracking-wider mb-2 sm:mb-3 flex items-center gap-2">
-              <List className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#a90000] flex-shrink-0" /> Samenvatting
+              <List className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#c00000] flex-shrink-0" /> Samenvatting
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-1.5 sm:gap-2">
               {Object.entries(beltReq.requirements).map(([catId, count]) => {
@@ -1536,7 +1536,7 @@ function ExamRequirementsSection() {
                 const catInfo = getCategoryInfo(catId);
                 return (
                   <div key={catId} className="text-center p-1.5 sm:p-2 rounded-lg bg-white border border-[#e8eaed]">
-                    <p className="text-base sm:text-lg font-bold text-[#a90000]">{count}</p>
+                    <p className="text-base sm:text-lg font-bold text-[#c00000]">{count}</p>
                     <p className="text-[10px] sm:text-xs text-gray-500 truncate">{catInfo?.nameJa || catId}</p>
                   </div>
                 );
@@ -1544,7 +1544,7 @@ function ExamRequirementsSection() {
             </div>
             <div className="mt-2 sm:mt-3 p-2 rounded-lg bg-white border border-[#e8eaed] text-center">
               <span className="text-xs sm:text-sm text-gray-600 break-words">
-                Totaal: <span className="font-bold text-[#a90000]">{Object.values(beltReq.requirements).reduce((a, b) => a + b, 0)}</span> technieken + {beltReq.ukemiWaza} ukemi + {beltReq.nageKomi} nage-komi + {beltReq.kantelTechnieken} kantel
+                Totaal: <span className="font-bold text-[#c00000]">{Object.values(beltReq.requirements).reduce((a, b) => a + b, 0)}</span> technieken + {beltReq.ukemiWaza} ukemi + {beltReq.nageKomi} nage-komi + {beltReq.kantelTechnieken} kantel
               </span>
             </div>
           </CardContent>
@@ -1578,22 +1578,22 @@ const itemDescriptions: Record<string, string> = {
 };
 
 const itemColors: Record<string, { color: string; bg: string }> = {
-  'home': { color: '#a90000', bg: '#fdf6f6' },
-  'agenda': { color: '#a90000', bg: '#fdf6f6' },
-  'leden': { color: '#8c0000', bg: '#fdf6f6' },
-  'lestijden': { color: '#a90000', bg: '#fffdf0' },
-  'locatie': { color: '#8c0000', bg: '#fdf6f6' },
-  'info': { color: '#a90000', bg: '#fdf6f6' },
-  'contact': { color: '#8c0000', bg: '#fdf6f6' },
+  'home': { color: '#c00000', bg: '#fff2f2' },
+  'agenda': { color: '#c00000', bg: '#fff2f2' },
+  'leden': { color: '#8c0000', bg: '#fff2f2' },
+  'lestijden': { color: '#c00000', bg: '#fce8e8' },
+  'locatie': { color: '#8c0000', bg: '#fff2f2' },
+  'info': { color: '#c00000', bg: '#fff2f2' },
+  'contact': { color: '#8c0000', bg: '#fff2f2' },
   'juridisch': { color: '#6c757d', bg: '#f4f5f6' },
-  'technieken': { color: '#8c0000', bg: '#fdf6f6' },
-  'exameneisen': { color: '#a90000', bg: '#fffdf0' },
-  'cursusjapans': { color: '#a90000', bg: '#fffdf0' },
-  'techniekenkaart': { color: '#8c0000', bg: '#fdf6f6' },
-  'band-knopen': { color: '#a90000', bg: '#fffdf0' },
-  'nieuws': { color: '#a90000', bg: '#fdf6f6' },
-  'foto-galerij': { color: '#8c0000', bg: '#fdf6f6' },
-  'video-galerij': { color: '#a90000', bg: '#fffdf0' },
+  'technieken': { color: '#8c0000', bg: '#fff2f2' },
+  'exameneisen': { color: '#c00000', bg: '#fce8e8' },
+  'cursusjapans': { color: '#c00000', bg: '#fce8e8' },
+  'techniekenkaart': { color: '#8c0000', bg: '#fff2f2' },
+  'band-knopen': { color: '#c00000', bg: '#fce8e8' },
+  'nieuws': { color: '#c00000', bg: '#fff2f2' },
+  'foto-galerij': { color: '#8c0000', bg: '#fff2f2' },
+  'video-galerij': { color: '#c00000', bg: '#fce8e8' },
 };
 
 function CategoryHubSection({ group, onNavigate }: { group: NavGroup; onNavigate: (s: Section) => void }) {
@@ -1611,7 +1611,7 @@ function CategoryHubSection({ group, onNavigate }: { group: NavGroup; onNavigate
       {/* Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {group.items.map((item) => {
-          const c = itemColors[item.key] || { color: '#a90000', bg: '#fdf6f6' };
+          const c = itemColors[item.key] || { color: '#c00000', bg: '#fff2f2' };
           return (
             <button
               key={item.key}
@@ -1626,15 +1626,35 @@ function CategoryHubSection({ group, onNavigate }: { group: NavGroup; onNavigate
                 <span style={{ color: c.color }}>{item.icon}</span>
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="font-bold text-gray-800 group-hover:text-[#a90000] transition-colors">
+                <h3 className="font-bold text-gray-800 group-hover:text-[#c00000] transition-colors">
                   {item.label}
                 </h3>
                 <p className="text-xs text-gray-500 mt-1">{itemDescriptions[item.key] || ''}</p>
               </div>
-              <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-[#a90000] transition-colors flex-shrink-0 mt-1" />
+              <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-[#c00000] transition-colors flex-shrink-0 mt-1" />
             </button>
           );
         })}
+      </div>
+
+      {/* Verken ook — links naar andere hoofdcategorieën */}
+      <div className="border-t border-[#e8eaed] pt-5 mt-2">
+        <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Verken ook</h3>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          {navGroups.filter(g => g.label !== group.label).map(otherGroup => (
+            <button
+              key={otherGroup.label}
+              onClick={() => onNavigate(groupHubMap[otherGroup.label])}
+              className="flex items-center gap-3 p-4 rounded-xl border border-[#e8eaed] bg-white hover:shadow-md hover:border-[#c00000]/20 transition-all active:scale-[0.98]"
+            >
+              <span className="text-3xl">{otherGroup.emoji}</span>
+              <div className="text-left">
+                <span className="text-sm font-semibold text-gray-700 block">{otherGroup.label}</span>
+                <span className="text-[10px] text-gray-400">{otherGroup.items.length} onderwerpen</span>
+              </div>
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
