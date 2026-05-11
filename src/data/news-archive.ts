@@ -303,6 +303,61 @@ export const newsArchive: NewsYear[] = [
         content:
           "Sinterklaas is langs geweest bij Judoclub Michigami! Bekijk de video op onze Facebook pagina voor een belangrijk bericht aan alle judoka's. Sinterklaas herinnert iedereen eraan om door te trainen en hun best te doen!",
         date: "2024-11-30",
+      },      {
+        id: "cjjf-kata-training-2024",
+        title: "CJJF Kata en technische training in onze dojo",
+        content:
+          "Gisteren vond de CJJF Kata en technische training plaats in onze dojo. Het was een prachtige gelegenheid om weer in contact te komen met andere judoka's van de CJJF Budo, van elkaar te leren en voor sommigen om nog goed te trainen voor de komende Dangraden (zwarte banden) examens.",
+        date: "2024-03",
+        imageUrl: "/instagram/posts/202403/18338069749129662.webp",
+      },
+      {
+        id: "nieuwe-matten-vriendjesdag-2024",
+        title: "Nieuwe matten — dankzij donatie Kruisbeek!",
+        content:
+          "Wat een geweldige week voor Judoclub Michigami Steenbergen! Na jarenlang sparen en dankzij een donatie hebben we deze nieuwe matten kunnen aanschaffen. We hebben ze meteen getest met een leuke, drukbezochte vriendjes- en vriendinnetjes training.\n\nSpeciale dank aan de opgeheven schaatsbaan de Kruisbeek voor hun donatie. Jullie hebben ons enorm geholpen!\n\nOok willen wij graag Bas Carwash Team, Hans Dingenouts, Robert Dingenouts, Robin Hack en Pascal Hack bedanken voor het sjouwen, schoonmaken en leggen van de nieuwe matten.",
+        date: "2024-03",
+        imageUrl: "/instagram/posts/202403/17874703655999244.webp",
+      },
+      {
+        id: "examens-einde-schooljaar-2024",
+        title: "Succesvolle examens — einde schooljaar 2024",
+        content:
+          "Gisteravond was een succesvolle afsluiting van het schooljaar met de examens voor witte banden, gele slips, gele banden en een oranje band. Iedereen heeft superhard getraind en dat was te zien! De kwaliteit was echt hoog, wat een topprestaties. We zijn supertrots op jullie allemaal.",
+        date: "2024-06",
+        imageUrl: "/instagram/posts/202406/18007030151320287.webp",
+      },
+      {
+        id: "wendy-jansen-1e-dan-2024",
+        title: "Wendy Jansen behaalt 1e Dan zwarte band! 🎉",
+        content:
+          "Trots moment bij de judoles gisterenavond! Wendy Jansen heeft met succes haar 1e dan zwarte band behaald. Om haar dankbaarheid te tonen, bedankte ze haar sensei's, uke en judopartners met zelf gegraveerde glazen met 'arigato' en een judo illustratie. De kinderen kregen allemaal een zakje snoep of chips.\n\nGefeliciteerd Wendy! 🥋👏",
+        date: "2024-06",
+        imageUrl: "/instagram/posts/202406/18022436702039909.webp",
+      },
+      {
+        id: "lintjestoernooi-november-2024",
+        title: "Lintjestoernooi Roosendaal — 7 judoka's mee!",
+        content:
+          "Vandaag hebben zeven judoka's van Judoclub Michigami meegedaan aan het Lintjestoernooi van Cor Schuurbiers in Roosendaal! Een mooie kans om ervaring op te doen in een ontspannen sfeer.\n\n📊 Behaalde punten:\n🥋 Merijn — 13\n🥋 Jayden — 16\n🥋 Jochem — 18\n🥋 Lola — 18\n🥋 Jax — 18\n🥋 Vive — 21\n🥋 Ivo — 21\n\nDe volgende ronde staat gepland op 8 december.",
+        date: "2024-11",
+        imageUrl: "/instagram/posts/202411/17853748029319957.webp",
+      },
+      {
+        id: "shintai-jubileumtoernooi-2024",
+        title: "Actief judoweekend — Shintai jubileumtoernooi + Lintjestoernooi",
+        content:
+          "Afgelopen weekend was een actief judoweekend voor Michigami.\n\nVrijdag hebben Teun en Maan hun witte band diploma gehaald.\n\nZaterdag deden 8 judoka's mee aan het jubileumtoernooi van Shintai in Halsteren (25-jarig bestaan):\n• Jax: 1e plaats\n• Ashley en Lucas: 2e plaats\n• Damian en Julia: 3e plaats\n• Lotte en Ivo: 4e plaats\n• Lola: 5e plaats\n\nZondag ervaring opgedaan bij het Lintjestoernooi — Vive en Ivo haalden hun eerste lintje!\n\nPuntenstand: Ivo 45, Vive 42, Luuk 24, Jan 18.",
+        date: "2024-12",
+        imageUrl: "/instagram/posts/202412/18033690059145049.webp",
+      },
+      {
+        id: "18-judoka-examen-december-2024",
+        title: "18 judoka's behalen nieuwe band of slip!",
+        content:
+          "Afgelopen vrijdag hebben maar liefst 18 judoka's een nieuwe band of slip behaald. Tijdens de examens lieten ze zien hoe hard ze geoefend hebben. Bij het opnoemen van de Japanse benamingen wisten velen direct de juiste technieken te laten zien — knap gedaan!\n\nWe zijn trots op jullie inzet en doorzettingsvermogen. Blijf zo doorgaan, op naar de volgende band of slip!",
+        date: "2024-12",
+        imageUrl: "/instagram/posts/202412/18048006761489114.webp",
       },
     ],
   },
@@ -355,8 +410,69 @@ export const newsArchive: NewsYear[] = [
         id: "laatsteseizoen-spelletjesdag-examens-2025",
         title: "Laatste judoles van het seizoen — Spelletjesdag + Examens!",
         content:
-          "De laatste judoles van het seizoen was niet alleen een gezellige spelletjesdag, maar ook een dag vol examens! Twee judoka's haalden hun gele slip, één de gele band en één zelfs de oranje band!\n\nNa beide een net examen afgelegd te hebben mochten ze hun bruine band omknopen. Gefeliciteerd allemaal!",
-        date: "2025",
+          "De laatste judoles van het seizoen was niet alleen een gezellige spelletjesdag, maar ook het moment voor een paar verlate examens!\n\nTwee judoka's haalden hun gele slip, één de gele band en één zelfs de oranje band! 💪✨ Wat een mooie afsluiting van het seizoen — vol inzet én plezier.\n\nStuk voor stuk dichter bij dat grote doel: de zwarte band 🖤 Blijf trainen, blijf groeien — jullie zijn op de goede weg. We zijn trots op jullie inzet!\n\nFijne zomer allemaal en tot na de vakantie! 🌞",
+        date: "2025-06",
+        imageUrl: "/instagram/posts/202506/18033414857673919.webp",
+      },      {
+        id: "spelletjesdag-februari-2025",
+        title: "Spelletjesdag bij Judoclub Michigami! 🎲",
+        content:
+          "De laatste training voor de vakantie is bij ons meestal spelletjesdag! We doen dan allerlei spellen die te maken hebben met judo, snelheid en reactievermogen. Zo speelden we voor de kerstvakantie vorig jaar ons eigen judoganzebord, ontworpen door Robin Hack.",
+        date: "2025-02",
+        imageUrl: "/instagram/posts/202502/18083536591593823.webp",
+      },
+      {
+        id: "witte-banden-mei-2025",
+        title: "Toppers geslaagd voor de witte band! 🥋",
+        content:
+          "Deze toppers hebben gisteren laten zien dat ze de grondbeginselen van judo onder de knie hebben! Allemaal geslaagd voor de witte band. De kwaliteit was zichtbaar: je zag dat er extra geoefend was. Trots op onze judoka's! 💪",
+        date: "2025-05",
+        imageUrl: "/instagram/posts/202505/18059800228932051.webp",
+      },
+      {
+        id: "lola-witte-band-2025",
+        title: "Lola geslaagd voor de Witte Band!",
+        content:
+          "En ook Lola geslaagd voor de Witte Band! 🥋 Keurig examen afgelegd, dik verdiend! 💪",
+        date: "2025-05",
+        imageUrl: "/instagram/posts/202505/17964879629866342.webp",
+      },
+      {
+        id: "14-judoka-examen-juni-2025",
+        title: "14 judoka's — allemaal gehaald! 🔥",
+        content:
+          "Gisteravond hebben 14 judoka's hun band of slipexamen gedaan — en allemaal gehaald! 💪 Ze hebben ervoor moeten zweten… letterlijk! Het ging er zó fanatiek aan toe dat er zelfs stoom van de mat kwam 🔥\n\nGefeliciteerd toppers, jullie hebben het verdiend! 🥳",
+        date: "2025-06",
+        imageUrl: "/instagram/posts/202506/17911599114036467.webp",
+      },
+      {
+        id: "teun-gele-slip-augustus-2025",
+        title: "Teun geslaagd voor gele slip — na operatie doorgezet! 💪",
+        content:
+          "Voor de vakantie moest Teun zijn examen even uitstellen vanwege een operatie, maar gisteren heeft hij dat goedgemaakt: geslaagd voor zijn gele slip! 🥋💪 Gefeliciteerd Teun! #doorzetten",
+        date: "2025-08",
+        imageUrl: "/instagram/posts/202508/18343839076164581.webp",
+      },
+    ],
+  },
+  {
+    year: 2026,
+    articles: [
+      {
+        id: "examenresultaten-februari-2026",
+        title: "Examenresultaten — mooie vooruitgang! 🎉",
+        content:
+          "Hard werken en doorzetten wordt beloond. We zijn trots op de mooie vooruitgang die onze judoka's vorige week hebben laten zien:\n\n⚪ 4x Witte band\n🟡 3x Gele slip\n🟡 5x Gele band\n🟠 2x Oranje slip\n🟠 2x Oranje band\n🟢 3x Groene slip\n\nGefeliciteerd allemaal! 🎉",
+        date: "2026-02",
+        imageUrl: "/instagram/posts/202602/17880571311378479.webp",
+      },
+      {
+        id: "lintjestoernooi-februari-2026",
+        title: "Lintjestoernooi — Mika, Lotte, Vive en Luuk!",
+        content:
+          "Gisteren hebben Mika, Lotte, Vive en Luuk weer hard gevochten en veel ervaring opgedaan bij het Lintjestoernooi. Ze hebben het alle vier goed gedaan en mooie punten gescoord met worpen en houdgrepen.\n\nDe behaalde punten:\n🥋 Vive — 174\n🥋 Lotte — 61\n🥋 Mika — 59\n🥋 Luuk — 40\n\nMika en Luuk hebben gisteren hun gele lintje behaald, gefeliciteerd!\n\nOp 8 maart is de volgende editie.",
+        date: "2026-02",
+        imageUrl: "/instagram/posts/202602/18086493668155953.webp",
       },
     ],
   },
