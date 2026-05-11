@@ -156,27 +156,14 @@ export default function MichigamiApp() {
   // Scroll naar boven bij sectie-wissel (behalve agenda)
   useEffect(() => {
     if (activeSection !== 'agenda') {
-      const scrollTimeout = setTimeout(() => {
-        // Probeer alle mogelijke scroll containers
-        const selectors = [
-          '[data-slot="scroll-area-viewport"]',
-          '.ScrollAreaViewport',
-          '[data-radix-scroll-area-viewport]'
-        ];
-        
-        for (const selector of selectors) {
-          const el = document.querySelector(selector);
-          if (el) {
-            el.scrollTop = 0;
-            return;
-          }
+      // Gebruik requestAnimationFrame voor betrouwbare scroll na render
+      const raf = requestAnimationFrame(() => {
+        const viewport = document.querySelector('[data-radix-scroll-area-viewport]');
+        if (viewport) {
+          viewport.scrollTop = 0;
         }
-        
-        // Fallback: window scroll
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }, 50);
-      
-      return () => clearTimeout(scrollTimeout);
+      });
+      return () => cancelAnimationFrame(raf);
     }
   }, [activeSection]);
 
