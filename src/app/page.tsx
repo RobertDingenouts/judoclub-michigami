@@ -70,7 +70,10 @@ type Section =
   | 'contact'
   | 'nieuws'
   | 'techniekenkaart'
-  | 'juridisch';
+  | 'juridisch'
+  | 'club-hub'
+  | 'judoschool-hub'
+  | 'media-hub';
 
 interface NavItem {
   key: Section;
@@ -201,6 +204,27 @@ export default function MichigamiApp() {
             {activeSection === 'nieuws' && <NewsSection />}
             {activeSection === 'techniekenkaart' && <TechniquesCardSection />}
             {activeSection === 'juridisch' && <LegalSection />}
+            {activeSection === 'club-hub' && <CategoryHubSection group={navGroups[0]} onNavigate={setActiveSection} />}
+            {activeSection === 'judoschool-hub' && <CategoryHubSection group={navGroups[1]} onNavigate={setActiveSection} />}
+            {activeSection === 'media-hub' && <CategoryHubSection group={navGroups[2]} onNavigate={setActiveSection} />}
+          </div>
+
+          {/* Verken ook — Cross-links naar de 3 hoofdcategorieën */}
+          <div className="border-t border-[#e8eaed] mt-6 pt-4 px-1">
+            <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Verken ook</h3>
+            <div className="grid grid-cols-3 gap-3">
+              {navGroups.map((group) => (
+                <button
+                  key={group.label}
+                  onClick={() => setActiveSection(groupHubMap[group.label])}
+                  className="flex flex-col items-center gap-1.5 p-3 rounded-xl border border-[#e8eaed] bg-white hover:shadow-md hover:-translate-y-0.5 transition-all active:scale-95"
+                >
+                  <span className="text-2xl">{group.emoji}</span>
+                  <span className="text-xs font-semibold text-gray-700">{group.label}</span>
+                  <span className="text-[10px] text-gray-400">{group.items.length} onderwerpen</span>
+                </button>
+              ))}
+            </div>
           </div>
         </ScrollArea>
       </main>
@@ -236,6 +260,12 @@ export default function MichigamiApp() {
 }
 
 // ============ SIDEBAR ============
+const groupHubMap: Record<string, Section> = {
+  'Club': 'club-hub',
+  'Judo School': 'judoschool-hub',
+  'Media': 'media-hub',
+};
+
 function SidebarContent({ activeSection, onSelect }: { activeSection: Section; onSelect: (s: Section) => void }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [openGroup, setOpenGroup] = useState<string | null>(null);
@@ -287,18 +317,25 @@ function SidebarContent({ activeSection, onSelect }: { activeSection: Section; o
             <div key={group.label}>
               {/* Group Header */}
               {!searchQuery.trim() && (
-                <button
-                  onClick={() => toggleGroup(group.label)}
-                  className="w-full flex items-center gap-2 px-2 py-1.5 text-xs font-semibold text-gray-400 uppercase tracking-wider hover:text-gray-600 transition-colors"
-                >
-                  <span className="text-sm">{group.emoji}</span>
-                  <span>{group.label}</span>
-                  <ChevronRight
-                    className={`w-3 h-3 ml-auto transition-transform ${
-                      openGroup === group.label ? 'rotate-90' : ''
-                    }`}
-                  />
-                </button>
+                <div className="flex items-center">
+                  <button
+                    onClick={() => onSelect(groupHubMap[group.label])}
+                    className="flex-1 flex items-center gap-2 px-2 py-1.5 text-xs font-semibold text-gray-400 uppercase tracking-wider hover:text-gray-600 transition-colors"
+                  >
+                    <span className="text-sm">{group.emoji}</span>
+                    <span>{group.label}</span>
+                  </button>
+                  <button
+                    onClick={() => toggleGroup(group.label)}
+                    className="px-1 py-1.5 hover:text-gray-600 transition-colors"
+                  >
+                    <ChevronRight
+                      className={`w-3 h-3 transition-transform ${
+                        openGroup === group.label ? 'rotate-90' : ''
+                      }`}
+                    />
+                  </button>
+                </div>
               )}
 
               {/* Group Items */}
@@ -1531,6 +1568,92 @@ function ExamRequirementsSection() {
           </CardContent>
         </Card>
       )}
+    </div>
+  );
+}
+
+// ============ CATEGORY HUB SECTION ============
+const itemDescriptions: Record<string, string> = {
+  // Club
+  'home': 'Welkom & overzicht',
+  'agenda': 'Evenementen & data',
+  'leden': 'Lidmaatschap & kosten',
+  'lestijden': 'Trainingstijden',
+  'locatie': 'Onze locaties',
+  'info': 'Geschiedenis & leiding',
+  'contact': 'Neem contact op',
+  'juridisch': 'Privacy & voorwaarden',
+  // Judo School
+  'technieken': 'Alle judotechnieken',
+  'exameneisen': 'Eisen per bandniveau',
+  'cursusjapans': 'Japanse termen leren',
+  'techniekenkaart': 'Overzicht kaarten',
+  'band-knopen': 'Hoe je judoband knoopt',
+  // Media
+  'nieuws': 'Nieuwsberichten',
+  'foto-galerij': 'Fotoalbum',
+  'video-galerij': 'Videogalerij',
+};
+
+const itemColors: Record<string, { color: string; bg: string }> = {
+  'home': { color: '#a90000', bg: '#fdf6f6' },
+  'agenda': { color: '#a90000', bg: '#fdf6f6' },
+  'leden': { color: '#27ae60', bg: '#eefbf3' },
+  'lestijden': { color: '#8e44ad', bg: '#f4eef9' },
+  'locatie': { color: '#d35400', bg: '#fdf0ea' },
+  'info': { color: '#a90000', bg: '#fdf6f6' },
+  'contact': { color: '#c0392b', bg: '#fdecea' },
+  'juridisch': { color: '#6c757d', bg: '#f4f5f6' },
+  'technieken': { color: '#e67e22', bg: '#fef5ee' },
+  'exameneisen': { color: '#0054a6', bg: '#eef4fb' },
+  'cursusjapans': { color: '#2980b9', bg: '#eef6fb' },
+  'techniekenkaart': { color: '#17a2b8', bg: '#eef8fa' },
+  'band-knopen': { color: '#fd7e14', bg: '#fef6ee' },
+  'nieuws': { color: '#a90000', bg: '#fdf6f6' },
+  'foto-galerij': { color: '#6f42c1', bg: '#f3effa' },
+  'video-galerij': { color: '#dc3545', bg: '#fce8eb' },
+};
+
+function CategoryHubSection({ group, onNavigate }: { group: NavGroup; onNavigate: (s: Section) => void }) {
+  return (
+    <div className="space-y-6 pb-4 sm:pb-0">
+      {/* Header */}
+      <div className="text-center py-8 px-4" style={{ background: 'linear-gradient(135deg, #fdf6f6 0%, #fff 100%)' }}>
+        <div className="text-5xl mb-3">{group.emoji}</div>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">{group.label}</h1>
+        <p className="text-sm text-gray-500 mt-2 max-w-md mx-auto">
+          Verken alles over {group.label.toLowerCase()} — kies een onderwerp om te beginnen.
+        </p>
+      </div>
+
+      {/* Cards Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {group.items.map((item) => {
+          const c = itemColors[item.key] || { color: '#a90000', bg: '#fdf6f6' };
+          return (
+            <button
+              key={item.key}
+              onClick={() => onNavigate(item.key)}
+              className="group flex items-start gap-4 p-5 rounded-2xl border transition-all hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98] text-left"
+              style={{ backgroundColor: c.bg, borderColor: c.color + '15' }}
+            >
+              <div
+                className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110"
+                style={{ backgroundColor: c.color + '15' }}
+              >
+                <span style={{ color: c.color }}>{item.icon}</span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-bold text-gray-800 group-hover:text-[#a90000] transition-colors">
+                  {item.label}
+                </h3>
+                <p className="text-xs text-gray-500 mt-1">{itemDescriptions[item.key] || ''}</p>
+              </div>
+              <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-[#a90000] transition-colors flex-shrink-0 mt-1" />
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
