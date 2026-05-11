@@ -105,6 +105,12 @@ In 2021 nam een nieuwe generatie het stokje over: Robin Hack, Pascal Hack en Rob
         role: "Secretaris & Instructeur",
         description: "Robert houdt zich bezig met diplomabeheer, techniekenkaarten, subsidie-aanvragen en het beheer van de website. Houdt meestal de aanwezigheidslijst bij.",
       },
+      {
+        name: "Wendy Jansen",
+        dan: "1e Dan",
+        role: "Instructeur & EHBO'er",
+        description: "Wendy geeft judoles en is verantwoordelijk voor EHBO tijdens trainingen en evenementen. Behaalde haar zwarte band in 2024.",
+      },
     ],
     founder: {
       name: "Koos van Wezel",
