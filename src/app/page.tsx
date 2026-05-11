@@ -208,24 +208,6 @@ export default function MichigamiApp() {
             {activeSection === 'judoschool-hub' && <CategoryHubSection group={navGroups[1]} onNavigate={setActiveSection} />}
             {activeSection === 'media-hub' && <CategoryHubSection group={navGroups[2]} onNavigate={setActiveSection} />}
           </div>
-
-          {/* Verken ook — Cross-links naar de 3 hoofdcategorieën */}
-          <div className="border-t border-[#e8eaed] mt-6 pt-4 px-1">
-            <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Verken ook</h3>
-            <div className="grid grid-cols-3 gap-3">
-              {navGroups.map((group) => (
-                <button
-                  key={group.label}
-                  onClick={() => setActiveSection(groupHubMap[group.label])}
-                  className="flex flex-col items-center gap-1.5 p-3 rounded-xl border border-[#e8eaed] bg-white hover:shadow-md hover:-translate-y-0.5 transition-all active:scale-95"
-                >
-                  <span className="text-2xl">{group.emoji}</span>
-                  <span className="text-xs font-semibold text-gray-700">{group.label}</span>
-                  <span className="text-[10px] text-gray-400">{group.items.length} onderwerpen</span>
-                </button>
-              ))}
-            </div>
-          </div>
         </ScrollArea>
       </main>
 
@@ -480,13 +462,13 @@ function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
             { key: 'agenda' as Section, label: 'Agenda', desc: 'Evenementen', icon: Calendar, color: '#a90000', bg: '#fdf6f6' },
-            { key: 'technieken' as Section, label: 'Technieken', desc: 'Alle technieken', icon: Swords, color: '#e67e22', bg: '#fef5ee' },
-            { key: 'exameneisen' as Section, label: 'Examens', desc: 'Per bandniveau', icon: Target, color: '#0054a6', bg: '#eef4fb' },
-            { key: 'leden' as Section, label: 'Lid Worden', desc: 'Meld je aan', icon: Users, color: '#27ae60', bg: '#eefbf3' },
-            { key: 'lestijden' as Section, label: 'Lestijden', desc: 'Wo & Vr', icon: Clock, color: '#8e44ad', bg: '#f4eef9' },
-            { key: 'locatie' as Section, label: 'Locaties', desc: '2 locaties', icon: MapPin, color: '#d35400', bg: '#fdf0ea' },
-            { key: 'cursusjapans' as Section, label: 'Cursus Japans', desc: 'Leer + quiz', icon: BookOpen, color: '#2980b9', bg: '#eef6fb' },
-            { key: 'contact' as Section, label: 'Contact', desc: 'Neem contact op', icon: Mail, color: '#c0392b', bg: '#fdecea' },
+            { key: 'technieken' as Section, label: 'Technieken', desc: 'Alle technieken', icon: Swords, color: '#8c0000', bg: '#fdf6f6' },
+            { key: 'exameneisen' as Section, label: 'Examens', desc: 'Per bandniveau', icon: Target, color: '#a90000', bg: '#fffdf0' },
+            { key: 'leden' as Section, label: 'Lid Worden', desc: 'Meld je aan', icon: Users, color: '#8c0000', bg: '#fdf6f6' },
+            { key: 'lestijden' as Section, label: 'Lestijden', desc: 'Wo & Vr', icon: Clock, color: '#a90000', bg: '#fffdf0' },
+            { key: 'locatie' as Section, label: 'Locaties', desc: '2 locaties', icon: MapPin, color: '#8c0000', bg: '#fdf6f6' },
+            { key: 'cursusjapans' as Section, label: 'Cursus Japans', desc: 'Leer + quiz', icon: BookOpen, color: '#a90000', bg: '#fffdf0' },
+            { key: 'contact' as Section, label: 'Contact', desc: 'Neem contact op', icon: Mail, color: '#8c0000', bg: '#fdf6f6' },
           ].map((item) => (
             <button
               key={item.key}
@@ -1598,20 +1580,20 @@ const itemDescriptions: Record<string, string> = {
 const itemColors: Record<string, { color: string; bg: string }> = {
   'home': { color: '#a90000', bg: '#fdf6f6' },
   'agenda': { color: '#a90000', bg: '#fdf6f6' },
-  'leden': { color: '#27ae60', bg: '#eefbf3' },
-  'lestijden': { color: '#8e44ad', bg: '#f4eef9' },
-  'locatie': { color: '#d35400', bg: '#fdf0ea' },
+  'leden': { color: '#8c0000', bg: '#fdf6f6' },
+  'lestijden': { color: '#a90000', bg: '#fffdf0' },
+  'locatie': { color: '#8c0000', bg: '#fdf6f6' },
   'info': { color: '#a90000', bg: '#fdf6f6' },
-  'contact': { color: '#c0392b', bg: '#fdecea' },
+  'contact': { color: '#8c0000', bg: '#fdf6f6' },
   'juridisch': { color: '#6c757d', bg: '#f4f5f6' },
-  'technieken': { color: '#e67e22', bg: '#fef5ee' },
-  'exameneisen': { color: '#0054a6', bg: '#eef4fb' },
-  'cursusjapans': { color: '#2980b9', bg: '#eef6fb' },
-  'techniekenkaart': { color: '#17a2b8', bg: '#eef8fa' },
-  'band-knopen': { color: '#fd7e14', bg: '#fef6ee' },
+  'technieken': { color: '#8c0000', bg: '#fdf6f6' },
+  'exameneisen': { color: '#a90000', bg: '#fffdf0' },
+  'cursusjapans': { color: '#a90000', bg: '#fffdf0' },
+  'techniekenkaart': { color: '#8c0000', bg: '#fdf6f6' },
+  'band-knopen': { color: '#a90000', bg: '#fffdf0' },
   'nieuws': { color: '#a90000', bg: '#fdf6f6' },
-  'foto-galerij': { color: '#6f42c1', bg: '#f3effa' },
-  'video-galerij': { color: '#dc3545', bg: '#fce8eb' },
+  'foto-galerij': { color: '#8c0000', bg: '#fdf6f6' },
+  'video-galerij': { color: '#a90000', bg: '#fffdf0' },
 };
 
 function CategoryHubSection({ group, onNavigate }: { group: NavGroup; onNavigate: (s: Section) => void }) {
