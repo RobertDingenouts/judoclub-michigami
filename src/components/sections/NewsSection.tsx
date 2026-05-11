@@ -47,8 +47,8 @@ function NewsCard({ article }: { article: (typeof newsArchive)[number]['articles
   );
 }
 
-function YearSection({ yearData }: { yearData: (typeof newsArchive)[number] }) {
-  const [isOpen, setIsOpen] = useState(false);
+function YearSection({ yearData, autoOpen = false }: { yearData: (typeof newsArchive)[number], autoOpen?: boolean }) {
+  const [isOpen, setIsOpen] = useState(autoOpen);
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] overflow-hidden">
@@ -154,10 +154,10 @@ export function NewsSection() {
         </div>
       </div>
 
-      {/* News Archive by Year — newest first */}
+      {/* News Archive by Year — nieuwste jaar automatisch open */}
       <div className="space-y-4">
-        {newsArchive.map((yearData) => (
-          <YearSection key={yearData.year} yearData={yearData} />
+        {newsArchive.map((yearData, idx) => (
+          <YearSection key={yearData.year} yearData={yearData} autoOpen={idx === 0} />
         ))}
       </div>
 
