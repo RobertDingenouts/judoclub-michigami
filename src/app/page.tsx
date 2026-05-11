@@ -992,7 +992,6 @@ function AgendaSection() {
 function TechniquesSection() {
   const [activeCategory, setActiveCategory] = useState(0);
   const [expandedTech, setExpandedTech] = useState<number | null>(null);
-  const [showVideo, setShowVideo] = useState<Record<number, boolean>>({});
 
   const category = techniqueCategories[activeCategory];
 
@@ -1042,24 +1041,15 @@ function TechniquesSection() {
                     </div>
                   </div>
                   <div className="flex items-center gap-1 md:gap-2 flex-shrink-0">
+                    {tech.youtubeId && <Play className="w-3 h-3 text-[#c00000]/50" />}
                     <span className="text-base md:text-lg text-gray-300 font-light hidden sm:inline">{tech.japanese}</span>
                     {expandedTech === tech.id ? <ChevronLeft className="w-4 h-4 text-gray-400" /> : <ChevronRight className="w-4 h-4 text-gray-400" />}
                   </div>
                 </div>
               </button>
-              {expandedTech === tech.id && tech.youtubeId && (
+              {expandedTech === tech.id && (
                 <div className="border-t border-[#e8eaed]">
-                  <div className="flex items-center justify-between px-3 md:px-4 py-2 bg-[#fdf6f6]">
-                    <span className="text-xs text-gray-500 flex items-center gap-1"><Play className="w-3 h-3" /> Video</span>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-gray-400 hidden sm:inline">Toon video</span>
-                      <Switch
-                        checked={showVideo[tech.id] || false}
-                        onCheckedChange={(v) => setShowVideo(prev => ({ ...prev, [tech.id]: v }))}
-                      />
-                    </div>
-                  </div>
-                  {showVideo[tech.id] && (
+                  {tech.youtubeId ? (
                     <div className="aspect-video">
                       <iframe
                         src={`https://www.youtube.com/embed/${tech.youtubeId}`}
@@ -1068,6 +1058,10 @@ function TechniquesSection() {
                         allowFullScreen
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       />
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center gap-2 py-6 text-gray-400 text-sm">
+                      <Video className="w-4 h-4" /> Video niet beschikbaar
                     </div>
                   )}
                 </div>

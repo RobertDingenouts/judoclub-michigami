@@ -102,9 +102,9 @@ const CATEGORIES: Record<string, Category> = {
       { id: 'koshi-9', nameJa: 'Utsuri-goshi', nameNl: 'Veranderende heupworp', youtubeId: '4pQd_bEnlf0' },
       { id: 'koshi-10', nameJa: 'Uchi-mata', nameNl: 'Binnenwaartse dijworp', youtubeId: 'iUpSu5J-bgw' },
       { id: 'koshi-11', nameJa: 'O-goshi', nameNl: 'Grote heupworp', youtubeId: 'yhu1mfy2vJ4' },
-      { id: 'koshi-12', nameJa: 'Ko-tsuri-goshi', nameNl: 'Kleine opgetilde heupworp', youtubeId: 'SnZciTAY9vc' },
-      { id: 'koshi-13', nameJa: 'O-guruma', nameNl: 'Groot wiel', youtubeId: 'MGlyKmSuzdc' },
-      { id: 'koshi-14', nameJa: 'Yama-arashi', nameNl: 'Bergstorm' },
+      { id: 'koshi-12', nameJa: 'Ko-tsuri-goshi', nameNl: 'Kleine opgetilde heupworp' },
+      { id: 'koshi-13', nameJa: 'O-guruma', nameNl: 'Groot wiel', youtubeId: 'SnZciTAY9vc' },
+      { id: 'koshi-14', nameJa: 'Yama-arashi', nameNl: 'Bergstorm', youtubeId: 'MGlyKmSuzdc' },
       { id: 'koshi-15', nameJa: 'Obi-goshi', nameNl: 'Riemplaats heupworp' },
     ]
   },
