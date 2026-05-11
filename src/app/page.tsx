@@ -183,7 +183,7 @@ export default function MichigamiApp() {
       )}
 
       {/* Main Content */}
-      <main className="flex-1 md:ml-64 pb-28 sm:pb-20 md:pb-0 w-full min-w-0">
+      <main className="flex-1 md:ml-64 w-full min-w-0">
         <ScrollArea key={activeSection} className="h-[calc(100vh-3.5rem)] sm:h-[calc(100vh-3.5rem)] md:h-screen w-full">
           <div className="p-2 sm:p-4 md:p-8 max-w-[100vw] mx-auto w-full pb-16 sm:pb-0">
             {activeSection === 'home' && <HomeSection onNavigate={setActiveSection} />}
@@ -210,33 +210,6 @@ export default function MichigamiApp() {
           </div>
         </ScrollArea>
       </main>
-
-    {/* Bottom Navigation - Mobile only */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-[#e8eaed] shadow-[0_-2px_10px_rgba(0,0,0,0.1)] w-full safe-area-bottom">
-        <div className="flex items-center justify-around h-16 px-1 max-w-full">
-          {mobileNavItems.map((item) => (
-            <button
-              key={item.key}
-              onClick={() => setActiveSection(item.key)}
-              className={`flex flex-col items-center justify-center gap-0.5 px-1.5 py-1 rounded-lg transition-all ${
-                activeSection === item.key
-                  ? 'text-[#c00000] bg-[#fdf6f6]'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              {item.icon}
-              <span className="text-[10px] font-medium truncate">{item.label}</span>
-            </button>
-          ))}
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="flex flex-col items-center justify-center gap-0.5 px-1.5 py-1 rounded-lg text-gray-500 hover:text-gray-700"
-          >
-            <Menu className="w-5 h-5" />
-            <span className="text-[10px] font-medium truncate">Meer</span>
-          </button>
-        </div>
-      </nav>
     </div>
   );
 }
