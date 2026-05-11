@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { newsArchive, socialLinks } from '@/data/news-archive';
+import Image from 'next/image';
 
 function formatDate(dateStr: string): string {
   if (!dateStr) return '';
@@ -20,6 +21,16 @@ function formatDate(dateStr: string): string {
 function NewsCard({ article }: { article: (typeof newsArchive)[number]['articles'][number] }) {
   return (
     <article className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] overflow-hidden hover:shadow-md transition-shadow">
+      {article.imageUrl && (
+        <div className="relative w-full h-48 sm:h-56 overflow-hidden bg-gray-100">
+          <img
+            src={article.imageUrl}
+            alt={article.title}
+            className="w-full h-full object-cover"
+            loading="lazy"
+          />
+        </div>
+      )}
       <div className="p-4 sm:p-6">
         <div className="flex items-center gap-2 mb-3">
           <svg className="w-4 h-4 text-[#a90000]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -31,16 +42,6 @@ function NewsCard({ article }: { article: (typeof newsArchive)[number]['articles
         <div className="text-sm sm:text-base text-gray-600 leading-relaxed whitespace-pre-line">
           {article.content}
         </div>
-        {article.imageUrl && (
-          <div className="mt-4 rounded-xl overflow-hidden">
-            <img
-              src={article.imageUrl}
-              alt={article.title}
-              className="w-full h-auto object-cover"
-              loading="lazy"
-            />
-          </div>
-        )}
       </div>
     </article>
   );
@@ -153,7 +154,7 @@ export function NewsSection() {
         </div>
       </div>
 
-      {/* News Archive by Year */}
+      {/* News Archive by Year — newest first */}
       <div className="space-y-4">
         {newsArchive.map((yearData) => (
           <YearSection key={yearData.year} yearData={yearData} />

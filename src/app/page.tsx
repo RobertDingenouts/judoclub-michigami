@@ -434,11 +434,11 @@ function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
   today.setHours(0, 0, 0, 0);
   const upcomingEvents = agendaItems.filter(i => !i.cancelled && new Date(i.compareDate) >= today).slice(0, 3);
 
-  // Haal nieuwste nieuwsberichten (laatste 3 uit meest recente jaar)
+  // Haal nieuwste nieuwsberichten (data is nu al gesorteerd: nieuwste eerst)
   const latestNews = [];
-  for (const year of [...newsArchive].reverse()) {
-    latestNews.push(...year.articles.slice(0, 3));
-    if (latestNews.length >= 3) break;
+  for (const year of newsArchive) {
+    latestNews.push(...year.articles.slice(0, 5));
+    if (latestNews.length >= 5) break;
   }
 
   return (
@@ -507,23 +507,39 @@ function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
           </div>
         </div>
 
-        {/* Nieuws Widget */}
+        {/* Nieuws Feed — horizontaal scrollbaar met foto's */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between" style={{ background: 'linear-gradient(135deg, #eef6fb 0%, white 100%)' }}>
+          <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between" style={{ background: 'linear-gradient(135deg, #fdf6f6 0%, white 100%)' }}>
             <h3 className="font-bold text-gray-800 flex items-center gap-2">
-              <Sparkles className="w-4 h-4" style={{ color: '#2980b9' }} /> Nieuws
+              <Sparkles className="w-4 h-4" style={{ color: '#a90000' }} /> Nieuws
             </h3>
-            <button onClick={() => onNavigate('nieuws')} className="text-xs font-medium hover:underline" style={{ color: '#2980b9' }}>
+            <button onClick={() => onNavigate('nieuws')} className="text-xs font-medium hover:underline" style={{ color: '#a90000' }}>
               Alles →
             </button>
           </div>
-          <div className="p-4 space-y-3">
+          <div className="p-3 space-y-3">
             {latestNews.length === 0 ? (
               <p className="text-sm text-gray-400 text-center py-4">Geen nieuwsberichten</p>
             ) : latestNews.map((article, idx) => (
-              <div key={idx} className="p-2.5 rounded-xl hover:bg-[#eef6fb] transition-colors cursor-pointer" onClick={() => onNavigate('nieuws')}>
-                <p className="text-sm font-semibold text-gray-800 line-clamp-2">{article.title}</p>
-                <p className="text-xs text-gray-400 mt-1">{article.date || ''}</p>
+              <div
+                key={idx}
+                className="flex gap-3 p-2.5 rounded-xl hover:bg-[#fdf6f6] transition-colors cursor-pointer"
+                onClick={() => onNavigate('nieuws')}
+              >
+                {article.imageUrl && (
+                  <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
+                    <img
+                      src={article.imageUrl}
+                      alt=""
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-gray-800 line-clamp-2 leading-tight">{article.title}</p>
+                  <p className="text-xs text-gray-400 mt-1.5">{article.date || ''}</p>
+                </div>
               </div>
             ))}
           </div>
