@@ -110,11 +110,15 @@ export function NewsSlider({ articles, onNavigate }: { articles: NewsArticle[]; 
             }}
             className="relative"
           >
-            {/* Article card */}
-            <div className="flex gap-4">
+            {/* Article card — clickable to navigate to news section */}
+            <div
+              className="flex gap-4 cursor-pointer"
+              onClick={() => onNavigate?.()}
+            >
               {article.imageUrl && (
                 <button
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     const idx = allImageUrls.indexOf(article.imageUrl!);
                     if (idx >= 0) setLightboxIndex(idx);
                   }}

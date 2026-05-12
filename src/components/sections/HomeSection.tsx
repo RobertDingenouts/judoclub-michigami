@@ -36,15 +36,15 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
     <div className="space-y-6 pb-4 sm:pb-0">
       <HeroSlider />
 
-      {/* Nieuws Slider */}
-      <AnimatedCard>
+      {/* Nieuws Slider — plain CSS hover, no Framer Motion wrapper */}
+      <div className="relative overflow-hidden rounded-2xl shadow-sm border border-gray-100 backdrop-blur-xl bg-white/80 transition-all hover:shadow-lg hover:shadow-red-100/30 group">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
         <NewsSlider articles={latestNews} onNavigate={() => onNavigate('nieuws')} />
-      </AnimatedCard>
+      </div>
 
-      {/* Agenda */}
-      <AnimatedCard>
-        <div className="relative overflow-hidden rounded-2xl shadow-sm border border-gray-100 backdrop-blur-xl bg-white/80 transition-all hover:shadow-lg hover:shadow-red-100/30 group">
-          <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
+      {/* Agenda — plain CSS hover, no Framer Motion wrapper */}
+      <div className="relative overflow-hidden rounded-2xl shadow-sm border border-gray-100 backdrop-blur-xl bg-white/80 transition-all hover:shadow-lg hover:shadow-red-100/30 group">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
           <div className="relative">
             <div className="px-4 py-3 border-b border-gray-100/50 flex items-center justify-between">
               <h3 className="font-bold text-gray-800 flex items-center gap-2">
@@ -69,9 +69,8 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
               </div>
             ))}
           </div>
-          </div>
         </div>
-      </AnimatedCard>
+      </div>
 
       {/* Bento Grid — Snel naar */}
       <div>

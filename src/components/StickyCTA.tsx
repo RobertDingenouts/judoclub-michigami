@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { Calendar } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TrialLessonForm } from '@/components/sections/TrialLessonForm';
-import { AnimatedButton } from '@/components/ui/animated-card';
 import { onOpenProeflesForm } from '@/lib/form-events';
 
 export function StickyCTA({ onNavigate }: { onNavigate?: (section: string) => void }) {
@@ -17,13 +16,11 @@ export function StickyCTA({ onNavigate }: { onNavigate?: (section: string) => vo
 
   return (
     <>
-      {/* Desktop: Fixed top-right button */}
-      <AnimatedButton onClick={() => setFormOpen(true)}>
-        <div className="hidden md:flex fixed top-4 right-4 z-50 items-center gap-2 bg-gradient-to-r from-[#a90000] to-[#c00000] text-white px-5 py-3 rounded-full font-bold text-sm shadow-lg hover:shadow-xl transition-all">
-          <Calendar className="w-4 h-4" />
-          Proefles Aanvragen
-        </div>
-      </AnimatedButton>
+      {/* Desktop: Fixed top-right button — plain CSS hover, no Framer Motion */}
+      <button onClick={() => setFormOpen(true)} className="hidden md:flex fixed top-4 right-4 z-50 items-center gap-2 bg-gradient-to-r from-[#a90000] to-[#c00000] text-white px-5 py-3 rounded-full font-bold text-sm shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 cursor-pointer">
+        <Calendar className="w-4 h-4" />
+        Proefles Aanvragen
+      </button>
 
       {/* Mobile bottom bar replaced by MobileActionBar — hidden */}
 

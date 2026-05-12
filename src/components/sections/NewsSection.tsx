@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { newsArchive, socialLinks } from '@/data/news-archive';
 import Image from 'next/image';
-import { AnimatedCard, AnimatedButton } from '@/components/ui/animated-card';
+import { AnimatedButton } from '@/components/ui/animated-card';
 import { ImageLightbox } from '@/components/ui/ImageLightbox';
 
 const containerVariants = {
@@ -39,7 +39,7 @@ function NewsCard({ article }: { article: (typeof newsArchive)[number]['articles
 
   return (
     <>
-      <AnimatedCard>
+      <div className="hover:scale-[1.01] transition-transform duration-300">
         <article className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] overflow-hidden hover:shadow-md transition-shadow">
           {article.imageUrl && (
             <button
@@ -90,7 +90,7 @@ function NewsCard({ article }: { article: (typeof newsArchive)[number]['articles
           </div>
         </div>
       </article>
-    </AnimatedCard>
+    </div>
 
       {/* Lightbox */}
       {lightboxOpen && article.imageUrl && (
@@ -108,7 +108,7 @@ function YearSection({ yearData, autoOpen = false }: { yearData: (typeof newsArc
   const [isOpen, setIsOpen] = useState(autoOpen);
 
   return (
-    <AnimatedCard>
+    <div className="hover:scale-[1.01] transition-transform duration-300">
       <div className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] overflow-hidden">
         {/* Year Header - Clickable */}
         <button
@@ -154,7 +154,7 @@ function YearSection({ yearData, autoOpen = false }: { yearData: (typeof newsArc
         )}
         </AnimatePresence>
       </div>
-    </AnimatedCard>
+    </div>
   );
 }
 
@@ -162,8 +162,7 @@ export function NewsSection() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <AnimatedCard>
-        <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
+      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
           <svg
             viewBox="0 0 100 80"
             className="absolute top-0 right-0 w-20 sm:w-24 md:w-32 h-20 sm:h-24 md:h-32 text-white opacity-[0.06]"
@@ -180,7 +179,6 @@ export function NewsSection() {
           </p>
           <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-full mt-2 sm:mt-3" />
         </div>
-      </AnimatedCard>
 
       {/* Social Links */}
       <div className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] p-4 sm:p-6">
