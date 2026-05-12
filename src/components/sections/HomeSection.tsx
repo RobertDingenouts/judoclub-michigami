@@ -1,8 +1,8 @@
 'use client';
 
-import Image from 'next/image';
 import { Calendar, Sparkles, Swords, Target, Users, Clock, MapPin, Mail, BookOpen, Info, Ban, Trophy, XCircle, CircleDot } from 'lucide-react';
 import { HeroSlider } from './HeroSlider';
+import { NewsSlider } from './NewsSlider';
 import { agendaItems } from '@/data/agenda';
 import { newsArchive, type NewsArticle } from '@/data/news-archive';
 import type { Section } from '@/components/nav-config';
@@ -36,38 +36,9 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
     <div className="space-y-6 pb-4 sm:pb-0">
       <HeroSlider />
 
-      {/* Nieuws */}
+      {/* Nieuws Slider */}
       <AnimatedCard>
-        <div className="relative overflow-hidden rounded-2xl shadow-sm border border-gray-100 backdrop-blur-xl bg-white/80 transition-all hover:shadow-lg hover:shadow-red-100/30 group">
-          <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
-          <div className="relative">
-            <div className="px-4 py-3 border-b border-gray-100/50 flex items-center justify-between">
-              <h3 className="font-bold text-gray-800 flex items-center gap-2">
-                <Sparkles className="w-4 h-4" style={{ color: '#c00000' }} /> Nieuws
-              </h3>
-              <button onClick={() => onNavigate('nieuws')} className="text-xs font-medium hover:underline" style={{ color: '#c00000' }}>
-                Alles →
-              </button>
-            </div>
-            <div className="p-3 space-y-3">
-            {latestNews.length === 0 ? (
-              <p className="text-sm text-gray-400 text-center py-4">Geen nieuwsberichten</p>
-            ) : latestNews.slice(0, 3).map((article, idx) => (
-              <div key={idx} className="flex gap-3 p-2.5 rounded-xl hover:bg-[#fff2f2] transition-colors cursor-pointer" onClick={() => onNavigate('nieuws')}>
-                {article.imageUrl && (
-                  <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100 relative">
-                    <Image src={article.imageUrl} alt={article.title} fill sizes="80px" className="object-cover" loading="lazy" />
-                  </div>
-                )}
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-gray-800 line-clamp-2 leading-tight">{article.title}</p>
-                  <p className="text-xs text-gray-400 mt-1.5">{article.date || ''}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-          </div>
-        </div>
+        <NewsSlider articles={latestNews} onNavigate={() => onNavigate('nieuws')} />
       </AnimatedCard>
 
       {/* Agenda */}
