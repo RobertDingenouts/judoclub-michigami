@@ -176,16 +176,35 @@ export default function MichigamiApp() {
     updateMetaTags(activeSection);
   }, [activeSection]);
 
-  // Scroll-to-top on section change; exception: agenda scrolls to top first, then AgendaSection's own useEffect scrolls to first future date
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const scrollContainer = document.querySelector<HTMLElement>('[data-slot="scroll-area-viewport"]');
-      if (scrollContainer) {
-        scrollContainer.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-    }, 100); // wait for AnimatePresence mount
+  // Scroll-to-top on section change — ref-based approach for reliability
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
 
-    return () => clearTimeout(timer);
+  useEffect(() => {
+    // Use requestAnimationFrame to wait for state update + AnimatePresence mount,
+    // then retry a few frames if the viewport isn't ready yet.
+    let attempts = 0;
+    const maxAttempts = 6; // ~100ms at 60fps — enough for 300ms animation to start rendering
+    let rafId: number;
+
+    const tryScroll = () => {
+      if (attempts >= maxAttempts) return;
+      attempts++;
+
+      const viewport = scrollAreaRef.current?.querySelector<HTMLElement>('[data-slot="scroll-area-viewport"]');
+      if (viewport) {
+        viewport.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        // Fallback: try again next frame or use window scroll
+        if (attempts < maxAttempts) {
+          rafId = requestAnimationFrame(tryScroll);
+        } else {
+          window.scrollTo(0, 0);
+        }
+      }
+    };
+
+    rafId = requestAnimationFrame(tryScroll);
+    return () => cancelAnimationFrame(rafId);
   }, [activeSection]);
 
   // After initial scroll-to-top, agenda section scrolls to first future date via its own useEffect (300ms delay) — no extra handling needed here.
@@ -273,7 +292,8 @@ export default function MichigamiApp() {
 
       {/* Main Content */}
       <main className="flex-1 md:ml-64 w-full min-w-0">
-        <ScrollArea className="h-[calc(100vh-3.5rem)] sm:h-[calc(100vh-3.5rem)] md:h-screen w-full">
+        <div ref={scrollAreaRef} className="h-[calc(100vh-3.5rem)] sm:h-[calc(100vh-3.5rem)] md:h-screen w-full">
+        <ScrollArea className="w-full h-full">
           <div
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
@@ -314,6 +334,7 @@ export default function MichigamiApp() {
           </AnimatePresence>
           </div>
         </ScrollArea>
+        </div>
       </main>
 
       {/* Mobile Bottom Nav */}
