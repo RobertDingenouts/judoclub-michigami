@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { ExamDashboard } from '@/components/sections/ExamDashboard';
@@ -24,7 +24,11 @@ import { InfoSection } from '@/components/sections/InfoSection';
 import { AgendaSection } from '@/components/sections/AgendaSection';
 import { TechniquesSection } from '@/components/sections/TechniquesSection';
 import { CategoryHubSection } from '@/components/sections/CategoryHubSection';
+import { PullToRefreshIndicator } from '@/components/PullToRefreshIndicator';
 import { navGroups, mobileNavItems, groupHubMap, allNavItems, type Section } from '@/components/nav-config';
+
+// Sections that support pull-to-refresh
+const PULL_REFRESH_SECTIONS = new Set(['agenda', 'nieuws', 'home']);
 
 // ============ MAIN APP ============
 // Dynamic page titles + descriptions per section for SEO
@@ -155,13 +159,54 @@ export default function MichigamiApp() {
   const [activeSection, setActiveSection] = useState<Section>('home');
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  // Pull-to-refresh state
+  const [ptrPulling, setPtrPulling] = useState(false);
+  const [ptrRefreshing, setPtrRefreshing] = useState(false);
+  const [ptrProgress, setPtrProgress] = useState(0);
+  const touchStartY = useRef(0);
+
   // Update document title + meta tags when section changes (SPA SEO)
   useEffect(() => {
     updateMetaTags(activeSection);
   }, [activeSection]);
 
+  // Pull-to-refresh handlers
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    if (!PULL_REFRESH_SECTIONS.has(activeSection)) return;
+    touchStartY.current = e.touches[0].clientY;
+  }, [activeSection]);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (!PULL_REFRESH_SECTIONS.has(activeSection) || ptrRefreshing) return;
+
+    const diff = e.touches[0].clientY - touchStartY.current;
+    if (diff > 0 && window.scrollY === 0) {
+      setPtrPulling(true);
+      setPtrProgress(Math.min(diff / 120, 1)); // threshold at 120px
+      e.preventDefault();
+    }
+  }, [activeSection, ptrRefreshing]);
+
+  const handleTouchEnd = useCallback(async () => {
+    if (!ptrPulling || ptrProgress < 1) {
+      setPtrPulling(false);
+      setPtrProgress(0);
+      return;
+    }
+
+    setPtrRefreshing(true);
+    // Simulate refresh (scroll to top animation + brief delay)
+    await new Promise((r) => setTimeout(r, 800));
+    setPtrRefreshing(false);
+    setPtrPulling(false);
+    setPtrProgress(0);
+  }, [ptrPulling, ptrProgress]);
+
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-[#f8f9fa] w-full overflow-x-hidden">
+      {/* Pull-to-refresh indicator */}
+      <PullToRefreshIndicator isPulling={ptrPulling} isRefreshing={ptrRefreshing} progress={ptrProgress} />
+
       {/* Desktop Sidebar — Glassmorphism */}
       <aside className="hidden md:flex flex-col w-64 backdrop-blur-xl bg-white/80 border border-white/20 min-h-screen fixed left-0 top-0 z-40 shadow-lg shadow-black/5">
         <SidebarContent activeSection={activeSection} onSelect={(s) => setActiveSection(s)} />
@@ -209,6 +254,11 @@ export default function MichigamiApp() {
       {/* Main Content */}
       <main className="flex-1 md:ml-64 w-full min-w-0">
         <ScrollArea className="h-[calc(100vh-3.5rem)] sm:h-[calc(100vh-3.5rem)] md:h-screen w-full">
+          <div
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
           <AnimatePresence mode="wait">
             <motion.div
               key={activeSection}
@@ -241,6 +291,7 @@ export default function MichigamiApp() {
             {activeSection === 'media-hub' && <CategoryHubSection group={navGroups[2]} onNavigate={setActiveSection} navGroups={navGroups} groupHubMap={groupHubMap} />}
             </motion.div>
           </AnimatePresence>
+          </div>
         </ScrollArea>
       </main>
 

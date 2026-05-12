@@ -7,6 +7,8 @@ import { agendaItems } from '@/data/agenda';
 import { newsArchive, type NewsArticle } from '@/data/news-archive';
 import type { Section } from '@/components/nav-config';
 import { AnimatedCard, AnimatedButton, subtleHover } from '@/components/ui/animated-card';
+import { ContactBottomSheet, LocationBottomSheet, ProeflesBottomSheet } from '@/components/MobileBottomSheet';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 function getEmojiIcon(emoji: string, className = "w-5 h-5") {
   switch (emoji) {
@@ -19,6 +21,7 @@ function getEmojiIcon(emoji: string, className = "w-5 h-5") {
 }
 
 export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
+  const isMobile = useIsMobile();
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const upcomingEvents = agendaItems.filter(i => !i.cancelled && new Date(i.compareDate) >= today).slice(0, 3);
@@ -175,6 +178,39 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
               </div>
             </div>
           </AnimatedButton>
+          {isMobile && (
+            <>
+              <ProeflesBottomSheet trigger={
+                <button className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-100/50 active:scale-[0.98] group" style={{ borderColor: '#27ae6020' }}>
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#f0fdf4] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
+                  <div className="relative flex flex-col items-center gap-2 text-center">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#27ae6015' }}><Users className="w-6 h-6 text-[#27ae60]" /></div>
+                    <span className="font-semibold text-sm text-[#27ae60]">Proefles</span>
+                    <span className="text-xs text-gray-500">Gratis meekijken</span>
+                  </div>
+                </button>
+              } />
+              <ContactBottomSheet trigger={
+                <button className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-100/50 active:scale-[0.98] group" style={{ borderColor: '#c0000020' }}>
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
+                  <div className="relative flex flex-col items-center gap-2 text-center">
+                    <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#c0000015' }}><Mail className="w-5 h-5" style={{ color: '#c00000' }} /></div>
+                    <span className="font-semibold text-xs" style={{ color: '#c00000' }}>Contact</span>
+                  </div>
+                </button>
+              } />
+              <LocationBottomSheet trigger={
+                <button className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-100/50 active:scale-[0.98] group" style={{ borderColor: '#8c000020' }}>
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
+                  <div className="relative flex flex-col items-center gap-2 text-center">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#8c000015' }}><MapPin className="w-6 h-6" style={{ color: '#8c0000' }} /></div>
+                    <span className="font-semibold text-sm" style={{ color: '#8c0000' }}>Locaties</span>
+                    <span className="text-xs text-gray-500">2 locaties</span>
+                  </div>
+                </button>
+              } />
+            </>
+          )}
 
           {/* Row 3: Lestijden + Locatie + Contact (klein) + Cursus Japans */}
           <AnimatedButton onClick={() => onNavigate('lestijden')} variants={subtleHover}>

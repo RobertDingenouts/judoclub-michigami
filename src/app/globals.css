@@ -204,4 +204,56 @@
   .safe-area-bottom {
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
+
+  /* ============================================
+     HAPTIC FEEL — iOS-style tap feedback
+     ============================================ */
+  button, a, [role="button"], [role="menuitem"] {
+    transition: transform 100ms ease;
+  }
+  button:active, a:active, [role="button"]:active, [role="menuitem"]:active {
+    transform: scale(0.98);
+  }
+
+  /* Override for elements that already have custom transitions */
+  .no-haptic:active, .no-haptic button:active {
+    transform: none;
+  }
+
+  /* ============================================
+     PULL-TO-REFRESH INDICATOR
+     ============================================ */
+  .ptr-indicator {
+    position: fixed;
+    left: 50%;
+    top: -48px;
+    transform: translateX(-50%) translateY(0);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: white;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: top 150ms ease, transform 150ms ease;
+    pointer-events: none;
+  }
+  .ptr-indicator.ptr-visible {
+    top: 8px;
+  }
+  .ptr-indicator.ptr-refreshing {
+    top: 8px;
+    animation: ptr-spin 0.8s linear infinite;
+  }
+  @keyframes ptr-spin {
+    from { transform: translateX(-50%) rotate(0deg); }
+    to { transform: translateX(-50%) rotate(360deg); }
+  }
+
+  /* Pull-to-refresh drag area */
+  [data-pull-to-refresh] {
+    overscroll-behavior: contain;
+  }
 }
