@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { NewsArticle } from '@/data/news-archive';
+import { ImageLightbox } from '@/components/ui/ImageLightbox';
 
 const SLIDE_INTERVAL = 5000;
 
@@ -12,9 +13,15 @@ export function NewsSlider({ articles, onNavigate }: { articles: NewsArticle[]; 
   const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
   const [direction, setDirection] = useState(0);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const touchStartX = useRef(0);
   const touchStartY = useRef(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // Collect all image URLs for lightbox navigation
+  const allImageUrls = articles
+    .map((a) => a.imageUrl)
+    .filter((url): url is string => !!url);
 
   const total = articles.length;
   if (total === 0) return null;
@@ -106,16 +113,43 @@ export function NewsSlider({ articles, onNavigate }: { articles: NewsArticle[]; 
             {/* Article card */}
             <div className="flex gap-4">
               {article.imageUrl && (
-                <div className="w-28 h-32 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100 relative shadow-sm">
-                  <Image
-                    src={article.imageUrl}
-                    alt={article.title}
-                    fill
-                    sizes="112px"
-                    className="object-cover"
-                    loading="lazy"
-                  />
-                </div>
+                <button
+                  onClick={() => {
+                    const idx = allImageUrls.indexOf(article.imageUrl!);
+                    if (idx >= 0) setLightboxIndex(idx);
+                  }}
+                  className="group/thumb relative aspect-square w-28 flex-shrink-0 rounded-xl overflow-hidden shadow-sm cursor-pointer"
+                >
+                  {/* Blurred background layer */}
+                  <div className="absolute inset-0">
+                    <Image
+                      src={article.imageUrl}
+                      alt=""
+                      fill
+                      sizes="112px"
+                      className="object-cover blur-xl scale-125"
+                      loading="lazy"
+                      quality={40}
+                    />
+                  </div>
+                  {/* Sharp foreground image */}
+                  <div className="absolute inset-0">
+                    <Image
+                      src={article.imageUrl}
+                      alt={article.title}
+                      fill
+                      sizes="112px"
+                      className="object-cover transition-transform duration-300 group-hover/thumb:scale-105"
+                      loading="lazy"
+                    />
+                  </div>
+                  {/* Zoom overlay hint */}
+                  <div className="absolute inset-0 bg-black/0 group-hover/thumb:bg-black/20 transition-colors flex items-center justify-center">
+                    <svg className="w-5 h-5 text-white opacity-0 group-hover/thumb:opacity-80 transition-opacity drop-shadow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                    </svg>
+                  </div>
+                </button>
               )}
               <div className="flex-1 min-w-0 flex flex-col justify-center">
                 <h4 className="text-base font-bold text-gray-800 leading-snug line-clamp-3">
@@ -174,6 +208,15 @@ export function NewsSlider({ articles, onNavigate }: { articles: NewsArticle[]; 
             {current + 1} / {total}
           </span>
         </div>
+      )}
+
+      {/* Lightbox */}
+      {lightboxIndex !== null && (
+        <ImageLightbox
+          images={allImageUrls}
+          initialIndex={lightboxIndex}
+          onClose={() => setLightboxIndex(null)}
+        />
       )}
     </div>
   );

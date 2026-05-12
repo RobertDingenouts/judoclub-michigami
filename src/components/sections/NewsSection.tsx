@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { newsArchive, socialLinks } from '@/data/news-archive';
 import Image from 'next/image';
 import { AnimatedCard, AnimatedButton } from '@/components/ui/animated-card';
+import { ImageLightbox } from '@/components/ui/ImageLightbox';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -34,21 +35,48 @@ function formatDate(dateStr: string | undefined): string {
 }
 
 function NewsCard({ article }: { article: (typeof newsArchive)[number]['articles'][number] }) {
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+
   return (
-    <AnimatedCard>
-      <article className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] overflow-hidden hover:shadow-md transition-shadow">
-        {article.imageUrl && (
-          <div className="relative w-full h-48 sm:h-56 overflow-hidden bg-gray-100">
-            <Image
-              src={article.imageUrl}
-              alt={article.title}
-              fill
-              sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
-              className="object-cover"
-              loading="lazy"
-            />
-          </div>
-        )}
+    <>
+      <AnimatedCard>
+        <article className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] overflow-hidden hover:shadow-md transition-shadow">
+          {article.imageUrl && (
+            <button
+              onClick={() => setLightboxOpen(true)}
+              className="group/news-img relative w-full aspect-square overflow-hidden bg-gray-100 cursor-pointer"
+            >
+              {/* Blurred background layer */}
+              <div className="absolute inset-0">
+                <Image
+                  src={article.imageUrl}
+                  alt=""
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+                  className="object-cover blur-xl scale-125"
+                  loading="lazy"
+                  quality={40}
+                />
+              </div>
+              {/* Sharp foreground image */}
+              <div className="absolute inset-0">
+                <Image
+                  src={article.imageUrl}
+                  alt={article.title}
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+                  className="object-cover transition-transform duration-300 group-hover/news-img:scale-105"
+                  loading="lazy"
+                />
+              </div>
+              {/* Zoom overlay hint */}
+              <div className="absolute inset-0 bg-black/0 group-hover/news-img:bg-black/20 transition-colors flex items-center justify-center">
+                <svg className="w-8 h-8 text-white opacity-0 group-hover/news-img:opacity-80 transition-opacity drop-shadow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                </svg>
+              </div>
+            </button>
+          )}
         <div className="p-4 sm:p-6">
           <div className="flex items-center gap-2 mb-3">
             <svg className="w-4 h-4 text-[#a90000]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -63,6 +91,16 @@ function NewsCard({ article }: { article: (typeof newsArchive)[number]['articles
         </div>
       </article>
     </AnimatedCard>
+
+      {/* Lightbox */}
+      {lightboxOpen && article.imageUrl && (
+        <ImageLightbox
+          images={[article.imageUrl]}
+          initialIndex={0}
+          onClose={() => setLightboxOpen(false)}
+        />
+      )}
+    </>
   );
 }
 
