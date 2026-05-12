@@ -12,7 +12,7 @@ function ImageGrid({ images, onImageClick }: { images: GalleryImage[]; onImageCl
         <button
           key={idx}
           onClick={() => onImageClick(images, idx)}
-          className="group relative aspect-square overflow-hidden rounded-xl bg-[#f5f5f0] border border-[#e8eaed] hover:border-[#a90000] transition-all duration-200 hover:shadow-md"
+          className="group relative h-48 sm:h-64 md:h-52 lg:h-48 overflow-hidden rounded-xl bg-[#f5f5f0] border border-[#e8eaed] hover:border-[#a90000] transition-all duration-200 hover:shadow-md"
         >
           <Image
             src={img.src}

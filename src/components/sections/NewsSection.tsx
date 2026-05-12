@@ -44,7 +44,7 @@ function NewsCard({ article }: { article: (typeof newsArchive)[number]['articles
           {article.imageUrl && (
             <button
               onClick={() => setLightboxOpen(true)}
-              className="group/news-img relative w-full aspect-square overflow-hidden bg-gray-100 cursor-pointer"
+              className="group/news-img relative w-full min-h-[180px] max-h-[280px] sm:min-h-[240px] sm:max-h-[360px] overflow-hidden bg-gray-100 cursor-pointer"
             >
               {/* Blurred background layer */}
               <div className="absolute inset-0">
