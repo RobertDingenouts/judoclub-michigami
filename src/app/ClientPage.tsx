@@ -222,7 +222,7 @@ export default function MichigamiApp() {
       <div className="md:hidden fixed top-3 left-3 z-50">
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="p-2.5 rounded-xl bg-white shadow-lg border border-[#e8eaed] hover:shadow-xl transition-shadow"
+          className="p-2.5 rounded-xl bg-white/70 backdrop-blur-md shadow-lg border border-white/30 hover:shadow-xl transition-shadow"
         >
           {sidebarOpen ? (
             <svg className="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
