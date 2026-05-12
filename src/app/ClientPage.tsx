@@ -176,6 +176,20 @@ export default function MichigamiApp() {
     updateMetaTags(activeSection);
   }, [activeSection]);
 
+  // Scroll-to-top on section change; exception: agenda scrolls to top first, then AgendaSection's own useEffect scrolls to first future date
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const scrollContainer = document.querySelector<HTMLElement>('[data-slot="scroll-area-viewport"]');
+      if (scrollContainer) {
+        scrollContainer.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }, 100); // wait for AnimatePresence mount
+
+    return () => clearTimeout(timer);
+  }, [activeSection]);
+
+  // After initial scroll-to-top, agenda section scrolls to first future date via its own useEffect (300ms delay) — no extra handling needed here.
+
   // Pull-to-refresh handlers
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     if (!PULL_REFRESH_SECTIONS.has(activeSection)) return;
