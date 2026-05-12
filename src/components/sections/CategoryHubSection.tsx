@@ -63,8 +63,8 @@ export function CategoryHubSection({ group, onNavigate, navGroups, groupHubMap }
         {group.items.map((item) => {
           const c = itemColors[item.key] || { color: '#c00000', bg: '#fff2f2' };
           return (
-            <button key={item.key} onClick={() => onNavigate(item.key)} className="group flex items-start gap-4 p-5 rounded-2xl border transition-all hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98] text-left" style={{ backgroundColor: c.bg, borderColor: c.color + '15' }}>
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110" style={{ backgroundColor: c.color + '15' }}>
+            <button key={item.key} onClick={() => onNavigate(item.key)} className="group flex items-start gap-4 p-5 rounded-2xl border transition-all duration-300 hover:shadow-md active:scale-[0.99] text-left" style={{ backgroundColor: c.bg, borderColor: c.color + '15' }}>
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform duration-300 group-hover:scale-105" style={{ backgroundColor: c.color + '15' }}>
                 <span style={{ color: c.color }}>{item.icon}</span>
               </div>
               <div className="flex-1 min-w-0">
@@ -82,7 +82,7 @@ export function CategoryHubSection({ group, onNavigate, navGroups, groupHubMap }
         <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Verken ook</h3>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {navGroups.filter(g => g.label !== group.label).map(otherGroup => (
-            <button key={otherGroup.label} onClick={() => onNavigate(groupHubMap[otherGroup.label])} className="flex items-center gap-3 p-4 rounded-xl border border-[#e8eaed] bg-white hover:shadow-md hover:border-[#c00000]/20 transition-all active:scale-[0.98]">
+            <button key={otherGroup.label} onClick={() => onNavigate(groupHubMap[otherGroup.label])} className="flex items-center gap-3 p-4 rounded-xl border border-[#e8eaed] bg-white hover:shadow-md hover:border-[#c00000]/20 transition-all duration-300 active:scale-[0.99]">
               <span className="text-3xl">{otherGroup.emoji}</span>
               <div className="text-left">
                 <span className="text-sm font-semibold text-gray-700 block">{otherGroup.label}</span>

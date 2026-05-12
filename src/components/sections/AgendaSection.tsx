@@ -92,7 +92,7 @@ export function AgendaSection() {
                   <td className="px-5 py-4 text-sm">
                     <span className={isPast ? 'text-gray-400' : 'text-gray-600'}>{item.time}</span>
                     {item.inschrijfUrl && !item.cancelled && !isPast && (
-                      <a href={item.inschrijfUrl} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1.5 bg-[#d90000] text-white px-4 py-2 rounded-lg text-xs font-semibold hover:bg-[#b20000] hover:-translate-y-0.5 transition-all shadow-sm">
+                      <a href={item.inschrijfUrl} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1.5 bg-[#d90000] text-white px-4 py-2 rounded-lg text-xs font-semibold hover:bg-[#b20000] transition-colors shadow-sm">
                         <ArrowRight className="w-3.5 h-3.5" /> {item.inschrijfTekst}
                       </a>
                     )}

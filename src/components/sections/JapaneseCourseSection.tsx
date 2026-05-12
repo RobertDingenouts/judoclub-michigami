@@ -674,7 +674,7 @@ export function JapaneseCourseSection() {
                 disabled={!unlocked}
                 className={`group rounded-2xl shadow-sm border-b-4 transition-all text-left relative overflow-hidden ${
                   unlocked
-                    ? 'bg-white hover:shadow-md hover:-translate-y-1 cursor-pointer'
+                    ? 'bg-white hover:shadow-md cursor-pointer'
                     : 'bg-gray-50 opacity-60 cursor-not-allowed'
                 }`}
                 style={{ borderColor: unlocked ? level.borderColor : '#e0e0e0', borderWidth: '1px 1px 4px 1px' }}

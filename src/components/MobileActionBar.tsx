@@ -57,7 +57,7 @@ export function MobileActionBar({ activeSection, onSectionChange }: MobileAction
               href={item.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-shrink-0 inline-flex items-center gap-1 h-9 px-3 rounded-full bg-white/80 backdrop-blur-md shadow-sm border border-gray-200/50 text-xs font-medium text-foreground active:scale-[0.97] transition-transform"
+              className="flex-shrink-0 inline-flex items-center gap-1 h-9 px-3 rounded-full bg-white/80 backdrop-blur-md shadow-sm border border-gray-200/50 text-xs font-medium text-foreground active:scale-[0.99] transition-transform"
             >
               <span className="text-sm">{item.emoji}</span>
               <span>{item.label}</span>
@@ -66,7 +66,7 @@ export function MobileActionBar({ activeSection, onSectionChange }: MobileAction
             <button
               key={item.id + item.label}
               onClick={() => onSectionChange(item.id as SectionId)}
-              className={`flex-shrink-0 inline-flex items-center gap-1 h-9 px-3 rounded-full shadow-sm border text-xs font-medium active:scale-[0.97] transition-all ${
+              className={`flex-shrink-0 inline-flex items-center gap-1 h-9 px-3 rounded-full shadow-sm border text-xs font-medium active:scale-[0.99] transition-all ${
                 activeSection === item.id
                   ? 'bg-judo-red/90 backdrop-blur-md text-white border-judo-red'
                   : 'bg-white/60 backdrop-blur-md text-foreground border-gray-200/50'
@@ -81,7 +81,7 @@ export function MobileActionBar({ activeSection, onSectionChange }: MobileAction
         {/* More pill — opens bottom sheet */}
         <Drawer direction="bottom" open={moreOpen} onOpenChange={setMoreOpen}>
           <DrawerTrigger asChild>
-            <button className="flex-shrink-0 inline-flex items-center gap-1 h-9 px-3 rounded-full bg-white/60 backdrop-blur-md shadow-sm border border-gray-200/50 text-xs font-medium text-foreground active:scale-[0.97] transition-transform">
+            <button className="flex-shrink-0 inline-flex items-center gap-1 h-9 px-3 rounded-full bg-white/60 backdrop-blur-md shadow-sm border border-gray-200/50 text-xs font-medium text-foreground active:scale-[0.99] transition-transform">
               <span className="text-sm">⋯</span>
               <span>Meer</span>
             </button>
@@ -100,7 +100,7 @@ export function MobileActionBar({ activeSection, onSectionChange }: MobileAction
                     href={link.url!}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-foreground hover:bg-judo-red-bg transition-all active:scale-[0.98]"
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-foreground hover:bg-judo-red-bg transition-all active:scale-[0.99]"
                   >
                     <span>{link.emoji}</span>
                     <span>{link.label}</span>
@@ -109,7 +109,7 @@ export function MobileActionBar({ activeSection, onSectionChange }: MobileAction
                   <button
                     key={link.id}
                     onClick={() => { onSectionChange(link.id as SectionId); setMoreOpen(false); }}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all active:scale-[0.98] ${
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all active:scale-[0.99] ${
                       activeSection === link.id
                         ? 'bg-judo-red text-white'
                         : 'text-foreground hover:bg-judo-red-bg'

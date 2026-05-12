@@ -2,23 +2,23 @@
 
 import { motion, type Variants } from 'framer-motion';
 
-/** Shared Framer Motion variants for micro-interactions. */
+/** Shared Framer Motion variants for micro-interactions — subtle, no springy feel. */
 export const cardHover: Variants = {
-  rest: { scale: 1, y: 0 },
-  hover: { scale: 1.03, y: -2, transition: { type: 'spring', stiffness: 400, damping: 25 } },
-  tap: { scale: 0.97, transition: { type: 'spring', stiffness: 400 } },
+  rest: { scale: 1 },
+  hover: { scale: 1.01, transition: { type: 'tween', duration: 0.3 } },
+  tap: { scale: 0.99, transition: { type: 'tween', duration: 0.15 } },
 };
 
 export const buttonHover: Variants = {
   rest: { scale: 1 },
-  hover: { scale: 1.03, transition: { type: 'spring', stiffness: 400, damping: 25 } },
-  tap: { scale: 0.97, transition: { type: 'spring', stiffness: 400 } },
+  hover: { scale: 1.01, transition: { type: 'tween', duration: 0.3 } },
+  tap: { scale: 0.99, transition: { type: 'tween', duration: 0.15 } },
 };
 
 export const subtleHover: Variants = {
   rest: { scale: 1 },
-  hover: { scale: 1.02, transition: { type: 'spring', stiffness: 300, damping: 20 } },
-  tap: { scale: 0.98 },
+  hover: { scale: 1.01, transition: { type: 'tween', duration: 0.3 } },
+  tap: { scale: 0.99, transition: { type: 'tween', duration: 0.15 } },
 };
 
 /** Animated card wrapper with consistent hover/tap micro-interaction. */
