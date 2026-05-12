@@ -24,6 +24,7 @@ import { InfoSection } from '@/components/sections/InfoSection';
 import { AgendaSection } from '@/components/sections/AgendaSection';
 import { TechniquesSection } from '@/components/sections/TechniquesSection';
 import { CategoryHubSection } from '@/components/sections/CategoryHubSection';
+import { TimelineSection } from '@/components/sections/TimelineSection';
 import { PullToRefreshIndicator } from '@/components/PullToRefreshIndicator';
 import { navGroups, mobileNavItems, groupHubMap, allNavItems, type Section } from '@/components/nav-config';
 
@@ -104,6 +105,10 @@ const sectionMeta: Record<Section, { title: string; description: string }> = {
   'juridisch': {
     title: 'Juridisch & Privacy | Judoclub Michigami',
     description: 'Privacyverklaring, algemene voorwaarden en juridische informatie van Judoclub Michigami.',
+  },
+  'timeline': {
+    title: 'Club Geschiedenis - Tijdlijn | Judoclub Michigami',
+    description: 'De geschiedenis van Judoclub Michigami en judo in Steenbergen. Van oprichting tot vandaag.',
   },
   'club-hub': {
     title: 'Club Informatie | Judoclub Michigami',
@@ -286,6 +291,7 @@ export default function MichigamiApp() {
             {activeSection === 'nieuws' && <NewsSection />}
             {activeSection === 'techniekenkaart' && <TechniquesCardSection />}
             {activeSection === 'juridisch' && <LegalSection />}
+            {activeSection === 'timeline' && <TimelineSection />}
             {activeSection === 'club-hub' && <CategoryHubSection group={navGroups[0]} onNavigate={setActiveSection} navGroups={navGroups} groupHubMap={groupHubMap} />}
             {activeSection === 'judoschool-hub' && <CategoryHubSection group={navGroups[1]} onNavigate={setActiveSection} navGroups={navGroups} groupHubMap={groupHubMap} />}
             {activeSection === 'media-hub' && <CategoryHubSection group={navGroups[2]} onNavigate={setActiveSection} navGroups={navGroups} groupHubMap={groupHubMap} />}
