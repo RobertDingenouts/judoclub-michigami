@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist } from "next/font/google";
+import { Geist, Inter, Rokkitt, Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { JsonLd } from "@/components/JsonLd";
@@ -7,6 +7,26 @@ import { JsonLd } from "@/components/JsonLd";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+});
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const rokkitt = Rokkitt({
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-rokkitt",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const notoSansJp = Noto_Sans_JP({
+  weight: ["400", "500", "700"],
+  variable: "--font-noto-sans-jp",
+  subsets: ["latin"],
+  display: "swap",
 });
 
 export const viewport: Viewport = {
@@ -71,7 +91,7 @@ export default function RootLayout({
   return (
     <html lang="nl" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} antialiased bg-background text-foreground`}
+        className={`${geistSans.variable} ${inter.variable} ${rokkitt.variable} ${notoSansJp.variable} antialiased bg-background text-foreground`}
       >
         {children}
         <Toaster />

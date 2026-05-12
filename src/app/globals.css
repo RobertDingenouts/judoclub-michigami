@@ -3,6 +3,49 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ============================================
+   DESIGN SYSTEM — Brand Colors + Tokens
+   ============================================ */
+:root {
+  /* Brand red palette (primary brand color) */
+  --brand-900: #7a0000;
+  --brand-700: #8c0000;
+  --brand-600: #a90000;
+  --brand-500: #c00000;
+  --brand-100: #fdf6f6;
+  --brand-50:  #fffafa;
+
+  /* Neutral palette */
+  --neutral-950: #1a1a1a;
+  --neutral-900: #2a2a2a;
+  --neutral-100: #f5f5f0;
+
+  /* Accent gold */
+  --accent-gold: #d4a843;
+
+  /* Type scale — responsive clamp() */
+  --text-xs:   clamp(0.7rem, 0.65rem + 0.25vw, 0.75rem);
+  --text-sm:   clamp(0.8rem, 0.75rem + 0.25vw, 0.875rem);
+  --text-base: clamp(0.9rem, 0.85rem + 0.25vw, 1rem);
+  --text-lg:   clamp(1rem,   0.95rem + 0.25vw, 1.125rem);
+  --text-xl:   clamp(1.15rem, 1.05rem + 0.5vw,  1.25rem);
+  --text-2xl:  clamp(1.3rem, 1.15rem + 0.75vw, 1.5rem);
+  --text-3xl:  clamp(1.5rem, 1.3rem + 1vw,    1.875rem);
+  --text-4xl:  clamp(1.8rem, 1.5rem + 1.5vw,  2.25rem);
+  --text-5xl:  clamp(2.2rem, 1.8rem + 2vw,    3rem);
+
+  /* Font families */
+  --font-heading: var(--font-rokkitt), Georgia, serif;
+  --font-body:    var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-jp:      var(--font-noto-sans-jp), sans-serif;
+
+  /* Radius */
+  --radius: 0.625rem;
+}
+
+/* ============================================
+   THEME — Tailwind color/font tokens
+   ============================================ */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -43,8 +86,10 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
+/* ============================================
+   SHADCN/UI COLORS — Light Mode (:root)
+   ============================================ */
 :root {
-  --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -112,6 +157,9 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+/* ============================================
+   BASE STYLES & TYPOGRAPHY
+   ============================================ */
 @layer base {
   *, *::before, *::after {
     @apply border-border outline-ring/50;
@@ -129,6 +177,7 @@
     min-height: 100vh;
     overflow-x: hidden;
     max-width: 100vw;
+    font-family: var(--font-body);
   }
   #__next {
     overflow-x: hidden;
@@ -140,6 +189,17 @@
     word-wrap: break-word;
     overflow-wrap: break-word;
   }
+
+  /* Headings use Rokkitt (serif) */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+  }
+
+  /* Japanese text uses Noto Sans JP */
+  .jp-text, [lang="ja"] {
+    font-family: var(--font-jp);
+  }
+
   /* Safe area padding for mobile bottom nav */
   .safe-area-bottom {
     padding-bottom: env(safe-area-inset-bottom, 0px);
