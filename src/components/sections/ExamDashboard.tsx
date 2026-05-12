@@ -256,7 +256,6 @@ const BELT_COLORS: Record<string, string> = {
 export function ExamDashboard() {
   const [selectedBeltId, setSelectedBeltId] = useState('wit');
   const [viewMode, setViewMode] = useState<'all' | 'new'>('all');
-  const [detailLevel, setDetailLevel] = useState<'counts' | 'techniques' | 'full'>('techniques');
   const [showDirectTransition, setShowDirectTransition] = useState(false);
   const [fromBeltId, setFromBeltId] = useState('wit');
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
@@ -328,14 +327,15 @@ export function ExamDashboard() {
           if (!cat) return null;
 
           const total = catId === 'ukemi-waza' ? 4 : (beltReq.requirements[catId] || 0);
-          const prev = catId === 'ukemi-waza' ? 0 : (prevBeltReq?.requirements[catId] || 0);
+          const prev = catId === 'ukemi-waza' ? 4 : (prevBeltReq?.requirements[catId] || 0);
           const newCount = total - prev;
 
-          // Skip in "new" mode if no new techniques
+          // Ukemi (valbreektechnieken) are always shown — they're basic white belt fundamentals.
+          // Other categories: skip in "new" mode if no new techniques.
           if (viewMode === 'new' && newCount === 0 && catId !== 'ukemi-waza') return null;
 
           const displayCount = viewMode === 'new' ? newCount : total;
-          const isNew = viewMode === 'new' && newCount > 0;
+          const isNew = viewMode === 'new' && newCount > 0 && catId !== 'ukemi-waza';
           const isExpanded = expandedCategories.has(catId);
 
           // Get techniques to display
@@ -378,10 +378,10 @@ export function ExamDashboard() {
                 </div>
               </button>
 
-              {/* Expanded Content */}
-              {isExpanded && detailLevel !== 'counts' && (
+              {/* Expanded Content — always show both counts + technique names */}
+              {isExpanded && (
                 <div className="px-3 sm:px-4 pb-4 bg-gradient-to-b from-gray-50 to-white animate-fadeIn">
-                  <div className={`grid gap-2 pt-2 ${detailLevel === 'full' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1 sm:grid-cols-2'}`}>
+                  <div className="grid gap-2 pt-2 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                     {techniques.map((tech, idx) => {
                       const num = catId === 'ukemi-waza' ? (idx + 1) : (viewMode === 'new' ? (prev + idx + 1) : (idx + 1));
 
@@ -399,9 +399,7 @@ export function ExamDashboard() {
                               </AnimatedButton>
                             )}
                           </div>
-                          {detailLevel === 'full' && (
-                            <span className="block text-xs text-gray-500 mt-0.5">{tech.nameNl}</span>
-                          )}
+                          <span className="block text-xs text-gray-500 mt-0.5">{tech.nameNl}</span>
                           {tech.forbidden && (
                             <span className="inline-block mt-1 px-1.5 py-0.5 bg-red-100 text-red-500 text-[10px] font-semibold rounded">
                               verboden
@@ -461,20 +459,6 @@ export function ExamDashboard() {
                 Alleen nieuw
               </button>
             </div>
-          </div>
-
-          {/* Detail Level */}
-          <div>
-            <label className="block text-sm font-semibold text-[#a90000] mb-2 uppercase tracking-wide">Detailniveau</label>
-            <select
-              value={detailLevel}
-              onChange={(e) => setDetailLevel(e.target.value as any)}
-              className="w-full p-2 border-2 border-gray-300 rounded-lg text-sm focus:border-[#a90000] focus:outline-none"
-            >
-              <option value="counts">Alleen aantallen</option>
-              <option value="techniques">Technieknamen</option>
-              <option value="full">Volledig (met vertaling)</option>
-            </select>
           </div>
 
           {/* Direct Transition Toggle */}
