@@ -28,9 +28,22 @@ const nextConfig: NextConfig = {
     ],
   },
 
-  // Image optimization: support AVIF and WebP formats
+  // Image optimization: support AVIF and WebP formats + external image domains
   images: {
     formats: ["image/avif", "image/webp"],
+
+    // Allow external images (YouTube thumbnails, social media, etc.)
+    remotePatterns: [
+      // YouTube thumbnails
+      { protocol: "https", hostname: "i.ytimg.com" },
+      { protocol: "https", hostname: "img.youtube.com" },
+      // Facebook CDN (profile pictures, shared content)
+      { protocol: "https", hostname: "*.fbcdn.net" },
+      { protocol: "https", hostname: "graph.facebook.com" },
+      // Instagram CDN
+      { protocol: "https", hostname: "scontent.*.cdninstagram.com" },
+      { protocol: "https", hostname: "*.instagram.com" },
+    ],
   },
 
   // Caching headers for static assets
