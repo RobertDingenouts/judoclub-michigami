@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import Image from 'next/image';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { ExamDashboard } from '@/components/sections/ExamDashboard';
 import { FormsSection } from '@/components/sections/FormsSection';
