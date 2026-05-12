@@ -21,10 +21,9 @@ const nextConfig: NextConfig = {
     optimizePackageImports: [
       "lucide-react",
       "@radix-ui/react-dialog",
-      "@radix-ui/react-select",
       "@radix-ui/react-tooltip",
       "@radix-ui/react-tabs",
-      "@radix-ui/react-accordion",
+      "@radix-ui/react-scroll-area",
     ],
   },
 
