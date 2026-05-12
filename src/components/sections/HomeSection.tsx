@@ -104,42 +104,118 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
         <h2 className="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
           <Sparkles className="w-5 h-5 text-[#c00000]" /> Snel naar...
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-          {[
-            { key: 'agenda', label: 'Agenda', sub: 'Evenementen & trainingstijden', icon: <Calendar className="w-7 h-7 text-white" />, span: 'sm:col-span-2', color: '#c00000' },
-            { key: 'nieuws', label: 'Nieuws', sub: 'Laatste berichten', icon: <Sparkles className="w-6 h-6" style={{ color: '#c00000' }} />, span: '', color: '#c00000' },
-            { key: 'technieken', label: 'Technieken', sub: 'Alle technieken', icon: <Swords className="w-6 h-6" style={{ color: '#8c0000' }} />, span: '', color: '#8c0000' },
-            { key: 'info', label: 'Over Ons', sub: 'Geschiedenis & leiding', icon: <Info className="w-6 h-6" style={{ color: '#c00000' }} />, span: '', color: '#c00000' },
-            { key: 'exameneisen', label: 'Examens', sub: 'Per bandniveau', icon: <Target className="w-6 h-6" style={{ color: '#c00000' }} />, span: '', color: '#c00000' },
-            { key: 'leden', label: 'Lid Worden', sub: 'Meld je aan', icon: <Users className="w-6 h-6" style={{ color: '#8c0000' }} />, span: '', color: '#8c0000' },
-            { key: 'lestijden', label: 'Lestijden', sub: 'Wo & Vr', icon: <Clock className="w-6 h-6" style={{ color: '#c00000' }} />, span: '', color: '#c00000' },
-            { key: 'locatie', label: 'Locaties', sub: '2 locaties', icon: <MapPin className="w-6 h-6" style={{ color: '#8c0000' }} />, span: '', color: '#8c0000' },
-            { key: 'contact', label: 'Contact', sub: 'Neem contact op', icon: <Mail className="w-6 h-6" style={{ color: '#c00000' }} />, span: '', color: '#c00000' },
-            { key: 'cursusjapans', label: 'Cursus Japans', sub: 'Leer + quiz', icon: <BookOpen className="w-6 h-6" style={{ color: '#c00000' }} />, span: '', color: '#c00000' },
-          ].map((item) => (
-            <AnimatedButton key={item.key} onClick={() => onNavigate(item.key as Section)} variants={subtleHover}>
-              <div className={`${item.span || ''} relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 ${item.span ? 'p-5' : 'p-4'} transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-100/50 active:scale-[0.98] group`} style={{ borderColor: item.color + '20' }}>
-                <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
-                <div className={`relative ${item.span ? 'flex items-center gap-4' : 'flex flex-col items-center gap-2 text-center'}`}>
-                  {item.span ? (
-                    <>
-                      <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ background: `linear-gradient(135deg, ${item.color}, #a90000)` }}>{item.icon}</div>
-                      <div className="text-left">
-                        <span className="font-bold text-base block" style={{ color: item.color }}>{item.label}</span>
-                        <span className="text-sm text-gray-500">{item.sub}</span>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: item.color + '15' }}>{item.icon}</div>
-                      <span className="font-semibold text-sm" style={{ color: item.color }}>{item.label}</span>
-                      <span className="text-xs text-gray-500">{item.sub}</span>
-                    </>
-                  )}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 auto-rows-fr">
+          {/* Row 1: Agenda (groot, spans 2 cols + 2 rows) + Nieuws + Technieken */}
+          <AnimatedButton onClick={() => onNavigate('agenda')} variants={subtleHover}>
+            <div className="sm:col-span-2 sm:row-span-2 relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-6 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-100/50 active:scale-[0.98] group" style={{ borderColor: '#c0000020' }}>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
+              <div className="relative h-full flex flex-col justify-between">
+                <div>
+                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 mb-4" style={{ background: 'linear-gradient(135deg, #c00000, #a90000)' }}>
+                    <Calendar className="w-8 h-8 text-white" />
+                  </div>
+                  <span className="font-bold text-xl block" style={{ color: '#c00000' }}>Agenda</span>
+                  <span className="text-base text-gray-500 mt-1 block">Evenementen & trainingstijden</span>
+                </div>
+                <span className="text-sm font-medium mt-3 inline-flex items-center gap-1" style={{ color: '#c00000' }}>Bekijk agenda →</span>
+              </div>
+            </div>
+          </AnimatedButton>
+          <AnimatedButton onClick={() => onNavigate('nieuws')} variants={subtleHover}>
+            <div className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-100/50 active:scale-[0.98] group" style={{ borderColor: '#c0000020' }}>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
+              <div className="relative flex flex-col items-center gap-2 text-center">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#c0000015' }}><Sparkles className="w-6 h-6" style={{ color: '#c00000' }} /></div>
+                <span className="font-semibold text-sm" style={{ color: '#c00000' }}>Nieuws</span>
+                <span className="text-xs text-gray-500">Laatste berichten</span>
+              </div>
+            </div>
+          </AnimatedButton>
+          <AnimatedButton onClick={() => onNavigate('technieken')} variants={subtleHover}>
+            <div className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-100/50 active:scale-[0.98] group" style={{ borderColor: '#8c000020' }}>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
+              <div className="relative flex flex-col items-center gap-2 text-center">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#8c000015' }}><Swords className="w-6 h-6" style={{ color: '#8c0000' }} /></div>
+                <span className="font-semibold text-sm" style={{ color: '#8c0000' }}>Technieken</span>
+                <span className="text-xs text-gray-500">Alle technieken</span>
+              </div>
+            </div>
+          </AnimatedButton>
+
+          {/* Row 2+3 continued: Info (medium, 2 cols) + Examens + Leden */}
+          <AnimatedButton onClick={() => onNavigate('info')} variants={subtleHover}>
+            <div className="sm:col-span-2 relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-5 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-100/50 active:scale-[0.98] group" style={{ borderColor: '#c0000020' }}>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
+              <div className="relative flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #c00000, #a90000)' }}><Info className="w-6 h-6 text-white" /></div>
+                <div className="text-left">
+                  <span className="font-bold text-base block" style={{ color: '#c00000' }}>Over Ons</span>
+                  <span className="text-sm text-gray-500">Geschiedenis & leiding</span>
                 </div>
               </div>
-            </AnimatedButton>
-          ))}
+            </div>
+          </AnimatedButton>
+          <AnimatedButton onClick={() => onNavigate('exameneisen')} variants={subtleHover}>
+            <div className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-100/50 active:scale-[0.98] group" style={{ borderColor: '#c0000020' }}>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
+              <div className="relative flex flex-col items-center gap-2 text-center">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#c0000015' }}><Target className="w-6 h-6" style={{ color: '#c00000' }} /></div>
+                <span className="font-semibold text-sm" style={{ color: '#c00000' }}>Examens</span>
+                <span className="text-xs text-gray-500">Per bandniveau</span>
+              </div>
+            </div>
+          </AnimatedButton>
+          <AnimatedButton onClick={() => onNavigate('leden')} variants={subtleHover}>
+            <div className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-100/50 active:scale-[0.98] group" style={{ borderColor: '#8c000020' }}>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
+              <div className="relative flex flex-col items-center gap-2 text-center">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#8c000015' }}><Users className="w-6 h-6" style={{ color: '#8c0000' }} /></div>
+                <span className="font-semibold text-sm" style={{ color: '#8c0000' }}>Lid Worden</span>
+                <span className="text-xs text-gray-500">Meld je aan</span>
+              </div>
+            </div>
+          </AnimatedButton>
+
+          {/* Row 3: Lestijden + Locatie + Contact (klein) + Cursus Japans */}
+          <AnimatedButton onClick={() => onNavigate('lestijden')} variants={subtleHover}>
+            <div className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-100/50 active:scale-[0.98] group" style={{ borderColor: '#c0000020' }}>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
+              <div className="relative flex flex-col items-center gap-2 text-center">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#c0000015' }}><Clock className="w-6 h-6" style={{ color: '#c00000' }} /></div>
+                <span className="font-semibold text-sm" style={{ color: '#c00000' }}>Lestijden</span>
+                <span className="text-xs text-gray-500">Wo & Vr</span>
+              </div>
+            </div>
+          </AnimatedButton>
+          <AnimatedButton onClick={() => onNavigate('locatie')} variants={subtleHover}>
+            <div className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-100/50 active:scale-[0.98] group" style={{ borderColor: '#8c000020' }}>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
+              <div className="relative flex flex-col items-center gap-2 text-center">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#8c000015' }}><MapPin className="w-6 h-6" style={{ color: '#8c0000' }} /></div>
+                <span className="font-semibold text-sm" style={{ color: '#8c0000' }}>Locaties</span>
+                <span className="text-xs text-gray-500">2 locaties</span>
+              </div>
+            </div>
+          </AnimatedButton>
+          <AnimatedButton onClick={() => onNavigate('contact')} variants={subtleHover}>
+            <div className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-100/50 active:scale-[0.98] group" style={{ borderColor: '#c0000020' }}>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
+              <div className="relative flex flex-col items-center gap-2 text-center">
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#c0000015' }}><Mail className="w-5 h-5" style={{ color: '#c00000' }} /></div>
+                <span className="font-semibold text-xs" style={{ color: '#c00000' }}>Contact</span>
+              </div>
+            </div>
+          </AnimatedButton>
+          <AnimatedButton onClick={() => onNavigate('cursusjapans')} variants={subtleHover}>
+            <div className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-100/50 active:scale-[0.98] group" style={{ borderColor: '#c0000020' }}>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
+              <div className="relative flex flex-col items-center gap-2 text-center">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#c0000015' }}><BookOpen className="w-6 h-6" style={{ color: '#c00000' }} /></div>
+                <span className="font-semibold text-sm" style={{ color: '#c00000' }}>Cursus Japans</span>
+                <span className="text-xs text-gray-500">Leer + quiz</span>
+              </div>
+            </div>
+          </AnimatedButton>
         </div>
       </div>
 

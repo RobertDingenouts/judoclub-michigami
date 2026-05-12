@@ -163,7 +163,7 @@ export default function MichigamiApp() {
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-[#f8f9fa] w-full overflow-x-hidden">
       {/* Desktop Sidebar — Glassmorphism */}
-      <aside className="hidden md:flex flex-col w-64 backdrop-blur-xl bg-white/80 border-r border-white/30 min-h-screen fixed left-0 top-0 z-40 shadow-lg shadow-black/5">
+      <aside className="hidden md:flex flex-col w-64 backdrop-blur-xl bg-white/80 border border-white/20 min-h-screen fixed left-0 top-0 z-40 shadow-lg shadow-black/5">
         <SidebarContent activeSection={activeSection} onSelect={(s) => setActiveSection(s)} />
       </aside>
 
@@ -197,7 +197,7 @@ export default function MichigamiApp() {
               animate={{ x: 0 }}
               exit={{ x: -300 }}
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              className="w-72 backdrop-blur-xl bg-white/90 min-h-screen shadow-2xl max-w-[calc(100vw-1rem)]"
+              className="w-72 backdrop-blur-xl bg-white/80 border-r border-white/20 min-h-screen shadow-2xl max-w-[calc(100vw-1rem)]"
               onClick={(e) => e.stopPropagation()}
             >
               <SidebarContent activeSection={activeSection} onSelect={(s) => { setActiveSection(s); setSidebarOpen(false); }} />
