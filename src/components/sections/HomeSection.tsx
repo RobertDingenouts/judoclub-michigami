@@ -78,10 +78,10 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
         <h2 className="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
           <Sparkles className="w-5 h-5 text-[#c00000]" /> Snel naar...
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 items-stretch">
           {/* Row 1: Agenda (groot, spans 2 cols + 2 rows) + Nieuws + Technieken */}
           <AnimatedButton onClick={() => onNavigate('agenda')} variants={subtleHover}>
-            <div className="sm:col-span-2 sm:row-span-2 relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 sm:p-6 transition-all duration-300 hover:shadow-md active:scale-[0.99] group min-h-[140px] sm:min-h-[260px]" style={{ borderColor: '#c0000020' }}>
+            <div className="sm:col-span-2 sm:row-span-2 relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 sm:p-6 transition-all duration-300 hover:shadow-md active:scale-[0.99] group h-full min-h-[140px] sm:min-h-[0]" style={{ borderColor: '#c0000020' }}>
               <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
               <div className="relative h-full flex flex-col justify-between">
                 <div>
@@ -96,7 +96,7 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
             </div>
           </AnimatedButton>
           <AnimatedButton onClick={() => onNavigate('nieuws')} variants={subtleHover}>
-            <div className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all duration-300 hover:shadow-md active:scale-[0.99] group min-h-[140px]" style={{ borderColor: '#c0000020' }}>
+            <div className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all duration-300 hover:shadow-md active:scale-[0.99] group h-full min-h-[140px]" style={{ borderColor: '#c0000020' }}>
               <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
               <div className="relative h-full flex flex-col items-center justify-center gap-2 text-center">
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#c0000015' }}><Sparkles className="w-6 h-6" style={{ color: '#c00000' }} /></div>
@@ -106,7 +106,7 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
             </div>
           </AnimatedButton>
           <AnimatedButton onClick={() => onNavigate('technieken')} variants={subtleHover}>
-            <div className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all duration-300 hover:shadow-md active:scale-[0.99] group min-h-[140px]" style={{ borderColor: '#8c000020' }}>
+            <div className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all duration-300 hover:shadow-md active:scale-[0.99] group h-full min-h-[140px]" style={{ borderColor: '#8c000020' }}>
               <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
               <div className="relative h-full flex flex-col items-center justify-center gap-2 text-center">
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#8c000015' }}><Swords className="w-6 h-6" style={{ color: '#8c0000' }} /></div>
@@ -118,7 +118,7 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
 
           {/* Row 2+3 continued: Info (medium, 2 cols) + Examens + Leden */}
           <AnimatedButton onClick={() => onNavigate('info')} variants={subtleHover}>
-            <div className="sm:col-span-2 relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 sm:p-5 transition-all duration-300 hover:shadow-md active:scale-[0.99] group min-h-[140px]" style={{ borderColor: '#c0000020' }}>
+            <div className="sm:col-span-2 relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 sm:p-5 transition-all duration-300 hover:shadow-md active:scale-[0.99] group h-full min-h-[140px]" style={{ borderColor: '#c0000020' }}>
               <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
               <div className="relative h-full flex items-center justify-center gap-4">
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #c00000, #a90000)' }}><Info className="w-6 h-6 text-white" /></div>
@@ -130,7 +130,7 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
             </div>
           </AnimatedButton>
           <AnimatedButton onClick={() => onNavigate('exameneisen')} variants={subtleHover}>
-            <div className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all duration-300 hover:shadow-md active:scale-[0.99] group min-h-[140px]" style={{ borderColor: '#c0000020' }}>
+            <div className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all duration-300 hover:shadow-md active:scale-[0.99] group h-full min-h-[140px]" style={{ borderColor: '#c0000020' }}>
               <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
               <div className="relative h-full flex flex-col items-center justify-center gap-2 text-center">
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#c0000015' }}><Target className="w-6 h-6" style={{ color: '#c00000' }} /></div>
@@ -140,7 +140,7 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
             </div>
           </AnimatedButton>
           <AnimatedButton onClick={() => onNavigate('leden')} variants={subtleHover}>
-            <div className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all duration-300 hover:shadow-md active:scale-[0.99] group min-h-[140px]" style={{ borderColor: '#8c000020' }}>
+            <div className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all duration-300 hover:shadow-md active:scale-[0.99] group h-full min-h-[140px]" style={{ borderColor: '#8c000020' }}>
               <div className="relative h-full flex flex-col items-center justify-center gap-2 text-center">
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#8c000015' }}><Users className="w-6 h-6" style={{ color: '#8c0000' }} /></div>
                 <span className="font-semibold text-sm" style={{ color: '#8c0000' }}>Lid Worden</span>
@@ -151,7 +151,7 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
           {isMobile && (
             <>
               <ProeflesBottomSheet trigger={
-                <button className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all duration-300 hover:shadow-md active:scale-[0.99] group min-h-[140px]" style={{ borderColor: '#27ae6020' }}>
+                <button className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all duration-300 hover:shadow-md active:scale-[0.99] group h-full min-h-[140px]" style={{ borderColor: '#27ae6020' }}>
                   <div className="absolute inset-0 bg-gradient-to-br from-[#f0fdf4] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
                   <div className="relative h-full flex flex-col items-center justify-center gap-2 text-center">
                     <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#27ae6015' }}><Users className="w-6 h-6 text-[#27ae60]" /></div>
@@ -161,7 +161,7 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
                 </button>
               } />
               <ContactBottomSheet trigger={
-                <button className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all duration-300 hover:shadow-md active:scale-[0.99] group min-h-[140px]" style={{ borderColor: '#c0000020' }}>
+                <button className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all duration-300 hover:shadow-md active:scale-[0.99] group h-full min-h-[140px]" style={{ borderColor: '#c0000020' }}>
                   <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
                   <div className="relative h-full flex flex-col items-center justify-center gap-2 text-center">
                     <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#c0000015' }}><Mail className="w-6 h-6" style={{ color: '#c00000' }} /></div>
@@ -170,7 +170,7 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
                 </button>
               } />
               <LocationBottomSheet trigger={
-                <button className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all duration-300 hover:shadow-md active:scale-[0.99] group min-h-[140px]" style={{ borderColor: '#8c000020' }}>
+                <button className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all duration-300 hover:shadow-md active:scale-[0.99] group h-full min-h-[140px]" style={{ borderColor: '#8c000020' }}>
                   <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
                   <div className="relative h-full flex flex-col items-center justify-center gap-2 text-center">
                     <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#8c000015' }}><MapPin className="w-6 h-6" style={{ color: '#8c0000' }} /></div>
@@ -184,7 +184,7 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
 
           {/* Row 3: Lestijden + Locatie + Contact (klein) + Cursus Japans */}
           <AnimatedButton onClick={() => onNavigate('lestijden')} variants={subtleHover}>
-            <div className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all duration-300 hover:shadow-md active:scale-[0.99] group min-h-[140px]" style={{ borderColor: '#c0000020' }}>
+            <div className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all duration-300 hover:shadow-md active:scale-[0.99] group h-full min-h-[140px]" style={{ borderColor: '#c0000020' }}>
               <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
               <div className="relative h-full flex flex-col items-center justify-center gap-2 text-center">
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#c0000015' }}><Clock className="w-6 h-6" style={{ color: '#c00000' }} /></div>
@@ -194,7 +194,7 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
             </div>
           </AnimatedButton>
           <AnimatedButton onClick={() => onNavigate('locatie')} variants={subtleHover}>
-            <div className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all duration-300 hover:shadow-md active:scale-[0.99] group min-h-[140px]" style={{ borderColor: '#8c000020' }}>
+            <div className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all duration-300 hover:shadow-md active:scale-[0.99] group h-full min-h-[140px]" style={{ borderColor: '#8c000020' }}>
               <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
               <div className="relative h-full flex flex-col items-center justify-center gap-2 text-center">
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#8c000015' }}><MapPin className="w-6 h-6" style={{ color: '#8c0000' }} /></div>
@@ -204,7 +204,7 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
             </div>
           </AnimatedButton>
           <AnimatedButton onClick={() => onNavigate('contact')} variants={subtleHover}>
-            <div className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all duration-300 hover:shadow-md active:scale-[0.99] group min-h-[140px]" style={{ borderColor: '#c0000020' }}>
+            <div className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all duration-300 hover:shadow-md active:scale-[0.99] group h-full min-h-[140px]" style={{ borderColor: '#c0000020' }}>
               <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
               <div className="relative h-full flex flex-col items-center justify-center gap-2 text-center">
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#c0000015' }}><Mail className="w-6 h-6" style={{ color: '#c00000' }} /></div>
@@ -213,7 +213,7 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
             </div>
           </AnimatedButton>
           <AnimatedButton onClick={() => onNavigate('cursusjapans')} variants={subtleHover}>
-            <div className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all duration-300 hover:shadow-md active:scale-[0.99] group min-h-[140px]" style={{ borderColor: '#c0000020' }}>
+            <div className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all duration-300 hover:shadow-md active:scale-[0.99] group h-full min-h-[140px]" style={{ borderColor: '#c0000020' }}>
               <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
               <div className="relative h-full flex flex-col items-center justify-center gap-2 text-center">
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#c0000015' }}><BookOpen className="w-6 h-6" style={{ color: '#c00000' }} /></div>
@@ -226,9 +226,9 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
       </div>
 
       {/* Training Info */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-stretch">
         <AnimatedCard variants={subtleHover}>
-          <div className="bg-gradient-to-br from-[#fdf6f6] to-white rounded-2xl shadow-sm border border-[#c00000]/10 p-5">
+          <div className="bg-gradient-to-br from-[#fdf6f6] to-white rounded-2xl shadow-sm border border-[#c00000]/10 p-5 h-full min-h-[180px] flex flex-col">
             <div className="flex items-start gap-4">
               <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#a9000015' }}>
                 <Clock className="w-7 h-7" style={{ color: '#c00000' }} />
@@ -246,7 +246,7 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
           </div>
         </AnimatedCard>
         <AnimatedCard variants={subtleHover}>
-          <div className="bg-gradient-to-br from-[#eef6fb] to-white rounded-2xl shadow-sm border border-[#2980b9]/10 p-5">
+          <div className="bg-gradient-to-br from-[#eef6fb] to-white rounded-2xl shadow-sm border border-[#2980b9]/10 p-5 h-full min-h-[180px] flex flex-col">
             <div className="flex items-start gap-4">
               <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#2980b915' }}>
                 <Clock className="w-7 h-7" style={{ color: '#2980b9' }} />
