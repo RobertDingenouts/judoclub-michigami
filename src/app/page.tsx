@@ -152,9 +152,42 @@ function ClubLogo({ className = "", alt = "Judoclub Michigami" }: { className?: 
 }
 
 // ============ MAIN APP ============
+// Dynamic page titles per section for SEO
+const sectionTitles: Record<Section, string> = {
+  'home': 'Judoclub Michigami Steenbergen - Judo voor Jong en Oud',
+  'agenda': 'Agenda & Trainingstijden | Judoclub Michigami',
+  'technieken': 'Judo Technieken | Judoclub Michigami',
+  'exameneisen': 'Judo Exameneisen per Band | Judoclub Michigami',
+  'cursusjapans': 'Cursus Japans voor Judo | Judoclub Michigami',
+  'formulieren': 'Formulieren | Judoclub Michigami',
+  'info': 'Over Ons - Judoclub Michigami Steenbergen',
+  'login': 'Inloggen | Judoclub Michigami',
+  'leden': 'Lid Worden bij Judoclub Michigami',
+  'lestijden': 'Trainingstijden & Lestijden | Judoclub Michigami',
+  'band-knopen': 'Band Knopen - Judo Rijgvolgorde | Judoclub Michigami',
+  'foto-galerij': 'Foto\'s - Fotogalerij | Judoclub Michigami',
+  'video-galerij': 'Video\'s - Videogalerij | Judoclub Michigami',
+  'locatie': 'Locatie & Bereikbaarheid | Judoclub Michigami',
+  'contact': 'Contact - Judoclub Michigami Steenbergen',
+  'nieuws': 'Nieuwsberichten | Judoclub Michigami',
+  'techniekenkaart': 'Techniekenkaart Judo | Judoclub Michigami',
+  'juridisch': 'Juridisch & Privacy | Judoclub Michigami',
+  'club-hub': 'Club Informatie | Judoclub Michigami',
+  'judoschool-hub': 'Judo School | Judoclub Michigami',
+  'media-hub': 'Media - Foto\'s & Video\'s | Judoclub Michigami',
+};
+
 export default function MichigamiApp() {
   const [activeSection, setActiveSection] = useState<Section>('home');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Update document title when section changes (SPA SEO)
+  useEffect(() => {
+    const title = sectionTitles[activeSection];
+    if (title) {
+      document.title = title;
+    }
+  }, [activeSection]);
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-[#f8f9fa] w-full overflow-x-hidden">
