@@ -58,9 +58,9 @@ export const techniqueCategories: TechniqueCategory[] = [
       { id: 9, name: 'Utsuri-goshi', japanese: '移腰', dutch: 'Verplaatsende heupworp', youtubeId: '4pQd_bEnlf0' },
       { id: 10, name: 'Uchi-mata', japanese: '内股', dutch: 'Binnenwaartse dij', youtubeId: 'iUpSu5J-bgw' },
       { id: 11, name: 'O-goshi', japanese: '大腰', dutch: 'Grote heupworp', youtubeId: 'yhu1mfy2vJ4' },
-      { id: 12, name: 'Ko-tsuri-goshi', japanese: '小釣腰', dutch: 'Kleine optil heup' },
-      { id: 13, name: 'O-guruma', japanese: '大車', dutch: 'Groot wiel', youtubeId: 'SnZciTAY9vc' },
-      { id: 14, name: 'Yama-arashi', japanese: '山嵐', dutch: 'Bergstorm', youtubeId: 'MGlyKmSuzdc' },
+      { id: 12, name: 'Ko-tsuri-goshi', japanese: '小釣腰', dutch: 'Kleine optil heup', youtubeId: 'SnZciTAY9vc' },
+      { id: 13, name: 'O-guruma', japanese: '大車', dutch: 'Groot wiel', youtubeId: 'MGlyKmSuzdc' },
+      { id: 14, name: 'Yama-arashi', japanese: '山嵐', dutch: 'Bergstorm' },
       { id: 15, name: 'Obi-goshi', japanese: '帯腰', dutch: 'Gordel heupworp' },
     ]
   },
