@@ -51,7 +51,7 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
             <div key={idx} className="flex gap-3 p-2.5 rounded-xl hover:bg-[#fff2f2] transition-colors cursor-pointer" onClick={() => onNavigate('nieuws')}>
               {article.imageUrl && (
                 <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100 relative">
-                  <Image src={article.imageUrl} alt="" fill sizes="80px" className="object-cover" loading="lazy" />
+                  <Image src={article.imageUrl} alt={article.title} fill sizes="80px" className="object-cover" loading="lazy" />
                 </div>
               )}
               <div className="flex-1 min-w-0">
