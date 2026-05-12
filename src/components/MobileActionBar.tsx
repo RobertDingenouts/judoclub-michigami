@@ -18,11 +18,17 @@ interface MobileActionBarProps {
 
 const whatsappUrl = `https://wa.me/31${contactInfo.whatsapp.slice(1)}?text=${encodeURIComponent('Hoi! Ik wil graag meer informatie over een proefles judo.')}`;
 
-const actionPills = [
+// All items in order: nav + action pills merged into one list
+const allItems: { id: SectionId | string; emoji: string; label: string; isExternal?: boolean; url?: string }[] = [
+  { id: 'home', emoji: '🏠', label: 'Home' },
+  { id: 'agenda', emoji: '📅', label: 'Agenda' },
+  { id: 'technieken', emoji: '🥋', label: 'Technieken' },
+  { id: 'exameneisen', emoji: '🎯', label: 'Examens' },
   { id: 'whatsapp', emoji: '💬', label: 'WhatsApp', isExternal: true, url: whatsappUrl },
-  { id: 'leden' as SectionId, emoji: '📅', label: 'Proefles' },
-  { id: 'info' as SectionId, emoji: 'ℹ️', label: 'Info' },
-  { id: 'leden' as SectionId, emoji: '👤', label: 'Lid Worden' },
+  { id: 'leden', emoji: '📅', label: 'Proefles' },
+  { id: 'info', emoji: 'ℹ️', label: 'Info' },
+  { id: 'leden', emoji: '👤', label: 'Lid Worden' },
+  { id: 'cursusjapans', emoji: '🇯🇵', label: 'C.Japans' },
 ];
 
 const moreLinks: { id: SectionId | string; emoji: string; label: string; isExternal?: boolean; url?: string }[] = [
@@ -39,43 +45,43 @@ export function MobileActionBar({ activeSection, onSectionChange }: MobileAction
   const [moreOpen, setMoreOpen] = useState(false);
 
   return (
-    <div className="md:hidden fixed bottom-[4.5rem] left-0 right-0 z-40 px-2 pb-1">
+    <div className="md:hidden fixed bottom-0 left-0 right-0 z-50">
       <div
-        className="flex gap-1.5 overflow-x-auto -webkit-overflow-scrolling-touch scrollbar-hide"
+        className="flex gap-1.5 overflow-x-auto -webkit-overflow-scrolling-touch px-2 pt-1.5 pb-1 bg-white/80 backdrop-blur-xl border-t border-gray-200/50 safe-area-bottom"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
-        {actionPills.map((pill) => (
-          pill.isExternal ? (
+        {allItems.map((item) =>
+          item.isExternal ? (
             <a
-              key={pill.id}
-              href={pill.url}
+              key={item.id}
+              href={item.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-shrink-0 inline-flex items-center gap-1 h-8 px-3 rounded-full bg-white/80 backdrop-blur-md shadow-sm border border-gray-200/50 text-xs font-medium text-foreground active:scale-[0.97] transition-transform"
+              className="flex-shrink-0 inline-flex items-center gap-1 h-9 px-3 rounded-full bg-white/80 backdrop-blur-md shadow-sm border border-gray-200/50 text-xs font-medium text-foreground active:scale-[0.97] transition-transform"
             >
-              <span className="text-sm">{pill.emoji}</span>
-              <span>{pill.label}</span>
+              <span className="text-sm">{item.emoji}</span>
+              <span>{item.label}</span>
             </a>
           ) : (
             <button
-              key={pill.id + pill.label}
-              onClick={() => onSectionChange(pill.id as SectionId)}
-              className={`flex-shrink-0 inline-flex items-center gap-1 h-8 px-3 rounded-full shadow-sm border text-xs font-medium active:scale-[0.97] transition-all ${
-                activeSection === pill.id
+              key={item.id + item.label}
+              onClick={() => onSectionChange(item.id as SectionId)}
+              className={`flex-shrink-0 inline-flex items-center gap-1 h-9 px-3 rounded-full shadow-sm border text-xs font-medium active:scale-[0.97] transition-all ${
+                activeSection === item.id
                   ? 'bg-judo-red/90 backdrop-blur-md text-white border-judo-red'
-                  : 'bg-white/80 backdrop-blur-md text-foreground border-gray-200/50'
+                  : 'bg-white/60 backdrop-blur-md text-foreground border-gray-200/50'
               }`}
             >
-              <span className="text-sm">{pill.emoji}</span>
-              <span>{pill.label}</span>
+              <span className="text-sm">{item.emoji}</span>
+              <span>{item.label}</span>
             </button>
           )
-        ))}
+        )}
 
         {/* More pill — opens bottom sheet */}
         <Drawer direction="bottom" open={moreOpen} onOpenChange={setMoreOpen}>
           <DrawerTrigger asChild>
-            <button className="flex-shrink-0 inline-flex items-center gap-1 h-8 px-3 rounded-full bg-white/80 backdrop-blur-md shadow-sm border border-gray-200/50 text-xs font-medium text-foreground active:scale-[0.97] transition-transform">
+            <button className="flex-shrink-0 inline-flex items-center gap-1 h-9 px-3 rounded-full bg-white/60 backdrop-blur-md shadow-sm border border-gray-200/50 text-xs font-medium text-foreground active:scale-[0.97] transition-transform">
               <span className="text-sm">⋯</span>
               <span>Meer</span>
             </button>

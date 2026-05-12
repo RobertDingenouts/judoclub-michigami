@@ -18,7 +18,6 @@ import { NewsSection } from '@/components/sections/NewsSection';
 import { TechniquesCardSection } from '@/components/sections/TechniquesCardSection';
 import { LegalSection } from '@/components/sections/LegalSection';
 import { SidebarContent } from '@/components/SidebarContent';
-import { MobileNav } from '@/components/MobileNav';
 import { MobileActionBar } from '@/components/MobileActionBar';
 import { HomeSection } from '@/components/sections/HomeSection';
 import { InfoSection } from '@/components/sections/InfoSection';
@@ -338,11 +337,8 @@ export default function MichigamiApp() {
         </div>
       </main>
 
-      {/* Mobile Action Bar (above bottom nav) */}
+      {/* Mobile Action Bar (merged single bar) */}
       <MobileActionBar activeSection={activeSection} onSectionChange={setActiveSection} />
-
-      {/* Mobile Bottom Nav */}
-      <MobileNav activeSection={activeSection} onSectionChange={setActiveSection} />
 
       {/* Sticky CTA + Form Modal (global) */}
       <StickyCTA onNavigate={(s) => setActiveSection(s as Section)} />
