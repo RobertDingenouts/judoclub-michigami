@@ -1,11 +1,9 @@
-import Script from "next/script";
+// Structured data (JSON-LD) for SEO - SportsOrganization schema
+// https://schema.org/SportsOrganization
 
-/**
- * JSON-LD structured data component for SEO.
- * Renders SportsOrganization schema with full club details, locations, and social profiles.
- */
 export function JsonLd() {
-  const schema = {
+  // Build schema as JSON string to avoid @key parsing issues in object literals
+  const schema = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "SportsOrganization",
     name: "Judoclub Michigami Steenbergen",
@@ -16,106 +14,65 @@ export function JsonLd() {
     description:
       "Judo voor jong en oud, voor beginners en gevorderden - recreatief of prestatiegericht. Opgericht in 1993.",
     foundingDate: "1993",
-    sport: "Judo",
-    address: [
-      {
+    sports: ["Judo"],
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Wipstraat 2",
+      addressLocality: "Steenbergen",
+      postalCode: "4651 XW",
+      addressRegion: "Noord-Brabant",
+      addressCountry: "NL",
+    },
+    location: {
+      "@type": "Place",
+      name: "Sportcentrum De Knotwilg",
+      address: {
         "@type": "PostalAddress",
         streetAddress: "Wipstraat 2",
         addressLocality: "Steenbergen",
         postalCode: "4651 XW",
-        addressRegion: "Zeeland",
+        addressRegion: "Noord-Brabant",
         addressCountry: "NL",
       },
+    },
+    openingHoursSpecification: [
       {
-        "@type": "PostalAddress",
-        streetAddress: "Bou Kooijmanstraat 48",
-        addressLocality: "Oud-Vossemeer",
-        postalCode: "4698 AM",
-        addressRegion: "Zeeland",
-        addressCountry: "NL",
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Tuesday"],
+        opens: "19:00",
+        closes: "21:30",
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Thursday"],
+        opens: "19:00",
+        closes: "21:30",
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Saturday"],
+        opens: "10:00",
+        closes: "12:00",
       },
     ],
-    location: [
-      {
-        "@type": "SportsActivityLocation",
-        name: "Sportcentrum De Knotwilg",
-        description: "Hoofdlocatie judo trainingen Steenbergen",
-        address: {
-          "@type": "PostalAddress",
-          streetAddress: "Wipstraat 2",
-          addressLocality: "Steenbergen",
-          postalCode: "4651 XW",
-          addressRegion: "Zeeland",
-          addressCountry: "NL",
-        },
-        url: "https://maps.app.goo.gl/Wipstraat+2+Steenbergen",
-      },
-      {
-        "@type": "SportsActivityLocation",
-        name: "Dorpshuis De Vossenkuil",
-        description: "Judo trainingen Oud-Vossemeer",
-        address: {
-          "@type": "PostalAddress",
-          streetAddress: "Bou Kooijmanstraat 48",
-          addressLocality: "Oud-Vossemeer",
-          postalCode: "4698 AM",
-          addressRegion: "Zeeland",
-          addressCountry: "NL",
-        },
-        url: "https://maps.google.com/?q=Dorpshuis+De+Vossenkuil+Oud-Vossemeer",
-      },
+    sameAs: [
+      "https://www.facebook.com/judoclubmichigami",
+      "https://www.instagram.com/judoclub_michigami/",
+      "https://www.youtube.com/@judoclubmichigami",
     ],
     contactPoint: {
       "@type": "ContactPoint",
       email: "judoclub_michigami@hotmail.com",
+      telephone: "+31648649912",
       contactType: "customer service",
       availableLanguage: "Dutch",
     },
-    sameAs: [
-      "https://www.facebook.com/judoclubmichigami",
-      "https://www.youtube.com/channel/UC8tXSKppIMF6awS2cj7w50A",
-      "https://www.instagram.com/judoclub_michigami",
-    ],
-    hasOfferCatalog: {
-      "@type": "OfferCatalog",
-      name: "Judo Trainingen",
-      itemListElement: [
-        {
-          "@type": "Offer",
-          itemOffered: {
-            "@type": "Service",
-            name: "Judo training volwassenen",
-            description:
-              "Recreatieve en prestatiegerichte judo training voor volwassenen.",
-          },
-        },
-        {
-          "@type": "Offer",
-          itemOffered: {
-            "@type": "Service",
-            name: "Judo training kinderen",
-            description:
-              "Judo lessen voor jonge judoka's van verschillende leeftijden.",
-          },
-        },
-        {
-          "@type": "Offer",
-          itemOffered: {
-            "@type": "Service",
-            name: "Judo examens en technieken",
-            description:
-              "Examenprogramma volgens KNJB richtlijnen met gedetailleerde techniekendatabase.",
-          },
-        },
-      ],
-    },
-  };
+  });
 
   return (
-    <Script
-      id="jsonld-sports-organization"
+    <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      dangerouslySetInnerHTML={{ __html: schema }}
     />
   );
 }

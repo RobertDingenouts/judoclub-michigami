@@ -1,7 +1,15 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
   siteUrl: "https://judoclubmichigami.nl",
-  generateRobotsTxt: false, // We use a manual robots.txt in public/ with sitemap reference
+  generateRobotsTxt: true,
+  robotsTxtOptions: {
+    policies: [
+      {
+        userAgent: "*",
+        allow: "/",
+      },
+    ],
+  },
   exclude: ["/api/*"],
   changefreq: "daily",
   priority: 1.0,
