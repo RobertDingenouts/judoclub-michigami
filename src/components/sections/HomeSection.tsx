@@ -1,0 +1,175 @@
+'use client';
+
+import Image from 'next/image';
+import { Calendar, Sparkles, Swords, Target, Users, Clock, MapPin, Mail, BookOpen, Info, Ban, Trophy, XCircle, CircleDot } from 'lucide-react';
+import { HeroSlider } from './HeroSlider';
+import { agendaItems } from '@/data/agenda';
+import { newsArchive, type NewsArticle } from '@/data/news-archive';
+import type { Section } from '@/components/nav-config';
+
+function getEmojiIcon(emoji: string, className = "w-5 h-5") {
+  switch (emoji) {
+    case 'ban': return <Ban className={`${className} text-[#c00000]`} />;
+    case 'medal': return <Trophy className={`${className} text-[#c00000]`} />;
+    case 'champagne': return <Sparkles className={`${className} text-[#c00000]`} />;
+    case 'xmark': return <XCircle className={`${className} text-[#c00000]`} />;
+    default: return <CircleDot className={`${className} text-[#c00000]`} />;
+  }
+}
+
+export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const upcomingEvents = agendaItems.filter(i => !i.cancelled && new Date(i.compareDate) >= today).slice(0, 3);
+
+  const latestNews: NewsArticle[] = [];
+  for (const year of newsArchive) {
+    latestNews.push(...year.articles.slice(0, 5));
+    if (latestNews.length >= 5) break;
+  }
+
+  return (
+    <div className="space-y-6 pb-4 sm:pb-0">
+      <HeroSlider />
+
+      {/* Nieuws */}
+      <div className="relative overflow-hidden rounded-2xl shadow-sm border border-gray-100 backdrop-blur-xl bg-white/80 transition-all hover:shadow-lg hover:shadow-red-100/30 group">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
+        <div className="relative">
+          <div className="px-4 py-3 border-b border-gray-100/50 flex items-center justify-between">
+            <h3 className="font-bold text-gray-800 flex items-center gap-2">
+              <Sparkles className="w-4 h-4" style={{ color: '#c00000' }} /> Nieuws
+            </h3>
+            <button onClick={() => onNavigate('nieuws')} className="text-xs font-medium hover:underline" style={{ color: '#c00000' }}>
+              Alles →
+            </button>
+          </div>
+          <div className="p-3 space-y-3">
+          {latestNews.length === 0 ? (
+            <p className="text-sm text-gray-400 text-center py-4">Geen nieuwsberichten</p>
+          ) : latestNews.slice(0, 3).map((article, idx) => (
+            <div key={idx} className="flex gap-3 p-2.5 rounded-xl hover:bg-[#fff2f2] transition-colors cursor-pointer" onClick={() => onNavigate('nieuws')}>
+              {article.imageUrl && (
+                <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100 relative">
+                  <Image src={article.imageUrl} alt="" fill sizes="80px" className="object-cover" loading="lazy" />
+                </div>
+              )}
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-gray-800 line-clamp-2 leading-tight">{article.title}</p>
+                <p className="text-xs text-gray-400 mt-1.5">{article.date || ''}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        </div>
+      </div>
+
+      {/* Agenda */}
+      <div className="relative overflow-hidden rounded-2xl shadow-sm border border-gray-100 backdrop-blur-xl bg-white/80 transition-all hover:shadow-lg hover:shadow-red-100/30 group">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
+        <div className="relative">
+          <div className="px-4 py-3 border-b border-gray-100/50 flex items-center justify-between">
+            <h3 className="font-bold text-gray-800 flex items-center gap-2">
+              <Calendar className="w-4 h-4" style={{ color: '#c00000' }} /> Agenda
+            </h3>
+            <button onClick={() => onNavigate('agenda')} className="text-xs font-medium hover:underline" style={{ color: '#c00000' }}>
+              Alles →
+            </button>
+          </div>
+          <div className="p-4 space-y-3">
+          {upcomingEvents.length === 0 ? (
+            <p className="text-sm text-gray-400 text-center py-4">Geen komende evenementen</p>
+          ) : upcomingEvents.slice(0, 2).map((item, idx) => (
+            <div key={idx} className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-[#fff2f2] transition-colors">
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 text-white" style={{ background: 'linear-gradient(135deg, #c00000, #a90000)' }}>
+                {getEmojiIcon(item.emoji, "w-5 h-5")}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-gray-800 truncate">{item.event}</p>
+                <p className="text-xs text-gray-500 mt-0.5">{item.displayDate} {item.time !== '-' && `• ${item.time}`}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        </div>
+      </div>
+
+      {/* Bento Grid — Snel naar */}
+      <div>
+        <h2 className="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
+          <Sparkles className="w-5 h-5 text-[#c00000]" /> Snel naar...
+        </h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+          {[
+            { key: 'agenda', label: 'Agenda', sub: 'Evenementen & trainingstijden', icon: <Calendar className="w-7 h-7 text-white" />, span: 'sm:col-span-2', color: '#c00000' },
+            { key: 'nieuws', label: 'Nieuws', sub: 'Laatste berichten', icon: <Sparkles className="w-6 h-6" style={{ color: '#c00000' }} />, span: '', color: '#c00000' },
+            { key: 'technieken', label: 'Technieken', sub: 'Alle technieken', icon: <Swords className="w-6 h-6" style={{ color: '#8c0000' }} />, span: '', color: '#8c0000' },
+            { key: 'info', label: 'Over Ons', sub: 'Geschiedenis & leiding', icon: <Info className="w-6 h-6" style={{ color: '#c00000' }} />, span: '', color: '#c00000' },
+            { key: 'exameneisen', label: 'Examens', sub: 'Per bandniveau', icon: <Target className="w-6 h-6" style={{ color: '#c00000' }} />, span: '', color: '#c00000' },
+            { key: 'leden', label: 'Lid Worden', sub: 'Meld je aan', icon: <Users className="w-6 h-6" style={{ color: '#8c0000' }} />, span: '', color: '#8c0000' },
+            { key: 'lestijden', label: 'Lestijden', sub: 'Wo & Vr', icon: <Clock className="w-6 h-6" style={{ color: '#c00000' }} />, span: '', color: '#c00000' },
+            { key: 'locatie', label: 'Locaties', sub: '2 locaties', icon: <MapPin className="w-6 h-6" style={{ color: '#8c0000' }} />, span: '', color: '#8c0000' },
+            { key: 'contact', label: 'Contact', sub: 'Neem contact op', icon: <Mail className="w-6 h-6" style={{ color: '#c00000' }} />, span: '', color: '#c00000' },
+            { key: 'cursusjapans', label: 'Cursus Japans', sub: 'Leer + quiz', icon: <BookOpen className="w-6 h-6" style={{ color: '#c00000' }} />, span: '', color: '#c00000' },
+          ].map((item) => (
+            <button key={item.key} onClick={() => onNavigate(item.key as Section)} className={`${item.span || ''} relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 ${item.span ? 'p-5' : 'p-4'} transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-100/50 active:scale-[0.98] group`} style={{ borderColor: item.color + '20' }}>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
+              <div className={`relative ${item.span ? 'flex items-center gap-4' : 'flex flex-col items-center gap-2 text-center'}`}>
+                {item.span ? (
+                  <>
+                    <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ background: `linear-gradient(135deg, ${item.color}, #a90000)` }}>{item.icon}</div>
+                    <div className="text-left">
+                      <span className="font-bold text-base block" style={{ color: item.color }}>{item.label}</span>
+                      <span className="text-sm text-gray-500">{item.sub}</span>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: item.color + '15' }}>{item.icon}</div>
+                    <span className="font-semibold text-sm" style={{ color: item.color }}>{item.label}</span>
+                    <span className="text-xs text-gray-500">{item.sub}</span>
+                  </>
+                )}
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Training Info */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="bg-gradient-to-br from-[#fdf6f6] to-white rounded-2xl shadow-sm border border-[#c00000]/10 p-5">
+          <div className="flex items-start gap-4">
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#a9000015' }}>
+              <Clock className="w-7 h-7" style={{ color: '#c00000' }} />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-bold text-gray-800 text-lg">Woensdagavond</h3>
+              <p className="text-sm text-gray-500 mt-0.5">Algemene training — alle leeftijden</p>
+              <div className="flex items-center gap-3 mt-3">
+                <span className="text-sm font-bold" style={{ color: '#c00000' }}>19:00 - 20:00</span>
+                <span className="text-xs text-gray-400">•</span>
+                <span className="text-xs text-gray-500 flex items-center gap-1"><MapPin className="w-3 h-3" /> Oud-Vossemeer</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="bg-gradient-to-br from-[#eef6fb] to-white rounded-2xl shadow-sm border border-[#2980b9]/10 p-5">
+          <div className="flex items-start gap-4">
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#2980b915' }}>
+              <Clock className="w-7 h-7" style={{ color: '#2980b9' }} />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-bold text-gray-800 text-lg">Vrijdagavond</h3>
+              <div className="space-y-2 mt-1.5">
+                <div className="flex items-center gap-3"><span className="text-sm font-bold" style={{ color: '#2980b9' }}>18:45 - 19:45</span><span className="text-xs text-gray-400">•</span><span className="text-xs text-gray-500">Groep 1 (6-9 jaar)</span></div>
+                <div className="flex items-center gap-3"><span className="text-sm font-bold" style={{ color: '#2980b9' }}>19:45 - 20:45</span><span className="text-xs text-gray-400">•</span><span className="text-xs text-gray-500">Groep 2+ (9+ jaar)</span></div>
+              </div>
+              <div className="flex items-center gap-2 mt-3"><MapPin className="w-3 h-3" style={{ color: '#2980b9' }} /><span className="text-xs text-gray-500">Steenbergen</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

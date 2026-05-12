@@ -1,0 +1,131 @@
+'use client';
+
+import { useState } from 'react';
+import Image from 'next/image';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Search, ChevronRight, Facebook, Mail, Youtube } from 'lucide-react';
+import { navGroups, groupHubMap, type Section } from '@/components/nav-config';
+
+export function SidebarContent({ activeSection, onSelect }: { activeSection: Section; onSelect: (s: Section) => void }) {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [openGroup, setOpenGroup] = useState<string | null>(null);
+
+  const toggleGroup = (label: string) => {
+    setOpenGroup(prev => prev === label ? null : label);
+  };
+
+  const filteredGroups = searchQuery.trim()
+    ? navGroups
+        .map(g => ({
+          ...g,
+          items: g.items.filter(item =>
+            item.label.toLowerCase().includes(searchQuery.toLowerCase())
+          ),
+        }))
+        .filter(g => g.items.length > 0)
+    : navGroups;
+
+  return (
+    <div className="flex flex-col h-full">
+      {/* Logo / Brand */}
+      <div className="p-4 border-b border-[#e8eaed] flex flex-col items-center">
+        <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#fdf6f6] to-white border-2 border-[#c00000]/10 flex items-center justify-center mb-2 shadow-sm">
+          <Image src="/logo.png" alt="Judoclub Michigami" width={72} height={72} className="object-contain" />
+        </div>
+        <p className="text-[10px] text-gray-400">Opgericht in 1993</p>
+      </div>
+
+      {/* Search Bar */}
+      <div className="px-3 py-2">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Zoek..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-9 pr-3 py-2 text-sm bg-[#f8f9fa] border border-[#e8eaed] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#c00000]/30 focus:border-[#a90000] placeholder:text-gray-400"
+          />
+        </div>
+      </div>
+
+      {/* Navigation */}
+      <ScrollArea className="flex-1 px-2 py-1">
+        <div className="space-y-1">
+          {filteredGroups.map((group) => (
+            <div key={group.label}>
+              {/* Group Header */}
+              {!searchQuery.trim() && (
+                <div className="flex items-center">
+                  <button
+                    onClick={() => onSelect(groupHubMap[group.label] as Section)}
+                    className="flex-1 flex items-center gap-2 px-2 py-1.5 text-xs font-semibold text-gray-400 uppercase tracking-wider hover:text-gray-600 transition-colors"
+                  >
+                    <span className="text-sm">{group.emoji}</span>
+                    <span>{group.label}</span>
+                  </button>
+                  <button
+                    onClick={() => toggleGroup(group.label)}
+                    className="px-1 py-1.5 hover:text-gray-600 transition-colors"
+                  >
+                    <ChevronRight
+                      className={`w-3 h-3 transition-transform ${
+                        openGroup === group.label ? 'rotate-90' : ''
+                      }`}
+                    />
+                  </button>
+                </div>
+              )}
+
+              {/* Group Items */}
+              {(openGroup === group.label || searchQuery.trim()) && (
+                <div className="space-y-0.5">
+                  {group.items.map((item) => (
+                    <button
+                      key={item.key}
+                      onClick={() => onSelect(item.key)}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all ${
+                        activeSection === item.key
+                          ? 'bg-[#fdf6f6] text-[#c00000] font-medium'
+                          : 'text-gray-600 hover:bg-[#f8f9fa] hover:text-gray-800'
+                      }`}
+                    >
+                      {item.icon}
+                      <span className="truncate">{item.label}</span>
+                      {activeSection === item.key && (
+                        <div className="w-1 h-1 rounded-full bg-[#a90000] ml-auto flex-shrink-0" />
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {/* Separator */}
+              {!searchQuery.trim() && (
+                <div className="px-2 py-1">
+                  <div className="h-px bg-[#e8eaed]" />
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </ScrollArea>
+
+      {/* Footer */}
+      <div className="p-3 border-t border-[#e8eaed]">
+        <div className="flex items-center gap-2 justify-center">
+          <a href="https://www.facebook.com/judoclubmichigami" target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-md hover:bg-[#f8f9fa] text-gray-400 hover:text-[#c00000] transition-colors">
+            <Facebook className="w-4 h-4" />
+          </a>
+          <a href="mailto:judoclub_michigami@hotmail.com" className="p-1.5 rounded-md hover:bg-[#f8f9fa] text-gray-400 hover:text-[#c00000] transition-colors">
+            <Mail className="w-4 h-4" />
+          </a>
+          <a href="https://www.youtube.com/channel/UC8tXSKppIMF6awS2cj7w50A" target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-md hover:bg-[#f8f9fa] text-gray-400 hover:text-[#c00000] transition-colors">
+            <Youtube className="w-4 h-4" />
+          </a>
+        </div>
+        <p className="text-[10px] text-gray-400 text-center mt-1.5">Opgericht in 1993</p>
+      </div>
+    </div>
+  );
+}
