@@ -19,6 +19,7 @@ import { TechniquesCardSection } from '@/components/sections/TechniquesCardSecti
 import { LegalSection } from '@/components/sections/LegalSection';
 import { SidebarContent } from '@/components/SidebarContent';
 import { MobileNav } from '@/components/MobileNav';
+import { MobileActionBar } from '@/components/MobileActionBar';
 import { HomeSection } from '@/components/sections/HomeSection';
 import { InfoSection } from '@/components/sections/InfoSection';
 import { AgendaSection } from '@/components/sections/AgendaSection';
@@ -306,7 +307,7 @@ export default function MichigamiApp() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3, ease: 'easeInOut' }}
-              className="p-2 sm:p-4 md:p-8 max-w-[100vw] mx-auto w-full pb-16 sm:pb-0"
+              className="p-2 sm:p-4 md:p-8 max-w-[100vw] mx-auto w-full pb-[7rem] sm:pb-0"
             >
             {activeSection === 'home' && <HomeSection onNavigate={setActiveSection} />}
             {activeSection === 'agenda' && <AgendaSection />}
@@ -336,6 +337,9 @@ export default function MichigamiApp() {
         </ScrollArea>
         </div>
       </main>
+
+      {/* Mobile Action Bar (above bottom nav) */}
+      <MobileActionBar activeSection={activeSection} onSectionChange={setActiveSection} />
 
       {/* Mobile Bottom Nav */}
       <MobileNav activeSection={activeSection} onSectionChange={setActiveSection} />

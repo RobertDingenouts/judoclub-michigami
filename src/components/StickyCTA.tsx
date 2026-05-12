@@ -1,10 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { X, Calendar, Phone } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TrialLessonForm } from '@/components/sections/TrialLessonForm';
-import { contactInfo } from '@/data/contact';
 import { AnimatedButton } from '@/components/ui/animated-card';
 import { onOpenProeflesForm } from '@/lib/form-events';
 
@@ -16,8 +15,6 @@ export function StickyCTA({ onNavigate }: { onNavigate?: (section: string) => vo
     return onOpenProeflesForm(() => setFormOpen(true));
   }, []);
 
-  const whatsappLink = `https://wa.me/31${contactInfo.whatsapp.slice(1)}?text=${encodeURIComponent('Hoi! Ik wil graag meer informatie over een proefles judo.')}`;
-
   return (
     <>
       {/* Desktop: Fixed top-right button */}
@@ -28,23 +25,7 @@ export function StickyCTA({ onNavigate }: { onNavigate?: (section: string) => vo
         </div>
       </AnimatedButton>
 
-      {/* Mobile: Fixed bottom bar */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-t border-[#e8eaed] p-2 sm:p-3 safe-area-bottom">
-        <div className="flex items-center gap-2">
-          <AnimatedButton as="a" href={whatsappLink} target="_blank" rel="noopener noreferrer">
-            <div className="flex items-center justify-center gap-1.5 flex-1 bg-[#25D366] hover:bg-[#128C7E] text-white px-3 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all shadow-sm">
-              <Phone className="w-3.5 h-3.5" />
-              WhatsApp
-            </div>
-          </AnimatedButton>
-          <AnimatedButton onClick={() => setFormOpen(true)}>
-            <div className="flex items-center justify-center gap-1.5 flex-2 bg-gradient-to-r from-[#a90000] to-[#c00000] text-white px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all shadow-sm" style={{ flex: 2 }}>
-              <Calendar className="w-3.5 h-3.5" />
-              Proefles Aanvragen
-            </div>
-          </AnimatedButton>
-        </div>
-      </div>
+      {/* Mobile bottom bar replaced by MobileActionBar — hidden */}
 
       {/* Modal Overlay */}
       <AnimatePresence>
