@@ -16,20 +16,22 @@ function getEmojiIcon(emoji: string, className = "w-5 h-5") {
 }
 
 export function AgendaSection() {
-  const firstFutureRef = useRef<HTMLTableRowElement>(null);
+  const desktopFirstFutureRef = useRef<HTMLTableRowElement>(null);
+  const mobileFirstFutureRef = useRef<HTMLDivElement>(null);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
   const firstFutureIdx = agendaItems.findIndex(i => !i.cancelled && new Date(i.compareDate) >= today);
 
   useEffect(() => {
-    if (firstFutureRef.current) {
-      const el = firstFutureRef.current;
+    // Desktop: scroll to first future event row in table
+    if (window.innerWidth >= 768 && desktopFirstFutureRef.current) {
+      const el = desktopFirstFutureRef.current;
       setTimeout(() => {
-        const scrollContainer = el.closest('[data-slot="scroll-area-viewport"]') 
+        const scrollContainer = el.closest('[data-slot="scroll-area-viewport"]')
           || el.closest('.ScrollAreaViewport')
           || document.querySelector('[data-slot="scroll-area-viewport"]');
-        
+
         if (scrollContainer) {
           const elementTop = el.getBoundingClientRect().top + scrollContainer.scrollTop;
           scrollContainer.scrollTo({
@@ -37,8 +39,15 @@ export function AgendaSection() {
             behavior: 'smooth',
           });
         } else {
-          firstFutureRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          desktopFirstFutureRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
+      }, 300);
+    }
+
+    // Mobile: scroll to first future event card
+    if (window.innerWidth < 768 && mobileFirstFutureRef.current) {
+      setTimeout(() => {
+        mobileFirstFutureRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }, 300);
     }
   }, []);
@@ -73,7 +82,7 @@ export function AgendaSection() {
               const isFirstFuture = idx === firstFutureIdx;
 
               return (
-                <tr key={idx} ref={isFirstFuture ? firstFutureRef : null} className={`border-b border-[#e8eaed] last:border-b-0 transition-colors hover:bg-[#fff2f2] ${item.cancelled ? 'cancelled-event' : isPast ? 'past-event' : ''}`}>
+                <tr key={idx} ref={isFirstFuture ? desktopFirstFutureRef : null} className={`border-b border-[#e8eaed] last:border-b-0 transition-colors hover:bg-[#fff2f2] ${item.cancelled ? 'cancelled-event' : isPast ? 'past-event' : ''}`}>
                   <td className={`px-5 py-4 font-semibold whitespace-nowrap ${item.cancelled ? 'text-[#c00000] line-through opacity-60' : isPast ? 'text-gray-400 font-medium' : 'text-[#8c0000]'}`}>{item.displayDate}</td>
                   <td className="px-3 py-4 text-center">{getEmojiIcon(item.emoji)}</td>
                   <td className="px-5 py-4">
@@ -113,7 +122,7 @@ export function AgendaSection() {
           const isFirstFuture = idx === firstFutureIdx;
 
           return (
-            <div key={idx} ref={isFirstFuture ? firstFutureRef : null} className={`bg-white rounded-xl border shadow-sm overflow-hidden ${item.cancelled ? 'border-red-200 opacity-60' : isPast ? 'border-gray-200 opacity-60' : 'border-[#ddc0c0]'}`}>
+            <div key={idx} ref={isFirstFuture ? mobileFirstFutureRef : null} className={`bg-white rounded-xl border shadow-sm overflow-hidden ${item.cancelled ? 'border-red-200 opacity-60' : isPast ? 'border-gray-200 opacity-60' : 'border-[#ddc0c0]'}`}>
               <div className={`px-4 py-2 flex items-center gap-2 ${item.cancelled ? 'bg-red-50' : isPast ? 'bg-gray-50' : 'bg-[#fdf6f6]'}`}>
                 {getEmojiIcon(item.emoji, "w-4 h-4")}
                 <span className={`text-xs font-semibold ${item.cancelled ? 'text-[#c00000] line-through' : isPast ? 'text-gray-400' : 'text-[#8c0000]'}`}>{item.displayDate}</span>
