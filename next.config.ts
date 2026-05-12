@@ -76,6 +76,16 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      {
+        // Cache PWA assets
+        source: "/(manifest.json|icon-192x192.png|icon-512x512.png|apple-touch-icon.png|sw.js)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=86400, no-transform",
+          },
+        ],
+      },
     ];
   },
 

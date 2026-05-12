@@ -1,0 +1,40 @@
+{
+  "name": "Judoclub Michigami Steenbergen",
+  "short_name": "Michigami",
+  "description": "Judo voor jong en oud, voor beginners en gevorderden - recreatief of prestatiegericht. Opgericht in 1993.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f5f5f0",
+  "theme_color": "#a90000",
+  "scope": "/",
+  "categories": ["sports"],
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Trainingstijden",
+      "short_name": "Agenda",
+      "url": "/#agenda",
+      "icons": [{ "src": "/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Technieken Overzicht",
+      "short_name": "Technieken",
+      "url": "/#technieken",
+      "icons": [{ "src": "/icon-192x192.png", "sizes": "192x192" }]
+    }
+  ]
+}

@@ -3,6 +3,7 @@ import { Geist, Inter, Rokkitt, Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { JsonLd } from "@/components/JsonLd";
+import { PWARegister } from "@/components/PWARegister";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,10 +45,18 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "32x32" },
-      { url: "/apple-touch-icon.png", sizes: "192x192" },
+      { url: "/icon-192x192.png", sizes: "192x192" },
+      { url: "/icon-512x512.png", sizes: "512x512" },
     ],
     apple: "/apple-touch-icon.png",
   },
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    title: "Michigami",
+    statusBarStyle: "default",
+  },
+  themeColor: "#a90000",
   openGraph: {
     title: "Judoclub Michigami Steenbergen - Judo voor Jong en Oud",
     description: "Judo voor jong en oud, voor beginners en gevorderden - recreatief of prestatiegericht. Opgericht in 1993.",
@@ -93,6 +102,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${inter.variable} ${rokkitt.variable} ${notoSansJp.variable} antialiased bg-background text-foreground`}
       >
+        <PWARegister />
         {children}
         <Toaster />
         <JsonLd />
