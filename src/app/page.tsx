@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -14,6 +15,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Switch } from '@/components/ui/switch';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { ExamDashboard } from '@/components/sections/ExamDashboard';
+import { FormsSection } from '@/components/sections/FormsSection';
+import { LoginSection } from '@/components/sections/LoginSection';
 import { JapaneseCourseSection } from '@/components/sections/JapaneseCourseSection';
 import { MembershipSection } from '@/components/sections/MembershipSection';
 import { ScheduleSection } from '@/components/sections/ScheduleSection';
@@ -27,7 +30,7 @@ import { TechniquesCardSection } from '@/components/sections/TechniquesCardSecti
 import { LegalSection } from '@/components/sections/LegalSection';
 import { clubInfo } from '@/data/club-info';
 import { agendaItems, type AgendaItem } from '@/data/agenda';
-import { newsArchive } from '@/data/news-archive';
+import { newsArchive, type NewsArticle } from '@/data/news-archive';
 import { techniqueCategories, type TechniqueCategory, type Technique } from '@/data/techniques';
 import {
   beltLevels as examBeltLevels,
@@ -148,7 +151,7 @@ function getEmojiIcon(emoji: string, className = "w-5 h-5") {
 
 // ============ LOGO COMPONENT ============
 function ClubLogo({ className = "", alt = "Judoclub Michigami" }: { className?: string; alt?: string }) {
-  return <img src="/logo.png" alt={alt} className={className} />;
+  return <Image src="/logo.png" alt={alt} width={64} height={64} className={className} />;
 }
 
 // ============ MAIN APP ============
@@ -191,8 +194,8 @@ export default function MichigamiApp() {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-[#f8f9fa] w-full overflow-x-hidden">
-      {/* Desktop Sidebar */}
-      <aside className="hidden md:flex flex-col w-64 bg-white border-r border-[#e8eaed] min-h-screen fixed left-0 top-0 z-40">
+      {/* Desktop Sidebar — Glassmorphism */}
+      <aside className="hidden md:flex flex-col w-64 backdrop-blur-xl bg-white/80 border-r border-white/30 min-h-screen fixed left-0 top-0 z-40 shadow-lg shadow-black/5">
         <SidebarContent activeSection={activeSection} onSelect={(s) => setActiveSection(s)} />
       </aside>
 
@@ -206,10 +209,10 @@ export default function MichigamiApp() {
         </button>
       </div>
 
-      {/* Mobile Sidebar Overlay */}
+      {/* Mobile Sidebar Overlay — Glassmorphism */}
       {sidebarOpen && (
-        <div className="md:hidden fixed inset-0 z-40 bg-black/50" onClick={() => setSidebarOpen(false)}>
-          <aside className="w-72 bg-white min-h-screen shadow-xl max-w-[calc(100vw-1rem)]" onClick={(e) => e.stopPropagation()}>
+        <div className="md:hidden fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" onClick={() => setSidebarOpen(false)}>
+          <aside className="w-72 backdrop-blur-xl bg-white/90 min-h-screen shadow-2xl max-w-[calc(100vw-1rem)]" onClick={(e) => e.stopPropagation()}>
             <SidebarContent activeSection={activeSection} onSelect={(s) => { setActiveSection(s); setSidebarOpen(false); }} />
           </aside>
         </div>
@@ -406,11 +409,16 @@ function HeroSlider() {
             idx === current ? 'opacity-100' : 'opacity-0'
           }`}
         >
-          <img
+          <div className="relative w-full h-full">
+          <Image
             src={src}
             alt=""
-            className="w-full h-full object-cover"
+            fill
+            sizes="100vw"
+            className="object-cover"
+            priority
           />
+          </div>
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
         </div>
       ))}
@@ -449,7 +457,7 @@ function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
   const upcomingEvents = agendaItems.filter(i => !i.cancelled && new Date(i.compareDate) >= today).slice(0, 3);
 
   // Haal nieuwste nieuwsberichten (data is nu al gesorteerd: nieuwste eerst)
-  const latestNews = [];
+  const latestNews: NewsArticle[] = [];
   for (const year of newsArchive) {
     latestNews.push(...year.articles.slice(0, 5));
     if (latestNews.length >= 5) break;
@@ -460,17 +468,19 @@ function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
       {/* Hero Slider */}
       <HeroSlider />
 
-      {/* Nieuws — bovenaan met slider */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between" style={{ background: 'linear-gradient(135deg, #fff2f2 0%, white 100%)' }}>
-          <h3 className="font-bold text-gray-800 flex items-center gap-2">
-            <Sparkles className="w-4 h-4" style={{ color: '#c00000' }} /> Nieuws
-          </h3>
-          <button onClick={() => onNavigate('nieuws')} className="text-xs font-medium hover:underline" style={{ color: '#c00000' }}>
-            Alles →
-          </button>
-        </div>
-        <div className="p-3 space-y-3">
+      {/* Nieuws — bovenaan met slider + glassmorphism */}
+      <div className="relative overflow-hidden rounded-2xl shadow-sm border border-gray-100 backdrop-blur-xl bg-white/80 transition-all hover:shadow-lg hover:shadow-red-100/30 group">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
+        <div className="relative">
+          <div className="px-4 py-3 border-b border-gray-100/50 flex items-center justify-between">
+            <h3 className="font-bold text-gray-800 flex items-center gap-2">
+              <Sparkles className="w-4 h-4" style={{ color: '#c00000' }} /> Nieuws
+            </h3>
+            <button onClick={() => onNavigate('nieuws')} className="text-xs font-medium hover:underline" style={{ color: '#c00000' }}>
+              Alles →
+            </button>
+          </div>
+          <div className="p-3 space-y-3">
           {latestNews.length === 0 ? (
             <p className="text-sm text-gray-400 text-center py-4">Geen nieuwsberichten</p>
           ) : latestNews.slice(0, 3).map((article, idx) => (
@@ -480,11 +490,13 @@ function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
               onClick={() => onNavigate('nieuws')}
             >
               {article.imageUrl && (
-                <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
-                  <img
+                <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100 relative">
+                  <Image
                     src={article.imageUrl}
                     alt=""
-                    className="w-full h-full object-cover"
+                    fill
+                    sizes="80px"
+                    className="object-cover"
                     loading="lazy"
                   />
                 </div>
@@ -496,19 +508,22 @@ function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
             </div>
           ))}
         </div>
+        </div>
       </div>
 
-      {/* Agenda — eerstvolgende evenement */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between" style={{ background: 'linear-gradient(135deg, #fff2f2 0%, white 100%)' }}>
-          <h3 className="font-bold text-gray-800 flex items-center gap-2">
-            <Calendar className="w-4 h-4" style={{ color: '#c00000' }} /> Agenda
-          </h3>
-          <button onClick={() => onNavigate('agenda')} className="text-xs font-medium hover:underline" style={{ color: '#c00000' }}>
-            Alles →
-          </button>
-        </div>
-        <div className="p-4 space-y-3">
+      {/* Agenda — eerstvolgende evenement + glassmorphism */}
+      <div className="relative overflow-hidden rounded-2xl shadow-sm border border-gray-100 backdrop-blur-xl bg-white/80 transition-all hover:shadow-lg hover:shadow-red-100/30 group">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
+        <div className="relative">
+          <div className="px-4 py-3 border-b border-gray-100/50 flex items-center justify-between">
+            <h3 className="font-bold text-gray-800 flex items-center gap-2">
+              <Calendar className="w-4 h-4" style={{ color: '#c00000' }} /> Agenda
+            </h3>
+            <button onClick={() => onNavigate('agenda')} className="text-xs font-medium hover:underline" style={{ color: '#c00000' }}>
+              Alles →
+            </button>
+          </div>
+          <div className="p-4 space-y-3">
           {upcomingEvents.length === 0 ? (
             <p className="text-sm text-gray-400 text-center py-4">Geen komende evenementen</p>
           ) : upcomingEvents.slice(0, 2).map((item, idx) => (
@@ -523,37 +538,176 @@ function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }) {
             </div>
           ))}
         </div>
+        </div>
       </div>
 
-      {/* Quick Links — met Over Ons als eerste */}
+      {/* Bento Grid — Snel naar */}
       <div>
         <h2 className="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
           <Sparkles className="w-5 h-5 text-[#c00000]" /> Snel naar...
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {[
-            { key: 'info' as Section, label: 'Over Ons', desc: 'Geschiedenis & leiding', icon: Info, color: '#c00000', bg: '#fff2f2' },
-            { key: 'agenda' as Section, label: 'Agenda', desc: 'Evenementen', icon: Calendar, color: '#c00000', bg: '#fff2f2' },
-            { key: 'technieken' as Section, label: 'Technieken', desc: 'Alle technieken', icon: Swords, color: '#8c0000', bg: '#fff2f2' },
-            { key: 'exameneisen' as Section, label: 'Examens', desc: 'Per bandniveau', icon: Target, color: '#c00000', bg: '#fce8e8' },
-            { key: 'leden' as Section, label: 'Lid Worden', desc: 'Meld je aan', icon: Users, color: '#8c0000', bg: '#fff2f2' },
-            { key: 'lestijden' as Section, label: 'Lestijden', desc: 'Wo & Vr', icon: Clock, color: '#c00000', bg: '#fce8e8' },
-            { key: 'locatie' as Section, label: 'Locaties', desc: '2 locaties', icon: MapPin, color: '#8c0000', bg: '#fff2f2' },
-            { key: 'cursusjapans' as Section, label: 'Cursus Japans', desc: 'Leer + quiz', icon: BookOpen, color: '#c00000', bg: '#fce8e8' },
-          ].map((item) => (
-            <button
-              key={item.key}
-              onClick={() => onNavigate(item.key)}
-              className="flex flex-col items-center gap-2 p-4 rounded-2xl border transition-all hover:shadow-md hover:-translate-y-0.5 active:scale-95"
-              style={{ backgroundColor: item.bg, borderColor: item.color + '20' }}
-            >
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: item.color + '15' }}>
-                <item.icon className="w-6 h-6" style={{ color: item.color }} />
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+          {/* Agenda — Large 2-col featured card */}
+          <button
+            onClick={() => onNavigate('agenda')}
+            className="sm:col-span-2 relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-5 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-100/50 active:scale-[0.98] group"
+            style={{ borderColor: '#c0000020' }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/60 to-transparent opacity-80 group-hover:opacity-100 transition-opacity" />
+            <div className="relative flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #c00000, #a90000)' }}>
+                <Calendar className="w-7 h-7 text-white" />
               </div>
-              <span className="font-semibold text-sm" style={{ color: item.color }}>{item.label}</span>
-              <span className="text-xs text-gray-500">{item.desc}</span>
-            </button>
-          ))}
+              <div className="text-left">
+                <span className="font-bold text-base block" style={{ color: '#c00000' }}>Agenda</span>
+                <span className="text-sm text-gray-500">Evenementen & trainingstijden</span>
+              </div>
+            </div>
+          </button>
+
+          {/* Nieuws — Medium card */}
+          <button
+            onClick={() => onNavigate('nieuws')}
+            className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-100/50 active:scale-[0.98] group"
+            style={{ borderColor: '#c0000020' }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
+            <div className="relative flex flex-col items-center gap-2 text-center">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#c0000015' }}>
+                <Sparkles className="w-6 h-6" style={{ color: '#c00000' }} />
+              </div>
+              <span className="font-semibold text-sm" style={{ color: '#c00000' }}>Nieuws</span>
+              <span className="text-xs text-gray-500">Laatste berichten</span>
+            </div>
+          </button>
+
+          {/* Technieken — Medium card */}
+          <button
+            onClick={() => onNavigate('technieken')}
+            className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-100/50 active:scale-[0.98] group"
+            style={{ borderColor: '#8c000020' }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
+            <div className="relative flex flex-col items-center gap-2 text-center">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#8c000015' }}>
+                <Swords className="w-6 h-6" style={{ color: '#8c0000' }} />
+              </div>
+              <span className="font-semibold text-sm" style={{ color: '#8c0000' }}>Technieken</span>
+              <span className="text-xs text-gray-500">Alle technieken</span>
+            </div>
+          </button>
+
+          {/* Over Ons — Medium card */}
+          <button
+            onClick={() => onNavigate('info')}
+            className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-100/50 active:scale-[0.98] group"
+            style={{ borderColor: '#c0000020' }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
+            <div className="relative flex flex-col items-center gap-2 text-center">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#c0000015' }}>
+                <Info className="w-6 h-6" style={{ color: '#c00000' }} />
+              </div>
+              <span className="font-semibold text-sm" style={{ color: '#c00000' }}>Over Ons</span>
+              <span className="text-xs text-gray-500">Geschiedenis & leiding</span>
+            </div>
+          </button>
+
+          {/* Examens — Medium card */}
+          <button
+            onClick={() => onNavigate('exameneisen')}
+            className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-100/50 active:scale-[0.98] group"
+            style={{ borderColor: '#c0000020' }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-[#fce8e8] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
+            <div className="relative flex flex-col items-center gap-2 text-center">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#c0000015' }}>
+                <Target className="w-6 h-6" style={{ color: '#c00000' }} />
+              </div>
+              <span className="font-semibold text-sm" style={{ color: '#c00000' }}>Examens</span>
+              <span className="text-xs text-gray-500">Per bandniveau</span>
+            </div>
+          </button>
+
+          {/* Lid Worden — Small card */}
+          <button
+            onClick={() => onNavigate('leden')}
+            className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-100/50 active:scale-[0.98] group"
+            style={{ borderColor: '#8c000020' }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
+            <div className="relative flex flex-col items-center gap-2 text-center">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#8c000015' }}>
+                <Users className="w-6 h-6" style={{ color: '#8c0000' }} />
+              </div>
+              <span className="font-semibold text-sm" style={{ color: '#8c0000' }}>Lid Worden</span>
+              <span className="text-xs text-gray-500">Meld je aan</span>
+            </div>
+          </button>
+
+          {/* Lestijden — Small card */}
+          <button
+            onClick={() => onNavigate('lestijden')}
+            className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-100/50 active:scale-[0.98] group"
+            style={{ borderColor: '#c0000020' }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-[#fce8e8] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
+            <div className="relative flex flex-col items-center gap-2 text-center">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#c0000015' }}>
+                <Clock className="w-6 h-6" style={{ color: '#c00000' }} />
+              </div>
+              <span className="font-semibold text-sm" style={{ color: '#c00000' }}>Lestijden</span>
+              <span className="text-xs text-gray-500">Wo & Vr</span>
+            </div>
+          </button>
+
+          {/* Locaties — Small card */}
+          <button
+            onClick={() => onNavigate('locatie')}
+            className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-100/50 active:scale-[0.98] group"
+            style={{ borderColor: '#8c000020' }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
+            <div className="relative flex flex-col items-center gap-2 text-center">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#8c000015' }}>
+                <MapPin className="w-6 h-6" style={{ color: '#8c0000' }} />
+              </div>
+              <span className="font-semibold text-sm" style={{ color: '#8c0000' }}>Locaties</span>
+              <span className="text-xs text-gray-500">2 locaties</span>
+            </div>
+          </button>
+
+          {/* Contact — Small card */}
+          <button
+            onClick={() => onNavigate('contact')}
+            className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-100/50 active:scale-[0.98] group"
+            style={{ borderColor: '#c0000020' }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-[#fce8e8] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
+            <div className="relative flex flex-col items-center gap-2 text-center">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#c0000015' }}>
+                <Mail className="w-6 h-6" style={{ color: '#c00000' }} />
+              </div>
+              <span className="font-semibold text-sm" style={{ color: '#c00000' }}>Contact</span>
+              <span className="text-xs text-gray-500">Neem contact op</span>
+            </div>
+          </button>
+
+          {/* Cursus Japans — Small card */}
+          <button
+            onClick={() => onNavigate('cursusjapans')}
+            className="relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-100/50 active:scale-[0.98] group"
+            style={{ borderColor: '#c0000020' }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-[#fce8e8] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
+            <div className="relative flex flex-col items-center gap-2 text-center">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#c0000015' }}>
+                <BookOpen className="w-6 h-6" style={{ color: '#c00000' }} />
+              </div>
+              <span className="font-semibold text-sm" style={{ color: '#c00000' }}>Cursus Japans</span>
+              <span className="text-xs text-gray-500">Leer + quiz</span>
+            </div>
+          </button>
         </div>
       </div>
 
@@ -856,7 +1010,7 @@ function InfoSection() {
 
 // ============ AGENDA SECTION ============
 function AgendaSection() {
-  const firstFutureRef = useRef<HTMLElement>(null);
+  const firstFutureRef = useRef<HTMLTableRowElement>(null);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
@@ -864,14 +1018,15 @@ function AgendaSection() {
 
   useEffect(() => {
     if (firstFutureRef.current) {
+      const el = firstFutureRef.current;
       setTimeout(() => {
         // Scroll within the ScrollArea container
-        const scrollContainer = firstFutureRef.current.closest('[data-slot="scroll-area-viewport"]') 
-          || firstFutureRef.current.closest('.ScrollAreaViewport')
+        const scrollContainer = el.closest('[data-slot="scroll-area-viewport"]') 
+          || el.closest('.ScrollAreaViewport')
           || document.querySelector('[data-slot="scroll-area-viewport"]');
         
         if (scrollContainer) {
-          const elementTop = firstFutureRef.current.getBoundingClientRect().top + scrollContainer.scrollTop;
+          const elementTop = el.getBoundingClientRect().top + scrollContainer.scrollTop;
           scrollContainer.scrollTo({
             top: elementTop - scrollContainer.clientHeight / 3,
             behavior: 'smooth',

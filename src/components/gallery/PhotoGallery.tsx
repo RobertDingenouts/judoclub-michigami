@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { galleryData, type GalleryImage } from '@/data/gallery';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
@@ -13,10 +14,12 @@ function ImageGrid({ images, onImageClick }: { images: GalleryImage[]; onImageCl
           onClick={() => onImageClick(images, idx)}
           className="group relative aspect-square overflow-hidden rounded-xl bg-[#f5f5f0] border border-[#e8eaed] hover:border-[#a90000] transition-all duration-200 hover:shadow-md"
         >
-          <img
+          <Image
             src={img.src}
             alt={img.caption}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            fill
+            sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
             loading="lazy"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
@@ -77,11 +80,15 @@ function Lightbox({
       </button>
 
       <div className="max-w-4xl max-h-[80vh] flex flex-col items-center" onClick={(e) => e.stopPropagation()}>
-        <img
-          src={current.src}
-          alt={current.caption}
-          className="max-w-full max-h-[70vh] object-contain rounded-lg shadow-2xl"
-        />
+        <div className="relative w-full max-w-3xl max-h-[70vh] flex items-center justify-center">
+          <Image
+            src={current.src}
+            alt={current.caption}
+            fill
+            sizes="(max-width: 1280px) 100vw, 1280px"
+            className="object-contain rounded-lg shadow-2xl"
+          />
+        </div>
         <p className="text-white/80 mt-3 text-sm text-center">{current.caption}</p>
         <p className="text-white/50 mt-1 text-xs">
           {currentIndex + 1} / {images.length}
@@ -138,10 +145,12 @@ export function PhotoGallery() {
                 {/* Thumbnail */}
                 {thumbnail && (
                   <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden flex-shrink-0 bg-[#f5f5f0] border border-[#e8eaed]">
-                    <img
+                    <Image
                       src={thumbnail.src}
                       alt={album.title}
-                      className="w-full h-full object-cover"
+                      fill
+                      sizes="(max-width: 640px) 96px, 80px"
+                      className="object-cover"
                       loading="lazy"
                     />
                   </div>

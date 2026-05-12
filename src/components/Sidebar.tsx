@@ -12,7 +12,7 @@ const navItems: { id: SectionId; emoji: string; label: string }[] = [
   { id: 'agenda', emoji: '📅', label: 'Agenda' },
   { id: 'technieken', emoji: '🥋', label: 'Technieken' },
   { id: 'exameneisen', emoji: '🎯', label: 'Exameneisen' },
-  { id: 'japans', emoji: '🇯🇵', label: 'Cursus Japans' },
+  { id: 'cursusjapans', emoji: '🇯🇵', label: 'Cursus Japans' },
   { id: 'formulieren', emoji: '📋', label: 'Formulieren' },
   { id: 'info', emoji: 'ℹ️', label: 'Info' },
   { id: 'login', emoji: '👤', label: 'Inloggen' },

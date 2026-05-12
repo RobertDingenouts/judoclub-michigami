@@ -2,7 +2,7 @@ export interface AgendaItem {
   compareDate: string;
   displayDate: string;
   event: string;
-  emoji: 'ban' | 'medal' | 'champagne' | 'xmark';
+  emoji: string;
   eventSub?: string;
   details?: string;
   location: string;

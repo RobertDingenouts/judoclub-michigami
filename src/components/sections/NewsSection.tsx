@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { newsArchive, socialLinks } from '@/data/news-archive';
 import Image from 'next/image';
 
-function formatDate(dateStr: string): string {
+function formatDate(dateStr: string | undefined): string {
   if (!dateStr) return '';
   try {
     const date = new Date(dateStr);
@@ -23,10 +23,12 @@ function NewsCard({ article }: { article: (typeof newsArchive)[number]['articles
     <article className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] overflow-hidden hover:shadow-md transition-shadow">
       {article.imageUrl && (
         <div className="relative w-full h-48 sm:h-56 overflow-hidden bg-gray-100">
-          <img
+          <Image
             src={article.imageUrl}
             alt={article.title}
-            className="w-full h-full object-cover"
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+            className="object-cover"
             loading="lazy"
           />
         </div>

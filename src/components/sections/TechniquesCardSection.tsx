@@ -1,6 +1,7 @@
 'use client';
 
 import { techniquesCards } from '@/data/techniques-card';
+import Image from 'next/image';
 
 export function TechniquesCardSection() {
   return (
@@ -32,10 +33,13 @@ export function TechniquesCardSection() {
             {/* Image */}
             {card.imageUrl && (
               <div className="bg-[#fdf6f6] p-4 sm:p-6 flex items-center justify-center">
-                <img
+                <Image
                   src={card.imageUrl}
                   alt={card.imageAlt || card.title}
+                  width={250}
+                  height={250}
                   className="max-w-[200px] sm:max-w-[250px] w-full h-auto"
+                  loading="lazy"
                 />
               </div>
             )}

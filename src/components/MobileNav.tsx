@@ -18,7 +18,7 @@ const mainNavItems: { id: SectionId; emoji: string; label: string }[] = [
 ];
 
 const moreNavItems: { id: SectionId; emoji: string; label: string }[] = [
-  { id: 'japans', emoji: '🇯🇵', label: 'Cursus Japans' },
+  { id: 'cursusjapans', emoji: '🇯🇵', label: 'Cursus Japans' },
   { id: 'formulieren', emoji: '📋', label: 'Formulieren' },
   { id: 'login', emoji: '👤', label: 'Inloggen' },
 ];
