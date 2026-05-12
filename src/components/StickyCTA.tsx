@@ -1,14 +1,20 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X, Calendar, Phone } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TrialLessonForm } from '@/components/sections/TrialLessonForm';
 import { contactInfo } from '@/data/contact';
 import { AnimatedButton } from '@/components/ui/animated-card';
+import { onOpenProeflesForm } from '@/lib/form-events';
 
 export function StickyCTA({ onNavigate }: { onNavigate?: (section: string) => void }) {
   const [formOpen, setFormOpen] = useState(false);
+
+  // Listen for global form open events (from InfoSection, MembershipSection, etc.)
+  useEffect(() => {
+    return onOpenProeflesForm(() => setFormOpen(true));
+  }, []);
 
   const whatsappLink = `https://wa.me/31${contactInfo.whatsapp.slice(1)}?text=${encodeURIComponent('Hoi! Ik wil graag meer informatie over een proefles judo.')}`;
 

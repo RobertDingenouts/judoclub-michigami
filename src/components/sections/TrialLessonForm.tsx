@@ -17,10 +17,6 @@ interface FormData {
   parentEmail: string;
 }
 
-interface FormErrors {
-  [key: string]: string;
-}
-
 // --- Helpers ---
 function getGroupInfo(age: number) {
   if (age >= 6 && age <= 9) {
@@ -82,22 +78,61 @@ function getMailtoLink(formData: FormData, groupInfo: ReturnType<typeof getGroup
   return `mailto:${contactInfo.email}?subject=${subject}&body=${body}`;
 }
 
-// --- Step Components ---
+// --- Progress Indicator with green checkmarks ---
 function StepIndicator({ currentStep, totalSteps }: { currentStep: number; totalSteps: number }) {
+  const steps = [
+    { label: 'Judoka' },
+    { label: 'Groep' },
+    { label: 'Voorkeur' },
+    { label: 'Bevestiging' },
+  ];
+
   return (
-    <div className="flex items-center justify-center gap-1 sm:gap-2 mb-4 sm:mb-6">
-      {Array.from({ length: totalSteps }, (_, i) => (
-        <div
-          key={i}
-          className={`h-1.5 sm:h-2 rounded-full transition-all duration-300 ${
-            i < currentStep ? 'w-6 sm:w-8 bg-[#a90000]' : i === currentStep ? 'w-6 sm:w-8 bg-[#c00000]' : 'w-3 sm:w-4 bg-gray-200'
-          }`}
-        />
-      ))}
+    <div className="space-y-3">
+      {/* Step label */}
+      <div className="text-center text-xs font-medium text-gray-500">
+        Stap {currentStep} van {totalSteps}
+      </div>
+
+      {/* Checkmark progress bars */}
+      <div className="flex items-center justify-center gap-1 sm:gap-2">
+        {Array.from({ length: totalSteps }, (_, i) => (
+          <div key={i} className="flex items-center gap-1 sm:gap-2">
+            <div className="flex flex-col items-center gap-1">
+              <div
+                className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 ${
+                  i + 1 < currentStep
+                    ? 'bg-green-500 text-white'
+                    : i + 1 === currentStep
+                    ? 'bg-[#a90000] text-white ring-2 ring-[#a90000]/30'
+                    : 'bg-gray-200 text-gray-400'
+                }`}
+              >
+                {i + 1 < currentStep ? (
+                  <Check className="w-4 h-4" />
+                ) : (
+                  i + 1
+                )}
+              </div>
+              <span className={`text-[10px] hidden sm:block ${
+                i + 1 <= currentStep ? 'text-gray-700 font-medium' : 'text-gray-400'
+              }`}>
+                {steps[i]?.label}
+              </span>
+            </div>
+            {i < totalSteps - 1 && (
+              <div className={`w-3 sm:w-6 h-0.5 rounded-full transition-all duration-300 ${
+                i + 1 < currentStep ? 'bg-green-500' : 'bg-gray-200'
+              }`} />
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
 
+// --- Step 1: Judoka Info ---
 function Step1_JudokaInfo({ data, onChange }: { data: FormData; onChange: (field: string, value: string) => void }) {
   return (
     <div className="space-y-4">
@@ -133,6 +168,7 @@ function Step1_JudokaInfo({ data, onChange }: { data: FormData; onChange: (field
   );
 }
 
+// --- Step 2: Group Auto-Select ---
 function Step2_GroupSelection({ age }: { age: string }) {
   const groupInfo = getGroupInfo(parseInt(age) || 0);
 
@@ -143,7 +179,7 @@ function Step2_GroupSelection({ age }: { age: string }) {
       {parseInt(age) >= 4 ? (
         <div className="bg-gradient-to-br from-[#fdf6f6] to-white rounded-2xl p-4 sm:p-5 border border-[#a90000]/10">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-[#a90000] to-[#c00000] text-white flex items-center justify-center">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-green-500 to-green-600 text-white flex items-center justify-center">
               <Check className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
             <div>
@@ -182,6 +218,7 @@ function Step2_GroupSelection({ age }: { age: string }) {
   );
 }
 
+// --- Step 3: Preferred Day ---
 function Step3_PreferredDay({ data, onChange }: { data: FormData; onChange: (field: string, value: string) => void }) {
   const days = [
     {
@@ -218,7 +255,7 @@ function Step3_PreferredDay({ data, onChange }: { data: FormData; onChange: (fie
               }`}
             >
               {isSelected && (
-                <div className="absolute top-2 right-2 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#a90000] text-white flex items-center justify-center">
+                <div className="absolute top-2 right-2 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-green-500 text-white flex items-center justify-center">
                   <Check className="w-3 h-3 sm:w-4 sm:h-4" />
                 </div>
               )}
@@ -234,48 +271,8 @@ function Step3_PreferredDay({ data, onChange }: { data: FormData; onChange: (fie
   );
 }
 
-function Step4_Confirmation({ data, onChange }: { data: FormData; onChange: (field: string, value: string) => void }) {
-  return (
-    <div className="space-y-4">
-      <h3 className="font-bold text-[#8c0000] text-base sm:text-lg text-center">Contactgegevens ouder/verantwoordelijke</h3>
-
-      <div className="space-y-1">
-        <label className="text-sm font-medium text-gray-700">Naam ouder/verantwoordelijke</label>
-        <input
-          type="text"
-          value={data.parentName}
-          onChange={(e) => onChange('parentName', e.target.value)}
-          placeholder="Uw volledige naam"
-          className="w-full px-4 py-2.5 rounded-xl border border-[#e8eaed] focus:ring-2 focus:ring-[#a90000]/30 focus:border-[#a90000] outline-none transition-all text-sm"
-        />
-      </div>
-
-      <div className="space-y-1">
-        <label className="text-sm font-medium text-gray-700">Telefoonnummer</label>
-        <input
-          type="tel"
-          value={data.parentPhone}
-          onChange={(e) => onChange('parentPhone', e.target.value)}
-          placeholder="Bijv. 0612345678"
-          className="w-full px-4 py-2.5 rounded-xl border border-[#e8eaed] focus:ring-2 focus:ring-[#a90000]/30 focus:border-[#a90000] outline-none transition-all text-sm"
-        />
-      </div>
-
-      <div className="space-y-1">
-        <label className="text-sm font-medium text-gray-700">Email (optioneel)</label>
-        <input
-          type="email"
-          value={data.parentEmail}
-          onChange={(e) => onChange('parentEmail', e.target.value)}
-          placeholder="uw@email.nl"
-          className="w-full px-4 py-2.5 rounded-xl border border-[#e8eaed] focus:ring-2 focus:ring-[#a90000]/30 focus:border-[#a90000] outline-none transition-all text-sm"
-        />
-      </div>
-    </div>
-  );
-}
-
-function Step5_Summary({ data, onSubmit }: { data: FormData; onSubmit: () => void }) {
+// --- Step 4: Confirmation (Contact + Summary) ---
+function Step4_Confirmation({ data, onChange, onSubmit }: { data: FormData; onChange: (field: string, value: string) => void; onSubmit: () => void }) {
   const groupInfo = getGroupInfo(parseInt(data.judokaAge) || 0);
 
   return (
@@ -283,7 +280,7 @@ function Step5_Summary({ data, onSubmit }: { data: FormData; onSubmit: () => voi
       <h3 className="font-bold text-[#8c0000] text-base sm:text-lg text-center">Bijna klaar! Controleer je gegevens</h3>
 
       {/* Summary Card */}
-      <div className="bg-gradient-to-br from-[#fdf6f6] to-white rounded-2xl p-4 sm:p-5 border border-[#a90000]/10 space-y-3">
+      <div className="bg-gradient-to-br from-[#fdf6f6] to-white rounded-2xl p-4 sm:p-5 border border-[#a90000]/10 space-y-2">
         <div className="flex items-center gap-2 text-sm">
           <User className="w-4 h-4 text-[#a90000] flex-shrink-0" />
           <span className="font-medium text-gray-700">{data.judokaName}</span>
@@ -303,21 +300,48 @@ function Step5_Summary({ data, onSubmit }: { data: FormData; onSubmit: () => voi
           <MapPin className="w-4 h-4 text-[#a90000] flex-shrink-0" />
           <span className="text-gray-700">{groupInfo.location}</span>
         </div>
-        <hr className="border-[#e8eaed]" />
-        <div className="flex items-center gap-2 text-sm">
-          <Phone className="w-4 h-4 text-[#a90000] flex-shrink-0" />
-          <span className="text-gray-700">{data.parentPhone}</span>
+      </div>
+
+      {/* Contact Info */}
+      <div className="space-y-3">
+        <h4 className="font-semibold text-sm text-gray-700 text-center">Contactgegevens ouder/verantwoordelijke</h4>
+
+        <div className="space-y-1">
+          <label className="text-sm font-medium text-gray-700">Naam</label>
+          <input
+            type="text"
+            value={data.parentName}
+            onChange={(e) => onChange('parentName', e.target.value)}
+            placeholder="Uw volledige naam"
+            className="w-full px-4 py-2.5 rounded-xl border border-[#e8eaed] focus:ring-2 focus:ring-[#a90000]/30 focus:border-[#a90000] outline-none transition-all text-sm"
+          />
         </div>
-        {data.parentEmail && (
-          <div className="flex items-center gap-2 text-sm">
-            <Mail className="w-4 h-4 text-[#a90000] flex-shrink-0" />
-            <span className="text-gray-700">{data.parentEmail}</span>
-          </div>
-        )}
+
+        <div className="space-y-1">
+          <label className="text-sm font-medium text-gray-700">Telefoonnummer</label>
+          <input
+            type="tel"
+            value={data.parentPhone}
+            onChange={(e) => onChange('parentPhone', e.target.value)}
+            placeholder="Bijv. 0612345678"
+            className="w-full px-4 py-2.5 rounded-xl border border-[#e8eaed] focus:ring-2 focus:ring-[#a90000]/30 focus:border-[#a90000] outline-none transition-all text-sm"
+          />
+        </div>
+
+        <div className="space-y-1">
+          <label className="text-sm font-medium text-gray-700">Email (optioneel)</label>
+          <input
+            type="email"
+            value={data.parentEmail}
+            onChange={(e) => onChange('parentEmail', e.target.value)}
+            placeholder="uw@email.nl"
+            className="w-full px-4 py-2.5 rounded-xl border border-[#e8eaed] focus:ring-2 focus:ring-[#a90000]/30 focus:border-[#a90000] outline-none transition-all text-sm"
+          />
+        </div>
       </div>
 
       {/* Submit Buttons */}
-      <div className="space-y-3">
+      <div className="space-y-3 pt-2">
         <button
           onClick={onSubmit}
           className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#a90000] to-[#c00000] text-white px-6 py-3 rounded-xl font-bold text-sm sm:text-base hover:from-[#8c0000] hover:to-[#a00000] transition-all shadow-md hover:shadow-lg"
@@ -358,7 +382,7 @@ export function TrialLessonForm({ onClose }: { onClose?: () => void }) {
     parentEmail: '',
   });
 
-  const totalSteps = 5;
+  const totalSteps = 4;
 
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -413,8 +437,9 @@ export function TrialLessonForm({ onClose }: { onClose?: () => void }) {
         {step === 1 && <Step1_JudokaInfo data={formData} onChange={handleChange} />}
         {step === 2 && <Step2_GroupSelection age={formData.judokaAge} />}
         {step === 3 && <Step3_PreferredDay data={formData} onChange={handleChange} />}
-        {step === 4 && <Step4_Confirmation data={formData} onChange={handleChange} />}
-        {step === 5 && <Step5_Summary data={formData} onSubmit={handleSubmit} />}
+        {step === 4 && (
+          <Step4_Confirmation data={formData} onChange={handleChange} onSubmit={handleSubmit} />
+        )}
       </div>
 
       {/* Navigation */}
@@ -438,7 +463,7 @@ export function TrialLessonForm({ onClose }: { onClose?: () => void }) {
                 : 'bg-gray-100 text-gray-400 cursor-not-allowed'
             }`}
           >
-            {step === totalSteps - 1 ? 'Volgende' : 'Volgende'}
+            Volgende
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>

@@ -3,8 +3,9 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Calendar, Users, MapPin, Clock, Award, Mail } from 'lucide-react';
+import { Calendar, Users, MapPin, Clock, Award } from 'lucide-react';
 import { clubInfo } from '@/data/club-info';
+import { openProeflesForm } from '@/lib/form-events';
 
 export function InfoSection() {
   return (
@@ -238,8 +239,8 @@ export function InfoSection() {
             <Button onClick={() => window.open('https://forms.office.com/r/8Vw9kPcLT6', '_blank')} className="bg-[#a90000] hover:bg-[#8c0000] text-sm">
               Inschrijven
             </Button>
-            <Button variant="outline" onClick={() => window.open(`mailto:${clubInfo.email}`)} className="text-sm">
-              <Mail className="w-4 h-4 mr-2" /> Neem contact op voor proefles
+            <Button variant="outline" onClick={() => openProeflesForm()} className="text-sm">
+              Proefles Aanvragen
             </Button>
           </div>
         </CardContent>

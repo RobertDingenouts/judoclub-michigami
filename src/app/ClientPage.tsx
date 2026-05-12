@@ -26,6 +26,7 @@ import { TechniquesSection } from '@/components/sections/TechniquesSection';
 import { CategoryHubSection } from '@/components/sections/CategoryHubSection';
 import { TimelineSection } from '@/components/sections/TimelineSection';
 import { PullToRefreshIndicator } from '@/components/PullToRefreshIndicator';
+import { StickyCTA } from '@/components/StickyCTA';
 import { navGroups, mobileNavItems, groupHubMap, allNavItems, type Section } from '@/components/nav-config';
 
 // Sections that support pull-to-refresh
@@ -303,6 +304,9 @@ export default function MichigamiApp() {
 
       {/* Mobile Bottom Nav */}
       <MobileNav activeSection={activeSection} onSectionChange={setActiveSection} />
+
+      {/* Sticky CTA + Form Modal (global) */}
+      <StickyCTA onNavigate={(s) => setActiveSection(s as Section)} />
     </div>
   );
 }
