@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Search, ChevronRight, Facebook, Mail, Youtube } from 'lucide-react';
 import { navGroups, groupHubMap, type Section } from '@/components/nav-config';
+import { AnimatedCard, AnimatedButton, subtleHover } from '@/components/ui/animated-card';
 
 export function SidebarContent({ activeSection, onSelect }: { activeSection: Section; onSelect: (s: Section) => void }) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -29,9 +30,11 @@ export function SidebarContent({ activeSection, onSelect }: { activeSection: Sec
     <div className="flex flex-col h-full">
       {/* Logo / Brand */}
       <div className="p-4 border-b border-[#e8eaed] flex flex-col items-center">
-        <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#fdf6f6] to-white border-2 border-[#c00000]/10 flex items-center justify-center mb-2 shadow-sm">
-          <Image src="/logo.png" alt="Judoclub Michigami" width={72} height={72} className="object-contain" />
-        </div>
+        <AnimatedCard variants={subtleHover}>
+          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#fdf6f6] to-white border-2 border-[#c00000]/10 flex items-center justify-center mb-2 shadow-sm">
+            <Image src="/logo.png" alt="Judoclub Michigami" width={72} height={72} className="object-contain" />
+          </div>
+        </AnimatedCard>
         <p className="text-[10px] text-gray-400">Opgericht in 1993</p>
       </div>
 
@@ -57,13 +60,12 @@ export function SidebarContent({ activeSection, onSelect }: { activeSection: Sec
               {/* Group Header */}
               {!searchQuery.trim() && (
                 <div className="flex items-center">
-                  <button
-                    onClick={() => onSelect(groupHubMap[group.label] as Section)}
-                    className="flex-1 flex items-center gap-2 px-2 py-1.5 text-xs font-semibold text-gray-400 uppercase tracking-wider hover:text-gray-600 transition-colors"
-                  >
-                    <span className="text-sm">{group.emoji}</span>
-                    <span>{group.label}</span>
-                  </button>
+                  <AnimatedButton onClick={() => onSelect(groupHubMap[group.label] as Section)} variants={subtleHover}>
+                    <div className="flex-1 flex items-center gap-2 px-2 py-1.5 text-xs font-semibold text-gray-400 uppercase tracking-wider hover:text-gray-600 transition-colors">
+                      <span className="text-sm">{group.emoji}</span>
+                      <span>{group.label}</span>
+                    </div>
+                  </AnimatedButton>
                   <button
                     onClick={() => toggleGroup(group.label)}
                     className="px-1 py-1.5 hover:text-gray-600 transition-colors"
@@ -81,21 +83,19 @@ export function SidebarContent({ activeSection, onSelect }: { activeSection: Sec
               {(openGroup === group.label || searchQuery.trim()) && (
                 <div className="space-y-0.5">
                   {group.items.map((item) => (
-                    <button
-                      key={item.key}
-                      onClick={() => onSelect(item.key)}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all ${
+                    <AnimatedButton key={item.key} onClick={() => onSelect(item.key)} variants={subtleHover}>
+                      <div className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all ${
                         activeSection === item.key
                           ? 'bg-[#fdf6f6] text-[#c00000] font-medium'
                           : 'text-gray-600 hover:bg-[#f8f9fa] hover:text-gray-800'
-                      }`}
-                    >
-                      {item.icon}
-                      <span className="truncate">{item.label}</span>
-                      {activeSection === item.key && (
-                        <div className="w-1 h-1 rounded-full bg-[#a90000] ml-auto flex-shrink-0" />
-                      )}
-                    </button>
+                      }`}>
+                        {item.icon}
+                        <span className="truncate">{item.label}</span>
+                        {activeSection === item.key && (
+                          <div className="w-1 h-1 rounded-full bg-[#a90000] ml-auto flex-shrink-0" />
+                        )}
+                      </div>
+                    </AnimatedButton>
                   ))}
                 </div>
               )}
@@ -114,15 +114,21 @@ export function SidebarContent({ activeSection, onSelect }: { activeSection: Sec
       {/* Footer */}
       <div className="p-3 border-t border-[#e8eaed]">
         <div className="flex items-center gap-2 justify-center">
-          <a href="https://www.facebook.com/judoclubmichigami" target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-md hover:bg-[#f8f9fa] text-gray-400 hover:text-[#c00000] transition-colors">
-            <Facebook className="w-4 h-4" />
-          </a>
-          <a href="mailto:judoclub_michigami@hotmail.com" className="p-1.5 rounded-md hover:bg-[#f8f9fa] text-gray-400 hover:text-[#c00000] transition-colors">
-            <Mail className="w-4 h-4" />
-          </a>
-          <a href="https://www.youtube.com/channel/UC8tXSKppIMF6awS2cj7w50A" target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-md hover:bg-[#f8f9fa] text-gray-400 hover:text-[#c00000] transition-colors">
-            <Youtube className="w-4 h-4" />
-          </a>
+          <AnimatedButton as="a" href="https://www.facebook.com/judoclubmichigami" target="_blank" rel="noopener noreferrer" variants={subtleHover}>
+            <div className="p-1.5 rounded-md hover:bg-[#f8f9fa] text-gray-400 hover:text-[#c00000] transition-colors">
+              <Facebook className="w-4 h-4" />
+            </div>
+          </AnimatedButton>
+          <AnimatedButton as="a" href="mailto:judoclub_michigami@hotmail.com" variants={subtleHover}>
+            <div className="p-1.5 rounded-md hover:bg-[#f8f9fa] text-gray-400 hover:text-[#c00000] transition-colors">
+              <Mail className="w-4 h-4" />
+            </div>
+          </AnimatedButton>
+          <AnimatedButton as="a" href="https://www.youtube.com/channel/UC8tXSKppIMF6awS2cj7w50A" target="_blank" rel="noopener noreferrer" variants={subtleHover}>
+            <div className="p-1.5 rounded-md hover:bg-[#f8f9fa] text-gray-400 hover:text-[#c00000] transition-colors">
+              <Youtube className="w-4 h-4" />
+            </div>
+          </AnimatedButton>
         </div>
         <p className="text-[10px] text-gray-400 text-center mt-1.5">Opgericht in 1993</p>
       </div>

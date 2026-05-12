@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { ExamDashboard } from '@/components/sections/ExamDashboard';
 import { FormsSection } from '@/components/sections/FormsSection';

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { ChevronDown, ChevronUp, Play, X } from 'lucide-react';
+import { AnimatedCard, AnimatedButton, subtleHover } from '@/components/ui/animated-card';
 
 // ==========================================================================
 // TYPES
@@ -297,30 +298,21 @@ export function ExamDashboard() {
   }
 
   // Render belt buttons
-  function renderBeltButtons() {
+ function renderBeltButtons() {
     return (
       <div className="flex flex-wrap gap-3">
         {BELT_LEVELS.map(belt => {
           const isActive = selectedBeltId === belt.id;
           const bgColor = BELT_COLORS[belt.color] || '#ccc';
-          
+
           return (
-            <button
-              key={belt.id}
-              onClick={() => setSelectedBeltId(belt.id)}
-              className={`relative w-12 h-6 rounded transition-all duration-300 ${isActive ? 'scale-110 ring-2 ring-white ring-offset-2 ring-offset-[#a90000]' : 'hover:scale-105'}`}
-              style={{
-                background: bgColor,
-                boxShadow: isActive
-                  ? '0 4px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2)'
-                  : '0 2px 4px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.2)',
-              }}
-              title={belt.name}
-            >
-              <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] whitespace-nowrap opacity-0 hover:opacity-100 transition-opacity">
-                {belt.name}
-              </span>
-            </button>
+            <AnimatedButton key={belt.id} onClick={() => setSelectedBeltId(belt.id)} variants={subtleHover}>
+              <div className={`relative w-12 h-6 rounded transition-all duration-300 ${isActive ? 'scale-110 ring-2 ring-white ring-offset-2 ring-offset-[#a90000]' : 'hover:scale-105'}`} style={{ background: bgColor, boxShadow: isActive ? '0 4px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2)' : '0 2px 4px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.2)' }} title={belt.name}>
+                <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] whitespace-nowrap opacity-0 hover:opacity-100 transition-opacity">
+                  {belt.name}
+                </span>
+              </div>
+            </AnimatedButton>
           );
         })}
       </div>
@@ -352,12 +344,13 @@ export function ExamDashboard() {
             : (viewMode === 'new' ? cat.techniques.slice(prev, total) : cat.techniques.slice(0, total));
 
           return (
-            <div key={catId} className="border-b border-gray-200 last:border-0">
-              {/* Category Header */}
-              <button
-                onClick={() => toggleCategory(catId)}
-                className="w-full p-3 sm:p-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
-              >
+            <AnimatedCard key={catId} variants={subtleHover}>
+              <div className="border-b border-gray-200 last:border-0">
+                {/* Category Header */}
+                <button
+                  onClick={() => toggleCategory(catId)}
+                  className="w-full p-3 sm:p-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+                >
                 <div className="flex items-center gap-2 sm:gap-3">
                   <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center text-lg sm:text-xl shadow-sm">
                     {cat.icon}
@@ -399,13 +392,11 @@ export function ExamDashboard() {
                               {num}. {tech.nameJa}
                             </span>
                             {tech.youtubeId && (
-                              <button
-                                onClick={() => setVideoModal({ youtubeId: tech.youtubeId!, nameJa: tech.nameJa, nameNl: tech.nameNl })}
-                                className="flex-shrink-0 w-7 h-7 rounded-full bg-[#a90000] hover:bg-[#8c0000] text-white flex items-center justify-center transition-colors shadow"
-                                title={`Video: ${tech.nameJa}`}
-                              >
-                                <Play className="w-3.5 h-3.5 ml-0.5" />
-                              </button>
+                              <AnimatedButton onClick={() => setVideoModal({ youtubeId: tech.youtubeId!, nameJa: tech.nameJa, nameNl: tech.nameNl })} variants={subtleHover}>
+                                <div className="flex-shrink-0 w-7 h-7 rounded-full bg-[#a90000] hover:bg-[#8c0000] text-white flex items-center justify-center transition-colors shadow" title={`Video: ${tech.nameJa}`}>
+                                  <Play className="w-3.5 h-3.5 ml-0.5" />
+                                </div>
+                              </AnimatedButton>
                             )}
                           </div>
                           {detailLevel === 'full' && (
@@ -423,6 +414,7 @@ export function ExamDashboard() {
                 </div>
               )}
             </div>
+            </AnimatedCard>
           );
         })}
       </div>
@@ -520,12 +512,16 @@ export function ExamDashboard() {
             {showDirectTransition ? `${fromBelt?.name} → ${selectedBelt.name}` : `Exameneisen ${selectedBelt.name}`}
           </h2>
           <div className="flex gap-2">
-            <button onClick={expandAll} className="px-3 py-1.5 text-xs font-semibold bg-white/15 hover:bg-white/25 rounded border border-white/20 backdrop-blur-sm transition-all">
-              Alles openen
-            </button>
-            <button onClick={collapseAll} className="px-3 py-1.5 text-xs font-semibold bg-white/15 hover:bg-white/25 rounded border border-white/20 backdrop-blur-sm transition-all">
-              Alles sluiten
-            </button>
+            <AnimatedButton onClick={expandAll} variants={subtleHover}>
+              <div className="px-3 py-1.5 text-xs font-semibold bg-white/15 hover:bg-white/25 rounded border border-white/20 backdrop-blur-sm transition-all text-white">
+                Alles openen
+              </div>
+            </AnimatedButton>
+            <AnimatedButton onClick={collapseAll} variants={subtleHover}>
+              <div className="px-3 py-1.5 text-xs font-semibold bg-white/15 hover:bg-white/25 rounded border border-white/20 backdrop-blur-sm transition-all text-white">
+                Alles sluiten
+              </div>
+            </AnimatedButton>
           </div>
         </div>
 
@@ -536,24 +532,28 @@ export function ExamDashboard() {
         <div className="border-t-3 border-[#a90000] bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-5">
           <h3 className="text-sm font-semibold text-[#a90000] mb-3 uppercase tracking-wide">Extra eisen</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="flex items-center justify-between p-3 sm:p-4 bg-white rounded-xl shadow hover:shadow-lg transition-all hover:-translate-y-0.5">
-              <div>
-                <div className="font-bold text-gray-800">Nage-komi</div>
-                <div className="text-xs text-gray-500 mt-0.5">Vrije worp naar keuze</div>
+            <AnimatedCard variants={subtleHover}>
+              <div className="flex items-center justify-between p-3 sm:p-4 bg-white rounded-xl shadow hover:shadow-lg transition-all">
+                <div>
+                  <div className="font-bold text-gray-800">Nage-komi</div>
+                  <div className="text-xs text-gray-500 mt-0.5">Vrije worp naar keuze</div>
+                </div>
+                <div className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-br from-[#a90000] to-[#DC143C] bg-clip-text text-transparent">
+                  {beltReq.nageKomi}
+                </div>
               </div>
-              <div className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-br from-[#a90000] to-[#DC143C] bg-clip-text text-transparent">
-                {beltReq.nageKomi}
+            </AnimatedCard>
+            <AnimatedCard variants={subtleHover}>
+              <div className="flex items-center justify-between p-3 sm:p-4 bg-white rounded-xl shadow hover:shadow-lg transition-all">
+                <div>
+                  <div className="font-bold text-gray-800">Kanteltechnieken</div>
+                  <div className="text-xs text-gray-500 mt-0.5">Aantal kanteltechnieken</div>
+                </div>
+                <div className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-br from-[#a90000] to-[#DC143C] bg-clip-text text-transparent">
+                  {beltReq.kantelTechnieken}
+                </div>
               </div>
-            </div>
-            <div className="flex items-center justify-between p-3 sm:p-4 bg-white rounded-xl shadow hover:shadow-lg transition-all hover:-translate-y-0.5">
-              <div>
-                <div className="font-bold text-gray-800">Kanteltechnieken</div>
-                <div className="text-xs text-gray-500 mt-0.5">Aantal kanteltechnieken</div>
-              </div>
-              <div className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-br from-[#a90000] to-[#DC143C] bg-clip-text text-transparent">
-                {beltReq.kantelTechnieken}
-              </div>
-            </div>
+            </AnimatedCard>
           </div>
         </div>
       </div>
