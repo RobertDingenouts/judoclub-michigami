@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Search, ChevronRight, Facebook, Mail, Youtube } from 'lucide-react';
@@ -80,25 +81,39 @@ export function SidebarContent({ activeSection, onSelect }: { activeSection: Sec
               )}
 
               {/* Group Items */}
+              <AnimatePresence initial={false}>
               {(openGroup === group.label || searchQuery.trim()) && (
-                <div className="space-y-0.5">
-                  {group.items.map((item) => (
-                    <AnimatedButton key={item.key} onClick={() => onSelect(item.key)} variants={subtleHover}>
-                      <div className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all ${
-                        activeSection === item.key
-                          ? 'bg-[#fdf6f6] text-[#c00000] font-medium'
-                          : 'text-gray-600 hover:bg-[#f8f9fa] hover:text-gray-800'
-                      }`}>
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.25, ease: 'easeInOut' }}
+                  className="overflow-hidden"
+                >
+                  <div className="space-y-0.5">
+                    {group.items.map((item) => (
+                      <AnimatedButton key={item.key} onClick={() => onSelect(item.key)} variants={subtleHover}>
+                        <motion.div
+                          initial={{ x: -10, opacity: 0 }}
+                          animate={{ x: 0, opacity: 1 }}
+                          transition={{ duration: 0.2 }}
+                          className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all ${
+                            activeSection === item.key
+                              ? 'bg-[#fdf6f6] text-[#c00000] font-medium'
+                              : 'text-gray-600 hover:bg-[#f8f9fa] hover:text-gray-800'
+                          }`}>
                         {item.icon}
                         <span className="truncate">{item.label}</span>
                         {activeSection === item.key && (
                           <div className="w-1 h-1 rounded-full bg-[#a90000] ml-auto flex-shrink-0" />
                         )}
-                      </div>
+                      </motion.div>
                     </AnimatedButton>
                   ))}
-                </div>
+                  </div>
+                </motion.div>
               )}
+              </AnimatePresence>
 
               {/* Separator */}
               {!searchQuery.trim() && (

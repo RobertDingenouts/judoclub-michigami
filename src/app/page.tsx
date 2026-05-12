@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { ExamDashboard } from '@/components/sections/ExamDashboard';
 import { FormsSection } from '@/components/sections/FormsSection';
@@ -85,18 +86,42 @@ export default function MichigamiApp() {
       </div>
 
       {/* Mobile Sidebar Overlay — Glassmorphism */}
-      {sidebarOpen && (
-        <div className="md:hidden fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" onClick={() => setSidebarOpen(false)}>
-          <aside className="w-72 backdrop-blur-xl bg-white/90 min-h-screen shadow-2xl max-w-[calc(100vw-1rem)]" onClick={(e) => e.stopPropagation()}>
-            <SidebarContent activeSection={activeSection} onSelect={(s) => { setActiveSection(s); setSidebarOpen(false); }} />
-          </aside>
-        </div>
-      )}
+      <AnimatePresence>
+        {sidebarOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="md:hidden fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
+            onClick={() => setSidebarOpen(false)}
+          >
+            <motion.aside
+              initial={{ x: -300 }}
+              animate={{ x: 0 }}
+              exit={{ x: -300 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              className="w-72 backdrop-blur-xl bg-white/90 min-h-screen shadow-2xl max-w-[calc(100vw-1rem)]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <SidebarContent activeSection={activeSection} onSelect={(s) => { setActiveSection(s); setSidebarOpen(false); }} />
+            </motion.aside>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Main Content */}
       <main className="flex-1 md:ml-64 w-full min-w-0">
-        <ScrollArea key={activeSection} className="h-[calc(100vh-3.5rem)] sm:h-[calc(100vh-3.5rem)] md:h-screen w-full">
-          <div className="p-2 sm:p-4 md:p-8 max-w-[100vw] mx-auto w-full pb-16 sm:pb-0">
+        <ScrollArea className="h-[calc(100vh-3.5rem)] sm:h-[calc(100vh-3.5rem)] md:h-screen w-full">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeSection}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
+              className="p-2 sm:p-4 md:p-8 max-w-[100vw] mx-auto w-full pb-16 sm:pb-0"
+            >
             {activeSection === 'home' && <HomeSection onNavigate={setActiveSection} />}
             {activeSection === 'agenda' && <AgendaSection />}
             {activeSection === 'technieken' && <TechniquesSection />}
@@ -118,7 +143,8 @@ export default function MichigamiApp() {
             {activeSection === 'club-hub' && <CategoryHubSection group={navGroups[0]} onNavigate={setActiveSection} navGroups={navGroups} groupHubMap={groupHubMap} />}
             {activeSection === 'judoschool-hub' && <CategoryHubSection group={navGroups[1]} onNavigate={setActiveSection} navGroups={navGroups} groupHubMap={groupHubMap} />}
             {activeSection === 'media-hub' && <CategoryHubSection group={navGroups[2]} onNavigate={setActiveSection} navGroups={navGroups} groupHubMap={groupHubMap} />}
-          </div>
+            </motion.div>
+          </AnimatePresence>
         </ScrollArea>
       </main>
 

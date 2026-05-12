@@ -1,9 +1,23 @@
 'use client';
 
 import { useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { newsArchive, socialLinks } from '@/data/news-archive';
 import Image from 'next/image';
 import { AnimatedCard, AnimatedButton } from '@/components/ui/animated-card';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.12 },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.35 } },
+};
 
 function formatDate(dateStr: string | undefined): string {
   if (!dateStr) return '';
@@ -85,13 +99,22 @@ function YearSection({ yearData, autoOpen = false }: { yearData: (typeof newsArc
         </button>
 
         {/* Articles - Collapsible */}
+        <AnimatePresence initial={false}>
         {isOpen && (
-          <div className="px-4 sm:px-6 pb-4 sm:pb-6 space-y-4 border-t border-gray-100 pt-4">
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="px-4 sm:px-6 pb-4 sm:pb-6 space-y-4 border-t border-gray-100 pt-4"
+          >
             {yearData.articles.map((article) => (
-              <NewsCard key={article.id} article={article} />
+              <motion.div key={article.id} variants={itemVariants}>
+                <NewsCard article={article} />
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         )}
+        </AnimatePresence>
       </div>
     </AnimatedCard>
   );
@@ -155,11 +178,13 @@ export function NewsSection() {
       </div>
 
       {/* News Archive by Year — nieuwste jaar automatisch open */}
-      <div className="space-y-4">
+      <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-4">
         {newsArchive.map((yearData, idx) => (
-          <YearSection key={yearData.year} yearData={yearData} autoOpen={idx === 0} />
+          <motion.div key={yearData.year} variants={itemVariants}>
+            <YearSection yearData={yearData} autoOpen={idx === 0} />
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
       {/* Empty state if no articles */}
       {newsArchive.length === 0 && (

@@ -1,6 +1,7 @@
 'use client';
 
 import { type SectionId, sectionLabels } from './nav-config';
+import { AnimatePresence, motion } from 'framer-motion';
 
 interface SidebarProps {
   activeSection: SectionId;
@@ -46,12 +47,15 @@ export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
 
       {/* Navigation */}
       <nav className="flex-1 py-4 overflow-y-auto custom-scrollbar">
+        <AnimatePresence initial={false}>
         <ul className="space-y-1 px-3">
           {navItems.map((item) => (
             <li key={item.id}>
-              <button
+              <motion.button
                 onClick={() => onSectionChange(item.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                layout
+                layoutId={`sidebar-${item.id}`}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors duration-200 ${
                   activeSection === item.id
                     ? 'bg-judo-red text-white shadow-md shadow-judo-red/20'
                     : 'text-foreground hover:bg-judo-red-bg hover:text-judo-red-text'
@@ -59,10 +63,11 @@ export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
               >
                 <span className="text-base">{item.emoji}</span>
                 <span>{item.label}</span>
-              </button>
+              </motion.button>
             </li>
           ))}
         </ul>
+        </AnimatePresence>
       </nav>
 
       {/* Footer */}
