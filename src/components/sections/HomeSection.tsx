@@ -83,13 +83,12 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
               <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
               <div className="relative h-full flex flex-col justify-between">
                 <div>
-                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 mb-4" style={{ background: 'linear-gradient(135deg, #c00000, #a90000)' }}>
-                    <Calendar className="w-8 h-8 text-white" />
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 mb-4" style={{ backgroundColor: '#c0000015' }}>
+                    <Calendar className="w-6 h-6" style={{ color: '#c00000' }} />
                   </div>
                   <span className="font-bold text-xl block" style={{ color: '#c00000' }}>Agenda</span>
                   <span className="text-base text-gray-500 mt-1 block">Evenementen & trainingstijden</span>
                 </div>
-                <span className="text-sm font-medium mt-3 inline-flex items-center gap-1" style={{ color: '#c00000' }}>Bekijk agenda →</span>
               </div>
             </div>
           </button>
@@ -119,7 +118,7 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
             <div className="sm:col-span-2 relative overflow-hidden rounded-2xl border backdrop-blur-xl bg-white/80 p-4 sm:p-5 transition-all duration-300 hover:shadow-md active:scale-[0.99] group h-full min-h-[140px]" style={{ borderColor: '#c0000020' }}>
               <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
               <div className="relative h-full flex items-center justify-center gap-4">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #c00000, #a90000)' }}><Info className="w-6 h-6 text-white" /></div>
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#c0000015' }}><Info className="w-6 h-6" style={{ color: '#c00000' }} /></div>
                 <div className="text-left">
                   <span className="font-bold text-base block" style={{ color: '#c00000' }}>Over Ons</span>
                   <span className="text-sm text-gray-500">Geschiedenis & leiding</span>
