@@ -27,7 +27,14 @@ import { CategoryHubSection } from '@/components/sections/CategoryHubSection';
 import { TimelineSection } from '@/components/sections/TimelineSection';
 import { PullToRefreshIndicator } from '@/components/PullToRefreshIndicator';
 import { StickyCTA } from '@/components/StickyCTA';
+import { TrialLessonForm } from '@/components/sections/TrialLessonForm';
 import { navGroups, mobileNavItems, groupHubMap, allNavItems, type Section } from '@/components/nav-config';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+} from '@/components/ui/drawer';
 
 // Sections that support pull-to-refresh
 const PULL_REFRESH_SECTIONS = new Set(['agenda', 'nieuws', 'home']);
@@ -164,12 +171,20 @@ function updateMetaTags(section: Section) {
 export default function MichigamiApp() {
   const [activeSection, setActiveSection] = useState<Section>('home');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [proeflesOpen, setProeflesOpen] = useState(false);
 
   // Pull-to-refresh state
   const [ptrPulling, setPtrPulling] = useState(false);
   const [ptrRefreshing, setPtrRefreshing] = useState(false);
   const [ptrProgress, setPtrProgress] = useState(0);
   const touchStartY = useRef(0);
+
+  // Listen for custom event from MobileActionBar to open proefles drawer
+  useEffect(() => {
+    const handler = () => setProeflesOpen(true);
+    window.addEventListener('open-proefles', handler);
+    return () => window.removeEventListener('open-proefles', handler);
+  }, []);
 
   // Update document title + meta tags when section changes (SPA SEO)
   useEffect(() => {
@@ -338,10 +353,24 @@ export default function MichigamiApp() {
       </main>
 
       {/* Mobile Action Bar (merged single bar) */}
-      <MobileActionBar activeSection={activeSection} onSectionChange={setActiveSection} />
+      <MobileActionBar activeSection={activeSection} onSectionChange={setActiveSection} onProeflesClick={() => setProeflesOpen(true)} />
 
       {/* Sticky CTA + Form Modal (global) */}
       <StickyCTA onNavigate={(s) => setActiveSection(s as Section)} />
+
+      {/* Proefles Drawer — opened from bottom nav */}
+      <Drawer open={proeflesOpen} onOpenChange={setProeflesOpen}>
+        <DrawerContent className="max-h-[85vh]">
+          <DrawerHeader>
+            <DrawerTitle className="text-center text-lg font-bold" style={{ color: '#8c0000' }}>
+              Proefles Aanvragen
+            </DrawerTitle>
+          </DrawerHeader>
+          <div className="px-4 pb-6">
+            <TrialLessonForm onClose={() => setProeflesOpen(false)} />
+          </div>
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 }

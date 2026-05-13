@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { type SectionId } from './nav-config';
-import { contactInfo } from '@/data/contact';
 import {
   Drawer,
   DrawerContent,
@@ -14,20 +13,18 @@ import {
 interface MobileActionBarProps {
   activeSection: SectionId;
   onSectionChange: (section: SectionId) => void;
+  onProeflesClick?: () => void;
 }
 
-const whatsappUrl = `https://wa.me/31${contactInfo.whatsapp.slice(1)}?text=${encodeURIComponent('Hoi! Ik wil graag meer informatie over een proefles judo.')}`;
-
-// All items in order: nav + action pills merged into one list
-const allItems: { id: SectionId | string; emoji: string; label: string; isExternal?: boolean; url?: string }[] = [
+// All items in order: Home → Agenda → Info → Proefles → Lid Worden → Technieken → Examens → C.Japans → Meer
+const allItems: { id: SectionId | string; emoji: string; label: string; isProefles?: boolean }[] = [
   { id: 'home', emoji: '🏠', label: 'Home' },
   { id: 'agenda', emoji: '📅', label: 'Agenda' },
-  { id: 'technieken', emoji: '🥋', label: 'Technieken' },
-  { id: 'exameneisen', emoji: '🎯', label: 'Examens' },
-  { id: 'whatsapp', emoji: '💬', label: 'WhatsApp', isExternal: true, url: whatsappUrl },
-  { id: 'leden', emoji: '📅', label: 'Proefles' },
   { id: 'info', emoji: 'ℹ️', label: 'Info' },
+  { id: 'proefles', emoji: '🥋', label: 'Proefles', isProefles: true },
   { id: 'leden', emoji: '👤', label: 'Lid Worden' },
+  { id: 'technieken', emoji: '🎯', label: 'Technieken' },
+  { id: 'exameneisen', emoji: '🏅', label: 'Examens' },
   { id: 'cursusjapans', emoji: '🇯🇵', label: 'C.Japans' },
 ];
 
@@ -41,7 +38,7 @@ const moreLinks: { id: SectionId | string; emoji: string; label: string; isExter
   { id: 'formulieren', emoji: '📋', label: 'Formulieren' },
 ];
 
-export function MobileActionBar({ activeSection, onSectionChange }: MobileActionBarProps) {
+export function MobileActionBar({ activeSection, onSectionChange, onProeflesClick }: MobileActionBarProps) {
   const [moreOpen, setMoreOpen] = useState(false);
 
   return (
@@ -50,33 +47,26 @@ export function MobileActionBar({ activeSection, onSectionChange }: MobileAction
         className="flex gap-1.5 overflow-x-auto -webkit-overflow-scrolling-touch px-2 pointer-events-auto"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
-        {allItems.map((item) =>
-          item.isExternal ? (
-            <a
-              key={item.id}
-              href={item.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-shrink-0 inline-flex items-center gap-1 h-9 px-3 rounded-full bg-white/90 backdrop-blur-md shadow-lg border border-gray-200/60 text-xs font-medium text-foreground active:scale-[0.99] transition-transform"
-            >
-              <span className="text-sm">{item.emoji}</span>
-              <span>{item.label}</span>
-            </a>
-          ) : (
-            <button
-              key={item.id + item.label}
-              onClick={() => onSectionChange(item.id as SectionId)}
-              className={`flex-shrink-0 inline-flex items-center gap-1 h-9 px-3 rounded-full shadow-lg border text-xs font-medium active:scale-[0.99] transition-all ${
-                activeSection === item.id
-                  ? 'bg-judo-red/90 backdrop-blur-md text-white border-judo-red'
-                  : 'bg-white/80 backdrop-blur-md text-foreground border-gray-200/60'
-              }`}
-            >
-              <span className="text-sm">{item.emoji}</span>
-              <span>{item.label}</span>
-            </button>
-          )
-        )}
+        {allItems.map((item) => (
+          <button
+            key={item.id + item.label}
+            onClick={() => {
+              if (item.isProefles) {
+                onProeflesClick?.();
+              } else {
+                onSectionChange(item.id as SectionId);
+              }
+            }}
+            className={`flex-shrink-0 inline-flex items-center gap-1 h-9 px-3 rounded-full shadow-lg border text-xs font-medium active:scale-[0.99] transition-all ${
+              activeSection === item.id
+                ? 'bg-[#fff2f2] backdrop-blur-md text-foreground border-judo-red'
+                : 'bg-white/80 backdrop-blur-md text-foreground border-gray-200/60'
+            }`}
+          >
+            <span className="text-sm">{item.emoji}</span>
+            <span>{item.label}</span>
+          </button>
+        ))}
 
         {/* More pill — opens bottom sheet */}
         <Drawer direction="bottom" open={moreOpen} onOpenChange={setMoreOpen}>
@@ -111,7 +101,7 @@ export function MobileActionBar({ activeSection, onSectionChange }: MobileAction
                     onClick={() => { onSectionChange(link.id as SectionId); setMoreOpen(false); }}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all active:scale-[0.99] ${
                       activeSection === link.id
-                        ? 'bg-judo-red text-white'
+                        ? 'bg-[#fff2f2] text-foreground border border-judo-red'
                         : 'text-foreground hover:bg-judo-red-bg'
                     }`}
                   >
