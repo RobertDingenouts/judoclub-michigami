@@ -11,11 +11,11 @@ import { useIsMobile } from '@/hooks/use-mobile';
 
 function getEmojiIcon(emoji: string, className = "w-5 h-5") {
   switch (emoji) {
-    case 'ban': return <Ban className={`${className} text-[#c00000]`} />;
-    case 'medal': return <Trophy className={`${className} text-[#c00000]`} />;
-    case 'champagne': return <Sparkles className={`${className} text-[#c00000]`} />;
-    case 'xmark': return <XCircle className={`${className} text-[#c00000]`} />;
-    default: return <CircleDot className={`${className} text-[#c00000]`} />;
+    case 'ban': return <Ban className={`${className} text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)]`} />;
+    case 'medal': return <Trophy className={`${className} text-[#f0d060] drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)]`} />;
+    case 'champagne': return <Sparkles className={`${className} text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)]`} />;
+    case 'xmark': return <XCircle className={`${className} text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)]`} />;
+    default: return <CircleDot className={`${className} text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)]`} />;
   }
 }
 
@@ -57,7 +57,7 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
             {upcomingEvents.length === 0 ? (
               <p className="text-sm text-gray-400 text-center py-4">Geen komende evenementen</p>
             ) : upcomingEvents.slice(0, 2).map((item, idx) => (
-              <div key={idx} className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-[#fff2f2] transition-colors">
+              <div key={idx} onClick={() => onNavigate('agenda')} className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-[#fff2f2] transition-colors cursor-pointer">
                 <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 text-white" style={{ background: 'linear-gradient(135deg, #c00000, #a90000)' }}>
                   {getEmojiIcon(item.emoji, "w-5 h-5")}
                 </div>
