@@ -153,8 +153,8 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
                   <div className="absolute inset-0 bg-gradient-to-br from-[#f0fdf4] via-white/40 to-transparent opacity-70 group-hover:opacity-100 transition-opacity" />
                   <div className="relative h-full flex flex-col items-center justify-center gap-2 text-center">
                     <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#27ae6015' }}><Users className="w-6 h-6 text-[#27ae60]" /></div>
-                    <span className="font-semibold text-sm text-[#27ae60]">Proefles</span>
-                    <span className="text-xs text-gray-500">Gratis meekijken</span>
+                    <span className="font-semibold text-sm text-[#27ae60]">Gratis Proefles</span>
+                    <span className="text-xs text-gray-500">Meekijken kan!</span>
                   </div>
                 </button>
               } />

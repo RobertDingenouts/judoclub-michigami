@@ -423,7 +423,7 @@ export function TrialLessonForm({ onClose }: { onClose?: () => void }) {
             <X className="w-4 h-4" />
           </button>
         )}
-        <h2 className="text-base sm:text-lg font-bold">Proefles Aanvragen</h2>
+        <h2 className="text-base sm:text-lg font-bold">Gratis Proefles</h2>
         <p className="text-white/80 text-xs sm:text-sm mt-1">Vul het formulier in en we nemen contact met je op</p>
       </div>
 

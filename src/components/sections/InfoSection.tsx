@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -7,8 +8,10 @@ import { Calendar, Users, Award, ArrowRight, ChevronLeft, ChevronRight } from 'l
 import { type Section } from '@/components/nav-config';
 import { clubInfo } from '@/data/club-info';
 import { openProeflesForm } from '@/lib/form-events';
+import { SignupConfirmationModal } from '@/components/SignupConfirmationModal';
 
 export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void }) {
+  const [signupOpen, setSignupOpen] = useState(false);
   return (
     <div className="space-y-6">
       {/* Hero */}
@@ -234,19 +237,22 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
         <CardContent className="p-4 sm:p-6 text-center space-y-3">
           <h3 className="font-bold text-gray-800">Interesse in judo?</h3>
           <p className="text-sm text-gray-600 max-w-lg mx-auto">
-            Kom gerust eens kijken op een training - je bent van harte welkom! 
+            Kom gerust eens kijken op een training - je bent van harte welkom!
             Als het je bevalt, kun je direct starten met <span className="font-semibold text-[#c00000]">{clubInfo.costs.proeflessen}</span>.
           </p>
           <div className="flex flex-wrap justify-center gap-2 pt-2">
-            <Button onClick={() => window.open('https://forms.office.com/r/8Vw9kPcLT6', '_blank')} className="bg-[#a90000] hover:bg-[#8c0000] text-sm">
-              Inschrijven
+            <Button onClick={() => openProeflesForm()} className="bg-[#27ae60] hover:bg-[#219a52] text-white text-base px-8 font-bold shadow-md" style={{ fontSize: '1rem' }}>
+              Gratis Proefles
             </Button>
-            <Button variant="outline" onClick={() => openProeflesForm()} className="text-sm">
-              Proefles Aanvragen
+            <Button variant="outline" onClick={() => setSignupOpen(true)} className="text-sm border-[#c00000] text-[#c00000] hover:bg-[#fdf6f6]">
+              Inschrijven
             </Button>
           </div>
         </CardContent>
       </Card>
+
+      {/* Signup Confirmation Modal */}
+      <SignupConfirmationModal open={signupOpen} onClose={() => setSignupOpen(false)} signupUrl="https://forms.office.com/r/8Vw9kPcLT6" />
     </div>
   );
 }

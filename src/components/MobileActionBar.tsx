@@ -58,7 +58,9 @@ export function MobileActionBar({ activeSection, onSectionChange, onProeflesClic
               }
             }}
             className={`flex-shrink-0 inline-flex items-center gap-1 h-9 px-3 rounded-full shadow-lg border text-xs font-medium active:scale-[0.99] transition-all ${
-              activeSection === item.id
+              item.isProefles
+                ? 'bg-gradient-to-r from-[#27ae60] to-[#2ecc71] text-white border-transparent'
+                : activeSection === item.id
                 ? 'bg-[#fff2f2] backdrop-blur-md text-foreground border-judo-red'
                 : 'bg-white/80 backdrop-blur-md text-foreground border-gray-200/60'
             }`}

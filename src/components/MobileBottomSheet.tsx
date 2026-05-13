@@ -181,7 +181,7 @@ export function ProeflesBottomSheet({ trigger }: { trigger?: React.ReactNode }) 
       <DrawerContent>
         <DrawerHeader>
           <DrawerTitle className="text-center text-lg font-bold" style={{ color: '#8c0000' }}>
-            Proefles Aanvragen
+            Gratis Proefles
           </DrawerTitle>
         </DrawerHeader>
         <div className="px-4 pb-6">

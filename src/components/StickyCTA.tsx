@@ -16,10 +16,10 @@ export function StickyCTA({ onNavigate }: { onNavigate?: (section: string) => vo
 
   return (
     <>
-      {/* Desktop: Fixed top-right button — plain CSS hover, no Framer Motion */}
-      <button onClick={() => setFormOpen(true)} className="hidden md:flex fixed top-4 right-4 z-50 items-center gap-2 bg-gradient-to-r from-[#a90000] to-[#c00000] text-white px-5 py-3 rounded-full font-bold text-sm shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 cursor-pointer">
-        <Calendar className="w-4 h-4" />
-        Proefles Aanvragen
+      {/* Desktop: Fixed top-right button — green, prominent "Gratis Proefles" */}
+      <button onClick={() => setFormOpen(true)} className="hidden md:flex fixed top-4 right-4 z-50 items-center gap-2 bg-gradient-to-r from-[#27ae60] to-[#2ecc71] text-white px-6 py-3.5 rounded-full font-bold text-base shadow-lg hover:shadow-xl hover:scale-[1.03] active:scale-[0.98] transition-all duration-200 cursor-pointer">
+        <Calendar className="w-5 h-5" />
+        Gratis Proefles
       </button>
 
       {/* Mobile bottom bar replaced by MobileActionBar — hidden */}

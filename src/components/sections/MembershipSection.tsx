@@ -1,10 +1,13 @@
 'use client';
 
+import { useState } from 'react';
 import { membershipInfo } from '@/data/membership';
 import { Calendar } from 'lucide-react';
 import { openProeflesForm } from '@/lib/form-events';
+import { SignupConfirmationModal } from '@/components/SignupConfirmationModal';
 
 export function MembershipSection() {
+  const [signupOpen, setSignupOpen] = useState(false);
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -79,15 +82,13 @@ export function MembershipSection() {
       <div className="text-center space-y-3">
         <button
           onClick={() => openProeflesForm()}
-          className="inline-flex items-center gap-2 bg-white border-2 border-[#a90000] text-[#a90000] px-6 py-3 rounded-xl font-bold text-sm sm:text-base hover:bg-[#fdf6f6] transition-all"
+          className="inline-flex items-center gap-2 bg-gradient-to-r from-[#27ae60] to-[#2ecc71] text-white px-8 py-4 rounded-xl font-bold text-base hover:from-[#219a52] hover:to-[#27ae60] transition-all shadow-lg hover:shadow-xl"
         >
-          <Calendar className="w-4 h-4" /> Proefles Aanvragen
+          <Calendar className="w-5 h-5" /> Gratis Proefles
         </button>
         <div className="text-xs text-gray-500">of</div>
-        <a
-          href={membershipInfo.signupUrl}
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          onClick={() => setSignupOpen(true)}
           className="inline-flex items-center gap-2 bg-gradient-to-r from-[#a90000] to-[#c00000] text-white px-6 py-3 rounded-xl font-bold text-sm sm:text-base hover:from-[#8c0000] hover:to-[#a00000] transition-all shadow-md hover:shadow-lg"
         >
           {membershipInfo.signupText}
@@ -104,8 +105,11 @@ export function MembershipSection() {
               d="M14 5l7 7m0 0l-7 7m7-7H3"
             />
           </svg>
-        </a>
+        </button>
       </div>
+
+      {/* Signup Confirmation Modal */}
+      <SignupConfirmationModal open={signupOpen} onClose={() => setSignupOpen(false)} signupUrl={membershipInfo.signupUrl} />
     </div>
   );
 }

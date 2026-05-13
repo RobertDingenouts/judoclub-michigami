@@ -363,7 +363,7 @@ export default function MichigamiApp() {
         <DrawerContent className="max-h-[85vh]">
           <DrawerHeader>
             <DrawerTitle className="text-center text-lg font-bold" style={{ color: '#8c0000' }}>
-              Proefles Aanvragen
+              Gratis Proefles
             </DrawerTitle>
           </DrawerHeader>
           <div className="px-4 pb-6">
