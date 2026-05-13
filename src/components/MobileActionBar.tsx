@@ -45,9 +45,9 @@ export function MobileActionBar({ activeSection, onSectionChange }: MobileAction
   const [moreOpen, setMoreOpen] = useState(false);
 
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 z-50">
+    <div className="md:hidden fixed bottom-4 left-0 right-0 z-50 pointer-events-none">
       <div
-        className="flex gap-1.5 overflow-x-auto -webkit-overflow-scrolling-touch px-2 pt-1.5 pb-1 bg-white/80 backdrop-blur-xl border-t border-gray-200/50 safe-area-bottom"
+        className="flex gap-1.5 overflow-x-auto -webkit-overflow-scrolling-touch px-2 pointer-events-auto"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         {allItems.map((item) =>
@@ -57,7 +57,7 @@ export function MobileActionBar({ activeSection, onSectionChange }: MobileAction
               href={item.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-shrink-0 inline-flex items-center gap-1 h-9 px-3 rounded-full bg-white/80 backdrop-blur-md shadow-sm border border-gray-200/50 text-xs font-medium text-foreground active:scale-[0.99] transition-transform"
+              className="flex-shrink-0 inline-flex items-center gap-1 h-9 px-3 rounded-full bg-white/90 backdrop-blur-md shadow-lg border border-gray-200/60 text-xs font-medium text-foreground active:scale-[0.99] transition-transform"
             >
               <span className="text-sm">{item.emoji}</span>
               <span>{item.label}</span>
@@ -66,10 +66,10 @@ export function MobileActionBar({ activeSection, onSectionChange }: MobileAction
             <button
               key={item.id + item.label}
               onClick={() => onSectionChange(item.id as SectionId)}
-              className={`flex-shrink-0 inline-flex items-center gap-1 h-9 px-3 rounded-full shadow-sm border text-xs font-medium active:scale-[0.99] transition-all ${
+              className={`flex-shrink-0 inline-flex items-center gap-1 h-9 px-3 rounded-full shadow-lg border text-xs font-medium active:scale-[0.99] transition-all ${
                 activeSection === item.id
                   ? 'bg-judo-red/90 backdrop-blur-md text-white border-judo-red'
-                  : 'bg-white/60 backdrop-blur-md text-foreground border-gray-200/50'
+                  : 'bg-white/80 backdrop-blur-md text-foreground border-gray-200/60'
               }`}
             >
               <span className="text-sm">{item.emoji}</span>
@@ -81,7 +81,7 @@ export function MobileActionBar({ activeSection, onSectionChange }: MobileAction
         {/* More pill — opens bottom sheet */}
         <Drawer direction="bottom" open={moreOpen} onOpenChange={setMoreOpen}>
           <DrawerTrigger asChild>
-            <button className="flex-shrink-0 inline-flex items-center gap-1 h-9 px-3 rounded-full bg-white/60 backdrop-blur-md shadow-sm border border-gray-200/50 text-xs font-medium text-foreground active:scale-[0.99] transition-transform">
+            <button className="flex-shrink-0 inline-flex items-center gap-1 h-9 px-3 rounded-full bg-white/80 backdrop-blur-md shadow-lg border border-gray-200/60 text-xs font-medium text-foreground active:scale-[0.99] transition-transform">
               <span className="text-sm">⋯</span>
               <span>Meer</span>
             </button>

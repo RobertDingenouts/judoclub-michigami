@@ -306,7 +306,7 @@ export default function MichigamiApp() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3, ease: 'easeInOut' }}
-              className="p-2 sm:p-4 md:p-8 max-w-[100vw] mx-auto w-full pb-[7rem] sm:pb-0"
+              className="p-2 sm:p-4 md:p-8 max-w-[100vw] mx-auto w-full pb-[8rem] sm:pb-0"
             >
             {activeSection === 'home' && <HomeSection onNavigate={setActiveSection} />}
             {activeSection === 'agenda' && <AgendaSection />}
