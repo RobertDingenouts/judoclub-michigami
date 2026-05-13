@@ -329,7 +329,7 @@ export default function MichigamiApp() {
             {activeSection === 'exameneisen' && <ExamDashboard />}
             {activeSection === 'cursusjapans' && <JapaneseCourseSection />}
             {activeSection === 'formulieren' && <FormsSection />}
-            {activeSection === 'info' && <InfoSection />}
+            {activeSection === 'info' && <InfoSection onNavigate={setActiveSection} />}
             {activeSection === 'login' && <LoginSection />}
             {activeSection === 'leden' && <MembershipSection />}
             {activeSection === 'lestijden' && <ScheduleSection />}

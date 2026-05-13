@@ -3,11 +3,12 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Calendar, Users, MapPin, Clock, Award } from 'lucide-react';
+import { Calendar, Users, Award, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { type Section } from '@/components/nav-config';
 import { clubInfo } from '@/data/club-info';
 import { openProeflesForm } from '@/lib/form-events';
 
-export function InfoSection() {
+export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void }) {
   return (
     <div className="space-y-6">
       {/* Hero */}
@@ -44,38 +45,19 @@ export function InfoSection() {
                   ))}
                 </div>
               </div>
+
+              {/* Timeline button */}
+              {onNavigate && (
+                <Button
+                  onClick={() => onNavigate('timeline')}
+                  variant="outline"
+                  className="w-full sm:w-auto border-[#c00000] text-[#c00000] hover:bg-[#fdf6f6] gap-2"
+                >
+                  Bekijk onze tijdlijn <ArrowRight className="w-4 h-4" />
+                </Button>
+              )}
             </CardContent>
           </Card>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <Card className="border-0 shadow-sm">
-              <CardContent className="p-4 text-center">
-                <div className="w-12 h-12 mx-auto rounded-full bg-[#fdf6f6] flex items-center justify-center mb-2">
-                  <Users className="w-6 h-6 text-[#c00000]" />
-                </div>
-                <h3 className="font-semibold text-gray-800 text-sm">Groepen</h3>
-                <p className="text-xs text-gray-500 mt-1">3 leeftijdsgroepen</p>
-              </CardContent>
-            </Card>
-            <Card className="border-0 shadow-sm">
-              <CardContent className="p-4 text-center">
-                <div className="w-12 h-12 mx-auto rounded-full bg-[#fdf6f6] flex items-center justify-center mb-2">
-                  <Clock className="w-6 h-6 text-[#c00000]" />
-                </div>
-                <h3 className="font-semibold text-gray-800 text-sm">Training</h3>
-                <p className="text-xs text-gray-500 mt-1">Woensdag & vrijdag</p>
-              </CardContent>
-            </Card>
-            <Card className="border-0 shadow-sm cursor-pointer hover:shadow-md transition-shadow" onClick={() => window.open(clubInfo.locations[0].mapsUrl, '_blank')}>
-              <CardContent className="p-4 text-center">
-                <div className="w-12 h-12 mx-auto rounded-full bg-[#fdf6f6] flex items-center justify-center mb-2">
-                  <MapPin className="w-6 h-6 text-[#c00000]" />
-                </div>
-                <h3 className="font-semibold text-gray-800 text-sm">Locatie</h3>
-                <p className="text-xs text-gray-500 mt-1">{clubInfo.locations[0].address}</p>
-              </CardContent>
-            </Card>
-          </div>
         </TabsContent>
 
         {/* ==================== LEIDING TAB ==================== */}
@@ -226,6 +208,26 @@ export function InfoSection() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Previous / Next Navigation */}
+      {onNavigate && (
+        <div className="flex items-center justify-between gap-4">
+          <Button
+            onClick={() => onNavigate('agenda')}
+            variant="outline"
+            className="border-[#c00000] text-[#c00000] hover:bg-[#fdf6f6] gap-2 text-sm flex-1"
+          >
+            <ChevronLeft className="w-4 h-4" /> Agenda
+          </Button>
+          <Button
+            onClick={() => onNavigate('technieken')}
+            variant="outline"
+            className="border-[#c00000] text-[#c00000] hover:bg-[#fdf6f6] gap-2 text-sm flex-1"
+          >
+            Technieken <ChevronRight className="w-4 h-4" />
+          </Button>
+        </div>
+      )}
 
       {/* Contact CTA */}
       <Card className="border-0 shadow-sm bg-gradient-to-br from-[#fdf6f6] to-white">
