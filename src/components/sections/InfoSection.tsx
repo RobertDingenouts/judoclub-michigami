@@ -12,6 +12,16 @@ import { SignupConfirmationModal } from '@/components/SignupConfirmationModal';
 
 export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void }) {
   const [signupOpen, setSignupOpen] = useState(false);
+  const [tabValue, setTabValue] = useState('history');
+  const tabOrder = ['history', 'leiding', 'judo', 'lesson', 'belts'];
+  
+  const navigateTab = (direction: 'prev' | 'next') => {
+    const idx = tabOrder.indexOf(tabValue);
+    const newIdx = direction === 'next' 
+      ? (idx + 1) % tabOrder.length 
+      : (idx - 1 + tabOrder.length) % tabOrder.length;
+    setTabValue(tabOrder[newIdx]);
+  };
   return (
     <div className="space-y-6">
       {/* Hero */}
@@ -25,7 +35,7 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
       </Card>
 
       {/* Tabs */}
-      <Tabs defaultValue="history" className="w-full">
+      <Tabs value={tabValue} onValueChange={setTabValue} className="w-full">
         <TabsList className="grid w-full grid-cols-5 bg-[#f5f5f0]">
           <TabsTrigger value="history" className="text-xs sm:text-sm">Geschiedenis</TabsTrigger>
           <TabsTrigger value="leiding" className="text-xs sm:text-sm">Leiding</TabsTrigger>
@@ -212,25 +222,23 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
         </TabsContent>
       </Tabs>
 
-      {/* Previous / Next Navigation */}
-      {onNavigate && (
-        <div className="flex items-center justify-between gap-4">
-          <Button
-            onClick={() => onNavigate('agenda')}
-            variant="outline"
-            className="border-[#c00000] text-[#c00000] hover:bg-[#fdf6f6] gap-2 text-sm flex-1"
-          >
-            <ChevronLeft className="w-4 h-4" /> Agenda
-          </Button>
-          <Button
-            onClick={() => onNavigate('technieken')}
-            variant="outline"
-            className="border-[#c00000] text-[#c00000] hover:bg-[#fdf6f6] gap-2 text-sm flex-1"
-          >
-            Technieken <ChevronRight className="w-4 h-4" />
-          </Button>
-        </div>
-      )}
+      {/* Previous / Next Navigation — within Info tabs */}
+      <div className="flex items-center justify-between gap-4">
+        <Button
+          onClick={() => navigateTab('prev')}
+          variant="outline"
+          className="border-[#c00000] text-[#c00000] hover:bg-[#fdf6f6] gap-2 text-sm flex-1"
+        >
+          <ChevronLeft className="w-4 h-4" /> Vorige
+        </Button>
+        <Button
+          onClick={() => navigateTab('next')}
+          variant="outline"
+          className="border-[#c00000] text-[#c00000] hover:bg-[#fdf6f6] gap-2 text-sm flex-1"
+        >
+          Volgende <ChevronRight className="w-4 h-4" />
+        </Button>
+      </div>
 
       {/* Contact CTA */}
       <Card className="border-0 shadow-sm bg-gradient-to-br from-[#fdf6f6] to-white">
