@@ -86,7 +86,7 @@ De club reisde naar grote internationale toernooien: elk jaar Londen en Parijs, 
 
 Een jaarlijks hoogtepunt was de uitstap naar Pony Park Slagharen, waar de club les kreeg van topjudoka's — waaronder Anton Geesink zelf. Op zaterdagochtend waren er gezamenlijke wedstrijdtrainingen met andere clubs, zoals Judoclub Bergen op Zoom.
 
-De CJJF (Christelijke Judo en Jiu-Jitsu Federatie) was destijds ook in volle bloei — ongeveer tegelijkertijd met Michigami opgericht en met heel veel regionale clubs aangesloten die allemaal eigen toernooien organiseerden. Het was een tijd waarin judo in de regio echt bloeide.
+De CJJF (Culturele Judo en Jiu-Jitsu Federatie) was destijds ook in volle bloei — ongeveer tegelijkertijd met Michigami opgericht en met heel veel regionale clubs aangesloten die allemaal eigen toernooien organiseerden. Het was een tijd waarin judo in de regio echt bloeide.
 
 ## Nieuwe Tijd (2018 — heden)
 

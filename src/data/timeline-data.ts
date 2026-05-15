@@ -11,7 +11,7 @@ export const timelineEvents: TimelineEvent[] = [
   {
     year: '1882',
     title: 'Jigoro Kano sticht Judo',
-    description: 'Jigoro Kano foundation de Kodokan in Tokio en creëert judo als moderne vechtsport, afgeleid van traditioneel jiu-jitsu. Het principe " maximum efficiency, mutual welfare and benefit" wordt de kern van judo.',
+    description: 'Jigoro Kano foundation de Kodokan in Tokio en creëert judo als moderne vechtsport, afgeleid van traditioneel jiu-jitsu. Het principe "maximum efficiency, mutual welfare and benefit" wordt de kern van judo.',
     icon: 'judo',
     isMilestone: true,
   },
@@ -24,7 +24,7 @@ export const timelineEvents: TimelineEvent[] = [
   {
     year: '1976',
     title: 'Oprichting OVJV',
-    description: 'Judovereniging OVJV (Oud-Vossemeerse Judo Vereniging) wordt opgericht. Een van de voormalige trainingslocaties van Michigami, getuige van jarenlange judo-passie in de regio.',
+    description: 'Judovereniging OVJV (Oud-Vossemeerse Judo Vereniging) wordt opgericht — een zelfstandige judoclub in Oud-Vossemeer. In 2026 viert OVJV haar 50-jarig jubileum en fuseert met Michigami.',
     icon: 'club',
   },
   {
@@ -35,10 +35,17 @@ export const timelineEvents: TimelineEvent[] = [
     isMilestone: true,
   },
   {
-    year: '2000-2010',
-    title: 'Groeijaren & Regio-uitbreiding',
-    description: 'Koos van Wezel geeft judoles door heel de regio: Scherpenisse, Tholen, Roosendaal, Nieuw-Vossemeer en Oud-Vossemeer. Michigami groeit uit tot een bloeiende club met leden van alle leeftijden.',
-    icon: 'location',
+    year: "Jaren '90",
+    title: 'Gouden jaren Michigami',
+    description: 'De gouden tijd van de club: donderdag twee traininggroepen, vrijdag drie groepen. Les in Nieuw-Vossemeer en Scherpenisse. Elk jaar toernooien in Londen en Parijs. Pony Park Slagharen met les van Anton Geesink zelf. Gezamenlijke zaterdagochtend-training met Bergen op Zoom.',
+    icon: 'star',
+  },
+  {
+    year: '2018',
+    title: '25-jarig jubileum',
+    description: 'Judoclub Michigami viert haar 25-jarig bestaan met een groot toernooi op 6 oktober — een dag vol judo, prijzen en dankbaarheid voor alle vrijwilligers en leden.',
+    icon: 'award',
+    isMilestone: true,
   },
   {
     year: '2014',
@@ -61,14 +68,21 @@ export const timelineEvents: TimelineEvent[] = [
   },
   {
     year: '2024',
-    title: 'Wendy Jansen behaalt 1e Dan',
-    description: 'Wendy Jansen behaalt haar zwarte band (1e Dan) en wordt instructeur en EHBO\'er bij de club. Een verdere versterking van het trainerteam.',
-    icon: 'award',
+    title: 'Ontwikkeling & zelfstandigheid',
+    description: 'Nieuwe matten (120 m²), Chiem en Jacco slagen voor 1e Dan. Eerste open Clubkampioenschap met OVJV, Yoshi en Judo Edegem. CJJF-lidmaatschap beëindigd — club gaat zelfstandig verder.',
+    icon: 'club',
+  },
+  {
+    year: '2026',
+    title: 'OVJV overname & 50-jarig jubileum',
+    description: 'Michigami neemt OVJV (Oud-Vossemeerse Judo Vereniging) over in een overgangsjaar. OVJV viert haar 50-jarig jubileum met een toernooi in oktober. Vanaf 2027: twee locaties, één club.',
+    icon: 'location',
+    isMilestone: true,
   },
   {
     year: 'Vandaag',
     title: 'Hedendaagse Michigami',
-    description: 'Judoclub Michigami traint in De Knotwilg (Steenbergen) en De Vossenkuil (Oud-Vossemeer). Drie leeftijdsgroepen, recreatief en competitief — van kleuters tot volwassenen. Met een nieuw lesysteem dat drie tradities combineert.',
+    description: 'Judoclub Michigami traint in De Knotwilg (Steenbergen) en De Vossenkuil (Oud-Vossemeer). Twee leeftijdsgroepen, recreatief en competitief — van kleuters tot volwassenen. Met een eigen lesysteem dat drie tradities combineert.',
     icon: 'judo',
   },
 ];
