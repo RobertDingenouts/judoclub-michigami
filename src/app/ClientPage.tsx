@@ -341,7 +341,7 @@ export default function MichigamiApp() {
             {activeSection === 'nieuws' && <NewsSection />}
             {activeSection === 'techniekenkaart' && <TechniquesCardSection />}
             {activeSection === 'juridisch' && <LegalSection />}
-            {activeSection === 'timeline' && <TimelineSection />}
+            {activeSection === 'timeline' && <TimelineSection onNavigate={setActiveSection} />}
             {activeSection === 'club-hub' && <CategoryHubSection group={navGroups[0]} onNavigate={setActiveSection} navGroups={navGroups} groupHubMap={groupHubMap} />}
             {activeSection === 'judoschool-hub' && <CategoryHubSection group={navGroups[1]} onNavigate={setActiveSection} navGroups={navGroups} groupHubMap={groupHubMap} />}
             {activeSection === 'media-hub' && <CategoryHubSection group={navGroups[2]} onNavigate={setActiveSection} navGroups={navGroups} groupHubMap={groupHubMap} />}

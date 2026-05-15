@@ -3,8 +3,10 @@
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { timelineEvents, type TimelineEvent } from '@/data/timeline-data';
-import { Trophy, Award, MapPin, Star, Users, Swords } from 'lucide-react';
+import { Trophy, Award, MapPin, Star, Users, Swords, ArrowLeft } from 'lucide-react';
+import { type Section } from '@/components/nav-config';
 
 const iconMap: Record<string, React.ReactNode> = {
   judo: <Swords className="w-5 h-5" />,
@@ -87,7 +89,7 @@ function TimelineItem({ event, index }: { event: TimelineEvent; index: number })
   );
 }
 
-export function TimelineSection() {
+export function TimelineSection({ onNavigate }: { onNavigate?: (s: Section) => void }) {
   const headerRef = useRef<HTMLDivElement>(null);
   const headerInView = useInView(headerRef, { once: true });
 
@@ -126,16 +128,16 @@ export function TimelineSection() {
         ))}
       </div>
 
-      {/* Footer */}
+      {/* Footer with navigation */}
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ delay: 0.5, duration: 0.6 }}
-        className="text-center pt-4"
+        className="text-center pt-4 space-y-4"
       >
         <Card className="border-0 shadow-sm bg-gradient-to-br from-[#fdf6f6] to-white">
-          <CardContent className="p-6 text-center space-y-2">
+          <CardContent className="p-6 text-center space-y-3">
             <div className="w-12 h-12 mx-auto rounded-full bg-gradient-to-br from-[#a90000] to-[#c00000] text-white flex items-center justify-center">
               <Swords className="w-6 h-6" />
             </div>
@@ -143,6 +145,17 @@ export function TimelineSection() {
               <span className="font-semibold text-[#c00000]">Judoclub Michigami</span> — meer dan 30 jaar judo in Steenbergen en omgeving.{' '}
               Respect, discipline en passie voor de zachte weg.
             </p>
+
+            {/* Navigation button back to Info/Geschiedenis */}
+            {onNavigate && (
+              <Button
+                onClick={() => onNavigate('info')}
+                variant="outline"
+                className="w-full sm:w-auto border-[#c00000] text-[#c00000] hover:bg-[#fdf6f6] gap-2 mx-auto mt-4"
+              >
+                <ArrowLeft className="w-4 h-4" /> Terug naar Geschiedenis
+              </Button>
+            )}
           </CardContent>
         </Card>
       </motion.div>

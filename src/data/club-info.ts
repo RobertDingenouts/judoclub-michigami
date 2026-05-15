@@ -88,15 +88,13 @@ Een jaarlijks hoogtepunt was de uitstap naar Pony Park Slagharen, waar de club l
 
 De CJJF (Culturele Judo en Jiu-Jitsu Federatie) was destijds ook in volle bloei — ongeveer tegelijkertijd met Michigami opgericht en met heel veel regionale clubs aangesloten die allemaal eigen toernooien organiseerden. Het was een tijd waarin judo in de regio echt bloeide.
 
-## Nieuwe Tijd (2018 — heden)
+## Nieuwe Tijd (2010 — heden)
 
-In 2018 vierde Judoclub Michigami haar 25-jarig jubileum met een groot toernooi — een dag vol judo, prijzen en dankbaarheid voor alle vrijwilligers en leden die de club door de jaren heen hebben gedragen.
+Rond 2010 begon een nieuwe fase. Robin Hack, Pascal Hack en Robert Dingenouts — al bijna vanaf de oprichting lid van Michigami — gaven samen met Koos les en bouwden langzaam op aan hun eigen expertise. Op 5 juni 2010 slaagden ze alle drie voor hun 1e Dan zwarte band, en op 4 juni 2016 voor hun 3e Dan.
 
-De jaren daarna brachten veranderingen: minder regionale clubs, minder toernooien, en uiteindelijk de beslissing om zelfstandig te opereren na het beëindigen van het CJJF-lidmaatschap eind 2024. Maar juist in deze periode ontwikkelde Michigami zich verder: dangraden behaald, kata geleerd, en een eigen technieken-systeem zorgvuldig gedocumenteerd.
+Vanaf 2005-2010 veranderde het landschap van judo in de regio langzaam: minder regionale clubs, minder toernooien, en een CJJF die steeds kleiner werd. Maar juist in deze periode ontwikkelde Michigami zich verder: kata geleerd, eigen technieken-systeem zorgvuldig gedocumenteerd, en de infrastructuur verbreed — in 2024 werden de matten uitgebreid naar 120 m².
 
-De training vindt al sinds het begin plaats in Sportcentrum De Knotwilg in Steenbergen. In 2024 werden de matten uitgebreid naar 120 m² — een investering in de toekomst van de club.
-
-In 2021 nam een nieuwe generatie het stokje over: Robin Hack, Pascal Hack en Robert Dingenouts — drie vrienden die al bijna vanaf de oprichting samen judo oefenen en alle drie de zwarte band hebben behaald. Zij zorgen ervoor dat de Michigami-geest levend blijft: respect, discipline, en passie voor judo.
+Na het overlijden van Koos van Wezel in december 2021 namen Robin, Pascal en Robert de club volledig over. Zij zorgen ervoor dat de Michigami-geest levend blijft: respect, discipline, en passie voor judo.
 
 In 2026 viert OVJV (Oud-Vossemeerse Judo Vereniging) haar 50-jarig jubileum. Michigami neemt de vereniging over — in een overgangsjaar waarin OVJV-leden trainen onder leiding van Robin en Pascal, terwijl ze organizationeel onder Michigami vallen. Vanaf 2027 is de integratie voltooid: twee locaties, één club.
 
