@@ -76,13 +76,31 @@ Judoclub Michigami biedt judo aan voor alle leeftijden en niveaus. Of je nu recr
   // Additional content from Weebly pages
   history: `Judoclub Michigami is in 1993 opgericht door Koos van Wezel in Steenbergen. De naam "Michigami" heeft een diepe betekenis — Koos had jarenlang les gehad van Haku Michigami, de beroemde Japanse judomeester die ook leraar was van Anton Geesink, de legendarische Nederlandse judo-wereldkampioen uit de jaren '60.
 
-Haku Michigami was een van de meest gerespecteerde judomeesters ter wereld, en zijn leerling Koos van Wezel droeg deze erfenis verder in Steenbergen en omgeving. Door de jaren heen gaf Koos judoles in een groot deel van de regio: Scherpenisse, Tholen, Roosendaal, Nieuw-Vossemeer en Oud-Vossemeer.
+## De Gouden Jaren (jaren '90 — begin 2000)
 
-Koos was niet alleen een gepassioneerde docent, maar ook een gerespecteerd scheidsrechter op grote internationale toernooien — waaronder het CSIT, Dalfsen Dutch Open Championships, het Millennium Toernooi in Londen en Parijs, en talloze andere evenementen door heel Europa. Hij behaalde de 8e dan judo, een uitzonderlijk hoge graad die getuigt van levenslang dedication aan de sport.
+De jaren negentig en het begin van de jaren duizend waren de gouden tijd van Judoclub Michigami. De club was in volle bloei: op donderdag twee traininggroepen, op vrijdag drie groepen — een drukke dojo waar judo als een tweede taal werd gesproken.
 
-De training vindt al sinds het begin plaats in Sportcentrum De Knotwilg in Steenbergen. Door de jaren heen is Judoclub Michigami uitgegroeid tot een bloeiende judovereniging met leden van alle leeftijden — van kleuters tot volwassenen, recreatief en competitief.
+Koos gaf les op meerdere locaties in de regio: naast Steenbergen ook in Nieuw-Vossemeer en Scherpenisse. De judocommunity was groot en hecht, met een echte wedstrijdgroep die elkaar aanmoedigde op toernooien. Ouders waren erbij, vrienden van elkaar, en de sfeer was ongeëvenaard — judo was meer dan sport, het was een gezamenlijke passie.
 
-In 2021 nam een nieuwe generatie het stokje over: Robin Hack, Pascal Hack en Robert Dingenouts — drie vrienden die al bijna vanaf de oprichting samen judo oefenen, regionale en internationale wedstrijden doen, en alle drie de zwarte band (3e dan) hebben behaald. Zij zorgen ervoor dat de Michigami-geest levend blijft: respect, discipline, en passie voor judo.`,
+De club reisde naar grote internationale toernooien: elk jaar Londen en Parijs, en talloze andere evenementen door heel Europa. Koos zelf was gerespecteerd scheidsrechter op prestigieuze toernooien — waaronder het CSIT, de Dalfsen Dutch Open Championships en het Millennium Toernooi in Londen en Parijs. Hij behaalde de 8e dan judo, een uitzonderlijk hoge graad die getuigt van levenslang dedication aan de sport.
+
+Een jaarlijks hoogtepunt was de uitstap naar Pony Park Slagharen, waar de club les kreeg van topjudoka's — waaronder Anton Geesink zelf. Op zaterdagochtend waren er gezamenlijke wedstrijdtrainingen met andere clubs, zoals Judoclub Bergen op Zoom.
+
+De CJJF (Christelijke Judo en Jiu-Jitsu Federatie) was destijds ook in volle bloei — ongeveer tegelijkertijd met Michigami opgericht en met heel veel regionale clubs aangesloten die allemaal eigen toernooien organiseerden. Het was een tijd waarin judo in de regio echt bloeide.
+
+## Nieuwe Tijd (2018 — heden)
+
+In 2018 vierde Judoclub Michigami haar 25-jarig jubileum met een groot toernooi — een dag vol judo, prijzen en dankbaarheid voor alle vrijwilligers en leden die de club door de jaren heen hebben gedragen.
+
+De jaren daarna brachten veranderingen: minder regionale clubs, minder toernooien, en uiteindelijk de beslissing om zelfstandig te opereren na het beëindigen van het CJJF-lidmaatschap eind 2024. Maar juist in deze periode ontwikkelde Michigami zich verder: dangraden behaald, kata geleerd, en een eigen technieken-systeem zorgvuldig gedocumenteerd.
+
+De training vindt al sinds het begin plaats in Sportcentrum De Knotwilg in Steenbergen. In 2024 werden de matten uitgebreid naar 120 m² — een investering in de toekomst van de club.
+
+In 2021 nam een nieuwe generatie het stokje over: Robin Hack, Pascal Hack en Robert Dingenouts — drie vrienden die al bijna vanaf de oprichting samen judo oefenen en alle drie de zwarte band hebben behaald. Zij zorgen ervoor dat de Michigami-geest levend blijft: respect, discipline, en passie voor judo.
+
+In 2026 viert OVJV (Oud-Vossemeerse Judo Vereniging) haar 50-jarig jubileum. Michigami neemt de vereniging over — in een overgangsjaar waarin OVJV-leden trainen onder leiding van Robin en Pascal, terwijl ze organizationeel onder Michigami vallen. Vanaf 2027 is de integratie voltooid: twee locaties, één club.
+
+Judoclub Michigami blijft judo aanbieden voor alle leeftijden — van kleuters tot volwassenen, recreatief of competitief. De club groeit verder met een warme sfeer en een hechte community die al meer dan drie decennia aan de sport vasthoudt.`,
   philosophy: `Vanaf 6 jaar kan eigenlijk iedereen aan judo gaan doen. Ongeacht of je jongen of meisje, man of vrouw bent. Naar gelang je leeftijd word je ingedeeld in een bepaalde groep. Tot 12 jarige leeftijd wordt er speciaal jeugd judo gegeven. Hierbij zijn de moeilijke grepen en worpen weggelaten of aangepast, zodat iedereen het kan volgen.`,
   lessonStructure: `Voor de les begint, trek je een wit judopak (judogi) aan. Kom je voor het eerst, trek dan iets aan zonder scherpe delen als gespen, knopen e.d. Een joggingpak of trainingspak is dan nog het meest geschikt. Wanneer de leraar (Sensei) "Matte, judozit" roept, gaan alle judoka's op volgorde van band naast elkaar, tegenover de leraar zitten. Daarna groeten zij de leraar, door een diepe buiging te maken. Ook de leraar groet terug. Aan het begin van de les worden allerlei oefeningen gedaan om warm te worden. Vaak zijn dit spelletjes waarbij ook al enkele judovormen voorkomen. Bij judo is goed kunnen vallen erg belangrijk. Hier wordt altijd eerst mee begonnen.`,
   leadership: {

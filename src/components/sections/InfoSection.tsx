@@ -51,11 +51,19 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
                 <div className="w-10 h-10 rounded-full bg-[#fdf6f6] flex items-center justify-center flex-shrink-0 mt-1">
                   <Calendar className="w-5 h-5 text-[#c00000]" />
                 </div>
-                <div>
+                <div className="space-y-4">
                   <h3 className="font-bold text-gray-800 mb-2">Onze geschiedenis</h3>
-                  {clubInfo.history.split('\n\n').map((paragraph, i) => (
-                    <p key={i} className="text-sm text-gray-600 leading-relaxed mb-3 last:mb-0">{paragraph}</p>
-                  ))}
+                  {clubInfo.history.split('\n\n').map((paragraph, i) => {
+                    const headerMatch = paragraph.match(/^##\s+(.+)$/);
+                    if (headerMatch) {
+                      return (
+                        <h4 key={i} className="font-bold text-base text-gray-800 mt-6 mb-2 first:mt-0">{headerMatch[1]}</h4>
+                      );
+                    }
+                    return (
+                      <p key={i} className="text-sm text-gray-600 leading-relaxed">{paragraph}</p>
+                    );
+                  })}
                 </div>
               </div>
 
