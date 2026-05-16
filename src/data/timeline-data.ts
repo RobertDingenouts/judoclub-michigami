@@ -80,6 +80,12 @@ export const timelineEvents: TimelineEvent[] = [
     icon: 'club',
   },
   {
+    year: '2024',
+    title: 'Wendy Jansen behaalt 1e Dan',
+    description: 'Wendy Jansen — al sinds 1988 leerling van Koos, eerst in Tholen later in Roosendaal en Scherpenisse. Na jarenlang afwezig te zijn geweest met bruine band, besloot ze toch nog voor zwarte band te trainen. Geslaagd! Sinds geeft ze les in zowel Oud-Vossemeer als Steenbergen en is ze verantwoordelijk voor EHBO.',
+    icon: 'award',
+  },
+  {
     year: '2026',
     title: 'OVJV overname & 50-jarig jubileum',
     description: 'Michigami neemt OVJV (Oud-Vosseemerse Judo Vereniging) over in een overgangsjaar. OVJV viert haar 50-jarig jubileum met een toernooi in oktober. Vanaf 2027: twee locaties, één club.',
