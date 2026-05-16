@@ -92,11 +92,11 @@ De CJJF (Culturele Judo en Jiu-Jitsu Federatie) was destijds ook in volle bloei 
 
 Rond 2010 begon een nieuwe fase. Robin Hack, Pascal Hack en Robert Dingenouts — al bijna vanaf de oprichting lid van Michigami — gaven samen met Koos les en bouwden langzaam op aan hun eigen expertise. Op 5 juni 2010 slaagden ze alle drie voor hun 1e Dan zwarte band, en op 4 juni 2016 voor hun 3e Dan.
 
+Ook Wendy Jansen is een belangrijk hoofdstuk in het verhaal van Michigami. Ze was al in 1988 leerling van Koos — destijds in Tholen, vóór de oprichting van Michigami. Ze behaalde daar haar witte band en bleef actief door de jaren heen, trainend in Roosendaal en Scherpenisse. Ze bereikte bruine band en trainde al voor haar zwarte band, maar nam toen een lange pauze. Toen Koos weer les ging geven in Oud-Vossemeer, deed ze weer mee en trainde ze ook mee met Robin, Pascal en Robert in Steenbergen. Na jarenlang afwezig te zijn geweest besloot ze met bruine band toch nog een keer voor zwarte band te trainen — en slaagde. Sinds geeft ze les in zowel Oud-Vosseemer als Steenbergen en is ze ook verantwoordelijk voor EHBO.
+
 In de jaren voor zijn overlijden gaf Koos ook les in Oud-Vossemeer. Na zijn overlijden in december 2021 namen Robin en Pascal het daar over — zij gaven er al een aantal jaar les en kenden de locatie goed. Het bestuur van OVJV was verouderd en na jarenlang overleg vroegen ze Michigami of wij de vereniging wilden overnemen.
 
 Vanaf 2005-2010 veranderde het landschap van judo in de regio langzaam: minder regionale clubs, minder toernooien, en een CJJF die steeds kleiner werd. Maar juist in deze periode ontwikkelde Michigami zich verder: kata geleerd, eigen technieken-systeem zorgvuldig gedocumenteerd, en de infrastructuur verbreed — in 2024 werden de matten uitgebreid naar 120 m².
-
-Ook Wendy Jansen speelt een belangrijke rol in het verhaal van Michigami. Ze was al in 1988 leerling van Koos — toen hij nog les gaf in Tholen, vóór de oprichting van Michigami. Ze behaalde daar haar witte band en trainde later ook mee in Roosendaal en Scherpenisse. Toen Koos weer les ging geven in Oud-Vosseemer, deed ze opnieuw mee en oefende ze ook met Robin, Pascal en Robert in Steenbergen. Na jarenlang afwezig te zijn geweest, besloot ze met bruine band om toch nog voor zwarte band te trainen — en slaagde. Sinds geeft ze les in zowel Oud-Vossemeer als Steenbergen en is ze ook verantwoordelijk voor EHBO tijdens trainingen en evenementen.
 
 Na het overlijden van Koos van Wezel namen Robin, Pascal en Robert de club volledig over. Zij zorgen ervoor dat de Michigami-geest levend blijft: respect, discipline, en passie voor judo.
 
