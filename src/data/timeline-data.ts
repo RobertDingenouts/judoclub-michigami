@@ -60,6 +60,13 @@ export const timelineEvents: TimelineEvent[] = [
     isMilestone: true,
   },
   {
+    year: '2014',
+    title: 'Robin, Pascal & Robert behalen 2e Dan',
+    description: 'Op 7 juni 2014 behalen Robin Hack, Pascal Hack en Robert Dingenouts gezamenlijk hun 2e Dan zwarte band. Een mooie mijlpaal in hun lange judo-reis.',
+    icon: 'award',
+    isMilestone: true,
+  },
+  {
     year: '2015',
     title: 'Dutch Open International Championships',
     description: '4 judoka\'s van Michigami doen mee aan de Dutch Open in Dalfsen. Latif Nurzad, Ricardo den Heijer en Damian van Leijenhorst behalen allemaal een 2e plaats — keurige prestatie op nationaal niveau.',

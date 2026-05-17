@@ -85,7 +85,7 @@ Een jaarlijks hoogtepunt was de uitstap naar Pony Park Slagharen, waar clubleden
 
 ## Nieuwe Tijd (2010 — heden)
 
-Rond 2010 brak een nieuwe fase aan voor Judoclub Michigami. Robin Hack, Pascal Hack en Robert Dingenouts, die al bijna vanaf de oprichting bij de club waren, begonnen naast hun eigen training ook les te geven onder begeleiding van Koos. Hun toewijding werd beloond toen ze op 5 juni 2010 alle drie slaagden voor their 1e Dan zwarte band, gevolgd door hun 3e Dan op 4 juni 2016.
+Rond 2010 brak een nieuwe fase aan voor Judoclub Michigami. Robin Hack, Pascal Hack en Robert Dingenouts, die al bijna vanaf de oprichting bij de club waren, begonnen naast hun eigen training ook les te geven onder begeleiding van Koos. Hun toewijding werd beloond toen ze op 5 juni 2010 alle drie slaagden voor hun 1e Dan zwarte band, gevolgd door hun 2e Dan op 7 juni 2014 en hun 3e Dan op 4 juni 2016.
 
 Samenhangend met deze generatiewisseling is ook het verhaal van Wendy Jansen onlosmakelijk verbonden met Michigami. Al in 1988 begon zij haar judoreis bij Koos van Wezel, destijds nog in Tholen. Ze behaalde daar haar witte band en bleef gedurende de jaren negentig zeer actief, ook nadat Michigami was opgericht. Wendy trainde in Roosendaal en Scherpenisse en bereikte uiteindelijk de bruine band. Hoewel ze na lange tijd weer voor haar zwarte band ging trainen en dit in 2024 behaalde, is haar betrokkenheid bij de club altijd groot geweest. Ze geeft nu met veel plezier les in zowel Oud-Vossemeer als Steenbergen en is tevens verantwoordelijk voor EHBO binnen de club.
 
