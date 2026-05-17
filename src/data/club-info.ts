@@ -77,7 +77,7 @@ Judoclub Michigami biedt judo aan voor alle leeftijden en niveaus. Of je nu recr
 
 ## De Gouden Jaren (jaren '90 — begin 2000)
 
-De jaren negentig en het begin van de jaren duizend kunnen worden omschreven als de gouden tijd van Judoclub Michigami. De dojo was een bruisende plek waar judo own立dernaar een tweede taal, met op donderdag twee traininggroepen en op vrijdag maar liefst drie groepen. Koos' inzet reikte verder dan Steenbergen; hij gaf ook les in Nieuw-Vossemeer en Scherpenisse, waardoor de club een breed fundament kreeg in de hele regio.
+De jaren negentig en het begin van de jaren tweeduizend kunnen worden omschreven als de gouden tijd van Judoclub Michigami. De dojo was een bruisende plek waar judo own立dernaar een tweede taal, met op donderdag twee traininggroepen en op vrijdag maar liefst drie groepen. Koos' inzet reikte verder dan Steenbergen; hij gaf ook les in Nieuw-Vossemeer en Scherpenisse, waardoor de club een breed fundament kreeg in de hele regio.
 
 De judocommunity was groot en hecht, met een actieve wedstrijdgroep die elkaar motiveerde op toernooien. Ouders en vrienden vormden een betrokken achterban, en de sfeer was ongeëvenaard — judo was hier werkelijk meer dan een sport; het was een gedeelde passie. De club reisde elk jaar naar grote internationale toernooien in steden als Londen en Parijs, en nam deel aan talloze andere evenementen door heel Europa. Koos zelf was een gerespecteerd scheidsrechter op prestigieuze toernooien, waaronder het CSIT, de Dalfsen Dutch Open Championships en het Millennium Toernooi in Londen en Parijs. Zijn toewijding aan de sport werd bekroond met de zeldzame 8e dan judo, een graad die getuigt van een leven lang respect voor en toewijding aan deze edele kunst.
 
