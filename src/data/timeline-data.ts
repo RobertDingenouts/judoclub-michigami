@@ -28,9 +28,21 @@ export const timelineEvents: TimelineEvent[] = [
     icon: 'club',
   },
   {
+    year: "Jaren '80",
+    title: 'Koos van Wezel geeft les',
+    description: 'Voordat Judoclub Michigami bestond, gaf Koos van Wezel, leerling van Haku Michigami, al met veel passie judoles op diverse plaatsen in de regio, waaronder Tholen, Roosendaal en Scherpenisse.',
+    icon: 'person',
+  },
+  {
+    year: '1988',
+    title: 'Wendy Jansen begint met judo',
+    description: 'Wendy Jansen behaalt haar witte band bij Koos van Wezel in Tholen. Ze blijft jarenlang actief, ook na de oprichting van Michigami, en traint uiteindelijk voor haar zwarte band.',
+    icon: 'person',
+  },
+  {
     year: '1993',
     title: 'Oprichting Judoclub Michigami',
-    description: 'Koos van Wezel richt Judoclub Michigami op in Steenbergen. De naam "Michigami" is een eerbetoon aan zijn leraar Haku Michigami — ook meester van Anton Geesink. Training start in Sportcentrum De Knotwilg.',
+    description: 'Voortbouwend op zijn ervaringen als trainer, richt Koos van Wezel Judoclub Michigami op in Steenbergen. De naam is een eerbetoon aan zijn leraar Haku Michigami — ook meester van Anton Geesink. Training start in Sportcentrum De Knotwilg.',
     icon: 'club',
     isMilestone: true,
   },
@@ -82,7 +94,7 @@ export const timelineEvents: TimelineEvent[] = [
   {
     year: '2024',
     title: 'Wendy Jansen behaalt 1e Dan',
-    description: 'Wendy Jansen — al sinds 1988 leerling van Koos, eerst in Tholen later in Roosendaal en Scherpenisse. Na jarenlang afwezig te zijn geweest met bruine band, besloot ze toch nog voor zwarte band te trainen. Geslaagd! Sinds geeft ze les in zowel Oud-Vossemeer als Steenbergen en is ze verantwoordelijk voor EHBO.',
+    description: 'Na een lange tijd ertussenuit te zijn geweest met bruine band, keert Wendy terug en behaalt ze in 2024 haar 1e Dan zwarte band. Ze geeft nu les in zowel Oud-Vossemeer als Steenbergen en is verantwoordelijk voor EHBO.',
     icon: 'award',
   },
   {
@@ -98,4 +110,4 @@ export const timelineEvents: TimelineEvent[] = [
     description: 'Judoclub Michigami traint in De Knotwilg (Steenbergen) en De Vossenkuil (Oud-Vossemeer). Twee leeftijdsgroepen, recreatief en competitief — van kleuters tot volwassenen. Met een eigen lesysteem dat drie tradities combineert.',
     icon: 'judo',
   },
-];
+];;
