@@ -11,14 +11,26 @@ export const timelineEvents: TimelineEvent[] = [
   {
     year: '1882',
     title: 'Jigoro Kano sticht Judo',
-    description: 'Jigoro Kano foundation de Kodokan in Tokio en creëert judo als moderne vechtsport, afgeleid van traditioneel jiu-jitsu. Het principe "maximum efficiency, mutual welfare and benefit" wordt de kern van judo.',
+    description: 'Jigoro Kano (1860–1938) sticht de Kodokan in Tokio en creëert judo als moderne vechtsport, afgeleid van traditioneel jiu-jitsu. Het principe "maximum efficiency, mutual welfare and benefit" wordt de kern van judo. Hij transformeerde samurai-vechtkunsten tot een weg voor lichamelijke en geestelijke ontwikkeling.',
     icon: 'judo',
     isMilestone: true,
   },
   {
+    year: '1920s',
+    title: 'Kawaishi brengt Judo naar Europa',
+    description: 'Mikinosuke Kawaishi (1899–1969), een Japanse judomeester, vestigt zich in Parijs en revolutioneert judo in Europa. Hij introduceert het gekleurde bandensysteem (wit → geel → oranje → groen → blauw → bruin → zwart) dat wereldwijd wordt gebruikt. Hij co-founded de Franse Judo Federatie met Moshe Feldenkrais en creëerde de Kawaishi Cup — het eerste internationale judotoernooi tussen landen.',
+    icon: 'star',
+  },
+  {
+    year: '1956',
+    title: 'Michigami begint in Nederland',
+    description: 'Haku Michigami (1912–2002), een Japanse judomeester met een ongeslagen competitie-rekord, wordt technisch adviseur van de Koninklijke Nederlandse Judobond. Hij blijft 13 jaar in Nederland en wordt persoonlijk trainer van Anton Geesink. Hij stuurde Geesink naar het eerste internationale kampioenschap in Japan met de woorden: "Ga de sfeer opsnuiven."',
+    icon: 'star',
+  },
+  {
     year: "Jaren '60",
     title: 'Anton Geesink era',
-    description: 'Anton Geesink, leerling van Haku Michigami, wordt de eerste niet-Japanner die wereldkampioen judo wordt (1961). Zijn successen maken judo populair in Nederland en Europa.',
+    description: 'Anton Geesink (1929–2010), leerling van Haku Michigami, wordt de eerste niet-Japanner die wereldkampioen judo wordt (1961 in Parijs). Zijn olympisch goud in Tokyo (1964) maakt judo populair in Nederland en Europa. De Japanse toeschouwers waren zo geraakt door zijn nederige buiging na de wedstrijd dat judo in Japan en Nederland een nieuwe golf van populariteit beleeft.',
     icon: 'star',
   },
   {

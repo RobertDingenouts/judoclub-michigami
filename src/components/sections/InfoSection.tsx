@@ -13,7 +13,7 @@ import { SignupConfirmationModal } from '@/components/SignupConfirmationModal';
 export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void }) {
   const [signupOpen, setSignupOpen] = useState(false);
   const [tabValue, setTabValue] = useState('history');
-  const tabOrder = ['history', 'leiding', 'judo', 'lesson', 'belts'];
+  const tabOrder = ['history', 'leiding', 'judo', 'benefits', 'lesson', 'belts'];
   
   const navigateTab = (direction: 'prev' | 'next') => {
     const idx = tabOrder.indexOf(tabValue);
@@ -40,6 +40,7 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
           <TabsTrigger value="history" className="text-xs sm:text-sm">Geschiedenis</TabsTrigger>
           <TabsTrigger value="leiding" className="text-xs sm:text-sm">Leiding</TabsTrigger>
           <TabsTrigger value="judo" className="text-xs sm:text-sm">Wat is Judo?</TabsTrigger>
+          <TabsTrigger value="benefits" className="text-xs sm:text-sm">Voordelen</TabsTrigger>
           <TabsTrigger value="lesson" className="text-xs sm:text-sm">Lessen</TabsTrigger>
           <TabsTrigger value="belts" className="text-xs sm:text-sm">Banden</TabsTrigger>
         </TabsList>
@@ -147,6 +148,61 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
             <CardContent className="p-4 sm:p-6 space-y-3">
               <h3 className="font-bold text-gray-800">Voor wie is judo geschikt?</h3>
               <p className="text-sm text-gray-600 leading-relaxed">{clubInfo.philosophy}</p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* ==================== VOORDELEN TAB ==================== */}
+        <TabsContent value="benefits" className="space-y-4 mt-4">
+          <Card className="border-0 shadow-sm">
+            <CardContent className="p-4 sm:p-6 space-y-4">
+              <h3 className="font-bold text-gray-800">Voordelen van Judo voor Je Leven</h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Judo is meer dan sport — het is een complete ontwikkeling van lichaam, geest en karakter.
+                Hier zijn de belangrijkste voordelen die judo biedt:
+              </p>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {[
+                  { title: 'Motorische Ontwikkeling', desc: 'Judo ontwikkelt de volledige motoriek door kruisbewegingen die linkse en rechtse hersenhelften verbinden. Verbeterd evenwicht, snelheid en vaak twee-handigheid.' },
+                  { title: 'Valbeheersing', desc: 'Judo leert je vallen en opstaan als getrainde reflex. Dit vermindert het blessurerisico aanzienlijk, zowel binnen als buiten de dojo.' },
+                  { title: 'Complete Conditioning', desc: 'Alle energiestromen worden tegelijk betrokken: uithoudingsvermogen én explosieve kracht. Een unieke combinatie die weinig andere sporten bieden.' },
+                  { title: 'Kernsterkte & Functie', desc: 'Continue lichaamsgewicht-training bouwt een sterke core op, vermindert rugklachten en ontwikkelt functionele kracht zonder externe gewichten.' },
+                  { title: 'Zelfvertrouwen & Weerbaarheid', desc: 'Regelmatig contactsparring vermindert angst voor aanraking en vallen. Judoka\'s weten hoe ze veilig kunnen vallen en herstellen zonder pijn.' },
+                  { title: 'Samenwerking & Respect', desc: 'Judo is een duosport die teamwerk en samenwerking bevordert. De groepsdynamiek in de dojo versterkt collectief leren boven individuele competitie.' },
+                  { title: 'Zoeken naar Balans', desc: 'Het kernprincipe: maximaliseer efficiëntie met minimaal inspanning om een tegenstander uit balans te brengen. Van toepassing op zowel techniek als levensfilosofie.' },
+                  { title: 'Doorzettingsvermogen', desc: 'Het traject naar een zwarte band vereist jarenlange toewijding. Dit signaleert discipline en doorzettingsvermogen — waardevol op je CV en in het dagelijks leven.' },
+                ].map((benefit) => (
+                  <div key={benefit.title} className="p-3 rounded-xl bg-[#fdf6f6] border border-[#fce0e0]">
+                    <h4 className="font-semibold text-sm text-[#c00000] mb-1">{benefit.title}</h4>
+                    <p className="text-xs text-gray-600 leading-relaxed">{benefit.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-sm">
+            <CardContent className="p-4 sm:p-6 space-y-3">
+              <h3 className="font-bold text-gray-800">Meer dan alleen sport</h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Judo belichaamt een "Positieve Levenswijze" met overdraagbare levenswaarden.
+                Normen en waarden die je leert in de dojo, pas je direct toe in je dagelijks leven.
+                Het zoeken naar balans — maximaliseer efficiëntie met minimale inspanning — is een filosofie
+                die je helpt in werk, relaties, en persoonlijke groei.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-sm">
+            <CardContent className="p-4 sm:p-6 space-y-3">
+              <h3 className="font-bold text-gray-800">Levensvaardigheden</h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Judoka's leren doorzettingsvermogen, discipline, emotionele regulatie, en continue groei.
+                Of je nu een nieuwe worf meester wordt of door vermoeidheid heen werkt — elke kleine overwinning
+                bouwt aan je zelfvertrouwen. Het pad van de witte band naar zwart leer je: falen is geen eindpunt,
+                maar een stap in het leerproces.
+              </p>
             </CardContent>
           </Card>
         </TabsContent>

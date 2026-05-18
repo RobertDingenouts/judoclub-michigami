@@ -63,16 +63,48 @@ export const clubInfo = {
     contributie: "€42/kwartaal",
     proeflessen: "3 gratis proeflessen",
   },
-  whatIsJudo: `Judo is een Japanse vechtsport, ontstaan in 1882 door Jigoro Kano. Het woord judo betekent "de zachte weg" (ju = zacht/meegaand, do = weg/principe).
+  whatIsJudo: `## Wat betekent Judo?
 
-Bij judo leer je om de kracht van je tegenstander te gebruiken ten eigen voordeel. Je leert vallen, werpen en controleren. Judo is niet alleen een sport, maar ook een levenswijze met respect en discipline als kernwaarden.
+**柔道 = "De Zachte Weg"**
 
-Onze lesmethode
-Bij Judoclub Michigami werken we met een uniek lesysteem dat drie tradities combineert: onze eigen roots van Koos van Wezel, het Mikonosuke Kawaishi-systeem (die judo populair maakte in Europa door het toegankelijker te maken), en de traditionele Kodokan-methode.
+Judo bestaat uit twee Japanse karakters:
 
-Dit betekent dat je bij ons leert op een manier die zowel effectief als veilig is - met aandacht voor correcte techniek, progressie per niveau, en plezier in de sport. Of je nu 6 of 60 jaar bent, recreatief of competitief: onze methode past zich aan jouw niveau en doelen.
+**柔 (Ju)** = 'Zacht', 'Flexibel', 'Meegaand'. Het gebruik van zachtheid en flexibiliteit als kracht.
 
-Judoclub Michigami biedt judo aan voor alle leeftijden en niveaus. Of je nu recreatief wilt sporten of prestatiegericht wilt deelnemen aan toernooien — bij ons ben je welkom!`,
+**道 (Do)** = 'De Weg', 'Het Pad'. Een levensweg van continue zelfontwikkeling, discipline en perfectie.
+
+Jigoro Kano (1860–1938) stichtte in 1882 de Kodokan ("Tempel van de Zachte Weg") in Tokio. Hij transformeerde oude Jiu-Jitsu krijgskunsten van de samurai tot een moderne weg voor lichamelijke en geestelijke ontwikkeling. Zijn filosofie: niet de sterkste wint, maar degene die het slimst gebruikt wat er is.
+
+## De Gouden Regels van Judo
+
+Judo draait om twee kernprincipes:
+
+**「Seiryoku Zenyo」(精力善用)** — Maximale efficiëntie met minimaal inspanning. De kracht van je tegenstander gebruiken in plaats van ertegenin gaan.
+
+**「Jita Kyoei」(相互協力)** — Wederzijdse welvaart en voordeel. Samen beter worden, niet alleen winnen.
+
+## Onze Lesmethode
+
+Bij Judoclub Michigami werken we met een uniek lesysteem dat drie tradities combineert:
+
+• **Onze eigen roots** van Koos van Wezel
+• **Het Mikinosuke Kawaishi-systeem** — De man die judo populair maakte in Europa door het toegankelijker te maken. Kawaishi introduceerde het gekleurde bandensysteem (wit → geel → oranje → groen → blauw → bruin → zwart) dat wereldwijd wordt gebruikt. Hij co-founded de Franse Judo Federatie en creëerde de Kawaishi Cup — het eerste internationale judotoernooi tussen landen.
+• **De traditionele Kodokan-methode** — De oorspronkelijke Japanse leerwijze van Jigoro Kano.
+
+Dit betekent dat je bij ons leert op een manier die zowel effectief als veilig is — met aandacht voor correcte techniek, progressie per niveau, en plezier in de sport. Of je nu 6 of 60 jaar bent, recreatief of competitief: onze methode past zich aan jouw niveau en doelen.
+
+## De 8 Morele Waarden van Judo
+
+Judo heeft acht kernwaarden die judoka's dagelijks nastreven:
+
+1. **Beleefdheid** (礼儀) — Respect tonen naar tegenstander, leraar en dojo
+2. **Moed** (勇気) — Je uitdagen, ook als het moeilijk is
+3. **Oprechtheid** (誠実) — Eerlijk zijn naar jezelf en anderen
+4. **Eer** (正義) — Met integriteit en waardigheid optreden
+5. **Bescheidenheid** (謙遜) — Nederig blijven, ook bij succes
+6. **Respect** (尊敬) — Iedereen waarde geven, ongeacht rang
+7. **Zelfbeheersing** (自制) — Emoties beheersen in drukke momenten
+8. **Vriendschap** (友情) — Samen groeien, niet alleen concurreren`,
   history: `Judoclub Michigami vindt haar oorsprong in de jaren tachtig, toen Koos van Wezel, een toegewijde leerling van Haku Michigami, met grote passie judoles gaf op diverse plaatsen in de regio, waaronder Tholen, Roosendaal en Scherpenisse. In 1993 zette hij deze passie om in een vaste plek door Judoclub Michigami op te richten in Steenbergen. De naam is een eerbetoon aan zijn leraar Haku Michigami — ook meester van Anton Geesink — en weerspiegelt de diepe wortels van de club in de judotraditie.
 
 ## De Gouden Jaren (jaren '90 — begin 2000)
