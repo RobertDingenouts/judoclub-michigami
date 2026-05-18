@@ -18,7 +18,7 @@ export const timelineEvents: TimelineEvent[] = [
   {
     year: '1920s',
     title: 'Kawaishi brengt Judo naar Europa',
-    description: 'Mikinosuke Kawaishi (1899–1969), een Japanse judomeester, vestigt zich in Parijs en revolutioneert judo in Europa. Hij introduceert het gekleurde bandensysteem (wit → geel → oranje → groen → blauw → bruin → zwart) dat wereldwijd wordt gebruikt. Hij co-founded de Franse Judo Federatie met Moshe Feldenkrais en creëerde de Kawaishi Cup — het eerste internationale judotoernooi tussen landen.',
+    description: 'Mikinosuke Kawaishi (1899–1969), een Japanse judomeester, vestigt zich in Parijs en revolutioneert judo in Europa. Hij introduceert het gekleurde bandensysteem (wit → geel → oranje → groen → blauw → bruin → zwart) dat wereldwijd wordt gebruikt. Hij was mede-oprichter van de Franse Judo Federatie met Moshe Feldenkrais en creëerde de Kawaishi Cup — het eerste internationale judotoernooi tussen landen.',
     icon: 'star',
   },
   {
@@ -129,4 +129,4 @@ export const timelineEvents: TimelineEvent[] = [
     description: 'Judoclub Michigami traint in De Knotwilg (Steenbergen) en De Vossenkuil (Oud-Vossemeer). Twee leeftijdsgroepen, recreatief en competitief — van kleuters tot volwassenen. Met een eigen lesysteem dat drie tradities combineert.',
     icon: 'judo',
   },
-];;
+];

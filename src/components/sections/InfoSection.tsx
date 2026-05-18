@@ -199,7 +199,7 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
               <h3 className="font-bold text-gray-800">Levensvaardigheden</h3>
               <p className="text-sm text-gray-600 leading-relaxed">
                 Judoka's leren doorzettingsvermogen, discipline, emotionele regulatie, en continue groei.
-                Of je nu een nieuwe worf meester wordt of door vermoeidheid heen werkt — elke kleine overwinning
+                Of je nu een nieuwe worp meester wordt of door vermoeidheid heen werkt — elke kleine overwinning
                 bouwt aan je zelfvertrouwen. Het pad van de witte band naar zwart leer je: falen is geen eindpunt,
                 maar een stap in het leerproces.
               </p>
