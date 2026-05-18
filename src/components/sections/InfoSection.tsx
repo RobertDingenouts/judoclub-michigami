@@ -135,14 +135,54 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
 
         {/* ==================== WAT IS JUDO TAB ==================== */}
         <TabsContent value="judo" className="space-y-4 mt-4">
+          {/* Hero foto */}
+          <div className="rounded-2xl overflow-hidden shadow-lg border border-[#fce0e0]">
+            <img 
+              src="/hero/dojo-2024.jpg" 
+              alt="Judoclub Michigami dojo" 
+              className="w-full h-48 sm:h-64 md:h-80 object-cover"
+            />
+            <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] p-4 sm:p-6 text-white">
+              <h3 className="text-xl sm:text-2xl font-bold mb-2">🥋 Welkom bij Judoclub Michigami!</h3>
+              <p className="text-white/90 text-sm sm:text-base">Judo voor jong en oud — van kleuters tot volwassenen, recreatief of competitief.</p>
+            </div>
+          </div>
+
           <Card className="border-0 shadow-sm">
             <CardContent className="p-4 sm:p-6 space-y-4">
-              <h3 className="font-bold text-gray-800">Wat is judo?</h3>
-              {clubInfo.whatIsJudo.split('\n\n').map((paragraph, i) => (
-                <p key={i} className="text-sm text-gray-600 leading-relaxed">{paragraph}</p>
-              ))}
+              <h3 className="font-bold text-gray-800 text-lg">Wat is judo?</h3>
+              {clubInfo.whatIsJudo.split('\n\n').map((paragraph, i) => {
+                if (paragraph.startsWith('## ')) {
+                  return <h4 key={i} className="font-bold text-base text-[#c00000] mt-6 mb-2 first:mt-0">{paragraph.replace('## ', '')}</h4>;
+                }
+                return <p key={i} className="text-sm text-gray-600 leading-relaxed">{paragraph}</p>;
+              })}
             </CardContent>
           </Card>
+
+          {/* Foto grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="rounded-2xl overflow-hidden shadow-md border border-[#fce0e0]">
+              <img 
+                src="/hero/budodag-actie-1.jpg" 
+                alt="Budodag Michigami" 
+                className="w-full h-48 object-cover hover:scale-105 transition-transform duration-300"
+              />
+              <div className="bg-[#fdf6f6] p-3">
+                <p className="text-xs text-gray-600 text-center font-medium">🎉 Budodag activiteiten</p>
+              </div>
+            </div>
+            <div className="rounded-2xl overflow-hidden shadow-md border border-[#fce0e0]">
+              <img 
+                src="/hero/heerle-toernooi-1.jpg" 
+                alt="Toernooi Michigami" 
+                className="w-full h-48 object-cover hover:scale-105 transition-transform duration-300"
+              />
+              <div className="bg-[#fdf6f6] p-3">
+                <p className="text-xs text-gray-600 text-center font-medium">🏆 Toernooien</p>
+              </div>
+            </div>
+          </div>
 
           <Card className="border-0 shadow-sm">
             <CardContent className="p-4 sm:p-6 space-y-3">

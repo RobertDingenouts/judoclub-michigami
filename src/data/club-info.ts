@@ -63,48 +63,108 @@ export const clubInfo = {
     contributie: "€42/kwartaal",
     proeflessen: "3 gratis proeflessen",
   },
-  whatIsJudo: `## Wat betekent Judo?
+  whatIsJudo: `## 🥋 Wat is Judo?
 
-**柔道 = "De Zachte Weg"**
+Judo is een Japanse vechtsport die meer is dan alleen sporten — het is een levenswijze. Ontdek hier wat judo voor jou kan betekenen!
 
-Judo bestaat uit twee Japanse karakters:
+## 🌸 De Betekenis van Judo
 
-**柔 (Ju)** = 'Zacht', 'Flexibel', 'Meegaand'. Het gebruik van zachtheid en flexibiliteit als kracht.
+Het woord **judo** (柔道) bestaat uit twee Japanse karakters:
 
-**道 (Do)** = 'De Weg', 'Het Pad'. Een levensweg van continue zelfontwikkeling, discipline en perfectie.
+- **柔 (ju)** = 'zacht' of 'meegaand'
+- **道 (do)** = 'de weg' of 'het pad'
 
-Jigoro Kano (1860–1938) stichtte in 1882 de Kodokan ("Tempel van de Zachte Weg") in Tokio. Hij transformeerde oude Jiu-Jitsu krijgskunsten van de samurai tot een moderne weg voor lichamelijke en geestelijke ontwikkeling. Zijn filosofie: niet de sterkste wint, maar degene die het slimst gebruikt wat er is.
+Samen betekent het: **"De Zachte Weg"** 🌊
 
-## De Gouden Regels van Judo
+Maar wat betekent dat nu precies? Het betekent dat je niet met pure kracht tegen je tegenstander in gaat, maar zijn kracht gebruikt *met* je mee — niet ertegen. Het is alsof je de wind gebruikt om een zeilboot te sturen, in plaats van tegen de wind in te roeien! 🌬️⛵
 
-Judo draait om twee kernprincipes:
+## 📜 De Geschiedenis
 
-**「Seiryoku Zenyo」(精力善用)** — Maximale efficiëntie met minimaal inspanning. De kracht van je tegenstander gebruiken in plaats van ertegenin gaan.
+Judo werd in **1882** uitgevonden door **Jigoro Kano** (1860–1938) in Tokio, Japan. Kano was een kleine jongen die vaak ziek was, dus zijn ouders stuurden hem naar een jiu-jitsu school om sterker te worden. Later werd hij zo goed dat hij zelf les ging geven!
 
-**「Jita Kyoei」(相互協力)** — Wederzijdse welvaart en voordeel. Samen beter worden, niet alleen winnen.
+Hij richtte de **Kodokan** op — de "Tempel van de Zachte Weg". Kano's grote droom was dat judo niet alleen een vechtsport werd, maar een manier om mensen beter te maken — zowel lichamelijk als geestelijk. En die droom is uitgekomen! Judo is nu een van de populairste sporten ter wereld en zelfs een **olympische sport** sinds 1964! 🏅
 
-## Onze Lesmethode
+## ⚖️ De Twee Gouden Regels van Judo
 
-Bij Judoclub Michigami werken we met een uniek lesysteem dat drie tradities combineert:
+Judo draait om twee belangrijke principes:
 
-• **Onze eigen roots** van Koos van Wezel
-• **Het Mikinosuke Kawaishi-systeem** — De man die judo populair maakte in Europa door het toegankelijker te maken. Kawaishi introduceerde het gekleurde bandensysteem (wit → geel → oranje → groen → blauw → bruin → zwart) dat wereldwijd wordt gebruikt. Hij was mede-oprichter van de Franse Judo Federatie en creëerde de Kawaishi Cup — het eerste internationale judotoernooi tussen landen.
-• **De traditionele Kodokan-methode** — De oorspronkelijke Japanse leerwijze van Jigoro Kano.
+### 精力善用 — Seiryoku Zenyo
+**"Maximale efficiëntie met minimaal inspanning"**
 
-Dit betekent dat je bij ons leert op een manier die zowel effectief als veilig is — met aandacht voor correcte techniek, progressie per niveau, en plezier in de sport. Of je nu 6 of 60 jaar bent, recreatief of competitief: onze methode past zich aan jouw niveau en doelen.
+In plaats van harder te duwen dan je tegenstander, leer je *slimmer* te duwen. Het is alsof je een deur opent in plaats van er tegenaan te trappen! 🚪
 
-## De 8 Morele Waarden van Judo
+### 相互協力 — Jita Kyoei  
+**"Wederzijdse welvaart en voordeel"**
 
-Judo heeft acht kernwaarden die judoka's dagelijks nastreven:
+Bij judo leer je *met* iemand, niet *tegen* iemand. Je partner helpt je beter te worden, en jij helpt hem of haar. Samen worden jullie allebei sterker! 💪🤝
 
-1. **Beleefdheid** (礼儀) — Respect tonen naar tegenstander, leraar en dojo
-2. **Moed** (勇気) — Je uitdagen, ook als het moeilijk is
-3. **Oprechtheid** (誠実) — Eerlijk zijn naar jezelf en anderen
-4. **Eer** (正義) — Met integriteit en waardigheid optreden
-5. **Bescheidenheid** (謙遜) — Nederig blijven, ook bij succes
-6. **Respect** (尊敬) — Iedereen waarde geven, ongeacht rang
-7. **Zelfbeheersing** (自制) — Emoties beheersen in drukke momenten
-8. **Vriendschap** (友情) — Samen groeien, niet alleen concurreren`,
+## 🎯 Voor wie is judo?
+
+**Iedereen!** 🌟
+
+Of je nu 6 of 60 jaar bent, jongen of meisje, man of vrouw — judo is voor iedereen. Bij Judoclub Michigami heb je de keuze uit:
+
+- 👶 **Groep 1** (6–9 jaar): Speels en leerzaam, met veel spelletjes
+- 🧒 **Groep 2** (9–12 jaar): Meer techniek, maar nog steeds gezellig
+- 🧑 **Groep 3** (13+ jaar): Volwassenen en oudere jeugd, intensiever
+
+En dat op **twee locaties**:
+- 📍 **Steenbergen**: Sportcentrum De Knotwilg
+- 📍 **Oud-Vossemeer**: Sporthal De Vossenkuil
+
+## 🥋 Hoe ziet een judoles eruit?
+
+Een judoles ziet er ongeveer zo uit:
+
+1️⃣ **Groeten** — Je groet de leraar en je matgenoten met een buiging (rei) 🙏
+2️⃣ **Opwarmen** — Samen stretchen en spelletjes 🏃
+3️⃣ **Vallen leren** — De belangrijkste vaardigheid van judo! Je leert veilig vallen zodat je geen blessures oploopt 🤸
+4️⃣ **Technieken oefenen** — Worpen, houdgrepen, en meer — elke les een nieuwe techniek! 🤼
+5️⃣ **Vrij gevecht (randori)** — Alles wat je geleerd hebt proberen toe te passen met je partner 💪
+6️⃣ **Afsluiten** — Nog een buiging en weer naar huis met een glimlach! 😊
+
+## 🎨 De Judokleding (Judogi)
+
+Bij judo draag je een speciaal pak, de **judogi** genaamd. Het is gemaakt van stevig materiaal omdat je eraan getrokken wordt! 🧥
+
+- **Kom je voor het eerst?** Trek dan gewoon een joggingpak of trainingspak aan — geen gespen of knopen!
+- **Wil je een judogi?** Die is de eerste maand niet verplicht, maar later wel handig. Bestellen kan bij de leraar!
+- **Blote voeten** — Judo doe je op blote voeten, dus zorg voor schone voeten en korte nagels 👣
+
+## 🌈 De Voordelen van Judo
+
+Waarom is judo zo geweldig? Hier zijn een paar redenen:
+
+- 🧠 **Slimmer worden** — Judo is "fysiek chess". Je leest je tegenstander en denkt twee stappen vooruit
+- 💪 **Sterker worden** — Alle spieren worden gebruikt, van je vingers tot je tenen
+- 😊 **Zelfvertrouwen** — Als je leert vallen zonder bang te zijn, durf je meer in het leven
+- 🤝 **Vrienden maken** — Je traint *met* mensen, niet *tegen* ze. Dat creëet speciale banden
+- 🏆 **Doorzettingsvermogen** — Het pad van witte naar zwarte band leert je: falen is oké, het is deel van het leren!
+
+## 🎖️ De Kleurbanden
+
+Bij judo draag je een gekleurde band die laat zien hoe ver je bent gevorderd:
+
+⬜ **Wit** → 🟡 **Geel** → 🟠 **Oranje** → 🟢 **Groen** → 🔵 **Blauw** → 🟤 **Bruin** → ⬛ **Zwart**
+
+Elke band betekent dat je nieuwe technieken leert en harder werkt. En bij elke examen-dag is het feest! 🎉
+
+## 🏛️ Onze Lesmethode
+
+Bij Judoclub Michigami combineren we drie prachtige tradities:
+
+1. **Onze eigen roots** van Koos van Wezel 👨‍🏫
+2. **Het Kawaishi-systeem** — De man die judo populair maakte in Europa door het toegankelijker te maken. Hij bedacht het gekleurde bandensysteem! 🎨
+3. **De traditionele Kodokan-methode** — De oorspronkelijke Japanse leerwijze 🏯
+
+Dit betekent dat je op een manier leert die zowel **effectief** als **veilig** is — met aandacht voor techniek, plezier, en groei. Of je nu 6 of 60 bent, recreatief of competitief: bij ons ben je welkom! ❤️
+
+---
+
+**Ben je nieuw bij judo? Kom gerust eens kijken!** 🙌
+
+Je bent van harte welkom op een training. Als het je bevalt, kun je direct starten met **3 gratis proeflessen**!
+`,
   history: `Judoclub Michigami vindt haar oorsprong in de jaren tachtig, toen Koos van Wezel, een toegewijde leerling van Haku Michigami, met grote passie judoles gaf op diverse plaatsen in de regio, waaronder Tholen, Roosendaal en Scherpenisse. In 1993 zette hij deze passie om in een vaste plek door Judoclub Michigami op te richten in Steenbergen. De naam is een eerbetoon aan zijn leraar Haku Michigami — ook meester van Anton Geesink — en weerspiegelt de diepe wortels van de club in de judotraditie.
 
 ## De Gouden Jaren (jaren '90 — begin 2000)
