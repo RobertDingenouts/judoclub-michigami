@@ -155,7 +155,21 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
                 if (paragraph.startsWith('## ')) {
                   return <h4 key={i} className="font-bold text-base text-[#c00000] mt-6 mb-2 first:mt-0">{paragraph.replace('## ', '')}</h4>;
                 }
-                return <p key={i} className="text-sm text-gray-600 leading-relaxed">{paragraph}</p>;
+                // Parse markdown: bold (**text**) and italic (*text*)
+                const parts = paragraph.split(/(\*\*.*?\*\*|\*.*?\*)/g);
+                return (
+                  <p key={i} className="text-sm text-gray-600 leading-relaxed">
+                    {parts.map((part, j) => {
+                      if (part.startsWith('**') && part.endsWith('**')) {
+                        return <strong key={j} className="text-gray-800">{part.slice(2, -2)}</strong>;
+                      }
+                      if (part.startsWith('*') && part.endsWith('*')) {
+                        return <em key={j}>{part.slice(1, -1)}</em>;
+                      }
+                      return part;
+                    })}
+                  </p>
+                );
               })}
             </CardContent>
           </Card>
