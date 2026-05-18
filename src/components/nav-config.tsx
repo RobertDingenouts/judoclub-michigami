@@ -55,7 +55,6 @@ export const navGroups: NavGroup[] = [
       { key: 'home', label: 'Home', icon: <Home className="w-4 h-4" /> },
       { key: 'agenda', label: 'Agenda', icon: <Calendar className="w-4 h-4" /> },
       { key: 'info', label: 'Over Ons', icon: <Info className="w-4 h-4" /> },
-      { key: 'timeline', label: 'Geschiedenis', icon: <BookOpen className="w-4 h-4" /> },
       { key: 'leden', label: 'Lid Worden', icon: <Users className="w-4 h-4" /> },
       { key: 'lestijden', label: 'Lestijden', icon: <Clock className="w-4 h-4" /> },
       { key: 'locatie', label: 'Locatie', icon: <MapPin className="w-4 h-4" /> },

@@ -4,17 +4,28 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Calendar, Users, Award, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Calendar, Users, Award, ChevronLeft, ChevronRight, Swords, MapPin, Star, Trophy } from 'lucide-react';
 import { type Section } from '@/components/nav-config';
 import { clubInfo } from '@/data/club-info';
+import { timelineEvents, type TimelineEvent } from '@/data/timeline-data';
 import { openProeflesForm } from '@/lib/form-events';
 import { SignupConfirmationModal } from '@/components/SignupConfirmationModal';
 
 export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void }) {
   const [signupOpen, setSignupOpen] = useState(false);
   const [tabValue, setTabValue] = useState('history');
-  const tabOrder = ['history', 'leiding', 'judo'];
+  const tabOrder = ['history', 'leiding', 'judo', 'timeline'];
   
+  // Timeline item component (inline - same as TimelineSection but without outer wrapper)
+  const iconMap: Record<string, React.ReactNode> = {
+    judo: <Swords className="w-5 h-5" />,
+    club: <Users className="w-5 h-5" />,
+    person: <Star className="w-5 h-5" />,
+    award: <Award className="w-5 h-5" />,
+    location: <MapPin className="w-5 h-5" />,
+    star: <Trophy className="w-5 h-5" />,
+  };
+
   const navigateTab = (direction: 'prev' | 'next') => {
     const idx = tabOrder.indexOf(tabValue);
     const newIdx = direction === 'next' 
@@ -36,10 +47,11 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
 
       {/* Tabs */}
       <Tabs value={tabValue} onValueChange={setTabValue} className="w-full">
-        <TabsList className="grid w-full grid-cols-3 bg-[#f5f5f0]">
+        <TabsList className="grid w-full grid-cols-4 bg-[#f5f5f0]">
           <TabsTrigger value="history" className="text-xs sm:text-sm">Geschiedenis</TabsTrigger>
           <TabsTrigger value="leiding" className="text-xs sm:text-sm">Leiding</TabsTrigger>
           <TabsTrigger value="judo" className="text-xs sm:text-sm">Wat is Judo?</TabsTrigger>
+          <TabsTrigger value="timeline" className="text-xs sm:text-sm">Tijdlijn</TabsTrigger>
         </TabsList>
 
     <TabsContent value="history" className="space-y-4 mt-4">
@@ -64,17 +76,6 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
                   })}
                 </div>
               </div>
-
-              {/* Timeline button */}
-              {onNavigate && (
-                <Button
-                  onClick={() => onNavigate('timeline')}
-                  variant="outline"
-                  className="w-full sm:w-auto border-[#c00000] text-[#c00000] hover:bg-[#fdf6f6] gap-2"
-                >
-                  Bekijk onze tijdlijn <ArrowRight className="w-4 h-4" />
-                </Button>
-              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -199,6 +200,85 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
             <CardContent className="p-4 sm:p-6 space-y-3">
               <h3 className="font-bold text-gray-800">Voor wie is judo geschikt?</h3>
               <p className="text-sm text-gray-600 leading-relaxed">{clubInfo.philosophy}</p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* ==================== TIJDLIJN TAB ==================== */}
+        <TabsContent value="timeline" className="space-y-4 mt-4">
+          <div className="relative pl-10 md:pl-0 max-w-3xl mx-auto">
+            {/* Vertical line */}
+            <div className="absolute left-4 md:left-1/2 md:-translate-x-px top-0 bottom-0 w-0.5 bg-gradient-to-b from-[#a90000] via-[#c00000] to-[#a90000] opacity-30" />
+
+            {/* Timeline items */}
+            {timelineEvents.map((event, index) => {
+              const isLeft = index % 2 === 0;
+              const icon = iconMap[event.icon || 'club'] || <Users className="w-4 h-4" />;
+              return (
+                <div
+                  key={event.year + index}
+                  className={`relative flex items-center w-full mb-8 ${
+                    isLeft ? 'md:flex-row' : 'md:flex-row-reverse'
+                  }`}
+                >
+                  {/* Dot on the line */}
+                  <div className="absolute left-4 md:left-1/2 md:-translate-x-1/2 z-10">
+                    <div
+                      className={`w-8 h-8 rounded-full flex items-center justify-center shadow-lg ${
+                        event.isMilestone
+                          ? 'bg-gradient-to-br from-[#a90000] to-[#c00000] text-white ring-4 ring-red-100'
+                          : 'bg-white border-2 border-[#a90000] text-[#a90000]'
+                      }`}
+                    >
+                      {icon}
+                    </div>
+                  </div>
+
+                  {/* Card content */}
+                  <div className={`ml-12 md:ml-0 md:w-[calc(50%-2rem)] ${isLeft ? 'md:pr-8' : 'md:pl-8'}`}>
+                    <Card className={`border-0 shadow-sm hover:shadow-md transition-shadow overflow-hidden ${
+                      event.isMilestone ? 'ring-2 ring-red-100' : ''
+                    }`}>
+                      {/* Year badge */}
+                      <div className="bg-gradient-to-r from-[#a90000] to-[#c00000] text-white px-4 py-2 flex items-center gap-2">
+                        {event.isMilestone && <Trophy className="w-4 h-4" />}
+                        <span className="font-bold text-lg">{event.year}</span>
+                      </div>
+
+                      <CardContent className="p-4 space-y-2">
+                        <h3 className="font-bold text-gray-800 text-base leading-tight">{event.title}</h3>
+                        <p className="text-sm text-gray-600 leading-relaxed">{event.description}</p>
+
+                        {event.photoUrl && (
+                          <div className="mt-3 rounded-lg overflow-hidden bg-gray-100">
+                            <img
+                              src={event.photoUrl}
+                              alt={event.title}
+                              loading="lazy"
+                              className="w-full h-auto max-h-48 object-cover"
+                            />
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Spacer for the other side */}
+                  <div className="hidden md:block md:w-[calc(50%-2rem)]" />
+                </div>
+              );
+            })}
+          </div>
+
+          <Card className="border-0 shadow-sm bg-gradient-to-br from-[#fdf6f6] to-white max-w-3xl mx-auto">
+            <CardContent className="p-6 text-center space-y-3">
+              <div className="w-12 h-12 mx-auto rounded-full bg-gradient-to-br from-[#a90000] to-[#c00000] text-white flex items-center justify-center">
+                <Swords className="w-6 h-6" />
+              </div>
+              <p className="text-sm text-gray-600 max-w-lg mx-auto">
+                <span className="font-semibold text-[#c00000]">Judoclub Michigami</span> — meer dan 30 jaar judo in Steenbergen en omgeving.{' '}
+                Respect, discipline en passie voor de zachte weg.
+              </p>
             </CardContent>
           </Card>
         </TabsContent>
