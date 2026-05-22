@@ -5,6 +5,28 @@ import { Calendar, Flame, MapPin, Clock, ArrowRight, Ban, Trophy, XCircle, Circl
 import { Badge } from '@/components/ui/badge';
 import { agendaItems } from '@/data/agenda';
 
+interface Weegtijd {
+  time: string;
+  age: string;
+}
+
+interface AgendaItemWithWeegtijden {
+  compareDate: string;
+  displayDate: string;
+  event: string;
+  emoji: string;
+  eventSub?: string;
+  details?: string;
+  location: string;
+  locationSub?: string;
+  locationUrl?: string;
+  time: string;
+  inschrijfUrl?: string;
+  inschrijfTekst?: string;
+  cancelled?: boolean;
+  weegtijden?: Weegtijd[];
+}
+
 function getEmojiIcon(emoji: string, className = "w-5 h-5") {
   switch (emoji) {
     case 'ban': return <Ban className={`${className} text-[#c00000]`} />;
@@ -13,6 +35,41 @@ function getEmojiIcon(emoji: string, className = "w-5 h-5") {
     case 'xmark': return <XCircle className={`${className} text-[#c00000]`} />;
     default: return <CircleDot className={`${className} text-[#c00000]`} />;
   }
+}
+
+function InfoTooltip({ weegtijden }: { weegtijden: Weegtijd[] }) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <span
+      className="inline-flex relative ml-1"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <button
+        className="w-[22px] h-[22px] rounded-full bg-[#a90000] text-white text-[11px] font-bold flex items-center justify-center cursor-pointer hover:bg-[#8c0000] hover:scale-110 transition-all border-none"
+        aria-label="Weegtijden"
+      >
+        i
+      </button>
+      {hovered && (
+        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-white border-2 border-[#a90000] rounded-lg px-4 py-3 min-w-[240px] shadow-lg z-50 text-sm">
+          <h4 className="m-0 mb-2 text-[#a90000] text-sm font-bold">⏰ Weegtijden</h4>
+          <ul className="list-none p-0 m-0">
+            {weegtijden.map((wt, i) => (
+              <li key={i} className="py-1 text-sm text-[#333] border-b border-gray-100 last:border-b-0">
+                <span className="font-semibold text-[#c00000]">{wt.time}</span> — {wt.age}
+              </li>
+            ))}
+          </ul>
+          {/* Arrow */}
+          <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-[1px]">
+            <div className="w-0 h-0 border-x-[6px] border-x-transparent border-t-[6px] border-t-[#a90000]" />
+          </div>
+        </div>
+      )}
+    </span>
+  );
 }
 
 export function AgendaSection() {
@@ -54,7 +111,7 @@ export function AgendaSection() {
 
   return (
     <div className="space-y-4">
-      {/* Header */}
+      {/* Header — gradient branding zoals oude agenda */}
       <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
         <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">Judoclub Michigami</h1>
         <p className="text-white/80 mt-1 text-xs sm:text-sm">Activiteitenkalender <span className="font-bold text-[#fce0e0]">2026</span></p>
@@ -80,6 +137,7 @@ export function AgendaSection() {
               eventDate.setHours(0, 0, 0, 0);
               const isPast = !item.cancelled && eventDate < today;
               const isFirstFuture = idx === firstFutureIdx;
+              const weegtijden = (item as AgendaItemWithWeegtijden).weegtijden;
 
               return (
                 <tr key={idx} ref={isFirstFuture ? desktopFirstFutureRef : null} className={`border-b border-[#e8eaed] last:border-b-0 transition-colors hover:bg-[#fff2f2] ${item.cancelled ? 'cancelled-event' : isPast ? 'past-event' : ''}`}>
@@ -89,7 +147,12 @@ export function AgendaSection() {
                     <span className={`font-semibold ${item.cancelled ? 'text-[#c00000]' : isPast ? 'text-gray-400 font-medium' : 'text-[#c00000]'}`}>{item.event}</span>
                     {item.eventSub && <span className={`block text-sm mt-0.5 ${isPast ? 'text-gray-400' : 'text-gray-500'}`}>{item.eventSub}</span>}
                   </td>
-                  <td className={`px-5 py-4 text-sm ${isPast ? 'text-gray-400' : 'text-gray-600'}`}>{item.details || '-'}</td>
+                  <td className={`px-5 py-4 text-sm ${isPast ? 'text-gray-400' : 'text-gray-600'}`}>
+                    {item.details || '-'}
+                    {weegtijden && (
+                      <InfoTooltip weegtijden={weegtijden} />
+                    )}
+                  </td>
                   <td className="px-5 py-4 text-sm">
                     {item.locationUrl && item.location !== '-' ? (
                       <a href={item.locationUrl} target="_blank" rel="noopener noreferrer" className={`inline-flex items-center gap-1 hover:underline ${isPast ? 'text-gray-400 pointer-events-none line-through' : 'text-[#c00000] hover:text-[#a00000]'}`}>
@@ -120,6 +183,7 @@ export function AgendaSection() {
           eventDate.setHours(0, 0, 0, 0);
           const isPast = !item.cancelled && eventDate < today;
           const isFirstFuture = idx === firstFutureIdx;
+          const weegtijden = (item as AgendaItemWithWeegtijden).weegtijden;
 
           return (
             <div key={idx} ref={isFirstFuture ? mobileFirstFutureRef : null} className={`bg-white rounded-xl border shadow-sm overflow-hidden ${item.cancelled ? 'border-red-200 opacity-60' : isPast ? 'border-gray-200 opacity-60' : 'border-[#ddc0c0]'}`}>
@@ -134,6 +198,19 @@ export function AgendaSection() {
                   {item.event} {item.eventSub && <span className="font-normal text-gray-500">{item.eventSub}</span>}
                 </p>
                 {item.details && <p className="text-xs text-gray-500">{item.details}</p>}
+                {/* Weegtijden info button for mobile */}
+                {weegtijden && (
+                  <div className="mt-2 p-2 bg-red-50 rounded-lg border border-red-100">
+                    <p className="text-xs font-bold text-[#a90000] mb-1">⏰ Weegtijden</p>
+                    <ul className="space-y-0.5">
+                      {weegtijden.map((wt, i) => (
+                        <li key={i} className="text-xs text-gray-600">
+                          <span className="font-semibold text-[#c00000]">{wt.time}</span> — {wt.age}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
                 <div className="flex items-center gap-4 text-xs text-gray-500 mt-1">
                   {item.location !== '-' && <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{item.location}</span>}
                   {item.time !== '-' && <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{item.time}</span>}
@@ -149,7 +226,7 @@ export function AgendaSection() {
         })}
       </div>
 
-      <style dangerouslySetInnerHTML={{ __html: `.past-event td { opacity: 0.6; color: #777 !important; }.past-event .text-\\[\\#8c0000\\] { color: #888 !important; font-weight: 500; }.past-event .text-\\[\\#c00000\\] { color: #888 !important; font-weight: 500; }.cancelled-event td { text-decoration: line-through; opacity: 0.6; background-color: #fafafa; }.cancelled-event .text-\\[\\#c00000\\] { color: #c00000 !important; text-decoration: line-through; }` }} />
+      <style dangerouslySetInnerHTML={{ __html: `.past-event td { opacity: 0.6; color: #777 !important; }.past-event .text-\\\\[\\\\#8c0000\\\\] { color: #888 !important; font-weight: 500; }.past-event .text-\\\\[\\\\#c00000\\\\] { color: #888 !important; font-weight: 500; }.cancelled-event td { text-decoration: line-through; opacity: 0.6; background-color: #fafafa; }.cancelled-event .text-\\\\[\\\\#c00000\\\\] { color: #c00000 !important; text-decoration: line-through; }` }} />
     </div>
   );
 }

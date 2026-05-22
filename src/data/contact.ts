@@ -11,6 +11,6 @@ export const contactInfo = {
     address: "Wipstraat 2",
     postalCode: "4651 XW",
     city: "Steenbergen",
-    mapsUrl: "https://maps.app.goo.gl/Wipstraat+2+Steenbergen",
+    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Sportcentrum+De+Knotwilg+Wipstraat+2+4651+XW+Steenbergen",
   },
 };

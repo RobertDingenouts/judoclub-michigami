@@ -13,13 +13,13 @@ export const clubInfo = {
     {
       name: "Sportcentrum De Knotwilg",
       address: "Wipstraat 2, Steenbergen",
-      mapsUrl: "https://maps.app.goo.gl/Wipstraat+2+Steenbergen",
+      mapsUrl: "https://www.google.com/maps/search/?api=1&query=Sportcentrum+De+Knotwilg+Wipstraat+2+4651+XW+Steenbergen",
       isPrimary: true,
     },
     {
       name: "Sporthal De Vossenkuil",
       address: "Oud-Vossemeer",
-      mapsUrl: "https://maps.google.com/?q=De+Vossenkuil+Oud-Vossemeer",
+      mapsUrl: "https://www.google.com/maps/search/?api=1&query=Bou+Kooijmanstraat+48+4698+AM+Oud-Vossemeer",
       isPrimary: false,
     },
   ],
