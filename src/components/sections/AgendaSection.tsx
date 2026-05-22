@@ -25,6 +25,7 @@ interface AgendaItemWithWeegtijden {
   inschrijfTekst?: string;
   cancelled?: boolean;
   weegtijden?: Weegtijd[];
+  special?: boolean;
 }
 
 function getEmojiIcon(emoji: string, className = "w-5 h-5") {
@@ -110,7 +111,17 @@ export function AgendaSection() {
   }, []);
 
   return (
-    <div className="space-y-4">
+    <>
+      <style>{`
+        @keyframes special-pulse { 0%, 100% { border-color: #ffd700; } 50% { border-color: #ffaa00; } }
+        @keyframes special-shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+        .special-event-row { border-left: 4px solid #ffd700 !important; background: linear-gradient(90deg, #fffef0 0%, #ffffff 30%) !important; }
+        .special-event-row:hover { background: linear-gradient(90deg, #fffbe0 0%, #fff8f0 30%) !important; }
+        .special-badge { display: inline-flex; align-items: center; gap: 2px; font-size: 11px; font-weight: 700; color: #b8860b; background: linear-gradient(135deg, #fff8dc, #ffd700); padding: 2px 8px; border-radius: 999px; border: 1px solid #daa520; white-space: nowrap; }
+        .special-card { border: 2px solid #ffd700 !important; background: linear-gradient(135deg, #fffef5, #ffffff) !important; animation: special-pulse 3s ease-in-out infinite; }
+        .special-card .special-badge-mobile { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; font-weight: 700; color: #b8860b; background: linear-gradient(135deg, #fff8dc, #ffd700); padding: 2px 10px; border-radius: 999px; border: 1px solid #daa520; margin-left: auto; white-space: nowrap; }
+      `}</style>
+      <div className="space-y-4">
       {/* Header — gradient branding zoals oude agenda */}
       <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
         <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">Judoclub Michigami</h1>
@@ -140,11 +151,12 @@ export function AgendaSection() {
               const weegtijden = (item as AgendaItemWithWeegtijden).weegtijden;
 
               return (
-                <tr key={idx} ref={isFirstFuture ? desktopFirstFutureRef : null} className={`border-b border-[#e8eaed] last:border-b-0 transition-colors hover:bg-[#fff2f2] ${item.cancelled ? 'cancelled-event' : isPast ? 'past-event' : ''}`}>
+                <tr key={idx} ref={isFirstFuture ? desktopFirstFutureRef : null} className={`border-b border-[#e8eaed] last:border-b-0 transition-colors hover:bg-[#fff2f2] ${item.cancelled ? 'cancelled-event' : isPast ? 'past-event' : ''} ${item.special ? 'special-event-row' : ''}`} style={item.special ? { animation: 'special-pulse 3s ease-in-out infinite' } : undefined}>
                   <td className={`px-5 py-4 font-semibold whitespace-nowrap ${item.cancelled ? 'text-[#c00000] line-through opacity-60' : isPast ? 'text-gray-400 font-medium' : 'text-[#8c0000]'}`}>{item.displayDate}</td>
-                  <td className="px-3 py-4 text-center">{getEmojiIcon(item.emoji)}</td>
+                  <td className="px-3 py-4 text-center">{item.special ? <span className="text-lg">⭐</span> : getEmojiIcon(item.emoji)}</td>
                   <td className="px-5 py-4">
                     <span className={`font-semibold ${item.cancelled ? 'text-[#c00000]' : isPast ? 'text-gray-400 font-medium' : 'text-[#c00000]'}`}>{item.event}</span>
+                    {item.special && <span className="ml-2 special-badge">🎉 50-jarig!</span>}
                     {item.eventSub && <span className={`block text-sm mt-0.5 ${isPast ? 'text-gray-400' : 'text-gray-500'}`}>{item.eventSub}</span>}
                   </td>
                   <td className={`px-5 py-4 text-sm ${isPast ? 'text-gray-400' : 'text-gray-600'}`}>
@@ -186,10 +198,11 @@ export function AgendaSection() {
           const weegtijden = (item as AgendaItemWithWeegtijden).weegtijden;
 
           return (
-            <div key={idx} ref={isFirstFuture ? mobileFirstFutureRef : null} className={`bg-white rounded-xl border shadow-sm overflow-hidden ${item.cancelled ? 'border-red-200 opacity-60' : isPast ? 'border-gray-200 opacity-60' : 'border-[#ddc0c0]'}`}>
-              <div className={`px-4 py-2 flex items-center gap-2 ${item.cancelled ? 'bg-red-50' : isPast ? 'bg-gray-50' : 'bg-[#fdf6f6]'}`}>
-                {getEmojiIcon(item.emoji, "w-4 h-4")}
-                <span className={`text-xs font-semibold ${item.cancelled ? 'text-[#c00000] line-through' : isPast ? 'text-gray-400' : 'text-[#8c0000]'}`}>{item.displayDate}</span>
+            <div key={idx} ref={isFirstFuture ? mobileFirstFutureRef : null} className={`bg-white rounded-xl border shadow-sm overflow-hidden ${item.cancelled ? 'border-red-200 opacity-60' : isPast ? 'border-gray-200 opacity-60' : item.special ? 'special-card' : 'border-[#ddc0c0]'}`}>
+              <div className={`px-4 py-2 flex items-center gap-2 ${item.cancelled ? 'bg-red-50' : isPast ? 'bg-gray-50' : item.special ? 'bg-yellow-50' : 'bg-[#fdf6f6]'}`}>
+                {item.special ? <span className="text-base">⭐</span> : getEmojiIcon(item.emoji, "w-4 h-4")}
+                <span className={`text-xs font-semibold ${item.cancelled ? 'text-[#c00000] line-through' : isPast ? 'text-gray-400' : item.special ? 'text-[#b8860b]' : 'text-[#8c0000]'}`}>{item.displayDate}</span>
+                {item.special && <span className="special-badge-mobile">🎉 50-jarig!</span>}
                 {item.cancelled && <Badge variant="destructive" className="text-[10px] ml-auto">AFGELAST</Badge>}
                 {isPast && !item.cancelled && <Badge variant="secondary" className="text-[10px] ml-auto">Voorbij</Badge>}
               </div>
@@ -226,7 +239,8 @@ export function AgendaSection() {
         })}
       </div>
 
-      <style dangerouslySetInnerHTML={{ __html: `.past-event td { opacity: 0.6; color: #777 !important; }.past-event .text-\\\\[\\\\#8c0000\\\\] { color: #888 !important; font-weight: 500; }.past-event .text-\\\\[\\\\#c00000\\\\] { color: #888 !important; font-weight: 500; }.cancelled-event td { text-decoration: line-through; opacity: 0.6; background-color: #fafafa; }.cancelled-event .text-\\\\[\\\\#c00000\\\\] { color: #c00000 !important; text-decoration: line-through; }` }} />
+    <style dangerouslySetInnerHTML={{ __html: `.past-event td { opacity: 0.6; color: #777 !important; }.past-event .text-\\\\\\\\[\\\\\\\\#8c0000\\\\\\\\] { color: #888 !important; font-weight: 500; }.past-event .text-\\\\\\\\[\\\\\\\\#c00000\\\\\\\\] { color: #888 !important; font-weight: 500; }.cancelled-event td { text-decoration: line-through; opacity: 0.6; background-color: #fafafa; }.cancelled-event .text-\\\\\\\\[\\\\\\\\#c00000\\\\\\\\] { color: #c00000 !important; text-decoration: line-through; }` }} />
     </div>
+    </>
   );
 }
