@@ -76,10 +76,16 @@ function InfoTooltip({ weegtijden }: { weegtijden: Weegtijd[] }) {
 export function AgendaSection() {
   const desktopFirstFutureRef = useRef<HTMLTableRowElement>(null);
   const mobileFirstFutureRef = useRef<HTMLDivElement>(null);
+  const [confettiActive, setConfettiActive] = useState(false);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
   const firstFutureIdx = agendaItems.findIndex(i => !i.cancelled && new Date(i.compareDate) >= today);
+
+  const triggerConfetti = () => {
+    setConfettiActive(true);
+    setTimeout(() => setConfettiActive(false), 3000);
+  };
 
   useEffect(() => {
     // Desktop: scroll to first future event row in table
@@ -115,11 +121,13 @@ export function AgendaSection() {
       <style>{`
         @keyframes special-pulse { 0%, 100% { border-color: #ffd700; } 50% { border-color: #ffaa00; } }
         @keyframes special-shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
-        .special-event-row { border-left: 4px solid #ffd700 !important; background: linear-gradient(90deg, #fffef0 0%, #ffffff 30%) !important; }
+        .special-event-row { border-left: 4px solid #ffd700 !important; background: linear-gradient(90deg, #fffef0 0%, #ffffff 30%) !important; cursor: pointer; }
         .special-event-row:hover { background: linear-gradient(90deg, #fffbe0 0%, #fff8f0 30%) !important; }
         .special-badge { display: inline-flex; align-items: center; gap: 2px; font-size: 11px; font-weight: 700; color: #b8860b; background: linear-gradient(135deg, #fff8dc, #ffd700); padding: 2px 8px; border-radius: 999px; border: 1px solid #daa520; white-space: nowrap; }
-        .special-card { border: 2px solid #ffd700 !important; background: linear-gradient(135deg, #fffef5, #ffffff) !important; animation: special-pulse 3s ease-in-out infinite; }
+        .special-card { border: 2px solid #ffd700 !important; background: linear-gradient(135deg, #fffef5, #ffffff) !important; animation: special-pulse 3s ease-in-out infinite; cursor: pointer; }
         .special-card .special-badge-mobile { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; font-weight: 700; color: #b8860b; background: linear-gradient(135deg, #fff8dc, #ffd700); padding: 2px 10px; border-radius: 999px; border: 1px solid #daa520; margin-left: auto; white-space: nowrap; }
+        @keyframes confetti-fall { 0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
+        .confetti-piece { position: fixed; top: 0; width: 10px; height: 10px; z-index: 9999; pointer-events: none; animation: confetti-fall 3s linear forwards; }
       `}</style>
       <div className="space-y-4">
       {/* Header — gradient branding zoals oude agenda */}
@@ -151,7 +159,7 @@ export function AgendaSection() {
               const weegtijden = (item as AgendaItemWithWeegtijden).weegtijden;
 
               return (
-                <tr key={idx} ref={isFirstFuture ? desktopFirstFutureRef : null} className={`border-b border-[#e8eaed] last:border-b-0 transition-colors hover:bg-[#fff2f2] ${item.cancelled ? 'cancelled-event' : isPast ? 'past-event' : ''} ${item.special ? 'special-event-row' : ''}`} style={item.special ? { animation: 'special-pulse 3s ease-in-out infinite' } : undefined}>
+                <tr key={idx} ref={isFirstFuture ? desktopFirstFutureRef : null} className={`border-b border-[#e8eaed] last:border-b-0 transition-colors hover:bg-[#fff2f2] ${item.cancelled ? 'cancelled-event' : isPast ? 'past-event' : ''} ${item.special ? 'special-event-row' : ''}`} style={item.special ? { animation: 'special-pulse 3s ease-in-out infinite' } : undefined} onClick={item.special ? triggerConfetti : undefined}>
                   <td className={`px-5 py-4 font-semibold whitespace-nowrap ${item.cancelled ? 'text-[#c00000] line-through opacity-60' : isPast ? 'text-gray-400 font-medium' : 'text-[#8c0000]'}`}>{item.displayDate}</td>
                   <td className="px-3 py-4 text-center">{item.special ? <span className="text-lg">⭐</span> : getEmojiIcon(item.emoji)}</td>
                   <td className="px-5 py-4">
@@ -198,7 +206,7 @@ export function AgendaSection() {
           const weegtijden = (item as AgendaItemWithWeegtijden).weegtijden;
 
           return (
-            <div key={idx} ref={isFirstFuture ? mobileFirstFutureRef : null} className={`bg-white rounded-xl border shadow-sm overflow-hidden ${item.cancelled ? 'border-red-200 opacity-60' : isPast ? 'border-gray-200 opacity-60' : item.special ? 'special-card' : 'border-[#ddc0c0]'}`}>
+            <div key={idx} ref={isFirstFuture ? mobileFirstFutureRef : null} className={`bg-white rounded-xl border shadow-sm overflow-hidden ${item.cancelled ? 'border-red-200 opacity-60' : isPast ? 'border-gray-200 opacity-60' : item.special ? 'special-card' : 'border-[#ddc0c0]'}`} onClick={item.special ? triggerConfetti : undefined}>
               <div className={`px-4 py-2 flex items-center gap-2 ${item.cancelled ? 'bg-red-50' : isPast ? 'bg-gray-50' : item.special ? 'bg-yellow-50' : 'bg-[#fdf6f6]'}`}>
                 {item.special ? <span className="text-base">⭐</span> : getEmojiIcon(item.emoji, "w-4 h-4")}
                 <span className={`text-xs font-semibold ${item.cancelled ? 'text-[#c00000] line-through' : isPast ? 'text-gray-400' : item.special ? 'text-[#b8860b]' : 'text-[#8c0000]'}`}>{item.displayDate}</span>
@@ -237,10 +245,39 @@ export function AgendaSection() {
             </div>
           );
         })}
-      </div>
+     </div>
 
-    <style dangerouslySetInnerHTML={{ __html: `.past-event td { opacity: 0.6; color: #777 !important; }.past-event .text-\\\\\\\\[\\\\\\\\#8c0000\\\\\\\\] { color: #888 !important; font-weight: 500; }.past-event .text-\\\\\\\\[\\\\\\\\#c00000\\\\\\\\] { color: #888 !important; font-weight: 500; }.cancelled-event td { text-decoration: line-through; opacity: 0.6; background-color: #fafafa; }.cancelled-event .text-\\\\\\\\[\\\\\\\\#c00000\\\\\\\\] { color: #c00000 !important; text-decoration: line-through; }` }} />
+    <style dangerouslySetInnerHTML={{ __html: `.past-event td { opacity: 0.6; color: #777 !important; }.past-event .text-\\\\\\\\\\\\\\\\[\\\\\\\\\\\\\\\\#8c0000\\\\\\\\\\\\\\\\] { color: #888 !important; font-weight: 500; }.past-event .text-\\\\\\\\\\\\\\\\[\\\\\\\\\\\\\\\\#c00000\\\\\\\\\\\\\\\\] { color: #888 !important; font-weight: 500; }.cancelled-event td { text-decoration: line-through; opacity: 0.6; background-color: #fafafa; }.cancelled-event .text-\\\\\\\\\\\\\\\\[\\\\\\\\\\\\\\\\#c00000\\\\\\\\\\\\\\\\] { color: #c00000 !important; text-decoration: line-through; }` }} />
     </div>
+
+    {/* Confetti overlay */}
+    {confettiActive && (
+      <div className="fixed inset-0 pointer-events-none z-[9999]" aria-hidden="true">
+        {Array.from({ length: 60 }).map((_, i) => {
+          const colors = ['#ffd700', '#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24', '#ff9ff3', '#54a0ff', '#5f27cd', '#01a3a4', '#f368e0'];
+          const color = colors[i % colors.length];
+          const left = Math.random() * 100;
+          const delay = Math.random() * 0.5;
+          const size = 6 + Math.random() * 8;
+          const shape = i % 3 === 0 ? '50%' : i % 3 === 1 ? '0' : '2px';
+          return (
+            <div
+              key={i}
+              className="confetti-piece"
+              style={{
+                left: `${left}%`,
+                width: `${size}px`,
+                height: `${size}px`,
+                backgroundColor: color,
+                borderRadius: shape,
+                animationDelay: `${delay}s`,
+                animationDuration: `${2.5 + Math.random() * 1.5}s`,
+              }}
+            />
+          );
+        })}
+      </div>
+    )}
     </>
   );
 }
