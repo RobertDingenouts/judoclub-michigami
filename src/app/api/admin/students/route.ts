@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { isAdmin } from '@/lib/auth'
-import { hashPassword } from '@/lib/auth'
 import type { BeltLevel } from '@prisma/client'
 import { Role } from '@prisma/client'
 
@@ -48,8 +47,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Naam is verplicht' }, { status: 400 })
     }
 
-    const passwordHash = email ? await hashPassword('judo2024') : undefined
-
+    // Create user record (Supabase Auth handles passwords separately)
     const user = await db.user.create({
       data: {
         email: email || `${firstName.toLowerCase()}.${lastName.toLowerCase()}@local`,
