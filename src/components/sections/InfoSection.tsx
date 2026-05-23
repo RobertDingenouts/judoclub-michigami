@@ -133,19 +133,6 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
 
         {/* ==================== WAT IS JUDO TAB ==================== */}
         <TabsContent value="judo" className="space-y-4 mt-4">
-          {/* Hero foto */}
-          <div className="rounded-2xl overflow-hidden shadow-lg border border-[#fce0e0]">
-            <img 
-              src="/hero/dojo-2024.jpg" 
-              alt="Judoclub Michigami dojo" 
-              className="w-full h-48 sm:h-64 md:h-80 object-cover"
-            />
-            <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] p-4 sm:p-6 text-white">
-              <h3 className="text-xl sm:text-2xl font-bold mb-2">🥋 Welkom bij Judoclub Michigami!</h3>
-              <p className="text-white/90 text-sm sm:text-base">Judo voor jong en oud — van kleuters tot volwassenen, recreatief of competitief.</p>
-            </div>
-          </div>
-
           <Card className="border-0 shadow-sm">
             <CardContent className="p-4 sm:p-6 space-y-4">
               <h3 className="font-bold text-gray-800 text-lg">Wat is judo?</h3>
