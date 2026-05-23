@@ -13,17 +13,15 @@ export default async function StudentsPage({
   const beltFilter = params?.belt || ''
 
   // Build where clause
-  const where = {
-    isActive: true,
-    ...(query ? {
-      OR: [
-        { firstName: { contains: query, mode: 'insensitive' } },
-        { lastName: { contains: query, mode: 'insensitive' } },
-        { email: { contains: query, mode: 'insensitive' } },
-      ],
-    } : {}),
-    ...(beltFilter ? { currentBelt: beltFilter as BeltLevel } : {}),
+  const where: any = { isActive: true }
+  if (query) {
+    where.OR = [
+      { firstName: { contains: query, mode: 'insensitive' as const } },
+      { lastName: { contains: query, mode: 'insensitive' as const } },
+      { email: { contains: query, mode: 'insensitive' as const } },
+    ]
   }
+  if (beltFilter) where.currentBelt = beltFilter as BeltLevel
 
   const [students, totalStudents] = await Promise.all([
     db.member.findMany({
