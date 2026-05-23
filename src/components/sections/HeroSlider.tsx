@@ -83,7 +83,6 @@ export function HeroSlider() {
                 priority={idx === 0}
               />
             </div>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-black/10 to-transparent" />
           </div>
         ))}
 
