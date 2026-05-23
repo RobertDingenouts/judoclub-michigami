@@ -1,0 +1,95 @@
+import { NextResponse } from 'next/server'
+import { db } from '@/lib/db'
+import { isAdmin } from '@/lib/auth'
+import type { BeltLevel, Role, ExamStatus } from '@prisma/client'
+
+// GET - Get single student
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const admin = await isAdmin()
+  if (!admin) return NextResponse.json({ error: 'Not authorized' }, { status: 401 })
+
+  const { id } = await params
+
+  const member = await db.member.findUnique({
+    where: { id },
+    include: {
+      user: true,
+      examAttempts: { include: { results: true }, orderBy: { examDate: 'desc' } },
+      courseProgress: true,
+      diplomas: { orderBy: { awardedAt: 'desc' } },
+      leaderboardEntries: { orderBy: { createdAt: 'desc' }, take: 10 },
+    },
+  })
+
+  if (!member) return NextResponse.json({ error: 'Student niet gevonden' }, { status: 404 })
+
+  return NextResponse.json({ member })
+}
+
+// PATCH - Update student
+export async function PATCH(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const admin = await isAdmin()
+  if (!admin) return NextResponse.json({ error: 'Not authorized' }, { status: 401 })
+
+  try {
+    const { id } = await params
+    const body = await request.json()
+
+    const member = await db.member.findUnique({ where: { id } })
+    if (!member) return NextResponse.json({ error: 'Student niet gevonden' }, { status: 404 })
+
+    // Update member fields
+    const updatedMember = await db.member.update({
+      where: { id },
+      data: {
+        ...(body.firstName !== undefined && { firstName: body.firstName }),
+        ...(body.lastName !== undefined && { lastName: body.lastName }),
+        ...(body.email !== undefined && { email: body.email }),
+        ...(body.phone !== undefined && { phone: body.phone }),
+        ...(body.dateOfBirth !== undefined && { dateOfBirth: body.dateOfBirth ? new Date(body.dateOfBirth) : undefined }),
+        ...(body.currentBelt !== undefined && { currentBelt: body.currentBelt as BeltLevel }),
+        ...(body.isActive !== undefined && { isActive: body.isActive }),
+        ...(body.emergencyContactName !== undefined && { emergencyContactName: body.emergencyContactName }),
+        ...(body.emergencyContactPhone !== undefined && { emergencyContactPhone: body.emergencyContactPhone }),
+        ...(body.medicalNotes !== undefined && { medicalNotes: body.medicalNotes }),
+      },
+    })
+
+    // Sync belt to user if changed
+    if (body.currentBelt) {
+      await db.user.update({
+        where: { id: member.userId },
+        data: { currentBelt: body.currentBelt as BeltLevel },
+      })
+    }
+
+    return NextResponse.json({ success: true, member: updatedMember })
+  } catch (error) {
+    console.error('Update student error:', error)
+    return NextResponse.json({ error: 'Fout bij bijwerken student' }, { status: 500 })
+  }
+}
+
+// DELETE - Soft delete student
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const admin = await isAdmin()
+  if (!admin) return NextResponse.json({ error: 'Not authorized' }, { status: 401 })
+
+  try {
+    const { id } = await params
+    await db.member.update({ where: { id }, data: { isActive: false } })
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    console.error('Delete student error:', error)
+    return NextResponse.json({ error: 'Fout bij verwijderen student' }, { status: 500 })
+  }
+}

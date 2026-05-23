@@ -25,6 +25,8 @@ import { AgendaSection } from '@/components/sections/AgendaSection';
 import { TechniquesSection } from '@/components/sections/TechniquesSection';
 import { CategoryHubSection } from '@/components/sections/CategoryHubSection';
 import { TimelineSection } from '@/components/sections/TimelineSection';
+import { DiplomasSection } from '@/components/sections/DiplomasSection';
+import { ExamApprovalSection } from '@/components/sections/ExamApprovalSection';
 import { PullToRefreshIndicator } from '@/components/PullToRefreshIndicator';
 import { StickyCTA } from '@/components/StickyCTA';
 import { TrialLessonForm } from '@/components/sections/TrialLessonForm';
@@ -129,6 +131,14 @@ const sectionMeta: Record<Section, { title: string; description: string }> = {
   'media-hub': {
     title: 'Media - Foto\'s & Video\'s | Judoclub Michigami',
     description: 'Foto\'s en video\'s van trainingen, toernooien en evenementen van Judoclub Michigami.',
+  },
+  'diplomas': {
+    title: 'Mijn Diplomas | Judoclub Michigami',
+    description: 'Bekijk en download je judo diplomas. Verifieerbare digitale certificaten voor behaalde examens.',
+  },
+  'examen-goedkeuren': {
+    title: 'Examen Goedkeuren | Judoclub Michigami',
+    description: 'Beoordeel en goedkeur judo examens. Alleen toegankelijk voor instructeurs.',
   },
 };
 
@@ -345,6 +355,8 @@ export default function MichigamiApp() {
             {activeSection === 'club-hub' && <CategoryHubSection group={navGroups[0]} onNavigate={setActiveSection} navGroups={navGroups} groupHubMap={groupHubMap} />}
             {activeSection === 'judoschool-hub' && <CategoryHubSection group={navGroups[1]} onNavigate={setActiveSection} navGroups={navGroups} groupHubMap={groupHubMap} />}
             {activeSection === 'media-hub' && <CategoryHubSection group={navGroups[2]} onNavigate={setActiveSection} navGroups={navGroups} groupHubMap={groupHubMap} />}
+            {activeSection === 'diplomas' && <DiplomasSection />}
+            {activeSection === 'examen-goedkeuren' && <ExamApprovalSection />}
             </motion.div>
           </AnimatePresence>
           </div>

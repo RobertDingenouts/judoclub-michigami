@@ -31,7 +31,9 @@ export type SectionId =
   | 'club-hub'
   | 'judoschool-hub'
   | 'media-hub'
-  | 'timeline';
+  | 'timeline'
+  | 'diplomas'
+  | 'examen-goedkeuren';
 
 export type Section = SectionId;
 
@@ -124,4 +126,6 @@ export const sectionLabels: Record<Section, string> = {
   'judoschool-hub': 'Judo School Hub',
   'media-hub': 'Media Hub',
   timeline: 'Geschiedenis',
+  diplomas: 'Mijn Diplomas',
+  'examen-goedkeuren': 'Examen Goedkeuren',
 };
