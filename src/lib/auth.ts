@@ -1,70 +1,108 @@
-// Supabase Auth utilities for server-side operations
-import { createClient } from '@/lib/supabase/server'
+// Auth utilities for admin dashboard
+// Uses iron-session for cookie-based sessions + bcrypt for password hashing
+
+import { getIronSession } from 'iron-session'
+import { cookies } from 'next/headers'
 import { db } from './db'
 import type { Role } from '@prisma/client'
+import * as bcrypt from 'bcryptjs'
 
 // ============================================================================
-// Get current user from Supabase session (server-side)
+// Session types & config
 // ============================================================================
 
-export async function getCurrentUser() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  return user
+export interface SessionData {
+  userId: string
+  email: string
+  name?: string
+  role: Role
+  loginTime: number
 }
 
-// ============================================================================
-// Ensure user exists in our database after Supabase auth
-// ============================================================================
+const SESSION_SECRET = process.env.SESSION_SECRET || 'michigami-admin-session-secret-change-in-production'
 
-export async function ensureUserInDb(userId: string, email: string, name?: string) {
-  const existing = await db.user.findUnique({
-    where: { id: userId },
-  })
-
-  if (existing) return existing
-
-  return db.user.create({
-    data: {
-      id: userId,
-      email,
-      name: name || null,
-      role: 'MEMBER',
-      currentBelt: null,
-      totalPoints: 0,
-      weeklyPoints: 0,
+export async function getSession() {
+  const cookieStore = await cookies()
+  const session = await getIronSession<SessionData>(cookieStore, {
+    password: SESSION_SECRET,
+    cookieName: 'michigami-admin',
+    cookieOptions: {
+      secure: process.env.NODE_ENV === 'production',
+      httpOnly: true,
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24, // 24 hours
+      path: '/',
     },
   })
+  return session
+}
+
+export async function setSession(data: SessionData) {
+  const session = await getSession()
+  Object.assign(session, data)
+  session.userId = data.userId
+  session.email = data.email
+  session.name = data.name
+  session.role = data.role
+  session.loginTime = Date.now()
+  await session.save()
+}
+
+export async function destroySession() {
+  const session = await getSession()
+  session.destroy()
 }
 
 // ============================================================================
-// Admin checks
+// Password helpers
 // ============================================================================
 
-export async function requireAdmin(): Promise<{ userId: string; role: Role } | null> {
-  const user = await getCurrentUser()
-  if (!user) return null
+export async function hashPassword(password: string): Promise<string> {
+  return bcrypt.hash(password, 12)
+}
 
-  const dbUser = await db.user.findUnique({
-    where: { id: user.id },
-    select: { role: true },
+export async function verifyPassword(password: string, hash: string): Promise<boolean> {
+  return bcrypt.compare(password, hash)
+}
+
+// ============================================================================
+// Auth actions
+// ============================================================================
+
+export async function login(email: string, password: string) {
+  const user = await db.user.findUnique({
+    where: { email: email.trim().toLowerCase() },
   })
 
-  if (!dbUser || dbUser.role !== 'ADMIN') return null
+  if (!user || !user.passwordHash) {
+    return { error: 'Ongeldig e-mailadres of wachtwoord', success: false }
+  }
 
-  return { userId: user.id, role: dbUser.role }
+  const valid = await verifyPassword(password, user.passwordHash)
+  if (!valid) {
+    return { error: 'Ongeldig e-mailadres of wachtwoord', success: false }
+  }
+
+  await setSession({
+    userId: user.id,
+    email: user.email,
+    name: user.name || undefined,
+    role: user.role,
+    loginTime: Date.now(),
+  })
+
+  return { success: true, user: { id: user.id, email: user.email, name: user.name, role: user.role } }
+}
+
+export async function requireAdmin() {
+  const session = await getSession()
+  if (!session.userId || session.role !== 'ADMIN') {
+    return null
+  }
+  return session
 }
 
 export async function isAdmin(): Promise<boolean> {
-  const result = await requireAdmin()
-  return !!result
-}
-
-// ============================================================================
-// Sign out (server-side)
-// ============================================================================
-
-export async function signOut() {
-  const supabase = await createClient()
-  await supabase.auth.signOut()
+  const session = await getSession()
+  return !!session.userId && session.role === 'ADMIN'
 }
