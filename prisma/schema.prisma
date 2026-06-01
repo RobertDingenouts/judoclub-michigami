@@ -1,7 +1,3 @@
-// Judoclub Michigami Steenbergen - Database Schema
-// Provider: SQLite (local dev) / PostgreSQL (Supabase production)
-// Extended with: student progress tracking, digital diplomas, course gating, leaderboard
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,9 +7,224 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ============================================================================
-// ENUMS
-// ============================================================================
+model User {
+  id                 String             @id @default(cuid())
+  email              String             @unique
+  passwordHash       String?
+  name               String?
+  clerkUserId        String?            @unique
+  imageUrl           String?
+  role               Role               @default(MEMBER)
+  currentBelt        BeltLevel?
+  totalPoints        Int                @default(0)
+  weeklyPoints       Int                @default(0)
+  joinDate           DateTime?
+  is_active          Boolean            @default(true)
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  courseProgress     CourseProgress[]
+  diplomas           Diploma[]
+  examAttempts       ExamAttempt[]
+  leaderboardEntries LeaderboardEntry[]
+  member             Member?
+
+  @@index([email])
+  @@index([clerkUserId])
+}
+
+model Member {
+  id                    String             @id @default(cuid())
+  userId                String             @unique
+  firstName             String
+  lastName              String
+  email                 String?
+  phone                 String?
+  dateOfBirth           DateTime?
+  currentBelt           BeltLevel?
+  joinDate              DateTime           @default(now())
+  isActive              Boolean            @default(true)
+  emergencyContactName  String?
+  emergencyContactPhone String?
+  medicalNotes          String?
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+  courseProgress        CourseProgress[]
+  diplomas              Diploma[]
+  examAttempts          ExamAttempt[]
+  leaderboardEntries    LeaderboardEntry[]
+  attendance            LessonAttendance[]
+  user                  User               @relation(fields: [userId], references: [id])
+
+  @@index([lastName, firstName])
+}
+
+model Event {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  date        DateTime
+  location    String?
+  locationUrl String?
+  time        String?
+  type        EventType
+  isCancelled Boolean   @default(false)
+  emoji       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([date])
+}
+
+model LessonAttendance {
+  id        String   @id @default(cuid())
+  memberId  String
+  eventId   String?
+  date      DateTime
+  notes     String?
+  points    Int      @default(1)
+  createdAt DateTime @default(now())
+  member    Member   @relation(fields: [memberId], references: [id])
+
+  @@unique([memberId, date])
+  @@index([date])
+}
+
+model Technique {
+  id           String  @id @default(cuid())
+  nameJa       String
+  nameNl       String
+  category     String
+  mainCategory String
+  forbidden    Boolean @default(false)
+  description  String?
+  videoUrl     String?
+  imageUrl     String?
+  order        Int
+
+  @@unique([nameJa, category])
+}
+
+model ExamAttempt {
+  id           String       @id @default(cuid())
+  memberId     String
+  userId       String
+  beltLevel    BeltLevel
+  status       ExamStatus   @default(SCHEDULED)
+  examDate     DateTime?
+  examiner     String?
+  overallScore Int?
+  notes        String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  diploma      Diploma?
+  member       Member       @relation(fields: [memberId], references: [id])
+  user         User         @relation(fields: [userId], references: [id])
+  results      ExamResult[]
+
+  @@index([memberId, beltLevel])
+  @@index([userId, beltLevel])
+  @@index([examDate])
+}
+
+model ExamResult {
+  id            String      @id @default(cuid())
+  attemptId     String
+  techniqueId   String?
+  techniqueName String
+  category      String?
+  passed        Boolean
+  score         Int?
+  feedback      String?
+  attempt       ExamAttempt @relation(fields: [attemptId], references: [id])
+
+  @@index([attemptId])
+  @@index([techniqueId])
+}
+
+model Diploma {
+  id               String       @id @default(cuid())
+  type             DiplomaType
+  title            String
+  description      String?
+  recipientId      String
+  userId           String
+  beltLevel        BeltLevel?
+  courseName       String?
+  examAttemptId    String?      @unique
+  awardedAt        DateTime     @default(now())
+  verificationCode String       @unique
+  imageUrl         String?
+  createdAt        DateTime     @default(now())
+  examAttempt      ExamAttempt? @relation(fields: [examAttemptId], references: [id])
+  member           Member       @relation(fields: [recipientId], references: [id])
+  user             User         @relation(fields: [userId], references: [id])
+
+  @@index([recipientId])
+  @@index([userId])
+  @@index([verificationCode])
+}
+
+model CourseProgress {
+  id               String    @id @default(cuid())
+  memberId         String
+  userId           String
+  courseName       String
+  beltLevel        BeltLevel
+  lessonsCompleted Int       @default(0)
+  lessonsTotal     Int       @default(0)
+  quizScores       Json?
+  overallScore     Float     @default(0)
+  isPassed         Boolean   @default(false)
+  isUnlocked       Boolean   @default(true)
+  wordsLearned     Int       @default(0)
+  wordsTotal       Int       @default(0)
+  wordsQuizScore   Float     @default(0)
+  lastActivityAt   DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  member           Member    @relation(fields: [memberId], references: [id])
+  user             User      @relation(fields: [userId], references: [id])
+
+  @@unique([userId, courseName])
+  @@index([userId, beltLevel])
+}
+
+model LeaderboardEntry {
+  id           String       @id @default(cuid())
+  userId       String
+  memberId     String?
+  weekStart    DateTime
+  points       Int
+  activityType ActivityType
+  referenceId  String?
+  description  String?
+  createdAt    DateTime     @default(now())
+  member       Member?      @relation(fields: [memberId], references: [id])
+  user         User         @relation(fields: [userId], references: [id])
+
+  @@index([weekStart, points])
+  @@index([userId, weekStart])
+}
+
+model Page {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  content     String
+  isPublished Boolean  @default(true)
+  order       Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Image {
+  id        String   @id @default(cuid())
+  filename  String
+  url       String
+  alt       String?
+  category  String?
+  createdAt DateTime @default(now())
+}
 
 enum Role {
   MEMBER
@@ -23,17 +234,17 @@ enum Role {
 }
 
 enum BeltLevel {
-  WIT       // White belt - beginner
-  GEEL      // Yellow belt
-  ORANJE    // Orange belt
-  GROEN     // Green belt
-  BLAUW     // Blue belt
-  BRUIN_1   // Brown 1st kyu
-  BRUIN_2   // Brown 2nd kyu
-  BRUIN_3   // Brown 3rd kyu
-  Zwart_1   // Black 1st dan
-  Zwart_2   // Black 2nd dan
-  Zwart_3   // Black 3rd dan
+  WIT
+  GEEL
+  ORANJE
+  GROEN
+  BLAUW
+  BRUIN_1
+  BRUIN_2
+  BRUIN_3
+  Zwart_1
+  Zwart_2
+  Zwart_3
 }
 
 enum EventType {
@@ -45,9 +256,9 @@ enum EventType {
 }
 
 enum DiplomaType {
-  BELT_EXAM       // Judo belt exam certificate
-  COURSE_JAPANESE // Japanese language course completion
-  ACHIEVEMENT     // Special achievement (e.g., tournament participation)
+  BELT_EXAM
+  COURSE_JAPANESE
+  ACHIEVEMENT
 }
 
 enum ExamStatus {
@@ -58,283 +269,9 @@ enum ExamStatus {
 }
 
 enum ActivityType {
-  COURSE_QUIZ       // Completed a Japanese course quiz
-  EXAM_PASSED       // Passed a belt exam
-  ATTENDANCE        // Attended a training session
-  TECHNIQUE_MASTERED // Learned a new technique
-  LEADERBOARD_BONUS  // Weekly bonus / special event
-}
-
-// ============================================================================
-// USERS & AUTH (Clerk-ready)
-// ============================================================================
-
-model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  passwordHash  String?   // bcrypt hash for email/password auth
-  name          String?
-  clerkUserId   String?   @unique // Clerk user ID for auth integration
-  imageUrl      String?   // Profile picture from Clerk
-  role          Role      @default(MEMBER)
-  currentBelt   BeltLevel? // Current belt level (enum, replaces free-text kyuGrade)
-  totalPoints   Int       @default(0) // All-time leaderboard points
-  weeklyPoints  Int       @default(0) // Current week points (reset weekly)
-  joinDate      DateTime?
-  is_active     Boolean   @default(true)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
-  // Relations
-  member            Member?
-  examAttempts      ExamAttempt[]
-  courseProgress    CourseProgress[]
-  leaderboardEntries LeaderboardEntry[]
-  diplomas          Diploma[]
-
-  @@index([email])
-  @@index([clerkUserId])
-}
-
-// ============================================================================
-// MEMBER PROFILES (extended student data)
-// ============================================================================
-
-model Member {
-  id            String      @id @default(cuid())
-  userId        String      @unique // Links to authenticated User account
-  firstName     String
-  lastName      String
-  email         String?
-  phone         String?
-  dateOfBirth   DateTime?
-  currentBelt   BeltLevel?  // Current belt (redundant with User.currentBelt for sync)
-  joinDate      DateTime    @default(now())
-  isActive      Boolean     @default(true)
-  emergencyContactName  String?
-  emergencyContactPhone String?
-  medicalNotes  String?     // Allergies, conditions - admin-only visible
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-
-  // Relations
-  user            User                @relation(fields: [userId], references: [id])
-  attendance      LessonAttendance[]
-  examAttempts    ExamAttempt[]
-  courseProgress  CourseProgress[]
-  leaderboardEntries LeaderboardEntry[]
-  diplomas        Diploma[]
-
-  @@index([lastName, firstName])
-}
-
-// ============================================================================
-// AGENDA & EVENTS
-// ============================================================================
-
-model Event {
-  id          String   @id @default(cuid())
-  title       String
-  description String?
-  date        DateTime
-  location    String?
-  locationUrl String?  // Google Maps link
-  time        String?  // e.g., "19:30"
-  type        EventType
-  isCancelled Boolean @default(false)
-  emoji       String?  // For visual display
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@index([date])
-}
-
-// ============================================================================
-// TRAINING ATTENDANCE
-// ============================================================================
-
-model LessonAttendance {
-  id        String   @id @default(cuid())
-  memberId  String
-  eventId   String?  // Optional - for specific events/lessons
-  date      DateTime
-  notes     String?
-  points    Int      @default(1) // Points awarded for attendance
-  createdAt DateTime @default(now())
-
-  member    Member   @relation(fields: [memberId], references: [id])
-
-  @@unique([memberId, date])
-  @@index([date])
-}
-
-// ============================================================================
-// TECHNIQUES & EXAM REQUIREMENTS
-// ============================================================================
-
-model Technique {
-  id             String   @id @default(cuid())
-  nameJa         String   // Japanese name (e.g., "Ō-goshi")
-  nameNl         String   // Dutch translation (e.g., "Grote heup")
-  category       String   // e.g., "ashi-waza", "koshi-waza"
-  mainCategory   String   // e.g., "nage-waza", "katame-waza"
-  forbidden      Boolean  @default(false) // Competition forbidden?
-  description    String?
-  videoUrl       String?
-  imageUrl       String?
-  order          Int      // Display order within category
-
-  @@unique([nameJa, category])
-}
-
-// ============================================================================
-// EXAM TRACKING (detailed per-technique results)
-// ============================================================================
-
-model ExamAttempt {
-  id          String      @id @default(cuid())
-  memberId    String
-  userId      String
-  beltLevel   BeltLevel   // Which belt was examined for
-  status      ExamStatus  @default(SCHEDULED)
-  examDate    DateTime?
-  examiner    String?     // Who conducted the exam
-  overallScore Int?       // 0-100 overall score
-  notes       String?     // Examiner notes / feedback
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-
-  member      Member      @relation(fields: [memberId], references: [id])
-  user        User        @relation(fields: [userId], references: [id])
-  results     ExamResult[]
-  diploma     Diploma?    // Auto-created on pass
-
-  @@index([memberId, beltLevel])
-  @@index([userId, beltLevel])
-  @@index([examDate])
-}
-
-model ExamResult {
-  id          String   @id @default(cuid())
-  attemptId   String
-  techniqueId String?  // Optional - which technique was assessed
-  techniqueName String // Denormalized for historical accuracy (techniques may change)
-  category    String?  // e.g., "ashi-waza"
-  passed      Boolean  // Per-technique pass/fail
-  score       Int?     // 0-10 per technique
-  feedback    String?  // Specific feedback on this technique
-
-  attempt     ExamAttempt @relation(fields: [attemptId], references: [id])
-
-  @@index([attemptId])
-  @@index([techniqueId])
-}
-
-// ============================================================================
-// DIGITAL DIPLOMAS
-// ============================================================================
-
-model Diploma {
-  id          String      @id @default(cuid())
-  type        DiplomaType
-  title       String      // e.g., "Examen Gele Band Geslaagd"
-  description String?     // Detailed description of achievement
-  recipientId String     // Member who received it
-  userId      String     // Authenticated user who received it
-  beltLevel   BeltLevel? // Which belt (for BELT_EXAM type)
-  courseName  String?    // Course name (for COURSE_JAPANESE type)
-  examAttemptId String?  @unique // Link to the exam attempt that earned this
-  awardedAt   DateTime   @default(now())
-  verificationCode String @unique // Unique code for diploma verification
-  imageUrl    String?    // Generated diploma image URL
-  createdAt   DateTime   @default(now())
-
-  member      Member      @relation(fields: [recipientId], references: [id])
-  user        User        @relation(fields: [userId], references: [id])
-  examAttempt ExamAttempt? @relation(fields: [examAttemptId], references: [id])
-
-  @@index([recipientId])
-  @@index([userId])
-  @@index([verificationCode])
-}
-
-// ============================================================================
-// COURSE PROGRESS (Cursus Japans - belt-gated progression)
-// ============================================================================
-
-model CourseProgress {
-  id                    String    @id @default(cuid())
-  memberId              String
-  userId                String
-  courseName            String    // e.g., "japanese_white", "japanese_yellow"
-  beltLevel             BeltLevel // Which belt level this course belongs to
-
-  // Progress tracking per belt section
-  lessonsCompleted      Int       @default(0)
-  lessonsTotal          Int       @default(0)
-  quizScores            Json?     // Array of { lessonId, score, timestamp } — native JSON in PostgreSQL
-  overallScore          Float     @default(0) // Average score across all quizzes
-  isPassed              Boolean   @default(false) // Overall pass for this belt level
-  isUnlocked            Boolean   @default(true) // Can student access this level?
-
-  // Word tracking (for vocabulary courses)
-  wordsLearned          Int       @default(0)
-  wordsTotal            Int       @default(0)
-  wordsQuizScore        Float     @default(0)
-
-  lastActivityAt        DateTime?
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
-
-  member                Member    @relation(fields: [memberId], references: [id])
-  user                  User      @relation(fields: [userId], references: [id])
-
-  @@unique([userId, courseName])
-  @@index([userId, beltLevel])
-}
-
-// ============================================================================
-// LEADERBOARD (weekly gamification)
-// ============================================================================
-
-model LeaderboardEntry {
-  id          String      @id @default(cuid())
-  userId      String
-  memberId    String?
-  weekStart   DateTime    // Start of the leaderboard week (Monday 00:00)
-  points      Int         // Points earned this week from this activity
-  activityType ActivityType // What earned these points
-  referenceId String?     // ID of the source (e.g., CourseProgress.id, ExamAttempt.id)
-  description String?     // Human-readable description
-  createdAt   DateTime    @default(now())
-
-  user        User        @relation(fields: [userId], references: [id])
-  member      Member?     @relation(fields: [memberId], references: [id])
-
-  @@index([weekStart, points]) // For weekly leaderboard queries (ORDER BY points DESC)
-  @@index([userId, weekStart])
-}
-
-// ============================================================================
-// CONTENT & PAGES (CMS)
-// ============================================================================
-
-model Page {
-  id          String   @id @default(cuid())
-  slug        String   @unique // e.g., "lid-worden", "lestijden"
-  title       String
-  content     String   // Markdown or HTML content
-  isPublished Boolean  @default(true)
-  order       Int      // Menu order
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-model Image {
-  id          String   @id @default(cuid())
-  filename    String
-  url         String
-  alt         String?
-  category    String?  // e.g., "gallery", "techniques", "events"
-  createdAt   DateTime @default(now())
+  COURSE_QUIZ
+  EXAM_PASSED
+  ATTENDANCE
+  TECHNIQUE_MASTERED
+  LEADERBOARD_BONUS
 }
