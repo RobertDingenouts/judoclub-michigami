@@ -29,6 +29,7 @@ const allItems: { id: SectionId | string; emoji: string; label: string; isProefl
 ];
 
 const moreLinks: { id: SectionId | string; emoji: string; label: string; isExternal?: boolean; url?: string }[] = [
+  { id: 'signin', emoji: '🔑', label: 'Inloggen / Registreren', isExternal: true, url: '/signin' },
   { id: 'locatie', emoji: '📍', label: 'Locatie' },
   { id: 'contact', emoji: '✉️', label: 'Contact' },
   { id: 'foto-galerij', emoji: '📸', label: "Foto's" },
