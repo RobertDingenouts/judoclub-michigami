@@ -28,8 +28,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true, user: result.user })
   } catch (error) {
     console.error('Register error:', error)
+    const msg = error instanceof Error ? error.message : String(error)
     return NextResponse.json(
-      { success: false, error: 'Er is een fout opgetreden' },
+      { success: false, error: msg.substring(0, 300) },
       { status: 500 }
     )
   }
