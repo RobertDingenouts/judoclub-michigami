@@ -1,12 +1,13 @@
 import Link from 'next/link'
 import { isAdmin } from '@/lib/auth'
 import { redirect } from 'next/navigation'
+import { LogoutButton } from '@/components/LogoutButton'
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const adminSession = await isAdmin()
 
   if (!adminSession) {
-    redirect('/admin/login')
+    redirect('/admin-login')
   }
 
   return (
@@ -42,17 +43,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
         {/* Footer */}
         <div className="border-t border-gray-200 p-4">
-          <form action={async () => { 'use server'; await fetch('/api/auth/logout', { method: 'POST' }); }} className="w-full">
-            <button
-              type="submit"
-              className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
-            >
-              <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
-                <path fillRule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.22l.123.489.804.804A1 1 0 0113 18H7a1 1 0 01-.707-1.707l.804-.804L7.22 15H5a2 2 0 01-2-2V5zm5.771 7H5V5h3.771v7zM15 5H9v7h6V5z" clipRule="evenodd" />
-              </svg>
-              Uitloggen
-            </button>
-          </form>
+          <LogoutButton />
           <div className="mt-3 text-center">
             <Link href="/" className="text-xs text-gray-400 hover:text-[#a90000]">
               ← Terug naar website

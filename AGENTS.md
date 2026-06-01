@@ -157,6 +157,60 @@ git add -A && git commit -m "beschrijving" && git push origin main
 
 ---
 
+## AUTH SYSTEM (Email/Password + iron-session)
+
+**Geen Clerk — eigen email/password auth met bcrypt + iron-session cookies.**
+
+### Routes
+| Route | Doel | Auth nodig? |
+|-------|------|-------------|
+| `/signin` | Login (leden + admin) | Nee |
+| `/signup` | Registratie nieuwe leden | Nee |
+| `/admin-login` | Admin login (legacy) | Nee |
+| `/admin/*` | Admin dashboard | Ja (ADMIN role) |
+| `/leden/*` | Leden dashboard | Ja (MEMBER/PARENT/INSTRUCTOR/ADMIN) |
+
+### API Endpoints
+| Endpoint | Method | Doel |
+|----------|--------|------|
+| `/api/auth/login` | POST | `{email, password}` → session cookie |
+| `/api/auth/logout` | POST | Destroy session |
+| `/api/auth/register` | POST | `{name, email, password}` → user + member + session |
+| `/api/auth/me` | GET | Huidige gebruiker ophalen |
+
+### Auth Functies (`src/lib/auth.ts`)
+- `login(email, password)` — verifieert credentials, zet session cookie
+- `register(name, email, password)` — maakt User + Member aan, auto-login
+- `getSession()` — iron-session cookie uitlezen
+- `setSession(data)` — session cookie schrijven
+- `destroySession()` — session verwijderen
+- `getCurrentUser()` — User + Member profiel ophalen uit DB
+- `isAdmin()` — check op ADMIN role
+- `isMember()` — check op ingelogd lid (alle roles)
+- `hashPassword()`, `verifyPassword()` — bcrypt helpers
+
+### Database Gebruikers
+| Email | Role | Wachtwoord |
+|-------|------|-----------|
+| `robertdingenouts@gmail.com` | ADMIN | `admin123` |
+| `judoclub_michigami@hotmail.com` | ADMIN | geen (Clerk legacy) |
+| `suffiedingesaus@gmail.com` | ADMIN | geen (Clerk legacy) |
+
+### Leden Dashboard (`/leden/`)
+- `/leden/` — Overzicht met statistieken + snelle acties
+- `/leden/voortgang` — Examen geschiedenis
+- `/leden/diploma's` — Eigen diploma's + download
+- `/leden/cursus-japans` — Cursus voortgang per band
+
+### Belangrijk
+- Admin login via `/signin` redirect naar `/admin`
+- Leden login via `/signin` redirect naar `/leden`
+- Registratie via `/signup` = auto-login → `/leden`
+- Logout button redirect naar `/signin`
+- Session cookies: 24 uur, httpOnly, sameSite=lax
+
+---
+
 ## HERINNERINGEN VOOR AGENTS
 
 - De gebruiker heet Robert, partner Robin van der Gaag

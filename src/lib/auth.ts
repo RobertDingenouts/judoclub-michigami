@@ -106,3 +106,69 @@ export async function isAdmin(): Promise<boolean> {
   const session = await getSession()
   return !!session.userId && session.role === 'ADMIN'
 }
+
+// ============================================================================
+// Member auth
+// ============================================================================
+
+export async function isMember(): Promise<boolean> {
+  const session = await getSession()
+  return !!session.userId && ['MEMBER', 'PARENT', 'INSTRUCTOR', 'ADMIN'].includes(session.role)
+}
+
+export async function getCurrentUser() {
+  const session = await getSession()
+  if (!session.userId) return null
+  const user = await db.user.findUnique({
+    where: { id: session.userId },
+    include: { member: true },
+  })
+  return user
+}
+
+// ============================================================================
+// Registration
+// ============================================================================
+
+export async function register(name: string, email: string, password: string) {
+  // Check if email already exists
+  const existing = await db.user.findUnique({
+    where: { email: email.trim().toLowerCase() },
+  })
+
+  if (existing) {
+    return { error: 'Dit e-mailadres is al geregistreerd', success: false }
+  }
+
+  const passwordHash = await hashPassword(password)
+
+  const user = await db.user.create({
+    data: {
+      email: email.trim().toLowerCase(),
+      name: name.trim(),
+      passwordHash,
+      role: 'MEMBER',
+    },
+  })
+
+  // Auto-create member profile
+  await db.member.create({
+    data: {
+      userId: user.id,
+      firstName: name.trim().split(' ')[0] || name.trim(),
+      lastName: name.trim().split(' ').slice(1).join(' ') || '',
+      email: email.trim().toLowerCase(),
+    },
+  })
+
+  // Auto-login after registration
+  await setSession({
+    userId: user.id,
+    email: user.email,
+    name: user.name || undefined,
+    role: user.role,
+    loginTime: Date.now(),
+  })
+
+  return { success: true, user: { id: user.id, email: user.email, name: user.name, role: user.role } }
+}
