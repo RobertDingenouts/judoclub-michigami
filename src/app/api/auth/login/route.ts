@@ -21,9 +21,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true, user: result.user })
   } catch (error) {
     console.error('Login error:', error)
-    const msg = error instanceof Error ? error.message : String(error)
     return NextResponse.json(
-      { success: false, error: msg.substring(0, 300) },
+      { success: false, error: 'Er is een fout opgetreden' },
       { status: 500 }
     )
   }
