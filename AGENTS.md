@@ -196,6 +196,13 @@ git add -A && git commit -m "beschrijving" && git push origin main
 - `isMember()` — check op ingelogd lid (alle roles)
 - `hashPassword()`, `verifyPassword()` — bcrypt helpers
 
+### User Avatar Dropdown (na inloggen)
+- **Na login/signup**: redirect naar home page `/` (niet meer naar `/admin` of `/leden`)
+- **Desktop sidebar**: Avatar met bandkleur + dropdown (Profiel, Diploma's, Uitloggen + Admin Dashboard voor admins)
+- **Mobile bottom bar**: Avatar knop met hover dropdown
+- **Niet ingelogd**: "Inloggen / Registreren" knop in sidebar
+- **Component**: `src/components/UserDropdown.tsx` (`UserDropdown` + `MobileUserAvatar`)
+
 ### Database Gebruikers
 | Email | Role | Wachtwoord |
 |-------|------|-----------|
