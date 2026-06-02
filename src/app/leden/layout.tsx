@@ -3,6 +3,8 @@ import { isMember } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import { LogoutButton } from '@/components/LogoutButton'
 
+export const dynamic = 'force-dynamic'
+
 export default async function LedenLayout({ children }: { children: React.ReactNode }) {
   const memberSession = await isMember()
 

@@ -2,6 +2,8 @@ import { db } from '@/lib/db'
 import Link from 'next/link'
 import type { BeltLevel, ExamStatus, DiplomaType } from '@prisma/client'
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminDashboard() {
   // Fetch stats
   const [totalStudents, totalExams, totalDiplomas, recentExams, beltDistribution] = await Promise.all([

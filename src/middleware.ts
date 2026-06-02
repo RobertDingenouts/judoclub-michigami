@@ -8,7 +8,7 @@ const SESSION_SECRET = process.env.SESSION_SECRET || 'michigami-admin-session-se
 // Admin routes that require authentication
 const ADMIN_PREFIXES = ['/admin']
 // Public admin routes (no auth required)
-const PUBLIC_ADMIN_ROUTES = ['/admin/login']
+const PUBLIC_ADMIN_ROUTES: string[] = []
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
@@ -41,7 +41,7 @@ export async function middleware(request: NextRequest) {
 
   // Not logged in → redirect to login
   if (!session.userId) {
-    const loginUrl = new URL('/admin/login', request.url)
+    const loginUrl = new URL('/admin-login', request.url)
     loginUrl.searchParams.set('callbackUrl', pathname)
     return NextResponse.redirect(loginUrl)
   }

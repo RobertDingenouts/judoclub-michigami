@@ -3,6 +3,8 @@ import { db } from '@/lib/db'
 import { isAdmin } from '@/lib/auth'
 import type { BeltLevel, Role, ExamStatus } from '@prisma/client'
 
+export const dynamic = 'force-dynamic'
+
 // GET - Get single student
 export async function GET(
   request: Request,

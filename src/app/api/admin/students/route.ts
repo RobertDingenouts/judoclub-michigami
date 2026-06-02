@@ -4,6 +4,8 @@ import { isAdmin } from '@/lib/auth'
 import type { BeltLevel } from '@prisma/client'
 import { Role } from '@prisma/client'
 
+export const dynamic = 'force-dynamic'
+
 // GET - List students (handled by page.tsx server component)
 export async function GET(request: Request) {
   const admin = await isAdmin()

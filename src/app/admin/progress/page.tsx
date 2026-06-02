@@ -2,6 +2,8 @@ import { db } from '@/lib/db'
 import { BELT_LABELS_NL, BELT_COLORS, BELT_ORDER } from '@/lib/student-progress-types'
 import type { BeltLevel } from '@prisma/client'
 
+export const dynamic = 'force-dynamic'
+
 export default async function ProgressPage() {
   // Fetch all students with course progress
   const students = await db.member.findMany({

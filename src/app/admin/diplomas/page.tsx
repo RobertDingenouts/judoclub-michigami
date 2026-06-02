@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { BELT_LABELS_NL, BELT_COLORS } from '@/lib/student-progress-types'
 import type { BeltLevel, DiplomaType } from '@prisma/client'
 
+export const dynamic = 'force-dynamic'
+
 export default async function DiplomasPage({
   searchParams,
 }: {

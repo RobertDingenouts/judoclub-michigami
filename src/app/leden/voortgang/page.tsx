@@ -1,6 +1,8 @@
 import { getCurrentUser } from '@/lib/auth'
 import { db } from '@/lib/db'
 
+export const dynamic = 'force-dynamic'
+
 export default async function VoortgangPage() {
   const user = await getCurrentUser()
   if (!user) return null
