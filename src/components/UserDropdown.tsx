@@ -172,7 +172,7 @@ export function UserDropdown({ onSectionChange }: { onSectionChange?: (section: 
             {/* Profile */}
             <button
               onClick={() => {
-                onSectionChange?.('diplomas');
+                onSectionChange?.('profiel');
                 setOpen(false);
               }}
               className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-[#fdf6f6] hover:text-[#a90000] transition-colors"
@@ -291,7 +291,7 @@ export function MobileUserAvatar({ onSectionChange }: { onSectionChange?: (secti
         </div>
         <div className="py-1">
           <button
-            onClick={() => onSectionChange?.('diplomas')}
+            onClick={() => onSectionChange?.('profiel')}
             className="w-full flex items-center gap-2 px-3 py-2 text-xs text-gray-700 hover:bg-[#fdf6f6] hover:text-[#a90000]"
           >
             👤 Profiel

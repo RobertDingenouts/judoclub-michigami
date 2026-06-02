@@ -33,6 +33,7 @@ export type SectionId =
   | 'media-hub'
   | 'timeline'
   | 'diplomas'
+  | 'profiel'
   | 'examen-goedkeuren';
 
 export type Section = SectionId;
@@ -127,5 +128,6 @@ export const sectionLabels: Record<Section, string> = {
   'media-hub': 'Media Hub',
   timeline: 'Geschiedenis',
   diplomas: 'Mijn Diplomas',
+  profiel: 'Mijn Profiel',
   'examen-goedkeuren': 'Examen Goedkeuren',
 };

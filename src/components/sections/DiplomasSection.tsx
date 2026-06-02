@@ -35,17 +35,41 @@ export function DiplomasSection({ userId }: DiplomasSectionProps) {
   const [diplomas, setDiplomas] = useState<Diploma[]>([])
   const [loading, setLoading] = useState(true)
   const [downloadingId, setDownloadingId] = useState<string | null>(null)
+  const [resolvedUserId, setResolvedUserId] = useState<string | null>(null)
 
   useEffect(() => {
+    // If userId prop provided, use it directly
     if (userId) {
+      setResolvedUserId(userId)
       fetchUserDiplomas(userId).then((data) => {
         setDiplomas(data.map(d => ({ id: d.id, type: d.type, title: d.title, description: d.description ?? undefined, beltLevel: d.beltLevel ?? undefined, awardedAt: d.awardedAt, verificationCode: d.verificationCode })))
         setLoading(false)
       })
-    } else {
-      setLoading(false)
+      return
     }
+
+    // Otherwise fetch current user from auth API
+    fetch('/api/auth/me')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.authenticated && data.user) {
+          setResolvedUserId(data.user.id)
+          return fetchUserDiplomas(data.user.id)
+        } else {
+          setLoading(false)
+          return []
+        }
+      })
+      .then((data: any) => {
+        if (data) {
+          setDiplomas(data.map(d => ({ id: d.id, type: d.type, title: d.title, description: d.description ?? undefined, beltLevel: d.beltLevel ?? undefined, awardedAt: d.awardedAt, verificationCode: d.verificationCode })))
+        }
+        setLoading(false)
+      })
+      .catch(() => setLoading(false))
   }, [userId])
+
+  const currentUserId = userId || resolvedUserId
 
   const handleDownload = async (diplomaId: string) => {
     setDownloadingId(diplomaId)
@@ -79,7 +103,7 @@ export function DiplomasSection({ userId }: DiplomasSectionProps) {
     }
   }
 
-  if (!userId) {
+  if (!currentUserId && !loading) {
     return (
       <div className="space-y-6">
         <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">

@@ -26,6 +26,7 @@ import { TechniquesSection } from '@/components/sections/TechniquesSection';
 import { CategoryHubSection } from '@/components/sections/CategoryHubSection';
 import { TimelineSection } from '@/components/sections/TimelineSection';
 import { DiplomasSection } from '@/components/sections/DiplomasSection';
+import { ProfileSection } from '@/components/sections/ProfileSection';
 import { ExamApprovalSection } from '@/components/sections/ExamApprovalSection';
 import { PullToRefreshIndicator } from '@/components/PullToRefreshIndicator';
 import { StickyCTA } from '@/components/StickyCTA';
@@ -135,6 +136,10 @@ const sectionMeta: Record<Section, { title: string; description: string }> = {
   'diplomas': {
     title: 'Mijn Diplomas | Judoclub Michigami',
     description: 'Bekijk en download je judo diplomas. Verifieerbare digitale certificaten voor behaalde examens.',
+  },
+  'profiel': {
+    title: 'Mijn Profiel | Judoclub Michigami',
+    description: 'Je persoonlijke profiel, gegevens, band en statistieken bij Judoclub Michigami.',
   },
   'examen-goedkeuren': {
     title: 'Examen Goedkeuren | Judoclub Michigami',
@@ -356,6 +361,7 @@ export default function MichigamiApp() {
             {activeSection === 'judoschool-hub' && <CategoryHubSection group={navGroups[1]} onNavigate={setActiveSection} navGroups={navGroups} groupHubMap={groupHubMap} />}
             {activeSection === 'media-hub' && <CategoryHubSection group={navGroups[2]} onNavigate={setActiveSection} navGroups={navGroups} groupHubMap={groupHubMap} />}
             {activeSection === 'diplomas' && <DiplomasSection />}
+            {activeSection === 'profiel' && <ProfileSection />}
             {activeSection === 'examen-goedkeuren' && <ExamApprovalSection />}
             </motion.div>
           </AnimatePresence>
