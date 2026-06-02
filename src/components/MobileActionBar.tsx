@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { type SectionId } from './nav-config';
+import { MobileUserAvatar } from './UserDropdown';
 import {
   Drawer,
   DrawerContent,
@@ -45,9 +46,11 @@ export function MobileActionBar({ activeSection, onSectionChange, onProeflesClic
   return (
     <div className="md:hidden fixed bottom-4 left-0 right-0 z-50 pointer-events-none">
       <div
-        className="flex gap-1.5 overflow-x-auto -webkit-overflow-scrolling-touch px-2 pointer-events-auto"
+        className="flex gap-1.5 overflow-x-auto -webkit-overflow-scrolling-touch px-2 pointer-events-auto items-center"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
+        {/* User avatar — shows when logged in */}
+        <MobileUserAvatar onSectionChange={(s) => { onSectionChange(s as SectionId); setMoreOpen(false); }} />
         {allItems.map((item) => (
           <button
             key={item.id + item.label}

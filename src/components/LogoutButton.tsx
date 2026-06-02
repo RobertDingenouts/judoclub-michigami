@@ -1,8 +1,9 @@
 'use client'
 
-export function LogoutButton() {
+export function LogoutButton({ onLogout }: { onLogout?: () => void }) {
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' })
+    if (onLogout) onLogout();
     window.location.href = '/signin'
   }
   return (

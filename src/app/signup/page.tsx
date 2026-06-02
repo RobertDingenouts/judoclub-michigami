@@ -75,7 +75,7 @@ export default function SignUpPage() {
       }
 
       // Auto-login succeeded, redirect to member dashboard
-      router.replace('/leden')
+      router.replace('/')
       router.refresh()
     } catch {
       setError('Er is een fout opgetreden. Probeer het opnieuw.')

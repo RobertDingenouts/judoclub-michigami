@@ -7,6 +7,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Search, ChevronRight, Facebook, Mail, Youtube } from 'lucide-react';
 import { navGroups, groupHubMap, type Section } from '@/components/nav-config';
 import { AnimatedCard, AnimatedButton, subtleHover } from '@/components/ui/animated-card';
+import { UserDropdown } from '@/components/UserDropdown';
 
 export function SidebarContent({ activeSection, onSelect }: { activeSection: Section; onSelect: (s: Section) => void }) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -126,19 +127,9 @@ export function SidebarContent({ activeSection, onSelect }: { activeSection: Sec
         </div>
       </ScrollArea>
 
-      {/* Login Button */}
+      {/* Login Button or User Dropdown */}
       <div className="px-3 py-2">
-        <a
-          href="/signin"
-          className="flex items-center justify-center gap-2 w-full px-3 py-2.5 rounded-lg text-sm font-medium text-white transition-colors shadow-sm hover:opacity-90"
-          style={{ backgroundColor: '#a90000' }}
-        >
-          <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3 3 0 11-6 0 3 3 0 016 0z" />
-            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12a9 9 0 0118 0" />
-          </svg>
-          Inloggen / Registreren
-        </a>
+        <UserDropdown onSectionChange={(s) => onSelect(s as any)} />
       </div>
 
       {/* Footer */}

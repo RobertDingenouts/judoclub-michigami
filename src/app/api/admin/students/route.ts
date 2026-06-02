@@ -47,7 +47,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Naam is verplicht' }, { status: 400 })
     }
 
-    // Create user record (Supabase Auth handles passwords separately)
+    // Create user record (password hashed with bcrypt)
     const user = await db.user.create({
       data: {
         email: email || `${firstName.toLowerCase()}.${lastName.toLowerCase()}@local`,

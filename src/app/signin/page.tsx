@@ -60,12 +60,8 @@ export default function SignInPage() {
         return
       }
 
-      // Check if admin or member
-      if (data.user?.role === 'ADMIN') {
-        router.replace('/admin')
-      } else {
-        router.replace('/leden')
-      }
+      // Redirect to home page — user avatar shows logged-in state
+      router.replace('/')
       router.refresh()
     } catch {
       setError('Er is een fout opgetreden. Probeer het opnieuw.')

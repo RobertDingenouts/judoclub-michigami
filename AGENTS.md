@@ -74,8 +74,15 @@ C:\Users\rober\Documents\Michigami\                          ← Documenten & ba
 | State | Zustand | latest |
 | Data Fetching | TanStack Query | latest |
 | Form Validation | React Hook Form + Zod | latest |
-| Database | SQLite + Prisma ORM | latest |
+| Database | Neon.tech PostgreSQL + Prisma ORM | latest |
 | Deploy | Vercel | auto-deploy on push to main |
+
+### Database
+| Provider | Neon.tech |
+| Project | judoclub-michigami |
+| Region | AWS Europe Central 1 (Frankfurt) |
+| Pooler | `ep-twilight-shape-allmuadm-pooler.c-3.eu-central-1.aws.neon.tech` |
+| Database | neondb |
 
 ---
 
