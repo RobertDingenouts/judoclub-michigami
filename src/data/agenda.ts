@@ -13,6 +13,7 @@ export interface AgendaItem {
   inschrijfTekst?: string;
   cancelled?: boolean;
   special?: boolean;
+  weegtijden?: Array<{ time: string; age: string }>;
 }
 
 export const agendaItems: AgendaItem[] = [

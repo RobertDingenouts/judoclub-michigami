@@ -185,7 +185,7 @@ export function AgendaSection() {
                     <span className={isPast ? 'text-gray-400' : 'text-gray-600'}>{item.time}</span>
                     {item.inschrijfUrl && !item.cancelled && !isPast && (
                       <a href={item.inschrijfUrl} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1.5 bg-[#d90000] text-white px-4 py-2 rounded-lg text-xs font-semibold hover:bg-[#b20000] transition-colors shadow-sm">
-                        <ArrowRight className="w-3.5 h-3.5" /> {item.inschrijfTekst}
+                        <ArrowRight className="w-3.5 h-3.5" /> {item.inschrijfTekst || 'Inschrijven'}
                       </a>
                     )}
                   </td>
@@ -232,13 +232,13 @@ export function AgendaSection() {
                     </ul>
                   </div>
                 )}
-                <div className="flex items-center gap-4 text-xs text-gray-500 mt-1">
-                  {item.location !== '-' && <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{item.location}</span>}
-                  {item.time !== '-' && <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{item.time}</span>}
-                </div>
+                <div className="flex flex-col gap-2 text-xs text-gray-500 mt-1">
+                   {item.location !== '-' && <span className="flex items-center gap-1"><MapPin className="w-3 h-3 flex-shrink-0"/>{item.locationUrl ? <a href={item.locationUrl} target="_blank" rel="noopener noreferrer" className="text-[#c00000] hover:underline">{item.location}</a> : <>{item.location}</>}{item.locationSub && <span className="text-gray-400">{item.locationSub}</span>}</span>}
+                   {item.time !== '-' && <span className="flex items-center gap-1"><Clock className="w-3 h-3 flex-shrink-0"/>{item.time}</span>}
+                 </div>
                 {item.inschrijfUrl && !item.cancelled && !isPast && (
                   <a href={item.inschrijfUrl} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1.5 bg-[#d90000] text-white px-4 py-2 rounded-lg text-xs font-semibold hover:bg-[#b20000] transition-colors">
-                    <ArrowRight className="w-3.5 h-3.5" /> {item.inschrijfTekst}
+                    <ArrowRight className="w-3.5 h-3.5" /> {item.inschrijfTekst || 'Inschrijven'}
                   </a>
                 )}
               </div>
