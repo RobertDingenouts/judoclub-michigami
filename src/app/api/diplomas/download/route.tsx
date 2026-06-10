@@ -76,3 +76,48 @@ export async function GET(request: NextRequest) {
     )
   }
 }
+
+// Test endpoint with minimal PDF
+export async function POST(request: NextRequest) {
+  try {
+    const { pdf } = await import('@react-pdf/renderer')
+    const { Document, Page, Text, View, StyleSheet } = await import('@react-pdf/renderer')
+    
+    const styles = StyleSheet.create({
+      page: { width: 'a4', height: 'a4', padding: 40 },
+      text: { fontSize: 24, textAlign: 'center', marginTop: 100 },
+    })
+    
+    const doc = (
+      <Document>
+        <Page size="A4" style={styles.page}>
+          <View style={styles.text}>
+            <Text>Test PDF - Diploma Download Works!</Text>
+          </View>
+        </Page>
+      </Document>
+    )
+    
+    console.log('[test] Generating minimal test PDF...')
+    const blob = await pdf(doc).toBlob()
+    console.log('[test] Test blob size:', blob.size)
+    
+    if (blob.size === 0) {
+      throw new Error('Test PDF generation returned empty blob')
+    }
+    
+    return new NextResponse(blob, {
+      headers: {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': 'attachment; filename="test-diploma.pdf"',
+        'Content-Length': String(blob.size),
+      },
+    })
+  } catch (error: any) {
+    console.error('Test PDF error:', error, error?.stack)
+    return NextResponse.json(
+      { error: error.message || 'Test PDF failed' },
+      { status: 500 }
+    )
+  }
+}

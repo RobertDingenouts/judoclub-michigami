@@ -56,8 +56,10 @@ export async function generateDiplomaPDF(data: {
     
     return blob
   } catch (err: unknown) {
-    console.error('[diploma-generator] PDF generation error:', err, err instanceof Error ? err.stack : undefined)
-    throw err
+    const error = err instanceof Error ? err : new Error(String(err))
+    console.error('[diploma-generator] PDF generation error:', error.message, error.stack)
+    // Re-throw with more context
+    throw new Error(`PDF generation failed: ${error.message}`)
   }
 }
 
