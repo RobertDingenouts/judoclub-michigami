@@ -54,22 +54,18 @@ export async function GET(request: NextRequest) {
       examiner: diploma.examAttempt?.examiner || undefined,
     })
 
-    // Convert to Uint8Array safely
-    let uint8Array: Uint8Array
-    if (typeof Buffer !== 'undefined' && Buffer.isBuffer(pdfBuffer)) {
-      uint8Array = new Uint8Array(pdfBuffer)
-    } else {
-      // ArrayBuffer or similar
-      uint8Array = new Uint8Array(pdfBuffer as ArrayBuffer)
-    }
+    // Convert ArrayBuffer to Blob for response
+    // pdfBuffer is an ArrayBuffer from generateDiplomaPDF
+    const blob = new Blob([pdfBuffer], { type: 'application/pdf' })
 
-    // Return PDF with download header
-    const blob = new Blob([pdfBuffer as ArrayBuffer], { type: 'application/pdf' })
+    // Get byte length for Content-Length header
+    const byteLength = new Uint8Array(pdfBuffer).byteLength
+
     const response = new NextResponse(blob, {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="diploma-${recipientName.replace(/\s+/g, '-')}-${beltLabel.toLowerCase().replace(/\s+/g, '-')}.pdf"`,
-        'Content-Length': String(uint8Array.length),
+        'Content-Length': String(byteLength),
       },
     })
 

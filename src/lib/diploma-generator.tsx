@@ -47,7 +47,25 @@ export async function generateDiplomaPDF(data: {
 
   const pdfBuffer = await pdf(document).toBuffer()
 
-  // Handle both Buffer (Node.js) and ReadableStream (edge runtime)
+  // Handle Buffer (Node.js) — create a new ArrayBuffer with exact byte length
+  if (typeof Buffer !== 'undefined' && Buffer.isBuffer(pdfBuffer)) {
+    const arrayBuffer = new ArrayBuffer(pdfBuffer.byteLength)
+    const view = new Uint8Array(arrayBuffer)
+    view.set(pdfBuffer)
+    return arrayBuffer
+  }
+
+  // Handle Uint8Array (@react-pdf/renderer in edge/other runtimes)
+  if (pdfBuffer instanceof Uint8Array) {
+    // Uint8Array.buffer may be a larger backing buffer — use slice to get exact size
+    const backing = pdfBuffer.buffer as ArrayBuffer
+    return backing.slice(
+      pdfBuffer.byteOffset,
+      pdfBuffer.byteOffset + pdfBuffer.byteLength
+    )
+  }
+
+  // Handle ReadableStream (edge runtime)
   if (pdfBuffer instanceof ReadableStream) {
     const reader = pdfBuffer.getReader()
     const chunks: Uint8Array[] = []
@@ -66,23 +84,13 @@ export async function generateDiplomaPDF(data: {
     return result.buffer
   }
 
-  // Node.js Buffer case
-  if (typeof Buffer !== 'undefined' && pdfBuffer instanceof Buffer) {
-    // The Buffer's underlying ArrayBuffer may be larger than the actual data.
-    // Create a new ArrayBuffer with exactly the right size.
-    const arrayBuffer = new ArrayBuffer(pdfBuffer.byteLength)
-    const view = new Uint8Array(arrayBuffer)
-    view.set(pdfBuffer)
-    return arrayBuffer
-  }
-
-  // If it's already an ArrayBuffer, return as-is
+  // If already an ArrayBuffer, return as-is
   if (pdfBuffer instanceof ArrayBuffer) {
     return pdfBuffer
   }
 
-  // Fallback: treat as ArrayBuffer-like
-  return (pdfBuffer as any).buffer || new Uint8Array(0).buffer
+  // Final fallback
+  return new Uint8Array(0).buffer
 }
 
 // ============================================================================

@@ -108,6 +108,14 @@ export async function fetchUserDiplomas(userId: string) {
 // ============================================================================
 
 export async function getDiplomaDownloadUrl(diplomaId: string): Promise<string> {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin
-  return `${baseUrl}/api/diplomas/download?id=${diplomaId}`
+  // NEXT_PUBLIC_BASE_URL is available in both server and client context
+  if (typeof process !== 'undefined' && process.env.NEXT_PUBLIC_BASE_URL) {
+    return `${process.env.NEXT_PUBLIC_BASE_URL}/api/diplomas/download?id=${diplomaId}`
+  }
+  // Client-side fallback
+  if (typeof window !== 'undefined') {
+    return `${window.location.origin}/api/diplomas/download?id=${diplomaId}`
+  }
+  // Ultimate fallback
+  return `/api/diplomas/download?id=${diplomaId}`
 }
