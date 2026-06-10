@@ -134,6 +134,48 @@ function saveProgress(data: ProgressData) {
 }
 
 // ==========================================================================
+// PRONUNCIATION AUDIO
+// ==========================================================================
+function getAudioPath(term: string): string {
+  return `/data/audio/japanese/${term.toLowerCase().replace(/\s+/g, '-')}.wav`;
+}
+
+function PlayButton({ term, size = 'md' }: { term: string; size?: 'sm' | 'md' }) {
+  const [playing, setPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const iconSize = size === 'sm' ? 'w-4 h-4' : 'w-5 h-5';
+  const btnPadding = size === 'sm' ? 'p-2' : 'p-2.5';
+
+  const play = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+    const audio = new Audio(getAudioPath(term));
+    audioRef.current = audio;
+    setPlaying(true);
+    audio.play().catch(() => {});
+    audio.onended = () => setPlaying(false);
+    audio.onerror = () => setPlaying(false);
+  };
+
+  return (
+    <button
+      onClick={play}
+      className={`${btnPadding} rounded-full bg-[#fdf6f6] hover:bg-[#fce4e4] border border-[#f0d0d0] hover:border-[#a90000] transition-all flex items-center justify-center ${playing ? 'text-[#a90000] scale-110' : 'text-gray-400 hover:text-[#a90000]'}`}
+      title="Uitspraak horen"
+    >
+      {playing
+        ? <Volume2 className={`${iconSize} animate-pulse`} />
+        : <Volume2 className={iconSize} />
+      }
+    </button>
+  );
+}
+
+// ==========================================================================
 // FLASHCARD COMPONENT
 // ==========================================================================
 function Flashcard({ term, onFlip }: { term: JudoTerm; onFlip: () => void }) {
@@ -153,9 +195,12 @@ function Flashcard({ term, onFlip }: { term: JudoTerm; onFlip: () => void }) {
           <span className="inline-block px-3 py-1 bg-[#a90000] text-white text-xs font-bold rounded-full mb-4">
             {term.categorie}
           </span>
-          <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#a90000] text-center break-words w-full">
-            {term.uitspraak}
-          </h3>
+          <div className="flex items-center gap-3">
+            <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#a90000] text-center break-words">
+              {term.uitspraak}
+            </h3>
+            <PlayButton term={term.uitspraak} />
+          </div>
           <p className="text-gray-400 text-xs mt-4">Klik om te draaien</p>
         </div>
         {/* Back */}
@@ -169,7 +214,11 @@ function Flashcard({ term, onFlip }: { term: JudoTerm; onFlip: () => void }) {
           <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 text-center break-words w-full">
             {term.nederlands}
           </p>
-          <p className="text-gray-400 text-xs mt-4">Klik om terug te gaan</p>
+          <div className="flex items-center gap-2 mt-3">
+            <span className="text-sm text-[#a90000] font-semibold">{term.uitspraak}</span>
+            <PlayButton term={term.uitspraak} size="sm" />
+          </div>
+          <p className="text-gray-400 text-xs mt-2">Klik om terug te gaan</p>
         </div>
       </div>
     </div>
@@ -348,9 +397,12 @@ function QuizMode({ level, onPass, onNext, onPrev }: { level: JudoLevel; onPass:
         <p className="text-xs font-bold text-[#a90000]">Score: {score}</p>
       </div>
 
-      <h3 className="text-2xl sm:text-3xl font-bold text-[#8c0000] text-center mb-4 break-words">
-        {question.uitspraak}
-      </h3>
+      <div className="flex items-center justify-center gap-3 mb-4">
+        <h3 className="text-2xl sm:text-3xl font-bold text-[#8c0000] text-center break-words">
+          {question.uitspraak}
+        </h3>
+        <PlayButton term={question.uitspraak} size="sm" />
+      </div>
 
       <p className="text-center text-sm text-gray-500 mb-4">Wat betekent dit?</p>
 
