@@ -1,12 +1,4 @@
-import { Document, Page, Text, View, StyleSheet, Image, Font } from '@react-pdf/renderer'
-
-// Register fonts
-Font.register({
-  family: 'Inter',
-  fonts: [
-    { src: 'https://fonts.gstatic.com/s/inter/v18/UcCo3FwrK3iLTcviYwY.woff2' },
-  ],
-})
+import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer'
 
 const styles = StyleSheet.create({
   page: {
@@ -21,14 +13,14 @@ const styles = StyleSheet.create({
   diplomaContainer: {
     width: '100%',
     height: '100%',
-    border: '3',
+    borderWidth: 3,
     borderColor: '#a90000',
     borderRadius: 12,
     padding: 40,
     position: 'relative',
   },
   innerBorder: {
-    border: '1',
+    borderWidth: 1,
     borderColor: '#d4d4d4',
     borderRadius: 8,
     padding: 30,
@@ -41,7 +33,7 @@ const styles = StyleSheet.create({
   },
   clubName: {
     fontSize: 14,
-    fontFamily: 'Inter',
+    fontFamily: 'Helvetica',
     color: '#a90000',
     fontWeight: 'bold',
     letterSpacing: 3,
@@ -49,15 +41,14 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
-    fontFamily: 'Inter',
+    fontFamily: 'Helvetica-Bold',
     color: '#1a1a1a',
-    fontWeight: 'bold',
     textAlign: 'center',
     marginTop: 8,
   },
   subtitle: {
     fontSize: 14,
-    fontFamily: 'Inter',
+    fontFamily: 'Helvetica',
     color: '#666',
     textAlign: 'center',
     marginTop: 4,
@@ -75,25 +66,25 @@ const styles = StyleSheet.create({
   },
   presentedTo: {
     fontSize: 12,
-    fontFamily: 'Inter',
+    fontFamily: 'Helvetica',
     color: '#888',
     textAlign: 'center',
     marginBottom: 8,
   },
   recipientName: {
     fontSize: 28,
-    fontFamily: 'Inter',
+    fontFamily: 'Helvetica-Bold',
     color: '#1a1a1a',
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 16,
     textDecoration: 'underline',
-    textDecorColor: '#a90000',
-    textDecorThickness: 2,
+    textDecorationColor: '#a90000',
+    textDecorationWidth: 2,
   },
   description: {
     fontSize: 13,
-    fontFamily: 'Inter',
+    fontFamily: 'Helvetica',
     color: '#444',
     textAlign: 'center',
     lineHeight: 1.6,
@@ -102,7 +93,7 @@ const styles = StyleSheet.create({
   },
   beltAchieved: {
     fontSize: 18,
-    fontFamily: 'Inter',
+    fontFamily: 'Helvetica-Bold',
     color: '#a90000',
     fontWeight: 'bold',
     textAlign: 'center',
@@ -129,7 +120,7 @@ const styles = StyleSheet.create({
   },
   signatureLabel: {
     fontSize: 10,
-    fontFamily: 'Inter',
+    fontFamily: 'Helvetica',
     color: '#888',
     textAlign: 'center',
   },
@@ -146,13 +137,13 @@ const styles = StyleSheet.create({
   },
   verificationCode: {
     fontSize: 9,
-    fontFamily: 'Inter',
+    fontFamily: 'Helvetica',
     color: '#aaa',
     textAlign: 'center',
   },
   verificationUrl: {
     fontSize: 8,
-    fontFamily: 'Inter',
+    fontFamily: 'Helvetica',
     color: '#bbb',
     textAlign: 'center',
     marginTop: 2,
@@ -249,7 +240,7 @@ export function DiplomaPDFDocument({
                 </Text>
               </View>
               <View style={styles.dateBlock}>
-                <Text style={{ fontSize: 12, fontFamily: 'Inter', color: '#444' }}>
+                <Text style={{ fontSize: 12, fontFamily: 'Helvetica', color: '#444' }}>
                   {dateStr}
                 </Text>
                 <Text style={styles.signatureLabel}>Datum</Text>

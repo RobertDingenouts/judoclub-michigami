@@ -91,6 +91,34 @@ export async function generateDiplomaPDFBuffer(data: {
 }
 
 // ============================================================================
+// Test PDF generation (minimal, uses Helvetica built-in)
+// ============================================================================
+
+export async function generateTestPDF(): Promise<Blob> {
+  const { Document, Page, Text, View, StyleSheet } = await import('@react-pdf/renderer')
+  
+  const styles = StyleSheet.create({
+    page: { width: 'a4', height: 'a4', padding: 40 },
+    text: { fontSize: 24, textAlign: 'center', marginTop: 100 },
+  })
+  
+  const doc = (
+    <Document>
+      <Page size="A4" style={styles.page}>
+        <View style={styles.text}>
+          <Text>Test PDF - Diploma Download Works!</Text>
+        </View>
+      </Page>
+    </Document>
+  )
+  
+  console.log('[diploma-generator] Generating minimal test PDF...')
+  const blob = await pdf(doc).toBlob()
+  console.log('[diploma-generator] Test blob size:', blob.size)
+  return blob
+}
+
+// ============================================================================
 // Belt label helpers
 // ============================================================================
 
