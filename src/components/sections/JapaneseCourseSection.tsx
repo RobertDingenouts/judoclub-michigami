@@ -589,6 +589,7 @@ export function JapaneseCourseSection() {
         {mode === 'learn' ? (
           <div className="space-y-4 relative">
             <Flashcard
+              key={cardIndex}
               term={currentTerm}
               onFlip={() => sounds.flip()}
             />
