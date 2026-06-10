@@ -20,6 +20,7 @@ model User {
   weeklyPoints       Int                @default(0)
   joinDate           DateTime?
   is_active          Boolean            @default(true)
+  leaderboardOptIn   Boolean            @default(false)
   createdAt          DateTime           @default(now())
   updatedAt          DateTime           @updatedAt
   courseProgress     CourseProgress[]
@@ -27,6 +28,7 @@ model User {
   examAttempts       ExamAttempt[]
   leaderboardEntries LeaderboardEntry[]
   member             Member?
+  activitySessions   ActivitySession[]
 
   @@index([email])
   @@index([clerkUserId])
@@ -202,8 +204,24 @@ model LeaderboardEntry {
   member       Member?      @relation(fields: [memberId], references: [id])
   user         User         @relation(fields: [userId], references: [id])
 
+  @@unique([userId, weekStart])
   @@index([weekStart, points])
   @@index([userId, weekStart])
+}
+
+model ActivitySession {
+  id           String        @id @default(cuid())
+  userId       String
+  page         String        // e.g., 'exam-dashboard', 'techniques', 'cursus-japans'
+  action       String        // e.g., 'view', 'quiz_start', 'quiz_complete', 'scroll', 'video_play'
+  durationMs   Int           // time spent in milliseconds
+  metadata     Json?         // additional data like quiz score, scroll depth, etc.
+  sessionId    String        // groups related activities in one session
+  createdAt    DateTime      @default(now())
+  user         User          @relation(fields: [userId], references: [id])
+
+  @@index([userId, createdAt])
+  @@index([sessionId])
 }
 
 model Page {

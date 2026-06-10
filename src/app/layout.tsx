@@ -99,6 +99,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="nl" suppressHydrationWarning>
+      <head>
+        <script src="/activity-tracker.js" async />
+      </head>
       <body
         className={`${geistSans.variable} ${inter.variable} ${rokkitt.variable} ${notoSansJp.variable} antialiased bg-background text-foreground`}
       >
