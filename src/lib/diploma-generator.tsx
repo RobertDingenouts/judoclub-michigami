@@ -44,36 +44,54 @@ export async function generateDiplomaPDF(data: {
     />
   )
 
-  // Use toBlob() to get a Blob, then use arrayBuffer()
-  const blob = await pdf(document).toBlob()
+  // Use the pdf function which returns a PDFKit document instance
+  // This is the most reliable way on Node.js (Vercel) - pipe to buffer
+  const doc = pdf(document) as any
   
-  console.log('[diploma-generator] Got blob, size:', blob.size, 'type:', blob.type)
+  console.log('[diploma-generator] Got PDFKit document, type:', doc?.constructor?.name)
   
-  // Use arrayBuffer() method on Blob - standard Web API
-  const arrayBuffer = await blob.arrayBuffer()
+  // Collect chunks from PDFKit document
+  const chunks: Uint8Array[] = []
   
-  console.log('[diploma-generator] arrayBuffer byteLength:', arrayBuffer.byteLength, 'constructor:', arrayBuffer.constructor?.name)
+  await new Promise<void>((resolve, reject) => {
+    doc.on('data', (chunk: Buffer | Uint8Array) => {
+      console.log('[diploma-generator] data chunk, length:', chunk.length, 'type:', chunk.constructor?.name)
+      // Convert Buffer to Uint8Array if needed
+      const uint8 = chunk instanceof Uint8Array ? chunk : new Uint8Array(chunk)
+      chunks.push(uint8)
+    })
+    doc.on('end', () => {
+      console.log('[diploma-generator] PDFKit stream ended')
+      resolve()
+    })
+    doc.on('error', (err: Error) => {
+      console.error('[diploma-generator] PDFKit error:', err)
+      reject(err)
+    })
+    
+    // End the document to start generating
+    doc.end()
+  })
   
-  // Check if it's a SharedArrayBuffer (which can cause issues)
-  if (arrayBuffer.constructor.name === 'SharedArrayBuffer') {
-    console.warn('[diploma-generator] Got SharedArrayBuffer, converting to ArrayBuffer')
-    const view = new Uint8Array(arrayBuffer)
-    const result = new ArrayBuffer(view.byteLength)
-    new Uint8Array(result).set(view)
-    console.log('[diploma-generator] Converted ArrayBuffer byteLength:', result.byteLength)
-    return result
-  }
+  const totalLength = chunks.reduce((sum, chunk) => sum + chunk.length, 0)
+  console.log('[diploma-generator] Total chunks:', chunks.length, 'total length:', totalLength)
   
-  // Ensure it's a proper ArrayBuffer
-  if (arrayBuffer.byteLength === 0) {
+  if (totalLength === 0) {
     console.warn('[diploma-generator] Empty PDF generated')
     return new Uint8Array(0).buffer
   }
   
-  // Create a new ArrayBuffer to ensure it's not a SharedArrayBuffer and has correct bounds
-  const view = new Uint8Array(arrayBuffer)
-  const result = new ArrayBuffer(view.byteLength)
-  new Uint8Array(result).set(view)
+  // Combine all chunks into a single Uint8Array
+  const combined = new Uint8Array(totalLength)
+  let offset = 0
+  for (const chunk of chunks) {
+    combined.set(chunk, offset)
+    offset += chunk.length
+  }
+  
+  // Create a clean ArrayBuffer from the combined Uint8Array
+  const result = new ArrayBuffer(combined.byteLength)
+  new Uint8Array(result).set(combined)
   
   console.log('[diploma-generator] Final ArrayBuffer byteLength:', result.byteLength)
   
