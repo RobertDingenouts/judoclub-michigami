@@ -1,43 +1,63 @@
-/**
- * GET /api/diplomas/verify?code=<verificationCode>
- * Public endpoint to verify a diploma by its verification code.
- * Does NOT require authentication.
- */
-
-import { NextRequest, NextResponse } from 'next/server'
-import { verifyDiploma } from '@/lib/diploma-generator'
+import { NextResponse } from 'next/server'
+import { db } from '@/lib/db'
+import { getBeltLabel } from '@/lib/diploma-generator'
 
 export const dynamic = 'force-dynamic'
 
-export async function GET(request: NextRequest) {
+// GET /api/diplomas/verify?code=JP-XXXX-XXXX
+// Public diploma verification - no auth required
+export async function GET(request: Request) {
   try {
-    const searchParams = request.nextUrl.searchParams
+    const searchParams = new URL(request.url).searchParams
     const code = searchParams.get('code')
 
     if (!code) {
       return NextResponse.json(
-        { error: 'Missing verification code' },
+        { valid: false, error: 'Verificatiecode is verplicht' },
         { status: 400 }
       )
     }
 
-    const result = await verifyDiploma(code)
+    const diploma = await db.diploma.findUnique({
+      where: { verificationCode: code.toUpperCase() },
+      include: {
+        member: true,
+        examAttempt: true,
+      },
+    })
 
-    if (!result.valid) {
+    if (!diploma) {
       return NextResponse.json(
-        { valid: false, error: 'Invalid or expired diploma' },
+        { valid: false, error: 'Diploma niet gevonden' },
         { status: 404 }
       )
     }
 
+    const beltLabel = diploma.beltLevel ? getBeltLabel(diploma.beltLevel as string) : null
+
     return NextResponse.json({
       valid: true,
-      diploma: result.diploma,
+      diploma: {
+        id: diploma.id,
+        title: diploma.title,
+        type: diploma.type,
+        recipientName: `${diploma.member.firstName} ${diploma.member.lastName}`,
+        beltLevel: beltLabel,
+        awardedAt: diploma.awardedAt,
+        verificationCode: diploma.verificationCode,
+        description: diploma.description,
+        examAttempt: diploma.examAttempt ? {
+          beltLevel: diploma.examAttempt.beltLevel,
+          overallScore: diploma.examAttempt.overallScore,
+          examDate: diploma.examAttempt.examDate,
+          examiner: diploma.examAttempt.examiner,
+        } : null,
+      },
     })
-  } catch (error: any) {
-    console.error('Diploma verification error:', error)
+  } catch (error) {
+    console.error('Diploma verify error:', error)
     return NextResponse.json(
-      { error: 'Verification failed', valid: false },
+      { valid: false, error: 'Fout bij verifiëren diploma' },
       { status: 500 }
     )
   }

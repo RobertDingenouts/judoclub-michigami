@@ -1,0 +1,49 @@
+import { NextResponse } from 'next/server'
+import { getCurrentUser } from '@/lib/auth'
+import { db } from '@/lib/db'
+import { verifyPassword, hashPassword } from '@/lib/auth'
+
+export const dynamic = 'force-dynamic'
+
+// POST - Change user password
+export async function POST(request: Request) {
+  const user = await getCurrentUser()
+  if (!user) return NextResponse.json({ error: 'Niet ingelogd' }, { status: 401 })
+
+  try {
+    const body = await request.json()
+    const { currentPassword, newPassword } = body
+
+    if (!currentPassword || !newPassword) {
+      return NextResponse.json({ error: 'Beide wachtwoorden zijn verplicht' }, { status: 400 })
+    }
+
+    if (newPassword.length < 8) {
+      return NextResponse.json({ error: 'Nieuw wachtwoord moet minimaal 8 tekens zijn' }, { status: 400 })
+    }
+
+    // Verify current password
+    if (!user.passwordHash) {
+      return NextResponse.json({ error: 'Wachtwoord wijzigen niet mogelijk (geen wachtwoord ingesteld)' }, { status: 400 })
+    }
+
+    const valid = await verifyPassword(currentPassword, user.passwordHash)
+    if (!valid) {
+      return NextResponse.json({ error: 'Huidig wachtwoord is onjuist' }, { status: 401 })
+    }
+
+    // Hash new password
+    const newPasswordHash = await hashPassword(newPassword)
+
+    // Update password
+    await db.user.update({
+      where: { id: user.id },
+      data: { passwordHash: newPasswordHash },
+    })
+
+    return NextResponse.json({ success: true, message: 'Wachtwoord succesvol gewijzigd' })
+  } catch (error) {
+    console.error('Change password error:', error)
+    return NextResponse.json({ error: 'Fout bij wijzigen wachtwoord' }, { status: 500 })
+  }
+}

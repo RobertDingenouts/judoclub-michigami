@@ -40,7 +40,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <AdminLink href="/admin/students" icon="👥" label="Studenten" />
           <AdminLink href="/admin/exams" icon="🎯" label="Examens" />
           <AdminLink href="/admin/progress" icon="📈" label="Voortgang" />
-          <AdminLink href="/admin/diplomas" icon="🏆" label="Diploma&apos;s" />
+          <AdminLink href="/admin/diplomas" icon="🏆" label="Diploma's" />
+          <AdminLink href="/diploma/verifieren" icon="🔍" label="Diploma Verifiëren" />
         </nav>
 
         {/* Footer */}

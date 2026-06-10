@@ -40,6 +40,7 @@ export default async function LedenLayout({ children }: { children: React.ReactN
           <LedenLink href="/leden/voortgang" icon="📈" label="Voortgang" />
           <LedenLink href="/leden/diploma's" icon="🏆" label="Diploma's" />
           <LedenLink href="/leden/cursus-japans" icon="🇯🇵" label="Cursus Japans" />
+          <LedenLink href="/leden/profiel/bewerken" icon="👤" label="Profiel" />
         </nav>
 
         {/* Footer */}
