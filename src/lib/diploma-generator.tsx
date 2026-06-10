@@ -54,15 +54,26 @@ export async function generateDiplomaPDF(data: {
   
   console.log('[diploma-generator] arrayBuffer byteLength:', arrayBuffer.byteLength, 'constructor:', arrayBuffer.constructor?.name)
   
-  // Ensure it's a proper ArrayBuffer (not SharedArrayBuffer)
+  // Check if it's a SharedArrayBuffer (which can cause issues)
+  if (arrayBuffer.constructor.name === 'SharedArrayBuffer') {
+    console.warn('[diploma-generator] Got SharedArrayBuffer, converting to ArrayBuffer')
+    const view = new Uint8Array(arrayBuffer)
+    const result = new ArrayBuffer(view.byteLength)
+    new Uint8Array(result).set(view)
+    console.log('[diploma-generator] Converted ArrayBuffer byteLength:', result.byteLength)
+    return result
+  }
+  
+  // Ensure it's a proper ArrayBuffer
   if (arrayBuffer.byteLength === 0) {
     console.warn('[diploma-generator] Empty PDF generated')
     return new Uint8Array(0).buffer
   }
   
-  // Create a new ArrayBuffer to ensure it's not a SharedArrayBuffer
-  const result = new ArrayBuffer(arrayBuffer.byteLength)
-  new Uint8Array(result).set(new Uint8Array(arrayBuffer))
+  // Create a new ArrayBuffer to ensure it's not a SharedArrayBuffer and has correct bounds
+  const view = new Uint8Array(arrayBuffer)
+  const result = new ArrayBuffer(view.byteLength)
+  new Uint8Array(result).set(view)
   
   console.log('[diploma-generator] Final ArrayBuffer byteLength:', result.byteLength)
   

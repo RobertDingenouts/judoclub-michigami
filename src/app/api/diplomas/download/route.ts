@@ -63,14 +63,13 @@ export async function GET(request: NextRequest) {
       throw new Error('pdfBuffer is empty (0 bytes)')
     }
     
-    // Create a fresh Uint8Array view for Blob creation
+    // Try creating a Blob with Uint8Array view
     const uint8Array = new Uint8Array(pdfBuffer)
-    console.log('[download] Uint8Array length:', uint8Array.length)
+    console.log('[download] Uint8Array length:', uint8Array.length, 'byteOffset:', uint8Array.byteOffset, 'buffer byteLength:', uint8Array.buffer.byteLength)
     
-    // Convert to Blob using the Uint8Array view
     const blob = new Blob([uint8Array], { type: 'application/pdf' })
     console.log('[download] Blob size:', blob.size)
-
+    
     const response = new NextResponse(blob, {
       headers: {
         'Content-Type': 'application/pdf',
@@ -81,7 +80,7 @@ export async function GET(request: NextRequest) {
 
     return response
   } catch (error: any) {
-    console.error('Diploma download error:', error)
+    console.error('Diploma download error:', error, error?.stack)
     return NextResponse.json(
       { error: error.message || 'Failed to download diploma' },
       { status: 500 }
