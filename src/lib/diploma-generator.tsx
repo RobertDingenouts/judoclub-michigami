@@ -44,58 +44,60 @@ export async function generateDiplomaPDF(data: {
     />
   )
 
-  // Use the pdf function which returns a PDFKit document instance
-  // This is the most reliable way on Node.js (Vercel) - pipe to buffer
-  const doc = pdf(document) as any
+  // Use toBuffer() which returns a ReadableStream on Vercel Node.js
+  // This is the standard way in @react-pdf/renderer v4.5.1
+  const stream = await pdf(document).toBuffer()
   
-  console.log('[diploma-generator] Got PDFKit document, type:', doc?.constructor?.name)
+  console.log('[diploma-generator] Got result from toBuffer(), constructor:', stream?.constructor?.name, 'is ReadableStream:', stream instanceof ReadableStream)
   
-  // Collect chunks from PDFKit document
-  const chunks: Uint8Array[] = []
-  
-  await new Promise<void>((resolve, reject) => {
-    doc.on('data', (chunk: Buffer | Uint8Array) => {
-      console.log('[diploma-generator] data chunk, length:', chunk.length, 'type:', chunk.constructor?.name)
-      // Convert Buffer to Uint8Array if needed
-      const uint8 = chunk instanceof Uint8Array ? chunk : new Uint8Array(chunk)
-      chunks.push(uint8)
-    })
-    doc.on('end', () => {
-      console.log('[diploma-generator] PDFKit stream ended')
-      resolve()
-    })
-    doc.on('error', (err: Error) => {
-      console.error('[diploma-generator] PDFKit error:', err)
-      reject(err)
-    })
+  // Handle ReadableStream (web standard)
+  if (stream instanceof ReadableStream) {
+    const reader = stream.getReader()
+    const chunks: Uint8Array[] = []
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) break
+      chunks.push(value)
+    }
+    const totalLength = chunks.reduce((sum, chunk) => sum + chunk.length, 0)
+    const combined = new Uint8Array(totalLength)
+    let offset = 0
+    for (const chunk of chunks) {
+      combined.set(chunk, offset)
+      offset += chunk.length
+    }
+    console.log('[diploma-generator] ReadableStream consumed, byteLength:', combined.buffer.byteLength)
     
-    // End the document to start generating
-    doc.end()
-  })
-  
-  const totalLength = chunks.reduce((sum, chunk) => sum + chunk.length, 0)
-  console.log('[diploma-generator] Total chunks:', chunks.length, 'total length:', totalLength)
-  
-  if (totalLength === 0) {
-    console.warn('[diploma-generator] Empty PDF generated')
-    return new Uint8Array(0).buffer
+    const result = new ArrayBuffer(combined.byteLength)
+    new Uint8Array(result).set(combined)
+    return result
   }
   
-  // Combine all chunks into a single Uint8Array
-  const combined = new Uint8Array(totalLength)
-  let offset = 0
-  for (const chunk of chunks) {
-    combined.set(chunk, offset)
-    offset += chunk.length
+  // Handle Buffer (Node.js Buffer)
+  if (typeof Buffer !== 'undefined' && Buffer.isBuffer(stream)) {
+    console.log('[diploma-generator] Got Buffer, byteLength:', stream.byteLength)
+    const result = new ArrayBuffer(stream.byteLength)
+    new Uint8Array(result).set(stream)
+    return result
   }
   
-  // Create a clean ArrayBuffer from the combined Uint8Array
-  const result = new ArrayBuffer(combined.byteLength)
-  new Uint8Array(result).set(combined)
+  // Handle Uint8Array
+  if (stream instanceof Uint8Array) {
+    console.log('[diploma-generator] Got Uint8Array, byteLength:', stream.byteLength)
+    const result = new ArrayBuffer(stream.byteLength)
+    new Uint8Array(result).set(stream)
+    return result
+  }
   
-  console.log('[diploma-generator] Final ArrayBuffer byteLength:', result.byteLength)
+  // Handle ArrayBuffer
+  if (stream instanceof ArrayBuffer) {
+    console.log('[diploma-generator] Got ArrayBuffer, byteLength:', stream.byteLength)
+    return stream
+  }
   
-  return result
+  // Fallback
+  console.warn('[diploma-generator] Unknown type, returning empty')
+  return new Uint8Array(0).buffer
 }
 
 // ============================================================================
@@ -159,7 +161,7 @@ export async function createDiplomaOnExamPass(examAttemptId: string): Promise<{
 
   const beltLabel = getBeltLabel(beltLevel)
   const title = `Examen ${beltLabel} Geslaagd`
-  const description = `Hierbij wordt bevestigd dat ${recipientName} met succes het judo examen voor de ${beltLabel} heeft afgelegd bij Judoclub Michigami Steenbergen.`
+  const description = `Hierbij wordt bevestigd dat ${recipientName} met succes het judo examen voor de ${beltLevel} heeft afgelegd bij Judoclub Michigami Steenbergen.`
 
   let verificationCode = generateVerificationCode()
   let attempts = 0
