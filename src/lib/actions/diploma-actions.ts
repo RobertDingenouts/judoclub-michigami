@@ -108,6 +108,6 @@ export async function fetchUserDiplomas(userId: string) {
 // ============================================================================
 
 export async function getDiplomaDownloadUrl(diplomaId: string): Promise<string> {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin
   return `${baseUrl}/api/diplomas/download?id=${diplomaId}`
 }

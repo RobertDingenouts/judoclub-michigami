@@ -336,7 +336,13 @@ function QuizMode({ level, onPass, onNext, onPrev }: { level: JudoLevel; onPass:
           </div>
           <p className="text-gray-500 mb-2">{percentage}% goed — {passed ? '(≥80% geslaagd!)' : '(min. 80% nodig)'}</p>
           {passed && (
-            <p className="text-sm text-green-600 font-semibold mt-2">Deze band is nu afgerond! Volgende band is ontgrendeld.</p>
+            <div className="mt-3 space-y-2">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-50 border border-yellow-200 rounded-full">
+                <span className="text-yellow-600 text-lg">🎓</span>
+                <span className="text-sm font-bold text-yellow-700">Diploma ontvangen!</span>
+              </div>
+              <p className="text-xs text-gray-500">Je diploma staat in je dashboard onder "Mijn Diploma's"</p>
+            </div>
           )}
           <div className="flex flex-col sm:flex-row justify-center gap-3 mt-6">
             {passed && onNext && (
