@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
     const beltLabel = getBeltLabel(beltLevel as string)
 
     console.log('[download] Starting PDF generation for diploma:', diplomaId)
-    const pdfBuffer = await generateDiplomaPDF({
+    const blob = await generateDiplomaPDF({
       recipientName,
       beltLevel: beltLevel as any,
       title: diploma.title,
@@ -53,40 +53,17 @@ export async function GET(request: NextRequest) {
       examiner: diploma.examAttempt?.examiner || undefined,
     })
     
-    console.log('[download] PDF generated, type:', typeof pdfBuffer, 'constructor:', pdfBuffer?.constructor?.name, 'byteLength:', pdfBuffer?.byteLength, 'isArrayBuffer:', pdfBuffer instanceof ArrayBuffer)
+    console.log('[download] PDF blob generated, size:', blob.size, 'type:', blob.type)
     
-    // Ensure pdfBuffer is a valid ArrayBuffer
-    if (!(pdfBuffer instanceof ArrayBuffer)) {
-      throw new Error('pdfBuffer is not an ArrayBuffer: ' + typeof pdfBuffer)
+    if (blob.size === 0) {
+      throw new Error('Generated PDF is empty (0 bytes)')
     }
-    if (pdfBuffer.byteLength === 0) {
-      throw new Error('pdfBuffer is empty (0 bytes)')
-    }
-    
-    // Try creating a fresh Uint8Array view with explicit bounds checking
-    let uint8Array: Uint8Array
-    try {
-      // Create a fresh ArrayBuffer to ensure we have ArrayBuffer, not SharedArrayBuffer
-      const freshBuffer = new ArrayBuffer(pdfBuffer.byteLength)
-      new Uint8Array(freshBuffer).set(new Uint8Array(pdfBuffer))
-      uint8Array = new Uint8Array(freshBuffer)
-      console.log('[download] Fresh Uint8Array created, length:', uint8Array.length, 'buffer:', uint8Array.buffer.constructor.name)
-    } catch (e) {
-      console.error('[download] Failed to create Uint8Array:', e)
-      return NextResponse.json(
-        { error: 'Failed to process PDF buffer' },
-        { status: 500 }
-      )
-    }
-    
-    const blob = new Blob([uint8Array as any], { type: 'application/pdf' })
-    console.log('[download] Blob size:', blob.size)
     
     const response = new NextResponse(blob, {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="diploma-${recipientName.replace(/\s+/g, '-')}-${beltLabel.toLowerCase().replace(/\s+/g, '-')}.pdf"`,
-        'Content-Length': String(uint8Array.byteLength),
+        'Content-Length': String(blob.size),
       },
     })
 

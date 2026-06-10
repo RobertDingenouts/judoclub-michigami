@@ -20,7 +20,7 @@ export function generateVerificationCode(): string {
 }
 
 // ============================================================================
-// PDF generation (server-side)
+// PDF generation (server-side) - returns Blob directly
 // ============================================================================
 
 export async function generateDiplomaPDF(data: {
@@ -31,7 +31,7 @@ export async function generateDiplomaPDF(data: {
   awardedAt: Date
   verificationCode: string
   examiner?: string
-}): Promise<ArrayBuffer> {
+}): Promise<Blob> {
   const document = (
     <DiplomaPDFDocument
       recipientName={data.recipientName}
@@ -45,68 +45,47 @@ export async function generateDiplomaPDF(data: {
   )
 
   try {
-    console.log('[diploma-generator] Calling pdf(document).toBuffer()...')
-    const stream = await pdf(document).toBuffer()
+    console.log('[diploma-generator] Calling pdf(document).toBlob()...')
+    const blob = await pdf(document).toBlob()
     
-    console.log('[diploma-generator] Got result from toBuffer(), constructor:', stream?.constructor?.name, 'is ReadableStream:', stream instanceof ReadableStream)
+    console.log('[diploma-generator] Got blob, size:', blob.size, 'type:', blob.type)
     
-    let combined: Uint8Array
-    
-    // Handle ReadableStream (web standard)
-    if (stream instanceof ReadableStream) {
-      const reader = stream.getReader()
-      const chunks: Uint8Array[] = []
-      let totalLength = 0
-      while (true) {
-        const { done, value } = await reader.read()
-        if (done) break
-        totalLength += value.length
-        chunks.push(value)
-      }
-      combined = new Uint8Array(totalLength)
-      let offset = 0
-      for (const chunk of chunks) {
-        combined.set(chunk, offset)
-        offset += chunk.length
-      }
-      console.log('[diploma-generator] ReadableStream consumed, byteLength:', combined.byteLength)
-    }
-    // Handle Buffer (Node.js Buffer)
-    else if (typeof Buffer !== 'undefined' && Buffer.isBuffer(stream)) {
-      console.log('[diploma-generator] Got Buffer, byteLength:', stream.byteLength)
-      combined = new Uint8Array(stream.buffer, stream.byteOffset, stream.byteLength)
-      console.log('[diploma-generator] Buffer converted to Uint8Array, byteLength:', combined.byteLength)
-    }
-    // Handle Uint8Array
-    else if (stream instanceof Uint8Array) {
-      console.log('[diploma-generator] Got Uint8Array, byteLength:', stream.byteLength)
-      combined = stream
-    }
-    // Handle ArrayBuffer
-    else if (stream instanceof ArrayBuffer) {
-      console.log('[diploma-generator] Got ArrayBuffer, byteLength:', stream.byteLength)
-      combined = new Uint8Array(stream, 0, stream.byteLength)
-    }
-    else {
-      console.warn('[diploma-generator] Unknown type:', typeof stream, stream?.constructor?.name)
-      return new Uint8Array(0).buffer
+    if (blob.size === 0) {
+      console.warn('[diploma-generator] Empty blob generated')
     }
     
-    if (combined.byteLength === 0) {
-      console.warn('[diploma-generator] Empty combined buffer')
-      return new Uint8Array(0).buffer
-    }
-    
-    // Create final ArrayBuffer with explicit bounds
-    const result = new ArrayBuffer(combined.byteLength)
-    new Uint8Array(result).set(combined)
-    
-    console.log('[diploma-generator] Final ArrayBuffer created, byteLength:', result.byteLength)
-    return result
+    return blob
   } catch (err: unknown) {
     console.error('[diploma-generator] PDF generation error:', err, err instanceof Error ? err.stack : undefined)
     throw err
   }
+}
+
+// ============================================================================
+// PDF generation (server-side) - returns ArrayBuffer for backward compatibility
+// ============================================================================
+
+export async function generateDiplomaPDFBuffer(data: {
+  recipientName: string
+  beltLevel: BeltLevel
+  title: string
+  description?: string
+  awardedAt: Date
+  verificationCode: string
+  examiner?: string
+}): Promise<ArrayBuffer> {
+  const blob = await generateDiplomaPDF(data)
+  
+  // Convert blob to ArrayBuffer
+  const arrayBuffer = await blob.arrayBuffer()
+  
+  console.log('[diploma-generator] Blob converted to ArrayBuffer, byteLength:', arrayBuffer.byteLength)
+  
+  // Ensure it's a clean ArrayBuffer (not SharedArrayBuffer)
+  const view = new Uint8Array(arrayBuffer)
+  const result = new ArrayBuffer(view.byteLength)
+  new Uint8Array(result).set(view)
+  return result
 }
 
 // ============================================================================
@@ -183,7 +162,7 @@ export async function createDiplomaOnExamPass(examAttemptId: string): Promise<{
     attempts++
   }
 
-  const pdfBuffer = await generateDiplomaPDF({
+  const pdfBuffer = await generateDiplomaPDFBuffer({
     recipientName,
     beltLevel: examAttempt.beltLevel,
     title,
