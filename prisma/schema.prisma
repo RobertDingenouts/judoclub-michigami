@@ -185,7 +185,7 @@ model CourseProgress {
   member           Member    @relation(fields: [memberId], references: [id])
   user             User      @relation(fields: [userId], references: [id])
 
-  @@unique([userId, courseName])
+  @@unique([userId, courseName, beltLevel])
   @@index([userId, beltLevel])
 }
 

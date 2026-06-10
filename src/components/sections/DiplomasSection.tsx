@@ -150,11 +150,14 @@ export function DiplomasSection({ userId }: DiplomasSectionProps) {
           {diplomas.map((diploma) => {
             const beltColor = diploma.beltLevel ? (BELT_COLORS[diploma.beltLevel] || '#a90000') : '#a90000'
             const isWhiteBelt = diploma.beltLevel === 'WIT'
+            const isCourseJapanese = diploma.type === 'COURSE_JAPANESE'
 
             return (
               <div
                 key={diploma.id}
-                className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow"
+                className={`bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow ${
+                  isCourseJapanese ? 'ring-2 ring-yellow-200' : ''
+                }`}
               >
                 {/* Belt color bar */}
                 <div
@@ -163,6 +166,14 @@ export function DiplomasSection({ userId }: DiplomasSectionProps) {
                 />
 
                 <div className="p-4 sm:p-5">
+                  {/* Type badge */}
+                  {isCourseJapanese && (
+                    <div className="mb-2">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-yellow-100 text-yellow-700">
+                        🎓 Cursus Japans
+                      </span>
+                    </div>
+                  )}
                   {/* Title and date */}
                   <div className="flex items-start justify-between gap-3 mb-3">
                     <div className="flex-1">

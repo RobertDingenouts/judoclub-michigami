@@ -228,7 +228,7 @@ function Flashcard({ term, onFlip }: { term: JudoTerm; onFlip: () => void }) {
 // ==========================================================================
 // QUIZ MODE COMPONENT
 // ==========================================================================
-function QuizMode({ level, onPass, onNext, onPrev }: { level: JudoLevel; onPass: () => void; onNext?: () => void; onPrev?: () => void }) {
+function QuizMode({ level, onPass, onNext, onPrev }: { level: JudoLevel; onPass: (score: number, total: number) => void; onNext?: () => void; onPrev?: () => void }) {
   const allLevels = getLevels();
   const allTerms = allLevels.flatMap((l) => l.terms);
 
@@ -281,12 +281,13 @@ function QuizMode({ level, onPass, onNext, onPrev }: { level: JudoLevel; onPass:
     // Auto-advance after 1.5 seconds
     const timer = setTimeout(() => {
       if (currentIndex + 1 >= questions.length) {
-        const percentage = Math.round(((score + (isCorrect ? 1 : 0)) / questions.length) * 100);
+        const finalScore = score + (isCorrect ? 1 : 0);
+        const percentage = Math.round((finalScore / questions.length) * 100);
         const passed = percentage >= 80;
         setFinished(true);
         if (passed) {
           sounds.pass();
-          onPass();
+          onPass(finalScore, questions.length);
         } else {
           sounds.fail();
         }
@@ -476,14 +477,36 @@ export function JapaneseCourseSection() {
     return !!progress.passedLevels[prevBelt];
   }
 
-  function handlePass() {
+  function handlePass(quizScore: number, totalQuestions: number) {
     if (!selectedLevel || typeof selectedLevel.id !== 'number') return;
 
-    // Save pass status
+    const levelId = selectedLevel.id;
+
+    // Save pass status locally
     setProgressState(prev => ({
       ...prev,
-      passedLevels: { ...prev.passedLevels, [selectedLevel.id]: true },
+      passedLevels: { ...prev.passedLevels, [levelId]: true },
     }));
+
+    // Sync to server (fire and forget — doesn't block UI)
+    fetch('/api/cursus-japans/sync', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        beltLevel: levelId,
+        score: quizScore,
+        totalQuestions,
+        wordsLearned: quizScore,
+        wordsTotal: totalQuestions,
+      }),
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.success && data.diploma) {
+          console.log(`Diploma aangemaakt: ${data.diploma.title} (${data.diploma.verificationCode})`);
+        }
+      })
+      .catch((err) => console.error('Sync error:', err));
 
     // Check if this unlocks the next belt
     const nextBeltIdx = beltOrder.indexOf(selectedLevel.id) + 1;
