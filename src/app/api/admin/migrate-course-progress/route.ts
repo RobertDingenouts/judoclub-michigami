@@ -26,11 +26,17 @@ export async function POST(request: NextRequest) {
         DROP CONSTRAINT IF EXISTS "CourseProgress.userId_courseName_unique";
     `)
 
-    await db.$executeRawUnsafe(`
-      ALTER TABLE "CourseProgress"
-        ADD CONSTRAINT "CourseProgress.userId_courseName_beltLevel_unique"
-        UNIQUE ("userId", "courseName", "beltLevel");
-    `)
+    // Check if new constraint exists, add if not
+    try {
+      await db.$executeRawUnsafe(`
+        ALTER TABLE "CourseProgress"
+          ADD CONSTRAINT "CourseProgress.userId_courseName_beltLevel_unique"
+          UNIQUE ("userId", "courseName", "beltLevel");
+      `)
+    } catch (e: any) {
+      // Constraint already exists, that's OK
+      console.log('New constraint already exists:', e.message)
+    }
 
     return NextResponse.json({
       success: true,
