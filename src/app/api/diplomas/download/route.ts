@@ -44,34 +44,34 @@ export async function GET(request: NextRequest) {
     const beltLabel = getBeltLabel(beltLevel as string)
 
     // Regenerate PDF (on-the-fly)
-     console.log('[download] Starting PDF generation for diploma:', diplomaId)
-     const pdfBuffer = await generateDiplomaPDF({
-       recipientName,
-       beltLevel: beltLevel as any,
-       title: diploma.title,
-       description: diploma.description || undefined,
-       awardedAt: diploma.awardedAt,
-       verificationCode: diploma.verificationCode,
-       examiner: diploma.examAttempt?.examiner || undefined,
-     })
-     console.log('[download] PDF generated, type:', typeof pdfBuffer, 'constructor:', pdfBuffer?.constructor?.name, 'byteLength:', pdfBuffer?.byteLength, 'isArrayBuffer:', pdfBuffer instanceof ArrayBuffer)
-    \n
-     // Convert ArrayBuffer to Blob for response
-     // pdfBuffer is an ArrayBuffer from generateDiplomaPDF
-     const blob = new Blob([pdfBuffer], { type: 'application/pdf' })
-     console.log('[download] Blob size:', blob.size)
+    console.log('[download] Starting PDF generation for diploma:', diplomaId)
+    const pdfBuffer = await generateDiplomaPDF({
+      recipientName,
+      beltLevel: beltLevel as any,
+      title: diploma.title,
+      description: diploma.description || undefined,
+      awardedAt: diploma.awardedAt,
+      verificationCode: diploma.verificationCode,
+      examiner: diploma.examAttempt?.examiner || undefined,
+    })
+    console.log('[download] PDF generated, type:', typeof pdfBuffer, 'constructor:', pdfBuffer?.constructor?.name, 'byteLength:', pdfBuffer?.byteLength, 'isArrayBuffer:', pdfBuffer instanceof ArrayBuffer)
 
-     const byteLength = new Uint8Array(pdfBuffer).byteLength
-     console.log('[download] Content-Length:', byteLength)
+    // Convert ArrayBuffer to Blob for response
+    // pdfBuffer is an ArrayBuffer from generateDiplomaPDF
+    const blob = new Blob([pdfBuffer], { type: 'application/pdf' })
+    console.log('[download] Blob size:', blob.size)
 
-     const response = new NextResponse(blob, {
-       headers: {
-         'Content-Type': 'application/pdf',
-         'Content-Disposition': `attachment; filename="diploma-${recipientName.replace(/\s+/g, '-')}-${beltLabel.toLowerCase().replace(/\s+/g, '-')}.pdf"`,
-       },
-     })
+    const byteLength = new Uint8Array(pdfBuffer).byteLength
+    console.log('[download] Content-Length:', byteLength)
 
-     return response
+    const response = new NextResponse(blob, {
+      headers: {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment; filename="diploma-${recipientName.replace(/\s+/g, '-')}-${beltLabel.toLowerCase().replace(/\s+/g, '-')}.pdf"`,
+      },
+    })
+
+    return response
   } catch (error: any) {
     console.error('Diploma download error:', error)
     return NextResponse.json(

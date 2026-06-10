@@ -45,28 +45,54 @@ export async function generateDiplomaPDF(data: {
     />
   )
 
-  // Use toStream() which returns a standard ReadableStream (web standard)
-  // This is more reliable than toBuffer() which returns different types
-  const stream = await pdf(document).toStream()
+  // toBuffer() returns a Promise<ReadableStream> in @react-pdf/renderer v4.5.1
+  // on Node.js (Vercel). We need to consume the stream.
+  const stream = await pdf(document).toBuffer()
   
-  console.log('[diploma-generator] Got stream from toStream()')
+  console.log('[diploma-generator] Got stream from toBuffer(), type:', stream?.constructor?.name)
+
+  // Consume the ReadableStream (web standard)
+  if (stream instanceof ReadableStream) {
+    const reader = stream.getReader()
+    const chunks: Uint8Array[] = []
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) break
+      chunks.push(value)
+    }
+    const totalLength = chunks.reduce((sum, chunk) => sum + chunk.length, 0)
+    const combined = new Uint8Array(totalLength)
+    let offset = 0
+    for (const chunk of chunks) {
+      combined.set(chunk, offset)
+      offset += chunk.length
+    }
+    console.log('[diploma-generator] Stream consumed, byteLength:', combined.buffer.byteLength)
+    return combined.buffer
+  }
+
+  // Fallback: if it's already a Buffer/Uint8Array/ArrayBuffer
+  if (typeof Buffer !== 'undefined' && Buffer.isBuffer(stream)) {
+    console.log('[diploma-generator] Converting Buffer to ArrayBuffer')
+    const arrayBuffer = new ArrayBuffer(stream.byteLength)
+    new Uint8Array(arrayBuffer).set(stream)
+    return arrayBuffer
+  }
   
-  const reader = stream.getReader()
-  const chunks: Uint8Array[] = []
-  while (true) {
-    const { done, value } = await reader.read()
-    if (done) break
-    chunks.push(value)
+  if (stream instanceof Uint8Array) {
+    console.log('[diploma-generator] Converting Uint8Array to ArrayBuffer')
+    const backing = stream.buffer as ArrayBuffer
+    return backing.slice(stream.byteOffset, stream.byteOffset + stream.byteLength)
   }
-  const totalLength = chunks.reduce((sum, chunk) => sum + chunk.length, 0)
-  const combined = new Uint8Array(totalLength)
-  let offset = 0
-  for (const chunk of chunks) {
-    combined.set(chunk, offset)
-    offset += chunk.length
+  
+  if (stream instanceof ArrayBuffer) {
+    console.log('[diploma-generator] Already ArrayBuffer')
+    return stream
   }
-  console.log('[diploma-generator] Stream consumed, byteLength:', combined.buffer.byteLength)
-  return combined.buffer
+
+  // Ultimate fallback
+  console.warn('[diploma-generator] Unknown stream type, returning empty ArrayBuffer')
+  return new Uint8Array(0).buffer
 }
 
 // ============================================================================
