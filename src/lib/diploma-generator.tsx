@@ -44,37 +44,29 @@ export async function generateDiplomaPDF(data: {
     />
   )
 
-  // Use toBlob() to get a Blob, then read it as a stream to ArrayBuffer
-  // This is most reliable across runtimes
+  // Use toBlob() to get a Blob, then use arrayBuffer()
   const blob = await pdf(document).toBlob()
   
   console.log('[diploma-generator] Got blob, size:', blob.size, 'type:', blob.type)
   
-  // Read blob as ArrayBuffer using stream (works in all environments)
-  const reader = blob.stream().getReader()
-  const chunks: Uint8Array[] = []
-  while (true) {
-    const { done, value } = await reader.read()
-    if (done) break
-    chunks.push(value)
-  }
-  const totalLength = chunks.reduce((sum, chunk) => sum + chunk.length, 0)
-  const combined = new Uint8Array(totalLength)
-  let offset = 0
-  for (const chunk of chunks) {
-    combined.set(chunk, offset)
-    offset += chunk.length
-  }
-  const arrayBuffer = combined.buffer
+  // Use arrayBuffer() method on Blob - standard Web API
+  const arrayBuffer = await blob.arrayBuffer()
   
-  console.log('[diploma-generator] Blob stream read, byteLength:', arrayBuffer.byteLength)
+  console.log('[diploma-generator] arrayBuffer byteLength:', arrayBuffer.byteLength, 'constructor:', arrayBuffer.constructor?.name)
   
+  // Ensure it's a proper ArrayBuffer (not SharedArrayBuffer)
   if (arrayBuffer.byteLength === 0) {
     console.warn('[diploma-generator] Empty PDF generated')
     return new Uint8Array(0).buffer
   }
   
-  return arrayBuffer
+  // Create a new ArrayBuffer to ensure it's not a SharedArrayBuffer
+  const result = new ArrayBuffer(arrayBuffer.byteLength)
+  new Uint8Array(result).set(new Uint8Array(arrayBuffer))
+  
+  console.log('[diploma-generator] Final ArrayBuffer byteLength:', result.byteLength)
+  
+  return result
 }
 
 // ============================================================================
