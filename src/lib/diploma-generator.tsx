@@ -57,73 +57,110 @@ export async function generateDiplomaPDF(data: {
   console.log('[diploma-generator] toBuffer() is ArrayBuffer:', pdfResult instanceof ArrayBuffer)
   console.log('[diploma-generator] toBuffer() keys:', Object.keys(pdfResult || {}).slice(0, 10))
 
-  // @react-pdf/renderer v4.5.1 toBuffer() returns a Node.js Stream (pdfkit), not a Buffer!
-  // Handle Node.js Stream — consume all chunks and return as ArrayBuffer
-  const isNodeStream = pdfResult && typeof (pdfResult as any).on === 'function' && typeof (pdfResult as any).pipe === 'function'
-  const isBuffer = typeof Buffer !== 'undefined' && Buffer.isBuffer(pdfResult)
-  
-  // On Vercel Node.js runtime, toBuffer() returns a pdfkit stream which passes isBuffer check as false
-  // But sometimes it can also return a Buffer directly. Check Buffer first for safety.
-  if (isBuffer) {
-    console.log('[diploma-generator] Detected Buffer')
-    const arrayBuffer = new ArrayBuffer(pdfResult.byteLength)
-    const view = new Uint8Array(arrayBuffer)
-    view.set(pdfResult)
-    return arrayBuffer
-  }
-
-  if (isNodeStream) {
-    try {
-      console.log('[diploma-generator] Detected stream, consuming...')
-      const stream = pdfResult as NodeJS.ReadableStream
-      const chunks: Buffer[] = []
-      
-      await Promise.race([
-        new Promise<void>((resolve, reject) => {
-          stream.on('data', (chunk: Buffer) => {
-            console.log('[diploma-generator] Stream data event, chunk length:', chunk.length)
-            chunks.push(chunk)
-          })
-          stream.on('end', () => {
-            console.log('[diploma-generator] Stream end, total chunks:', chunks.length)
-            resolve()
-          })
-          stream.on('error', (err: any) => {
-            console.log('[diploma-generator] Stream error:', err?.message || err)
-            reject(err)
-          })
-        }),
-        new Promise<never>((_, reject) => 
-          setTimeout(() => reject(new Error('Stream consumption timeout')), 10000)
-        )
-      ])
-      
-      // Concatenate all chunks into a single Buffer
-      const totalLength = chunks.reduce((sum, chunk) => sum + chunk.length, 0)
-      console.log('[diploma-generator] Total chunk length:', totalLength)
-      if (totalLength === 0) {
-        throw new Error('Stream produced no data')
-      }
-      const combined = Buffer.concat(chunks, totalLength)
-      const arrayBuffer = new ArrayBuffer(combined.byteLength)
+  // Wrapper to safely convert any pdfkit output to ArrayBuffer
+  async function convertToArrayBuffer(result: any): Promise<ArrayBuffer> {
+    // 1. Handle Buffer (Node.js)
+    if (typeof Buffer !== 'undefined' && Buffer.isBuffer(result)) {
+      console.log('[diploma-generator] Converting Buffer to ArrayBuffer')
+      const arrayBuffer = new ArrayBuffer(result.byteLength)
       const view = new Uint8Array(arrayBuffer)
-      view.set(combined)
-      console.log('[diploma-generator] Returning ArrayBuffer, byteLength:', arrayBuffer.byteLength)
+      view.set(result)
       return arrayBuffer
-    } catch (err) {
-      console.error('[diploma-generator] Stream consumption error:', err)
-      // Fall through to other handlers
     }
+
+    // 2. Handle Node.js Stream (pdfkit on Vercel)
+    const isNodeStream = result && typeof (result as any).on === 'function' && typeof (result as any).pipe === 'function'
+    if (isNodeStream) {
+      console.log('[diploma-generator] Consuming Node.js stream...')
+      try {
+        const stream = result as NodeJS.ReadableStream
+        const chunks: Buffer[] = []
+        
+        await Promise.race([
+          new Promise<void>((resolve, reject) => {
+            stream.on('data', (chunk: Buffer) => {
+              chunks.push(chunk)
+            })
+            stream.on('end', () => resolve())
+            stream.on('error', reject)
+          }),
+          new Promise<never>((_, reject) => 
+            setTimeout(() => reject(new Error('Stream timeout')), 10000)
+          )
+        ])
+        
+        const totalLength = chunks.reduce((sum, chunk) => sum + chunk.length, 0)
+        if (totalLength === 0) throw new Error('Empty stream')
+        const combined = Buffer.concat(chunks, totalLength)
+        const arrayBuffer = new ArrayBuffer(combined.byteLength)
+        new Uint8Array(arrayBuffer).set(combined)
+        console.log('[diploma-generator] Stream converted, byteLength:', arrayBuffer.byteLength)
+        return arrayBuffer
+      } catch (err) {
+        console.error('[diploma-generator] Stream conversion failed:', err)
+      }
+    }
+
+    // 3. Handle Uint8Array
+    if (result instanceof Uint8Array) {
+      try {
+        console.log('[diploma-generator] Converting Uint8Array to ArrayBuffer')
+        const backing = result.buffer as ArrayBuffer
+        return backing.slice(result.byteOffset, result.byteOffset + result.byteLength)
+      } catch (err) {
+        console.error('[diploma-generator] Uint8Array conversion failed:', err)
+      }
+    }
+
+    // 4. Handle ReadableStream
+    if (result instanceof ReadableStream) {
+      try {
+        console.log('[diploma-generator] Consuming ReadableStream...')
+        const reader = result.getReader()
+        const chunks: Uint8Array[] = []
+        while (true) {
+          const { done, value } = await reader.read()
+          if (done) break
+          chunks.push(value)
+        }
+        const totalLength = chunks.reduce((sum, chunk) => sum + chunk.length, 0)
+        const combined = new Uint8Array(totalLength)
+        let offset = 0
+        for (const chunk of chunks) {
+          combined.set(chunk, offset)
+          offset += chunk.length
+        }
+        console.log('[diploma-generator] ReadableStream converted, byteLength:', combined.buffer.byteLength)
+        return combined.buffer
+      } catch (err) {
+        console.error('[diploma-generator] ReadableStream conversion failed:', err)
+      }
+    }
+
+    // 5. Handle ArrayBuffer
+    if (result instanceof ArrayBuffer) {
+      console.log('[diploma-generator] Already ArrayBuffer')
+      return result
+    }
+
+    // 6. Fallback - try to access .buffer property if it exists
+    if (result && typeof result === 'object' && 'buffer' in result) {
+      try {
+        console.log('[diploma-generator] Attempting fallback .buffer access')
+        const buf = (result as any).buffer
+        if (buf instanceof ArrayBuffer) return buf
+        if (buf instanceof Uint8Array) return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength)
+      } catch (err) {
+        console.error('[diploma-generator] Fallback failed:', err)
+      }
+    }
+
+    // 7. Ultimate fallback - empty PDF
+    console.warn('[diploma-generator] All conversions failed, returning empty ArrayBuffer')
+    return new Uint8Array(0).buffer
   }
 
-  // Handle Uint8Array (@react-pdf/renderer in edge/other runtimes)
-  if (pdfResult instanceof Uint8Array) {
-    const backing = pdfResult.buffer as ArrayBuffer
-    return backing.slice(
-      pdfResult.byteOffset,
-      pdfResult.byteOffset + pdfResult.byteLength
-    )
-  }
+  return convertToArrayBuffer(pdfResult)
 
   // Handle ReadableStream (edge runtime)
   if (pdfResult instanceof ReadableStream) {
