@@ -232,3 +232,25 @@ git add -A && git commit -m "beschrijving" && git push origin main
 - Altijd concept mail eerst tonen voor ik iets verstuurd
 - Alles lokaal/open source preferentie (RTX 5090, WSL2)
 - Telegram communicatie: kort, direct, geen zachte bewoordingen
+
+---
+
+## CURSUS JAPANS — UITSpraak AUDIO (June 2026)
+
+**156 audio-bestanden** in `public/data/audio/japanese/` — elke Japanse term uit de cursus heeft een `.wav` bestand.
+
+- **Stem:** Edge TTS `ja-JP-KeitaNeural` (native Japanse mannenstem)
+- **Bestandsnaam:** `{uitspraak.toLowerCase().replace(/\s+/g, '-')}.wav` (bijv. `uchi-mata.wav`)
+- **Data:** `src/data/japanese-course.ts` (158 termen, 8 modules)
+- **Component:** `src/components/sections/JapaneseCourseSection.tsx`
+  - `PlayButton` component: speaker icoon naast de term
+  - Ziet in flashcard (voorkant + achterkant) + quiz modus
+  - Audio pad: `/data/audio/japanese/{filename}.wav`
+  - **Fix:** `key={cardIndex}` op Flashcard → reset flip state bij navigeren
+
+**Nieuwe termen toevoegen:**
+1. Term toevoegen aan `src/data/japanese-course.ts`
+2. Audio genereren: `edge-tts --text "Term" --voice ja-JP-KeitaNeural --write-media public/data/audio/japanese/term.wav`
+3. Git push → auto-deploy
+
+**Flashcard fix:** `key={cardIndex}` op `<Flashcard>` component zodat het kaartje altijd op de voorkant begint bij navigeren.
