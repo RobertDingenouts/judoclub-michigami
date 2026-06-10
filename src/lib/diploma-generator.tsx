@@ -45,7 +45,7 @@ export async function generateDiplomaPDF(data: {
     />
   )
 
-   const pdfResult = await pdf(document).toBuffer()
+  const pdfResult = await pdf(document).toBuffer()
 
   // DEBUG: log what toBuffer() actually returns
   console.log('[diploma-generator] toBuffer() type:', typeof pdfResult)
@@ -112,10 +112,11 @@ export async function generateDiplomaPDF(data: {
       }
     }
 
-    // 4. Handle ReadableStream
+    // 4. Handle ReadableStream (web standard)
     if (result instanceof ReadableStream) {
       try {
         console.log('[diploma-generator] Consuming ReadableStream...')
+        // @ts-ignore - getReader exists at runtime
         const reader = result.getReader()
         const chunks: Uint8Array[] = []
         while (true) {
@@ -138,6 +139,7 @@ export async function generateDiplomaPDF(data: {
     }
 
     // 5. Handle ArrayBuffer
+    // @ts-ignore - type narrowing issue
     if (result instanceof ArrayBuffer) {
       console.log('[diploma-generator] Already ArrayBuffer')
       return result
@@ -148,8 +150,13 @@ export async function generateDiplomaPDF(data: {
       try {
         console.log('[diploma-generator] Attempting fallback .buffer access')
         const buf = (result as any).buffer
-        if (buf instanceof ArrayBuffer) return buf
-        if (buf instanceof Uint8Array) return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength)
+        if (buf && buf.constructor && buf.constructor.name === 'ArrayBuffer') {
+          return buf as ArrayBuffer
+        }
+        if (buf instanceof Uint8Array) {
+          const backing = buf.buffer as ArrayBuffer
+          return backing.slice(buf.byteOffset, buf.byteOffset + buf.byteLength)
+        }
       } catch (err) {
         console.error('[diploma-generator] Fallback failed:', err)
       }
@@ -161,33 +168,6 @@ export async function generateDiplomaPDF(data: {
   }
 
   return convertToArrayBuffer(pdfResult)
-
-  // Handle ReadableStream (edge runtime)
-  if (pdfResult instanceof ReadableStream) {
-    const reader = pdfResult.getReader()
-    const chunks: Uint8Array[] = []
-    while (true) {
-      const { done, value } = await reader.read()
-      if (done) break
-      chunks.push(value)
-    }
-    const totalLength = chunks.reduce((sum, chunk) => sum + chunk.length, 0)
-    const result = new Uint8Array(totalLength)
-    let offset = 0
-    for (const chunk of chunks) {
-      result.set(chunk, offset)
-      offset += chunk.length
-    }
-    return result.buffer
-  }
-
-  // If already an ArrayBuffer, return as-is
-  if (pdfResult instanceof ArrayBuffer) {
-    return pdfResult
-  }
-
-  // Final fallback
-  return new Uint8Array(0).buffer
 }
 
 // ============================================================================
