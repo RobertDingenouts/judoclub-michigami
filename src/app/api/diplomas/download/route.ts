@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
     const beltLevel = diploma.beltLevel || 'WIT'
     const beltLabel = getBeltLabel(beltLevel as string)
 
-    // Regenerate PDF (on-the-fly, no storage needed for small volumes)
+    // Regenerate PDF (on-the-fly)
     const pdfBuffer = await generateDiplomaPDF({
       recipientName,
       beltLevel: beltLevel as any,
@@ -54,9 +54,18 @@ export async function GET(request: NextRequest) {
       examiner: diploma.examAttempt?.examiner || undefined,
     })
 
+    // Convert to Uint8Array safely
+    let uint8Array: Uint8Array
+    if (typeof Buffer !== 'undefined' && Buffer.isBuffer(pdfBuffer)) {
+      uint8Array = new Uint8Array(pdfBuffer)
+    } else {
+      // ArrayBuffer or similar
+      uint8Array = new Uint8Array(pdfBuffer as ArrayBuffer)
+    }
+
     // Return PDF with download header
-    const uint8Array = new Uint8Array(pdfBuffer);
-    const response = new NextResponse(uint8Array, {
+    const blob = new Blob([pdfBuffer as ArrayBuffer], { type: 'application/pdf' })
+    const response = new NextResponse(blob, {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="diploma-${recipientName.replace(/\s+/g, '-')}-${beltLabel.toLowerCase().replace(/\s+/g, '-')}.pdf"`,

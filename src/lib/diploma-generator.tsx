@@ -68,7 +68,14 @@ export async function generateDiplomaPDF(data: {
 
   // Node.js Buffer case
   if (typeof Buffer !== 'undefined' && pdfBuffer instanceof Buffer) {
-    return pdfBuffer.buffer.slice(pdfBuffer.byteOffset, pdfBuffer.byteOffset + pdfBuffer.byteLength)
+    // Safely convert Buffer to ArrayBuffer
+    const buffer = new Uint8Array(pdfBuffer)
+    return buffer.buffer
+  }
+
+  // If it's already an ArrayBuffer, return as-is
+  if (pdfBuffer instanceof ArrayBuffer) {
+    return pdfBuffer
   }
 
   // Fallback: treat as ArrayBuffer-like
