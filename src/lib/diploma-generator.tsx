@@ -14,7 +14,6 @@ import crypto from 'crypto'
 // ============================================================================
 
 export function generateVerificationCode(): string {
-  // Format: MJ-XXXX-XXXX (human-readable, unique)
   const part1 = crypto.randomBytes(2).toString('hex').toUpperCase()
   const part2 = crypto.randomBytes(2).toString('hex').toUpperCase()
   return `MJ-${part1}-${part2}`
@@ -45,16 +44,30 @@ export async function generateDiplomaPDF(data: {
     />
   )
 
-  // Use toBlob() which returns a standard Blob
-  // This is the most reliable method in @react-pdf/renderer v4.5.1
+  // Use toBlob() to get a Blob, then read it as a stream to ArrayBuffer
+  // This is most reliable across runtimes
   const blob = await pdf(document).toBlob()
   
   console.log('[diploma-generator] Got blob, size:', blob.size, 'type:', blob.type)
   
-  // Convert Blob to ArrayBuffer
-  const arrayBuffer = await blob.arrayBuffer()
+  // Read blob as ArrayBuffer using stream (works in all environments)
+  const reader = blob.stream().getReader()
+  const chunks: Uint8Array[] = []
+  while (true) {
+    const { done, value } = await reader.read()
+    if (done) break
+    chunks.push(value)
+  }
+  const totalLength = chunks.reduce((sum, chunk) => sum + chunk.length, 0)
+  const combined = new Uint8Array(totalLength)
+  let offset = 0
+  for (const chunk of chunks) {
+    combined.set(chunk, offset)
+    offset += chunk.length
+  }
+  const arrayBuffer = combined.buffer
   
-  console.log('[diploma-generator] Blob converted to ArrayBuffer, byteLength:', arrayBuffer.byteLength)
+  console.log('[diploma-generator] Blob stream read, byteLength:', arrayBuffer.byteLength)
   
   if (arrayBuffer.byteLength === 0) {
     console.warn('[diploma-generator] Empty PDF generated')
@@ -95,7 +108,6 @@ export async function createDiplomaOnExamPass(examAttemptId: string): Promise<{
   verificationCode: string
   pdfBuffer: ArrayBuffer
 }> {
-  // Get the exam attempt with member/user info
   const examAttempt = await db.examAttempt.findUnique({
     where: { id: examAttemptId },
     include: {
@@ -112,7 +124,6 @@ export async function createDiplomaOnExamPass(examAttemptId: string): Promise<{
     throw new Error('Diploma can only be created for passed exams')
   }
 
-  // Check if diploma already exists
   const existing = await db.diploma.findFirst({
     where: { examAttemptId: examAttemptId },
   })
@@ -129,7 +140,6 @@ export async function createDiplomaOnExamPass(examAttemptId: string): Promise<{
   const title = `Examen ${beltLabel} Geslaagd`
   const description = `Hierbij wordt bevestigd dat ${recipientName} met succes het judo examen voor de ${beltLabel} heeft afgelegd bij Judoclub Michigami Steenbergen.`
 
-  // Generate unique verification code
   let verificationCode = generateVerificationCode()
   let attempts = 0
   while (attempts < 10) {
@@ -141,7 +151,6 @@ export async function createDiplomaOnExamPass(examAttemptId: string): Promise<{
     attempts++
   }
 
-  // Generate PDF
   const pdfBuffer = await generateDiplomaPDF({
     recipientName,
     beltLevel: examAttempt.beltLevel,
@@ -152,7 +161,6 @@ export async function createDiplomaOnExamPass(examAttemptId: string): Promise<{
     examiner: examAttempt.examiner || undefined,
   })
 
-  // Create diploma record in DB
   const diploma = await db.diploma.create({
     data: {
       type: DiplomaType.BELT_EXAM,
@@ -167,13 +175,11 @@ export async function createDiplomaOnExamPass(examAttemptId: string): Promise<{
     },
   })
 
-  // Update user's current belt level
   await db.user.update({
     where: { id: examAttempt.userId },
     data: { currentBelt: examAttempt.beltLevel },
   })
 
-  // Also update member's belt level
   await db.member.update({
     where: { id: member.id },
     data: { currentBelt: examAttempt.beltLevel },
