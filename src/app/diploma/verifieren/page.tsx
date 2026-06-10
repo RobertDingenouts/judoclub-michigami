@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, FormEvent } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, FormEvent, useEffect, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 
-export default function VerifyDiplomaPage() {
+function VerifyDiplomaContent() {
   const [code, setCode] = useState('')
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<{
@@ -20,6 +20,15 @@ export default function VerifyDiplomaPage() {
   const [error, setError] = useState('')
 
   const router = useRouter()
+  const searchParams = useSearchParams()
+
+  // Auto-fill code from URL parameter
+  useEffect(() => {
+    const urlCode = searchParams.get('code')
+    if (urlCode) {
+      setCode(urlCode.toUpperCase())
+    }
+  }, [searchParams])
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -143,5 +152,17 @@ export default function VerifyDiplomaPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function VerifyDiplomaPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#f5f5f0] flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-4 border-[#a90000] border-t-transparent rounded-full" />
+      </div>
+    }>
+      <VerifyDiplomaContent />
+    </Suspense>
   )
 }
