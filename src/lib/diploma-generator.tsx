@@ -45,29 +45,57 @@ export async function generateDiplomaPDF(data: {
     />
   )
 
-  const pdfBuffer = await pdf(document).toBuffer()
+   const pdfResult = await pdf(document).toBuffer()
+
+  // @react-pdf/renderer v4.5.1 toBuffer() returns a Node.js Stream (pdfkit), not a Buffer!
+  // Handle Node.js Stream — read all chunks and concatenate
+  if (pdfResult && typeof (pdfResult as any).on === 'function' && typeof (pdfResult as any).pipe === 'function') {
+    const chunks: Uint8Array[] = []
+    const stream = pdfResult as NodeJS.ReadableStream
+    
+    return new Promise<ArrayBuffer>((resolve, reject) => {
+      stream.on('data', (chunk: Buffer | Uint8Array) => {
+        if (Buffer.isBuffer(chunk)) {
+          chunks.push(new Uint8Array(chunk))
+        } else {
+          chunks.push(chunk)
+        }
+      })
+      stream.on('end', () => {
+        const totalLength = chunks.reduce((sum, chunk) => sum + chunk.length, 0)
+        const result = new Uint8Array(totalLength)
+        let offset = 0
+        for (const chunk of chunks) {
+          result.set(chunk, offset)
+          offset += chunk.length
+        }
+        resolve(result.buffer)
+      })
+      stream.on('error', reject)
+    })
+  }
 
   // Handle Buffer (Node.js) — create a new ArrayBuffer with exact byte length
-  if (typeof Buffer !== 'undefined' && Buffer.isBuffer(pdfBuffer)) {
-    const arrayBuffer = new ArrayBuffer(pdfBuffer.byteLength)
+  if (typeof Buffer !== 'undefined' && Buffer.isBuffer(pdfResult)) {
+    const arrayBuffer = new ArrayBuffer(pdfResult.byteLength)
     const view = new Uint8Array(arrayBuffer)
-    view.set(pdfBuffer)
+    view.set(pdfResult)
     return arrayBuffer
   }
 
   // Handle Uint8Array (@react-pdf/renderer in edge/other runtimes)
-  if (pdfBuffer instanceof Uint8Array) {
+  if (pdfResult instanceof Uint8Array) {
     // Uint8Array.buffer may be a larger backing buffer — use slice to get exact size
-    const backing = pdfBuffer.buffer as ArrayBuffer
+    const backing = pdfResult.buffer as ArrayBuffer
     return backing.slice(
-      pdfBuffer.byteOffset,
-      pdfBuffer.byteOffset + pdfBuffer.byteLength
+      pdfResult.byteOffset,
+      pdfResult.byteOffset + pdfResult.byteLength
     )
   }
 
   // Handle ReadableStream (edge runtime)
-  if (pdfBuffer instanceof ReadableStream) {
-    const reader = pdfBuffer.getReader()
+  if (pdfResult instanceof ReadableStream) {
+    const reader = pdfResult.getReader()
     const chunks: Uint8Array[] = []
     while (true) {
       const { done, value } = await reader.read()
@@ -85,8 +113,8 @@ export async function generateDiplomaPDF(data: {
   }
 
   // If already an ArrayBuffer, return as-is
-  if (pdfBuffer instanceof ArrayBuffer) {
-    return pdfBuffer
+  if (pdfResult instanceof ArrayBuffer) {
+    return pdfResult
   }
 
   // Final fallback
