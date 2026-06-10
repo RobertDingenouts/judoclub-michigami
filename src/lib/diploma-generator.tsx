@@ -45,39 +45,21 @@ export async function generateDiplomaPDF(data: {
     />
   )
 
-  // Use the pdfkit document directly and pipe to a buffer
-  // @react-pdf/renderer's pdf() returns a pdfkit document instance
-  const doc = pdf(document) as any
+  // Use toBlob() which returns a standard Blob
+  // This is the most reliable method in @react-pdf/renderer v4.5.1
+  const blob = await pdf(document).toBlob()
   
-  // Collect chunks from pdfkit document
-  const chunks: Buffer[] = []
+  console.log('[diploma-generator] Got blob, size:', blob.size, 'type:', blob.type)
   
-  await new Promise<void>((resolve, reject) => {
-    doc.on('data', (chunk: Buffer) => {
-      chunks.push(chunk)
-    })
-    doc.on('end', () => {
-      resolve()
-    })
-    doc.on('error', (err: Error) => {
-      reject(err)
-    })
-    
-    // End the document to start generating
-    doc.end()
-  })
+  // Convert Blob to ArrayBuffer
+  const arrayBuffer = await blob.arrayBuffer()
   
-  const totalLength = chunks.reduce((sum, chunk) => sum + chunk.length, 0)
-  console.log('[diploma-generator] pdfkit stream consumed, total chunks:', chunks.length, 'byteLength:', totalLength)
+  console.log('[diploma-generator] Blob converted to ArrayBuffer, byteLength:', arrayBuffer.byteLength)
   
-  if (totalLength === 0) {
+  if (arrayBuffer.byteLength === 0) {
     console.warn('[diploma-generator] Empty PDF generated')
     return new Uint8Array(0).buffer
   }
-  
-  const combined = Buffer.concat(chunks, totalLength)
-  const arrayBuffer = new ArrayBuffer(combined.byteLength)
-  new Uint8Array(arrayBuffer).set(combined)
   
   return arrayBuffer
 }
