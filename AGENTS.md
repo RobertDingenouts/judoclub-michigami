@@ -254,3 +254,72 @@ git add -A && git commit -m "beschrijving" && git push origin main
 3. Git push → auto-deploy
 
 **Flashcard fix:** `key={cardIndex}` op `<Flashcard>` component zodat het kaartje altijd op de voorkant begint bij navigeren.
+
+---
+
+## CURSUS JAPANS — DIPLOMA SYSTEEM (June 2026)
+
+**Doel:** Lid doet examen per bandniveau → ≥80% = diploma + volgende band ontgrendeld.
+
+**Flow:**
+1. Lid opent Cursus Japans sectie op homepage → SPA component `JapaneseCourseSection`
+2. Belt levels 0-5 (Wit→Bruin) zijn progressief ontgrendeld (vorige band eerst geslaagd)
+3. Belt 0 (Wit) is altijd open
+4. Lid kiest band → leert termen met flashcards → doet examen (quiz)
+5. ≥80% score → `onPass(score, total)` callback → `POST /api/cursus-japans/sync`
+6. API route:
+   - Upsert `CourseProgress` record per `(userId, courseName, beltLevel)`
+   - Als geslaagd: maak `COURSE_JAPANESE` diploma aan met verificatiecode `JP-XXXX-XXXX`
+   - Ontgrendel volgende band niveau
+   - Retourneert diploma info
+7. Lid ziet diploma op `/leden/diploma's` (geel badge "🎓 Cursus Japans")
+8. Lid ziet voortgang op `/leden/cursus-japans` (bandkleuren, progress bars, diploma badges)
+
+**Key files:**
+- `src/app/api/cursus-japans/sync/route.ts` — **POST**: sync quiz results, create diploma, unlock next. **GET**: fetch all progress + diplomas.
+- `src/components/sections/JapaneseCourseSection.tsx` — SPA quiz component. `onPass(score, total)` callback. Belt order: `[0,1,2,3,4,5]` = `['WIT','GEEL','ORANJE','GROEN','BLAUW','BRUIN_1']`.
+- `src/app/leden/cursus-japans/page.tsx` — Member dashboard. Toont belt-level progress, diploma badges, "Start examen" buttons. Auto-initializes missing belt levels on load.
+- `src/components/sections/DiplomasSection.tsx` — Shows all diplomas. `COURSE_JAPANESE` type gets yellow ring + badge.
+- `src/lib/diploma-generator.tsx` — PDF generation. `generateDiplomaPDF()` returns `Buffer` → convert via `new Uint8Array(buffer).buffer` (NOT `.slice()`).
+- `src/app/api/diplomas/download/route.ts` — PDF download. Use `new Blob([pdfBuffer as ArrayBuffer])` for response (NOT `Uint8Array` directly).
+
+**Database schema:** `CourseProgress` model — `@@unique([userId, courseName, beltLevel])`. Each user can have 6 records (one per belt level).
+
+**BeltLevel type mismatch:** Prisma `BeltLevel` enum has `BRUIN_2`, `BRUIN_3`, `Zwart_1` etc. but Japanese course only uses `WIT`–`BRUIN_1` (6 levels). Use `as any` cast when passing string belt levels to Prisma, or define `type JapaneseBelt = 'WIT' | 'GEEL' | 'ORANJE' | 'GROEN' | 'BLAUW' | 'BRUIN_1'`.
+
+**⚠️ `@react-pdf/renderer` buffer conversion:** `pdf(document).toBuffer()` returns `Buffer`. `pdfBuffer.buffer.slice(...)` throws "Offset is outside bounds". **Fix:** `new Uint8Array(pdfBuffer).buffer` in generator, `new Blob([pdfBuffer as ArrayBuffer])` in API route.
+
+**⚠️ `db.model.fields.fieldName` returns `FieldRef`, not value.** Cannot use `db.courseProgress.fields.overallScore` in `Math.max()` — TS error. Use raw value directly.
+
+**⚠️ Diploma PDF download URL needs `NEXT_PUBLIC_BASE_URL`:** `getDiplomaDownloadUrl()` uses this env var. Without it, falls back to `localhost:3000`. **Fix:** set on Vercel + `.env.local`. Use `window.location.origin` as fallback.
+
+**⚠️ `useSearchParams()` needs Suspense:** Wrapped in `<Suspense>` in `/diploma/verifieren/page.tsx`. Auto-fills `?code=` parameter from URL.
+
+**neonctl CLI for DB ops (`.env` has `***` placeholder):**
+```bash
+# Run SQL
+echo "SQL here;" | neonctl psql production --project-id withered-surf-44483650 --db-name neondb --role-name neondb_owner
+
+# List projects
+neonctl projects list
+
+# Get connection string (password masked as ***)
+neonctl connection-string production --project-id withered-surf-44483650 --db-name neondb --role-name neondb_owner
+```
+
+**Migration (DONE):** `CourseProgress` unique constraint changed from `[userId, courseName]` to `[userId, courseName, beltLevel]`. SQL in `prisma/migrations/cursus-japans-diploma-systeem/migration.sql`.
+
+**Diploma types:**
+- `BELT_EXAM` — verification code prefix `MJ-XXXX-XXXX`
+- `COURSE_JAPANESE` — verification code prefix `JP-XXXX-XXXX`
+- `ACHIEVEMENT` — other achievements
+
+**Belt level mapping (Japanese course):**
+| Level | Enum | Label |
+|-------|------|-------|
+| 0 | WIT | Witte Band |
+| 1 | GEEL | Gele Band |
+| 2 | ORANJE | Oranje Band |
+| 3 | GROEN | Groene Band |
+| 4 | BLAUW | Blauwe Band |
+| 5 | BRUIN_1 | Bruine Band |
