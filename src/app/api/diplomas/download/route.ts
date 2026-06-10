@@ -44,6 +44,7 @@ export async function GET(request: NextRequest) {
     const beltLabel = getBeltLabel(beltLevel as string)
 
     // Regenerate PDF (on-the-fly)
+    console.log('[download] Starting PDF generation for diploma:', diplomaId)
     const pdfBuffer = await generateDiplomaPDF({
       recipientName,
       beltLevel: beltLevel as any,
@@ -53,6 +54,7 @@ export async function GET(request: NextRequest) {
       verificationCode: diploma.verificationCode,
       examiner: diploma.examAttempt?.examiner || undefined,
     })
+    console.log('[download] PDF generated, type:', typeof pdfBuffer, 'constructor:', pdfBuffer?.constructor?.name, 'byteLength:', pdfBuffer?.byteLength)
 
     // Convert ArrayBuffer to Blob for response
     // pdfBuffer is an ArrayBuffer from generateDiplomaPDF
