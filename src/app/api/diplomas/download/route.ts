@@ -66,19 +66,20 @@ export async function GET(request: NextRequest) {
     // Try creating a fresh Uint8Array view with explicit bounds checking
     let uint8Array: Uint8Array
     try {
-      uint8Array = new Uint8Array(pdfBuffer, 0, pdfBuffer.byteLength)
-      console.log('[download] Uint8Array created, length:', uint8Array.length, 'buffer byteLength:', uint8Array.buffer.byteLength)
+      // Create a fresh ArrayBuffer to ensure we have ArrayBuffer, not SharedArrayBuffer
+      const freshBuffer = new ArrayBuffer(pdfBuffer.byteLength)
+      new Uint8Array(freshBuffer).set(new Uint8Array(pdfBuffer))
+      uint8Array = new Uint8Array(freshBuffer)
+      console.log('[download] Fresh Uint8Array created, length:', uint8Array.length, 'buffer:', uint8Array.buffer.constructor.name)
     } catch (e) {
       console.error('[download] Failed to create Uint8Array:', e)
-      // Fallback: create a new ArrayBuffer and copy
-      const fallback = new Uint8Array(pdfBuffer.byteLength)
-      const view = new Uint8Array(pdfBuffer)
-      fallback.set(view)
-      uint8Array = fallback
-      console.log('[download] Fallback Uint8Array created, length:', uint8Array.length)
+      return NextResponse.json(
+        { error: 'Failed to process PDF buffer' },
+        { status: 500 }
+      )
     }
     
-    const blob = new Blob([uint8Array], { type: 'application/pdf' })
+    const blob = new Blob([uint8Array as any], { type: 'application/pdf' })
     console.log('[download] Blob size:', blob.size)
     
     const response = new NextResponse(blob, {

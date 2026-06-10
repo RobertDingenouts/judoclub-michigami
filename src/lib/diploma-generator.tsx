@@ -44,60 +44,69 @@ export async function generateDiplomaPDF(data: {
     />
   )
 
-  // Use toBuffer() which returns a ReadableStream on Vercel Node.js
-  // This is the standard way in @react-pdf/renderer v4.5.1
-  const stream = await pdf(document).toBuffer()
-  
-  console.log('[diploma-generator] Got result from toBuffer(), constructor:', stream?.constructor?.name, 'is ReadableStream:', stream instanceof ReadableStream)
-  
-  // Handle ReadableStream (web standard)
-  if (stream instanceof ReadableStream) {
-    const reader = stream.getReader()
-    const chunks: Uint8Array[] = []
-    while (true) {
-      const { done, value } = await reader.read()
-      if (done) break
-      chunks.push(value)
-    }
-    const totalLength = chunks.reduce((sum, chunk) => sum + chunk.length, 0)
-    const combined = new Uint8Array(totalLength)
-    let offset = 0
-    for (const chunk of chunks) {
-      combined.set(chunk, offset)
-      offset += chunk.length
-    }
-    console.log('[diploma-generator] ReadableStream consumed, byteLength:', combined.buffer.byteLength)
+  try {
+    console.log('[diploma-generator] Calling pdf(document).toBuffer()...')
+    const stream = await pdf(document).toBuffer()
     
+    console.log('[diploma-generator] Got result from toBuffer(), constructor:', stream?.constructor?.name, 'is ReadableStream:', stream instanceof ReadableStream)
+    
+    let combined: Uint8Array
+    
+    // Handle ReadableStream (web standard)
+    if (stream instanceof ReadableStream) {
+      const reader = stream.getReader()
+      const chunks: Uint8Array[] = []
+      let totalLength = 0
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        totalLength += value.length
+        chunks.push(value)
+      }
+      combined = new Uint8Array(totalLength)
+      let offset = 0
+      for (const chunk of chunks) {
+        combined.set(chunk, offset)
+        offset += chunk.length
+      }
+      console.log('[diploma-generator] ReadableStream consumed, byteLength:', combined.byteLength)
+    }
+    // Handle Buffer (Node.js Buffer)
+    else if (typeof Buffer !== 'undefined' && Buffer.isBuffer(stream)) {
+      console.log('[diploma-generator] Got Buffer, byteLength:', stream.byteLength)
+      combined = new Uint8Array(stream.buffer, stream.byteOffset, stream.byteLength)
+      console.log('[diploma-generator] Buffer converted to Uint8Array, byteLength:', combined.byteLength)
+    }
+    // Handle Uint8Array
+    else if (stream instanceof Uint8Array) {
+      console.log('[diploma-generator] Got Uint8Array, byteLength:', stream.byteLength)
+      combined = stream
+    }
+    // Handle ArrayBuffer
+    else if (stream instanceof ArrayBuffer) {
+      console.log('[diploma-generator] Got ArrayBuffer, byteLength:', stream.byteLength)
+      combined = new Uint8Array(stream, 0, stream.byteLength)
+    }
+    else {
+      console.warn('[diploma-generator] Unknown type:', typeof stream, stream?.constructor?.name)
+      return new Uint8Array(0).buffer
+    }
+    
+    if (combined.byteLength === 0) {
+      console.warn('[diploma-generator] Empty combined buffer')
+      return new Uint8Array(0).buffer
+    }
+    
+    // Create final ArrayBuffer with explicit bounds
     const result = new ArrayBuffer(combined.byteLength)
     new Uint8Array(result).set(combined)
+    
+    console.log('[diploma-generator] Final ArrayBuffer created, byteLength:', result.byteLength)
     return result
+  } catch (err: unknown) {
+    console.error('[diploma-generator] PDF generation error:', err, err instanceof Error ? err.stack : undefined)
+    throw err
   }
-  
-  // Handle Buffer (Node.js Buffer)
-  if (typeof Buffer !== 'undefined' && Buffer.isBuffer(stream)) {
-    console.log('[diploma-generator] Got Buffer, byteLength:', stream.byteLength)
-    const result = new ArrayBuffer(stream.byteLength)
-    new Uint8Array(result).set(stream)
-    return result
-  }
-  
-  // Handle Uint8Array
-  if (stream instanceof Uint8Array) {
-    console.log('[diploma-generator] Got Uint8Array, byteLength:', stream.byteLength)
-    const result = new ArrayBuffer(stream.byteLength)
-    new Uint8Array(result).set(stream)
-    return result
-  }
-  
-  // Handle ArrayBuffer
-  if (stream instanceof ArrayBuffer) {
-    console.log('[diploma-generator] Got ArrayBuffer, byteLength:', stream.byteLength)
-    return stream
-  }
-  
-  // Fallback
-  console.warn('[diploma-generator] Unknown type, returning empty')
-  return new Uint8Array(0).buffer
 }
 
 // ============================================================================
