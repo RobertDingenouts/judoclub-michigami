@@ -45,7 +45,7 @@ export default async function DiplomasPage() {
                        diploma.type === 'COURSE_JAPANESE' ? 'Cursus Japans' : 'Bijzonderheid'}
                     </span>
                     <Link
-                      href={`/api/diplomas/download?code=${diploma.verificationCode}`}
+                      href={`/api/diplomas/download?id=${diploma.id}`}
                       className="text-xs text-[#a90000] hover:underline"
                     >
                       Download PDF ↓
