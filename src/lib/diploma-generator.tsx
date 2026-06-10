@@ -59,30 +59,51 @@ export async function generateDiplomaPDF(data: {
 
   // @react-pdf/renderer v4.5.1 toBuffer() returns a Node.js Stream (pdfkit), not a Buffer!
   // Handle Node.js Stream — consume all chunks and return as ArrayBuffer
-  if (pdfResult && typeof (pdfResult as any).on === 'function' && typeof (pdfResult as any).pipe === 'function') {
+  const isNodeStream = pdfResult && typeof (pdfResult as any).on === 'function' && typeof (pdfResult as any).pipe === 'function'
+  const isBuffer = typeof Buffer !== 'undefined' && Buffer.isBuffer(pdfResult)
+  
+  // On Vercel Node.js runtime, toBuffer() returns a pdfkit stream which passes isBuffer check as false
+  // But sometimes it can also return a Buffer directly. Check Buffer first for safety.
+  if (isBuffer) {
+    console.log('[diploma-generator] Detected Buffer')
+    const arrayBuffer = new ArrayBuffer(pdfResult.byteLength)
+    const view = new Uint8Array(arrayBuffer)
+    view.set(pdfResult)
+    return arrayBuffer
+  }
+
+  if (isNodeStream) {
     try {
       console.log('[diploma-generator] Detected stream, consuming...')
       const stream = pdfResult as NodeJS.ReadableStream
       const chunks: Buffer[] = []
       
-      await new Promise<void>((resolve, reject) => {
-        stream.on('data', (chunk: Buffer) => {
-          console.log('[diploma-generator] Stream data event, chunk length:', chunk.length)
-          chunks.push(chunk)
-        })
-        stream.on('end', () => {
-          console.log('[diploma-generator] Stream end, total chunks:', chunks.length)
-          resolve()
-        })
-        stream.on('error', (err: any) => {
-          console.log('[diploma-generator] Stream error:', err?.message || err)
-          reject(err)
-        })
-      })
+      await Promise.race([
+        new Promise<void>((resolve, reject) => {
+          stream.on('data', (chunk: Buffer) => {
+            console.log('[diploma-generator] Stream data event, chunk length:', chunk.length)
+            chunks.push(chunk)
+          })
+          stream.on('end', () => {
+            console.log('[diploma-generator] Stream end, total chunks:', chunks.length)
+            resolve()
+          })
+          stream.on('error', (err: any) => {
+            console.log('[diploma-generator] Stream error:', err?.message || err)
+            reject(err)
+          })
+        }),
+        new Promise<never>((_, reject) => 
+          setTimeout(() => reject(new Error('Stream consumption timeout')), 10000)
+        )
+      ])
       
       // Concatenate all chunks into a single Buffer
       const totalLength = chunks.reduce((sum, chunk) => sum + chunk.length, 0)
       console.log('[diploma-generator] Total chunk length:', totalLength)
+      if (totalLength === 0) {
+        throw new Error('Stream produced no data')
+      }
       const combined = Buffer.concat(chunks, totalLength)
       const arrayBuffer = new ArrayBuffer(combined.byteLength)
       const view = new Uint8Array(arrayBuffer)
@@ -91,16 +112,8 @@ export async function generateDiplomaPDF(data: {
       return arrayBuffer
     } catch (err) {
       console.error('[diploma-generator] Stream consumption error:', err)
-      return new Uint8Array(0).buffer
+      // Fall through to other handlers
     }
-  }
-
-  // Handle Buffer (Node.js) — create a new ArrayBuffer with exact byte length
-  if (typeof Buffer !== 'undefined' && Buffer.isBuffer(pdfResult)) {
-    const arrayBuffer = new ArrayBuffer(pdfResult.byteLength)
-    const view = new Uint8Array(arrayBuffer)
-    view.set(pdfResult)
-    return arrayBuffer
   }
 
   // Handle Uint8Array (@react-pdf/renderer in edge/other runtimes)
