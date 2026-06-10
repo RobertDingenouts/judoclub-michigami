@@ -20,16 +20,48 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Run the migration SQL - drop old unique constraint (try multiple possible names)
-    await db.$executeRawUnsafe(`
-      ALTER TABLE "CourseProgress"
-        DROP CONSTRAINT IF EXISTS "CourseProgress.userId_courseName_unique";
+    // First, find the actual constraint name
+    const constraints = await db.$queryRawUnsafe(`
+      SELECT conname 
+      FROM pg_constraint 
+      WHERE conrelid = 'CourseProgress'::regclass 
+      AND contype = 'u'
     `)
+    console.log('Existing constraints:', constraints)
 
-    // Also try dropping by index name (Prisma sometimes creates index instead of constraint)
-    await db.$executeRawUnsafe(`
-      DROP INDEX IF EXISTS "CourseProgress_userId_courseName_unique";
+    // Drop all unique constraints except the new one
+    for (const c of constraints as any[]) {
+      const name = c.conname
+      if (!name.includes('beltLevel')) {
+        try {
+          await db.$executeRawUnsafe(`ALTER TABLE "CourseProgress" DROP CONSTRAINT IF EXISTS "${name}";`)
+          console.log('Dropped constraint:', name)
+        } catch (e: any) {
+          console.log('Failed to drop constraint:', name, e.message)
+        }
+      }
+    }
+
+    // Also drop any matching indexes
+    const indexes = await db.$queryRawUnsafe(`
+      SELECT indexname 
+      FROM pg_indexes 
+      WHERE tablename = 'CourseProgress' 
+      AND indexdef LIKE '%UNIQUE%'
     `)
+    console.log('Existing unique indexes:', indexes)
+
+    for (const idx of indexes as any[]) {
+      const name = idx.indexname
+      if (!name.includes('beltLevel')) {
+        try {
+          await db.$executeRawUnsafe(`DROP INDEX IF EXISTS "${name}";`)
+          console.log('Dropped index:', name)
+        } catch (e: any) {
+          console.log('Failed to drop index:', name, e.message)
+        }
+      }
+    }
 
     // Check if new constraint exists, add if not
     try {
@@ -38,6 +70,7 @@ export async function POST(request: NextRequest) {
           ADD CONSTRAINT "CourseProgress.userId_courseName_beltLevel_unique"
           UNIQUE ("userId", "courseName", "beltLevel");
       `)
+      console.log('Added new constraint')
     } catch (e: any) {
       // Constraint already exists, that's OK
       console.log('New constraint already exists:', e.message)
