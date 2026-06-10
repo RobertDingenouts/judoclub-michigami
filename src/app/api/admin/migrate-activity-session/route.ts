@@ -18,6 +18,10 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    const results: string[] = []
+    const errors: string[] = []
+
+    // Create table
     try {
       await db.$executeRawUnsafe(`
         CREATE TABLE IF NOT EXISTS "ActivitySession" (
@@ -31,22 +35,49 @@ export async function POST(request: NextRequest) {
           "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
           CONSTRAINT "ActivitySession_pkey" PRIMARY KEY ("id")
         );
-        
-        CREATE INDEX IF NOT EXISTS "ActivitySession_userId_createdAt_idx" ON "ActivitySession"("userId", "createdAt");
-        CREATE INDEX IF NOT EXISTS "ActivitySession_sessionId_idx" ON "ActivitySession"("sessionId");
       `)
-      console.log('Created ActivitySession table and indexes')
+      results.push('ActivitySession table created')
     } catch (e: any) {
       if (e.message?.includes('already exists') || e.message?.includes('relation') && e.message?.includes('already exists')) {
         console.log('ActivitySession table already exists')
       } else {
-        throw e
+        errors.push(`Table creation: ${e.message}`)
+      }
+    }
+
+    // Create userId_createdAt index
+    try {
+      await db.$executeRawUnsafe(`
+        CREATE INDEX IF NOT EXISTS "ActivitySession_userId_createdAt_idx" ON "ActivitySession"("userId", "createdAt");
+      `)
+      results.push('Created userId_createdAt index')
+    } catch (e: any) {
+      if (e.message?.includes('already exists')) {
+        console.log('userId_createdAt index already exists')
+      } else {
+        errors.push(`userId_createdAt index: ${e.message}`)
+      }
+    }
+
+    // Create sessionId index
+    try {
+      await db.$executeRawUnsafe(`
+        CREATE INDEX IF NOT EXISTS "ActivitySession_sessionId_idx" ON "ActivitySession"("sessionId");
+      `)
+      results.push('Created sessionId index')
+    } catch (e: any) {
+      if (e.message?.includes('already exists')) {
+        console.log('sessionId index already exists')
+      } else {
+        errors.push(`sessionId index: ${e.message}`)
       }
     }
 
     return NextResponse.json({
-      success: true,
-      message: 'ActivitySession migration completed'
+      success: errors.length === 0,
+      message: 'ActivitySession migration completed',
+      results,
+      errors: errors.length > 0 ? errors : undefined,
     })
   } catch (error: any) {
     console.error('Migration error:', error)
