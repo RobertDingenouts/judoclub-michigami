@@ -1,6 +1,6 @@
 {
+  "voice": "ja-JP-KeitaNeural",
   "total": 156,
-  "output_dir": "/home/suffie/michigami-website/public/data/audio/japanese",
   "generated": [
     "dojo.wav",
     "tatami.wav",
@@ -159,7 +159,6 @@
     "uki-gatame.wav",
     "ura-gatame.wav"
   ],
-  "skipped": [],
   "failed": [],
   "terms": [
     {
