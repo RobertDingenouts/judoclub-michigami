@@ -54,8 +54,8 @@ export async function GET(request: NextRequest) {
        verificationCode: diploma.verificationCode,
        examiner: diploma.examAttempt?.examiner || undefined,
      })
-     console.log('[download] PDF generated, type:', typeof pdfBuffer, 'constructor:', pdfBuffer?.constructor?.name, 'byteLength:', pdfBuffer?.byteLength)
-    
+     console.log('[download] PDF generated, type:', typeof pdfBuffer, 'constructor:', pdfBuffer?.constructor?.name, 'byteLength:', pdfBuffer?.byteLength, 'isArrayBuffer:', pdfBuffer instanceof ArrayBuffer)
+    \n
      // Convert ArrayBuffer to Blob for response
      // pdfBuffer is an ArrayBuffer from generateDiplomaPDF
      const blob = new Blob([pdfBuffer], { type: 'application/pdf' })
