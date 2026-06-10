@@ -22,7 +22,6 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // Fetch diploma with member info
     const diploma = await db.diploma.findUnique({
       where: { id: diplomaId },
       include: {
@@ -43,7 +42,6 @@ export async function GET(request: NextRequest) {
     const beltLevel = diploma.beltLevel || 'WIT'
     const beltLabel = getBeltLabel(beltLevel as string)
 
-    // Regenerate PDF (on-the-fly)
     console.log('[download] Starting PDF generation for diploma:', diplomaId)
     const pdfBuffer = await generateDiplomaPDF({
       recipientName,
@@ -54,20 +52,30 @@ export async function GET(request: NextRequest) {
       verificationCode: diploma.verificationCode,
       examiner: diploma.examAttempt?.examiner || undefined,
     })
+    
     console.log('[download] PDF generated, type:', typeof pdfBuffer, 'constructor:', pdfBuffer?.constructor?.name, 'byteLength:', pdfBuffer?.byteLength, 'isArrayBuffer:', pdfBuffer instanceof ArrayBuffer)
-
-    // Convert ArrayBuffer to Blob for response
-    // pdfBuffer is an ArrayBuffer from generateDiplomaPDF
-    const blob = new Blob([pdfBuffer], { type: 'application/pdf' })
+    
+    // Ensure pdfBuffer is a valid ArrayBuffer
+    if (!(pdfBuffer instanceof ArrayBuffer)) {
+      throw new Error('pdfBuffer is not an ArrayBuffer')
+    }
+    if (pdfBuffer.byteLength === 0) {
+      throw new Error('pdfBuffer is empty (0 bytes)')
+    }
+    
+    // Create a fresh Uint8Array view for Blob creation
+    const uint8Array = new Uint8Array(pdfBuffer)
+    console.log('[download] Uint8Array length:', uint8Array.length)
+    
+    // Convert to Blob using the Uint8Array view
+    const blob = new Blob([uint8Array], { type: 'application/pdf' })
     console.log('[download] Blob size:', blob.size)
-
-    const byteLength = new Uint8Array(pdfBuffer).byteLength
-    console.log('[download] Content-Length:', byteLength)
 
     const response = new NextResponse(blob, {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="diploma-${recipientName.replace(/\s+/g, '-')}-${beltLabel.toLowerCase().replace(/\s+/g, '-')}.pdf"`,
+        'Content-Length': String(uint8Array.byteLength),
       },
     })
 
