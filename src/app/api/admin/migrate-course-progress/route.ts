@@ -20,10 +20,15 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Run the migration SQL
+    // Run the migration SQL - drop old unique constraint (try multiple possible names)
     await db.$executeRawUnsafe(`
       ALTER TABLE "CourseProgress"
         DROP CONSTRAINT IF EXISTS "CourseProgress.userId_courseName_unique";
+    `)
+
+    // Also try dropping by index name (Prisma sometimes creates index instead of constraint)
+    await db.$executeRawUnsafe(`
+      DROP INDEX IF EXISTS "CourseProgress_userId_courseName_unique";
     `)
 
     // Check if new constraint exists, add if not
