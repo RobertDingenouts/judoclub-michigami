@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     const constraints = await db.$queryRawUnsafe(`
       SELECT conname 
       FROM pg_constraint 
-      WHERE conrelid = 'CourseProgress'::regclass 
+      WHERE conrelid = '"CourseProgress"'::regclass 
       AND contype = 'u'
     `)
     console.log('Existing constraints:', constraints)
