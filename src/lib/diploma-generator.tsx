@@ -61,21 +61,33 @@ export async function generateDiplomaPDF(data: {
   // Handle Node.js Stream — consume all chunks and return as ArrayBuffer
   if (pdfResult && typeof (pdfResult as any).on === 'function' && typeof (pdfResult as any).pipe === 'function') {
     try {
+      console.log('[diploma-generator] Detected stream, consuming...')
       const stream = pdfResult as NodeJS.ReadableStream
       const chunks: Buffer[] = []
       
       await new Promise<void>((resolve, reject) => {
-        stream.on('data', (chunk: Buffer) => chunks.push(chunk))
-        stream.on('end', () => resolve())
-        stream.on('error', reject)
+        stream.on('data', (chunk: Buffer) => {
+          console.log('[diploma-generator] Stream data event, chunk length:', chunk.length)
+          chunks.push(chunk)
+        })
+        stream.on('end', () => {
+          console.log('[diploma-generator] Stream end, total chunks:', chunks.length)
+          resolve()
+        })
+        stream.on('error', (err: any) => {
+          console.log('[diploma-generator] Stream error:', err?.message || err)
+          reject(err)
+        })
       })
       
       // Concatenate all chunks into a single Buffer
       const totalLength = chunks.reduce((sum, chunk) => sum + chunk.length, 0)
+      console.log('[diploma-generator] Total chunk length:', totalLength)
       const combined = Buffer.concat(chunks, totalLength)
       const arrayBuffer = new ArrayBuffer(combined.byteLength)
       const view = new Uint8Array(arrayBuffer)
       view.set(combined)
+      console.log('[diploma-generator] Returning ArrayBuffer, byteLength:', arrayBuffer.byteLength)
       return arrayBuffer
     } catch (err) {
       console.error('[diploma-generator] Stream consumption error:', err)
