@@ -63,23 +63,29 @@ export async function GET(request: NextRequest) {
       throw new Error('pdfBuffer is empty (0 bytes)')
     }
     
-    // Try creating a Blob with Uint8Array view
-    const uint8Array = new Uint8Array(pdfBuffer)
-    console.log('[download] Uint8Array length:', uint8Array.length, 'byteOffset:', uint8Array.byteOffset, 'buffer byteLength:', uint8Array.buffer.byteLength)
+    // Try creating a fresh Uint8Array view with explicit bounds checking
+    let uint8Array: Uint8Array
+    try {
+      uint8Array = new Uint8Array(pdfBuffer, 0, pdfBuffer.byteLength)
+      console.log('[download] Uint8Array created, length:', uint8Array.length, 'buffer byteLength:', uint8Array.buffer.byteLength)
+    } catch (e) {
+      console.error('[download] Failed to create Uint8Array:', e)
+      // Fallback: create a new ArrayBuffer and copy
+      const fallback = new Uint8Array(pdfBuffer.byteLength)
+      const view = new Uint8Array(pdfBuffer)
+      fallback.set(view)
+      uint8Array = fallback
+      console.log('[download] Fallback Uint8Array created, length:', uint8Array.length)
+    }
     
-    // Create a fresh Uint8Array to ensure correct bounds
-    const freshView = new Uint8Array(uint8Array.length)
-    freshView.set(uint8Array)
-    console.log('[download] Fresh view length:', freshView.length)
-    
-    const blob = new Blob([freshView], { type: 'application/pdf' })
+    const blob = new Blob([uint8Array], { type: 'application/pdf' })
     console.log('[download] Blob size:', blob.size)
     
     const response = new NextResponse(blob, {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="diploma-${recipientName.replace(/\s+/g, '-')}-${beltLabel.toLowerCase().replace(/\s+/g, '-')}.pdf"`,
-        'Content-Length': String(freshView.byteLength),
+        'Content-Length': String(uint8Array.byteLength),
       },
     })
 
