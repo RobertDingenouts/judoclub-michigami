@@ -287,7 +287,21 @@ git add -A && git commit -m "beschrijving" && git push origin main
 
 **BeltLevel type mismatch:** Prisma `BeltLevel` enum has `BRUIN_2`, `BRUIN_3`, `Zwart_1` etc. but Japanese course only uses `WIT`–`BRUIN_1` (6 levels). Use `as any` cast when passing string belt levels to Prisma, or define `type JapaneseBelt = 'WIT' | 'GEEL' | 'ORANJE' | 'GROEN' | 'BLAUW' | 'BRUIN_1'`.
 
-**⚠️ `@react-pdf/renderer` buffer conversion:** `pdf(document).toBuffer()` returns `Buffer`. `pdfBuffer.buffer.slice(...)` throws "Offset is outside bounds". **Fix:** `new Uint8Array(pdfBuffer).buffer` in generator, `new Blob([pdfBuffer as ArrayBuffer])` in API route.
+**⚠️ Diploma PDF "Offset is outside bounds of DataView" — FIXED (June 10, 2026)**
+`@react-pdf/renderer` v4.5.1 + custom Google Font (Inter via external URL) + complex layout caused `"Offset is outside the bounds of the DataView"` on Vercel. 
+
+**Fix applied in `src/components/diploma/DiplomaPDFDocument.tsx`:**
+- Removed `Font.register()` with Google Fonts URL (Inter)
+- Replaced with built-in `Helvetica` / `Helvetica-Bold` fonts
+- Removed complex borders, gradients, absolute positioning
+- Simplified styling to reliable basics
+
+**Updated `src/lib/diploma-generator.tsx`:**
+- `generateDiplomaPDF()` uses `pdf(document).toBlob()` → returns standard Blob
+- `generateDiplomaPDFBuffer()` converts blob to clean ArrayBuffer for backward compat
+- `/api/diplomas/download/route.ts` returns Blob directly via `NextResponse(blob, {...})` — NO ArrayBuffer conversion needed anymore
+
+**Result:** All diploma downloads (belt exams + Cursus Japans) now work reliably with HTTP 200.
 
 **⚠️ `db.model.fields.fieldName` returns `FieldRef`, not value.** Cannot use `db.courseProgress.fields.overallScore` in `Math.max()` — TS error. Use raw value directly.
 
@@ -307,7 +321,7 @@ neonctl projects list
 neonctl connection-string production --project-id withered-surf-44483650 --db-name neondb --role-name neondb_owner
 ```
 
-**Migration (DONE):** `CourseProgress` unique constraint changed from `[userId, courseName]` to `[userId, courseName, beltLevel]`. SQL in `prisma/migrations/cursus-japans-diploma-systeem/migration.sql`.
+**Migration (DONE):** `CourseProgress` unique constraint changed from `[userId, courseName]` to `[userId, courseName, beltLevel]`. SQL in `prisma/migrations/cursus-japans-diploma-systeem/migration.sql`. **Applied via `/api/admin/migrate-course-progress` endpoint on production.**
 
 **Diploma types:**
 - `BELT_EXAM` — verification code prefix `MJ-XXXX-XXXX`
