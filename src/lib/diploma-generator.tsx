@@ -47,6 +47,15 @@ export async function generateDiplomaPDF(data: {
 
    const pdfResult = await pdf(document).toBuffer()
 
+  // DEBUG: log what toBuffer() actually returns
+  console.log('[diploma-generator] toBuffer() returned type:', typeof pdfResult)
+  console.log('[diploma-generator] toBuffer() returned constructor:', pdfResult?.constructor?.name)
+  console.log('[diploma-generator] toBuffer() is Buffer:', Buffer.isBuffer(pdfResult))
+  console.log('[diploma-generator] toBuffer() is Stream:', typeof (pdfResult as any)?.on === 'function' && typeof (pdfResult as any)?.pipe === 'function')
+  console.log('[diploma-generator] toBuffer() is Uint8Array:', pdfResult instanceof Uint8Array)
+  console.log('[diploma-generator] toBuffer() is ReadableStream:', pdfResult instanceof ReadableStream)
+  console.log('[diploma-generator] toBuffer() is ArrayBuffer:', pdfResult instanceof ArrayBuffer)
+
   // @react-pdf/renderer v4.5.1 toBuffer() returns a Node.js Stream (pdfkit), not a Buffer!
   // Handle Node.js Stream — read all chunks and concatenate
   if (pdfResult && typeof (pdfResult as any).on === 'function' && typeof (pdfResult as any).pipe === 'function') {
