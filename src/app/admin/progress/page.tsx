@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { db } from '@/lib/db'
 import { BELT_LABELS_NL, BELT_COLORS, BELT_ORDER } from '@/lib/student-progress-types'
 import type { BeltLevel } from '@prisma/client'
@@ -10,35 +11,11 @@ export default async function ProgressPage() {
     where: { isActive: true },
     orderBy: { lastName: 'asc' },
     include: {
-      user: { select: { name: true, currentBelt: true, totalPoints: true, weeklyPoints: true } },
+      user: { select: { name: true, currentBelt: true } },
       courseProgress: {
         orderBy: { beltLevel: 'asc' },
       },
-      leaderboardEntries: {
-        orderBy: { points: 'desc' },
-        take: 5,
-        select: { points: true, activityType: true, description: true, createdAt: true },
-      },
     },
-  })
-
-  // Weekly leaderboard
-  const now = new Date()
-  const weekStart = new Date(now)
-  weekStart.setDate(weekStart.getDate() - weekStart.getDay() + 1)
-  weekStart.setHours(0, 0, 0, 0)
-
-  const leaderboard = await db.member.findMany({
-    where: { isActive: true },
-    include: {
-      user: { select: { name: true, currentBelt: true, weeklyPoints: true, totalPoints: true } },
-      leaderboardEntries: {
-        where: { weekStart: { gte: weekStart } },
-        select: { points: true },
-      },
-    },
-    orderBy: { user: { weeklyPoints: 'desc' } },
-    take: 10,
   })
 
   return (
@@ -46,10 +23,9 @@ export default async function ProgressPage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-[#2a2a2a]">Voortgang</h1>
-        <p className="text-sm text-gray-500 mt-1">Cursus Japans voortgang en leaderboard</p>
+        <p className="text-sm text-gray-500 mt-1">Cursus Japans voortgang per student</p>
       </div>
 
-      {/* Tabs: simple server-rendered sections */}
       {/* Course Progress Section */}
       <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
         <h2 className="mb-4 text-lg font-semibold text-[#2a2a2a]">Cursus Japans Voortgang</h2>
@@ -129,54 +105,6 @@ export default async function ProgressPage() {
           <p className="text-center text-sm text-gray-400 py-8">Nog geen studenten met cursusvoortgang</p>
         )}
       </div>
-
-      {/* Leaderboard Section */}
-      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-lg font-semibold text-[#2a2a2a]">Weekse Leaderboard</h2>
-
-        {leaderboard.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-gray-200">
-                  <th className="pb-3 text-left text-xs font-medium text-gray-500">#</th>
-                  <th className="pb-3 text-left text-xs font-medium text-gray-500">Student</th>
-                  <th className="pb-3 text-left text-xs font-medium text-gray-500">Band</th>
-                  <th className="pb-3 text-right text-xs font-medium text-gray-500">Wekelijkse Punten</th>
-                  <th className="pb-3 text-right text-xs font-medium text-gray-500">Totaal</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {leaderboard.map((student, idx) => {
-                  const weeklyPts = student.leaderboardEntries.reduce((sum, e) => sum + e.points, 0)
-                  return (
-                    <tr key={student.id} className={`${idx < 3 ? 'bg-[#fdf6f6]' : ''}`}>
-                      <td className="py-3">
-                        {idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `${idx + 1}.`}
-                      </td>
-                      <td className="py-3 font-medium text-[#2a2a2a]">
-                        {student.firstName} {student.lastName}
-                      </td>
-                      <td className="py-3">
-                        <div className="flex items-center gap-1.5">
-                          <span className="inline-flex h-3 w-3 rounded-full border border-gray-300" style={{ backgroundColor: BELT_COLORS[student.user.currentBelt as BeltLevel] || '#ccc' }} />
-                          <span className="text-xs text-gray-600">{BELT_LABELS_NL[student.user.currentBelt as BeltLevel] || '-'}</span>
-                        </div>
-                      </td>
-                      <td className="py-3 text-right font-bold text-[#a90000]">{weeklyPts}</td>
-                      <td className="py-3 text-right text-gray-600">{student.user.totalPoints}</td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <p className="text-center text-sm text-gray-400 py-8">Nog geen leaderboard data</p>
-        )}
-      </div>
     </div>
   )
 }
-
-import Link from 'next/link'

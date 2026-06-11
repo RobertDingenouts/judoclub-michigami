@@ -31,8 +31,6 @@ async function main() {
       name: 'Robert Dingenouts',
       role: 'ADMIN',
       currentBelt: 'Zwart_1',
-      totalPoints: 1000,
-      weeklyPoints: 50,
     },
   })
 
@@ -58,8 +56,6 @@ async function main() {
       name: 'Test Student',
       role: 'MEMBER',
       currentBelt: 'GEEL',
-      totalPoints: 120,
-      weeklyPoints: 30,
     },
   })
 
@@ -197,43 +193,6 @@ async function main() {
   })
 
   // ---------------------------------------------------------------------------
-  // Create leaderboard entries
-  // ---------------------------------------------------------------------------
-  console.log('  Creating leaderboard entries...')
-  const weekStart = new Date()
-  weekStart.setDate(weekStart.getDate() - weekStart.getDay() + 1) // Monday
-
-  await prisma.leaderboardEntry.createMany({
-    data: [
-      {
-        userId: studentUser.id,
-        memberId: studentMember.id,
-        weekStart,
-        points: 10,
-        activityType: 'ATTENDANCE',
-        description: 'Training bijgewoond - dinsdag',
-      },
-      {
-        userId: studentUser.id,
-        memberId: studentMember.id,
-        weekStart,
-        points: 15,
-        activityType: 'COURSE_QUIZ',
-        referenceId: 'japanese_yellow',
-        description: 'Quiz Cursus Japans gele band - 85%',
-      },
-      {
-        userId: studentUser.id,
-        memberId: studentMember.id,
-        weekStart,
-        points: 10,
-        activityType: 'ATTENDANCE',
-        description: 'Training bijgewoond - donderdag',
-      },
-    ],
-  })
-
-  // ---------------------------------------------------------------------------
   // Create sample events
   // ---------------------------------------------------------------------------
   console.log('  Creating sample events...')
@@ -266,7 +225,6 @@ async function main() {
   console.log(`   - 1 exam attempt with 4 results`)
   console.log(`   - 1 diploma`)
   console.log(`   - 3 course progress entries (Cursus Japans)`)
-  console.log(`   - 3 leaderboard entries`)
   console.log(`   - 2 events`)
 }
 

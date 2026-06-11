@@ -261,13 +261,6 @@ const [fromBeltId, setFromBeltId] = useState('wit');
 const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
 const [videoModal, setVideoModal] = useState<{ youtubeId: string; nameJa: string; nameNl: string } | null>(null);
 
-// Track activity for leaderboard
-const trackActivity = (action: string, metadata?: Record<string, any>) => {
-  if (typeof window !== 'undefined' && (window as any).activityTracker) {
-    (window as any).activityTracker.trackEvent('exam-dashboard', action, metadata);
-  }
-};
-
   const selectedBelt = BELT_LEVELS.find(b => b.id === selectedBeltId)!;
   const fromBelt = BELT_LEVELS.find(b => b.id === fromBeltId);
   const beltReq = BELT_REQUIREMENTS[selectedBeltId];
@@ -284,7 +277,6 @@ const trackActivity = (action: string, metadata?: Record<string, any>) => {
 
   // Toggle category expand/collapse
   function toggleCategory(catId: string) {
-    trackActivity('category_toggle', { category: catId, expanded: !expandedCategories.has(catId) });
     setExpandedCategories(prev => {
       const next = new Set(prev);
       if (next.has(catId)) {
@@ -313,7 +305,7 @@ const trackActivity = (action: string, metadata?: Record<string, any>) => {
           const bgColor = BELT_COLORS[belt.color] || '#ccc';
 
           return (
-            <AnimatedButton key={belt.id} onClick={() => { trackActivity('belt_select', { belt: belt.id, beltName: belt.name }); setSelectedBeltId(belt.id); }} variants={subtleHover}>
+            <AnimatedButton key={belt.id} onClick={() => { setSelectedBeltId(belt.id); }} variants={subtleHover}>
               <div className={`relative w-12 h-6 rounded transition-all duration-300 ${isActive ? 'scale-110 ring-2 ring-white ring-offset-2 ring-offset-[#a90000]' : 'hover:scale-105'}`} style={{ background: bgColor, boxShadow: isActive ? '0 4px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2)' : '0 2px 4px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.2)' }} title={belt.name}>
                 <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] whitespace-nowrap opacity-0 hover:opacity-100 transition-opacity">
                   {belt.name}
@@ -400,7 +392,7 @@ const trackActivity = (action: string, metadata?: Record<string, any>) => {
                               {num}. {tech.nameJa}
                             </span>
                             {tech.youtubeId && (
-                              <AnimatedButton onClick={() => { trackActivity('video_play', { technique: tech.nameJa, techniqueId: tech.id }); setVideoModal({ youtubeId: tech.youtubeId!, nameJa: tech.nameJa, nameNl: tech.nameNl }); }} variants={subtleHover}>
+                              <AnimatedButton onClick={() => { setVideoModal({ youtubeId: tech.youtubeId!, nameJa: tech.nameJa, nameNl: tech.nameNl }); }} variants={subtleHover}>
                                 <div className="flex-shrink-0 w-7 h-7 rounded-full bg-[#a90000] hover:bg-[#8c0000] text-white flex items-center justify-center transition-colors shadow" title={`Video: ${tech.nameJa}`}>
                                   <Play className="w-3.5 h-3.5 ml-0.5" />
                                 </div>

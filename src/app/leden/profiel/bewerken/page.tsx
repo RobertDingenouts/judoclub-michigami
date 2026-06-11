@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Camera, Shield, Bell, Eye, EyeOff, Trophy, CheckCircle } from 'lucide-react'
+import { Camera, Shield, Bell, Eye, EyeOff, CheckCircle } from 'lucide-react'
 
 interface ProfileEditData {
   firstName: string
@@ -16,22 +16,15 @@ interface ProfileEditData {
   medicalNotes: string
 }
 
-const BELT_COLORS: Record<string, string> = {
-  WIT: '#FFFFFF', GEEL: '#FFD700', ORANJE: '#FF8C00', GROEN: '#228B22',
-  BLAUW: '#0000FF', BRUIN_1: '#8B4513', BRUIN_2: '#8B4513', BRUIN_3: '#8B4513',
-  Zwart_1: '#000000', Zwart_2: '#000000', Zwart_3: '#000000',
-}
-
 export default function ProfileEditPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [activeTab, setActiveTab] = useState<'gegevens' | 'wachtwoord' | 'notificaties' | 'leaderboard'>('gegevens')
+  const [activeTab, setActiveTab] = useState<'gegevens' | 'wachtwoord' | 'notificaties'>('gegevens')
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
   const [profile, setProfile] = useState<ProfileEditData | null>(null)
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
-  const [leaderboardOptIn, setLeaderboardOptIn] = useState(false)
 
   // Password change state
   const [currentPassword, setCurrentPassword] = useState('')
@@ -71,7 +64,6 @@ export default function ProfileEditPage() {
           emergencyContactPhone: p.member?.emergencyContactPhone || '',
           medicalNotes: p.member?.medicalNotes || '',
         })
-        setLeaderboardOptIn(p.leaderboardOptIn || false)
       }
     } catch {
       // Handle error
@@ -157,8 +149,7 @@ export default function ProfileEditPage() {
     setError(null)
     setSuccess(null)
 
-    // In a real app, you'd POST to an API endpoint
-    // For now, just save to localStorage and show success
+    // Save to localStorage
     localStorage.setItem('notificationPrefs', JSON.stringify(notifications))
     setSuccess('Notificatievoorkeuren opgeslagen!')
     setSaving(false)
@@ -174,7 +165,6 @@ export default function ProfileEditPage() {
       const reader = new FileReader()
       reader.onloadend = () => {
         setAvatarPreview(reader.result as string)
-        // In a real app, upload to server here
       }
       reader.readAsDataURL(file)
     }
@@ -248,16 +238,6 @@ export default function ProfileEditPage() {
             >
               <Bell className="w-4 h-4" /> Notificaties
             </button>
-            <button
-              onClick={() => { setActiveTab('leaderboard'); setError(null); setSuccess(null); }}
-              className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-                activeTab === 'leaderboard'
-                  ? 'border-[#a90000] text-[#a90000]'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200'
-              }`}
-            >
-              <Trophy className="w-4 h-4" /> Leaderboard
-            </button>
           </nav>
         </div>
 
@@ -330,7 +310,7 @@ export default function ProfileEditPage() {
                 defaultValue={profile?.medicalNotes || ''}
                 rows={4}
                 className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm focus:border-[#a90000] focus:outline-none focus:ring-2 focus:ring-[#a90000]/30"
-                placeholder="Allergieën, aandoeningen, medicijnen, etc. (alleen zichtbaar voor beheerders en instrructeurs)"
+                placeholder="Allergieën, aandoeningen, medicijnen, etc. (alleen zichtbaar voor beheerders en instructeurs)"
               />
 
               {/* Actions */}
@@ -531,74 +511,6 @@ export default function ProfileEditPage() {
                 </button>
               </div>
             </form>
-          )}
-
-          {activeTab === 'leaderboard' && (
-            <div className="space-y-6">
-              <h2 className="text-lg font-semibold text-[#2a2a2a] flex items-center gap-2">
-                <Trophy className="w-5 h-5 text-[#a90000]" /> Leaderboard Instellingen
-              </h2>
-              <p className="text-sm text-gray-500">
-                Kies of je zichtbaar wilt zijn op het wekelijkse leaderboard. Alleen leden die zich hier inschrijven
-                zijn zichtbaar voor anderen. Je punten worden bijgehouden of je nu zichtbaar bent of niet.
-              </p>
-
-              <div className="bg-white rounded-xl border border-gray-100 p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-lg font-semibold text-[#2a2a2a]">Zichtbaar op leaderboard</h3>
-                    <p className="text-sm text-gray-500 mt-1">
-                      Als dit aanstaat, zie je je naam, band en punten op het wekelijkse leaderboard.
-                      Andere leden kunnen je dan zien in de ranking.
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const newValue = !leaderboardOptIn
-                      setLeaderboardOptIn(newValue)
-                      fetch('/api/user/leaderboard-prefs', {
-                        method: 'PATCH',
-                        headers: { 'Content-Type': 'application/json' },
-                        credentials: 'include',
-                        body: JSON.stringify({ leaderboardOptIn: newValue }),
-                      }).then(() => {
-                        // Success handled by API
-                      })
-                    }}
-                    role="switch"
-                    aria-checked={leaderboardOptIn}
-                    className={`relative inline-flex h-7 w-14 rounded-full transition-colors ${
-                      leaderboardOptIn ? 'bg-[#a90000]' : 'bg-gray-200'
-                    }`}
-                  >
-                    <span className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${
-                      leaderboardOptIn ? 'translate-x-8' : 'translate-x-1'
-                    }`} />
-                  </button>
-                </div>
-
-                <div className="mt-6 p-4 bg-gray-50 rounded-xl">
-                  <h4 className="font-semibold text-gray-700 mb-2">Hoe werkt het leaderboard?</h4>
-                  <ul className="text-sm text-gray-600 space-y-1 ml-4 list-disc">
-                    <li>Punten verdien je door te oefenen op de website (examendashboard, technieken, cursus Japans)</li>
-                    <li>Elke week begint het leaderboard opnieuw op zondag</li>
-                    <li>Alleen leden die zich hier inschrijven zijn zichtbaar voor anderen</li>
-                    <li>Je punten worden altijd bijgehouden, ook als je niet zichtbaar bent</li>
-                    <li>Admins zijn nooit zichtbaar op het leaderboard</li>
-                  </ul>
-                </div>
-
-                {leaderboardOptIn && (
-                  <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-xl">
-                    <p className="text-sm text-green-800 flex items-center gap-1">
-                      <CheckCircle className="w-4 h-4" /> Je bent nu zichtbaar op het leaderboard!
-                    </p>
-                    <p className="text-xs text-green-700 mt-1">Bekijk je ranking op de <a href="/leaderboard" className="underline hover:text-[#a90000]">leaderboard pagina</a>.</p>
-                  </div>
-                )}
-              </div>
-            </div>
           )}
         </div>
       </div>

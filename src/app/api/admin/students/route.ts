@@ -28,7 +28,7 @@ export async function GET(request: Request) {
     where,
     orderBy: { lastName: 'asc' },
     include: {
-      user: { select: { email: true, role: true, currentBelt: true, totalPoints: true } },
+      user: { select: { email: true, role: true, currentBelt: true } },
       examAttempts: { where: { status: 'COMPLETED_PASSED' }, select: { beltLevel: true, examDate: true } },
     },
   })

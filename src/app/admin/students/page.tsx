@@ -30,7 +30,7 @@ export default async function StudentsPage({
       where,
       orderBy: { lastName: 'asc' },
       include: {
-        user: { select: { role: true, currentBelt: true, totalPoints: true, weeklyPoints: true } },
+        user: { select: { role: true, currentBelt: true } },
         examAttempts: {
           where: { status: 'COMPLETED_PASSED' },
           orderBy: { examDate: 'desc' },
@@ -133,7 +133,7 @@ export default async function StudentsPage({
                 {/* Stats */}
                 <div className="hidden text-sm text-gray-500 md:block">
                   <span className="mr-4">🎯 {student.examAttempts.length} examens</span>
-                  <span>⭐ {student.user.totalPoints} punten</span>
+                  <span>🥋 {BELT_LABELS_NL[student.currentBelt as BeltLevel] || 'Geen band'}</span>
                 </div>
 
                 {/* Actions */}

@@ -20,7 +20,6 @@ export default async function StudentDetailPage({
       examAttempts: { include: { results: true }, orderBy: { examDate: 'desc' } },
       courseProgress: { orderBy: { beltLevel: 'asc' } },
       diplomas: { orderBy: { awardedAt: 'desc' } },
-      leaderboardEntries: { orderBy: { createdAt: 'desc' }, take: 10 },
     },
   })
 
@@ -38,7 +37,7 @@ export default async function StudentDetailPage({
           </Link>
           <div>
             <h1 className="text-2xl font-bold text-[#2a2a2a]">{member.firstName} {member.lastName}</h1>
-            <p className="text-sm text-gray-500 mt-1">{member.email}</p>
+            <p className="text-sm text-gray-500 mt-1">{member.email || member.user.email}</p>
           </div>
         </div>
         <div className="flex gap-2">
@@ -82,16 +81,16 @@ export default async function StudentDetailPage({
           {/* Details */}
           <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <DetailRow label="Volledige naam" value={`${member.firstName} ${member.lastName}`} />
-            <DetailRow label="E-mail" value={member.email || '-'} />
+            <DetailRow label="E-mail" value={member.email || member.user.email || '-'} />
             <DetailRow label="Telefoon" value={member.phone || '-'} />
             <DetailRow
               label="Geboortedatum"
               value={member.dateOfBirth ? new Date(member.dateOfBirth).toLocaleDateString('nl-NL') : '-'}
             />
             <DetailRow label="Lid sinds" value={new Date(member.joinDate).toLocaleDateString('nl-NL')} />
-            <DetailRow label="Punten (totaal)" value={member.user.totalPoints.toString()} />
             <DetailRow label="Noodcontact" value={member.emergencyContactName || '-'} />
             <DetailRow label="Noodtel" value={member.emergencyContactPhone || '-'} />
+            <DetailRow label="Gebruikersnaam" value={member.user.name || '-'} />
           </div>
         </div>
 
@@ -108,7 +107,7 @@ export default async function StudentDetailPage({
         <StatCard title="Examens" value={member.examAttempts.length} icon="🎯" />
         <StatCard title="Diploma's" value={member.diplomas.length} icon="🏆" />
         <StatCard title="Cursussen" value={member.courseProgress.length} icon="🇯🇵" />
-        <StatCard title="Totaal Punten" value={member.user.totalPoints} icon="⭐" />
+        <StatCard title="Band" value={BELT_LABELS_NL[member.currentBelt as BeltLevel] || '-'} icon="🥋" isText />
       </div>
 
       {/* Exam history */}
@@ -217,13 +216,13 @@ function DetailRow({ label, value }: { label: string; value: string }) {
   )
 }
 
-function StatCard({ title, value, icon }: { title: string; value: number; icon: string }) {
+function StatCard({ title, value, icon, isText }: { title: string; value: number | string; icon: string; isText?: boolean }) {
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-xs font-medium text-gray-500">{title}</p>
-          <p className="mt-1 text-2xl font-bold text-[#2a2a2a]">{value}</p>
+          <p className={`mt-1 font-bold text-[#2a2a2a] ${isText ? 'text-sm truncate' : 'text-2xl'}`}>{value}</p>
         </div>
         <span className="text-2xl opacity-60">{icon}</span>
       </div>

@@ -12,10 +12,14 @@ interface StudentData {
   phone: string | null
   dateOfBirth: string | null
   currentBelt: string | null
+  joinDate: string
   isActive: boolean
   emergencyContactName: string | null
   emergencyContactPhone: string | null
   medicalNotes: string | null
+  user: {
+    role: string
+  }
 }
 
 const BELTS = [
@@ -30,6 +34,13 @@ const BELTS = [
   { value: 'Zwart_1', label: 'Zwart 1' },
   { value: 'Zwart_2', label: 'Zwart 2' },
   { value: 'Zwart_3', label: 'Zwart 3' },
+]
+
+const ROLES = [
+  { value: 'MEMBER', label: 'Lid' },
+  { value: 'PARENT', label: 'Ouder' },
+  { value: 'INSTRUCTOR', label: 'Instructor' },
+  { value: 'ADMIN', label: 'Admin' },
 ]
 
 export default function StudentEditPage({ params }: { params: Promise<{ id: string }> }) {
@@ -91,6 +102,8 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
       phone: formData.get('phone') as string || null,
       dateOfBirth: formData.get('dateOfBirth') as string || null,
       currentBelt: formData.get('currentBelt') as string || null,
+      joinDate: formData.get('joinDate') as string || null,
+      role: formData.get('role') as string || null,
       isActive: formData.get('isActive') === 'on',
       emergencyContactName: formData.get('emergencyContactName') as string || null,
       emergencyContactPhone: formData.get('emergencyContactPhone') as string || null,
@@ -149,6 +162,7 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
             <FormField label="E-mail" name="email" type="email" defaultValue={student.email || ''} />
             <FormField label="Telefoon" name="phone" type="tel" defaultValue={student.phone || ''} />
             <FormField label="Geboortedatum" name="dateOfBirth" type="date" defaultValue={student.dateOfBirth ? new Date(student.dateOfBirth).toISOString().split('T')[0] : ''} />
+            <FormField label="Lid vanaf" name="joinDate" type="date" defaultValue={student.joinDate ? new Date(student.joinDate).toISOString().split('T')[0] : ''} />
             <div>
               <label className="mb-1.5 block text-sm font-medium text-gray-700">Band</label>
               <select
@@ -159,6 +173,18 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
                 <option value="">Geen band</option>
                 {BELTS.map(b => (
                   <option key={b.value} value={b.value}>{b.label}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-gray-700">Rol</label>
+              <select
+                name="role"
+                defaultValue={student.user?.role || 'MEMBER'}
+                className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+              >
+                {ROLES.map(r => (
+                  <option key={r.value} value={r.value}>{r.label}</option>
                 ))}
               </select>
             </div>

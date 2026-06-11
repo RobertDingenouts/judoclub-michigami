@@ -2,7 +2,7 @@
 // Generated from prisma/schema.prisma models
 // Use these types in Server Actions, API routes, and components
 
-import type { BeltLevel, DiplomaType, ExamStatus, ActivityType } from '@prisma/client'
+import type { BeltLevel, DiplomaType, ExamStatus } from '@prisma/client'
 
 // ============================================================================
 // BELT PROGRESSION ORDER (for UI sorting and gating logic)
@@ -124,31 +124,6 @@ export interface DiplomaInput {
 }
 
 // ============================================================================
-// LEADERBOARD TYPES
-// ============================================================================
-
-export interface LeaderboardEntryInput {
-  userId: string
-  memberId?: string
-  weekStart: Date
-  points: number
-  activityType: ActivityType
-  referenceId?: string
-  description?: string
-}
-
-export interface LeaderboardRow {
-  rank: number
-  userId: string
-  userName: string
-  memberFirstName: string
-  memberLastName: string
-  currentBelt: BeltLevel | null
-  totalPoints: number
-  weeklyPoints: number
-}
-
-// ============================================================================
 // QUERY HELPERS
 // ============================================================================
 
@@ -158,8 +133,6 @@ export interface StudentProgressSummary {
   currentBelt: BeltLevel | null
   examsPassed: number
   examsFailed: number
-  totalAttendance: number
-  attendanceThisMonth: number
   diplomas: Array<{
     id: string
     title: string
@@ -176,8 +149,4 @@ export interface StudentProgressSummary {
     isPassed: boolean
     isUnlocked: boolean
   }>
-  leaderboardPoints: {
-    total: number
-    weekly: number
-  }
 }

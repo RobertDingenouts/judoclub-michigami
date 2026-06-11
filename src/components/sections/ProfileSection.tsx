@@ -8,8 +8,6 @@ interface UserProfile {
   name: string | null
   role: string
   currentBelt: string | null
-  totalPoints: number
-  weeklyPoints: number
   joinDate: string | null
   member: {
     firstName: string
@@ -150,24 +148,30 @@ export function ProfileSection() {
           <p className="text-lg font-bold text-gray-800">{beltLabel}</p>
         </div>
 
-        {/* Points */}
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-          <span className="text-xs text-gray-500">Totaal punten</span>
-          <p className="text-lg font-bold text-gray-800">{profile.totalPoints}</p>
-        </div>
-
-        {/* Weekly points */}
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-          <span className="text-xs text-gray-500">Deze week</span>
-          <p className="text-lg font-bold text-gray-800">{profile.weeklyPoints}</p>
-        </div>
-
-        {/* Diplomas */}
+        {/* Join date */}
         <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
           <span className="text-xs text-gray-500">Lid sinds</span>
           <p className="text-lg font-bold text-gray-800">
             {joinDate ? new Date(joinDate).getFullYear() : '-'}
           </p>
+        </div>
+
+        {/* Role */}
+        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+          <span className="text-xs text-gray-500">Rol</span>
+          <p className="text-lg font-bold text-gray-800">
+            {roleLabels[profile.role] || profile.role}
+          </p>
+        </div>
+
+        {/* Edit link */}
+        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex items-center justify-center">
+          <a
+            href="/leden/profiel/bewerken"
+            className="text-sm font-medium text-[#a90000] hover:underline"
+          >
+            Profiel bewerken →
+          </a>
         </div>
       </div>
 

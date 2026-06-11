@@ -22,7 +22,6 @@ export async function GET(
       examAttempts: { include: { results: true }, orderBy: { examDate: 'desc' } },
       courseProgress: true,
       diplomas: { orderBy: { awardedAt: 'desc' } },
-      leaderboardEntries: { orderBy: { createdAt: 'desc' }, take: 10 },
     },
   })
 
@@ -56,6 +55,7 @@ export async function PATCH(
         ...(body.phone !== undefined && { phone: body.phone }),
         ...(body.dateOfBirth !== undefined && { dateOfBirth: body.dateOfBirth ? new Date(body.dateOfBirth) : undefined }),
         ...(body.currentBelt !== undefined && { currentBelt: body.currentBelt as BeltLevel }),
+        ...(body.joinDate !== undefined && { joinDate: body.joinDate ? new Date(body.joinDate) : undefined }),
         ...(body.isActive !== undefined && { isActive: body.isActive }),
         ...(body.emergencyContactName !== undefined && { emergencyContactName: body.emergencyContactName }),
         ...(body.emergencyContactPhone !== undefined && { emergencyContactPhone: body.emergencyContactPhone }),
@@ -67,7 +67,19 @@ export async function PATCH(
     if (body.currentBelt) {
       await db.user.update({
         where: { id: member.userId },
-        data: { currentBelt: body.currentBelt as BeltLevel },
+        data: {
+          currentBelt: body.currentBelt as BeltLevel,
+          ...(body.role !== undefined && { role: body.role as Role }),
+          ...(body.joinDate !== undefined && { joinDate: body.joinDate ? new Date(body.joinDate) : undefined }),
+        },
+      })
+    } else if (body.role !== undefined || body.joinDate !== undefined) {
+      await db.user.update({
+        where: { id: member.userId },
+        data: {
+          ...(body.role !== undefined && { role: body.role as Role }),
+          ...(body.joinDate !== undefined && { joinDate: body.joinDate ? new Date(body.joinDate) : undefined }),
+        },
       })
     }
 

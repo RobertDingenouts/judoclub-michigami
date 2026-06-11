@@ -8,54 +8,45 @@ datasource db {
 }
 
 model User {
-  id                 String             @id @default(cuid())
-  email              String             @unique
-  passwordHash       String?
-  name               String?
-  clerkUserId        String?            @unique
-  imageUrl           String?
-  role               Role               @default(MEMBER)
-  currentBelt        BeltLevel?
-  totalPoints        Int                @default(0)
-  weeklyPoints       Int                @default(0)
-  joinDate           DateTime?
-  is_active          Boolean            @default(true)
-  leaderboardOptIn   Boolean            @default(false)
-  createdAt          DateTime           @default(now())
-  updatedAt          DateTime           @updatedAt
-  courseProgress     CourseProgress[]
-  diplomas           Diploma[]
-  examAttempts       ExamAttempt[]
-  leaderboardEntries LeaderboardEntry[]
-  member             Member?
-  activitySessions   ActivitySession[]
+  id             String         @id @default(cuid())
+  email          String         @unique
+  passwordHash   String?
+  name           String?
+  imageUrl       String?
+  role           Role           @default(MEMBER)
+  currentBelt    BeltLevel?
+  joinDate       DateTime?
+  is_active      Boolean        @default(true)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  courseProgress CourseProgress[]
+  diplomas       Diploma[]
+  examAttempts   ExamAttempt[]
+  member         Member?
 
   @@index([email])
-  @@index([clerkUserId])
 }
 
 model Member {
-  id                    String             @id @default(cuid())
-  userId                String             @unique
+  id                    String        @id @default(cuid())
+  userId                String        @unique
   firstName             String
   lastName              String
   email                 String?
   phone                 String?
   dateOfBirth           DateTime?
   currentBelt           BeltLevel?
-  joinDate              DateTime           @default(now())
-  isActive              Boolean            @default(true)
+  joinDate              DateTime      @default(now())
+  isActive              Boolean       @default(true)
   emergencyContactName  String?
   emergencyContactPhone String?
   medicalNotes          String?
-  createdAt             DateTime           @default(now())
-  updatedAt             DateTime           @updatedAt
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
   courseProgress        CourseProgress[]
   diplomas              Diploma[]
   examAttempts          ExamAttempt[]
-  leaderboardEntries    LeaderboardEntry[]
-  attendance            LessonAttendance[]
-  user                  User               @relation(fields: [userId], references: [id])
+  user                  User          @relation(fields: [userId], references: [id])
 
   @@index([lastName, firstName])
 }
@@ -74,20 +65,6 @@ model Event {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  @@index([date])
-}
-
-model LessonAttendance {
-  id        String   @id @default(cuid())
-  memberId  String
-  eventId   String?
-  date      DateTime
-  notes     String?
-  points    Int      @default(1)
-  createdAt DateTime @default(now())
-  member    Member   @relation(fields: [memberId], references: [id])
-
-  @@unique([memberId, date])
   @@index([date])
 }
 
@@ -191,59 +168,6 @@ model CourseProgress {
   @@index([userId, beltLevel])
 }
 
-model LeaderboardEntry {
-  id           String       @id @default(cuid())
-  userId       String
-  memberId     String?
-  weekStart    DateTime
-  points       Int
-  activityType ActivityType
-  referenceId  String?
-  description  String?
-  createdAt    DateTime     @default(now())
-  member       Member?      @relation(fields: [memberId], references: [id])
-  user         User         @relation(fields: [userId], references: [id])
-
-  @@unique([userId, weekStart])
-  @@index([weekStart, points])
-  @@index([userId, weekStart])
-}
-
-model ActivitySession {
-  id           String        @id @default(cuid())
-  userId       String
-  page         String        // e.g., 'exam-dashboard', 'techniques', 'cursus-japans'
-  action       String        // e.g., 'view', 'quiz_start', 'quiz_complete', 'scroll', 'video_play'
-  durationMs   Int           // time spent in milliseconds
-  metadata     Json?         // additional data like quiz score, scroll depth, etc.
-  sessionId    String        // groups related activities in one session
-  createdAt    DateTime      @default(now())
-  user         User          @relation(fields: [userId], references: [id])
-
-  @@index([userId, createdAt])
-  @@index([sessionId])
-}
-
-model Page {
-  id          String   @id @default(cuid())
-  slug        String   @unique
-  title       String
-  content     String
-  isPublished Boolean  @default(true)
-  order       Int
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-model Image {
-  id        String   @id @default(cuid())
-  filename  String
-  url       String
-  alt       String?
-  category  String?
-  createdAt DateTime @default(now())
-}
-
 enum Role {
   MEMBER
   PARENT
@@ -284,12 +208,4 @@ enum ExamStatus {
   COMPLETED_PASSED
   COMPLETED_FAILED
   CANCELLED
-}
-
-enum ActivityType {
-  COURSE_QUIZ
-  EXAM_PASSED
-  ATTENDANCE
-  TECHNIQUE_MASTERED
-  LEADERBOARD_BONUS
 }
