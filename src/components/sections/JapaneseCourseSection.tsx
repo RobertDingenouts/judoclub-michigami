@@ -118,19 +118,26 @@ interface ProgressData {
   lastPlayed: Record<string | number, string>;
 }
 
-function loadProgress(): ProgressData {
+// Belt level ↔ number mapping
+const BELT_TO_NUM: Record<string, number> = {
+  WIT: 0, GEEL: 1, ORANJE: 2, GROEN: 3, BLAUW: 4, BRUIN_1: 5,
+};
+
+function loadProgress(userId?: string): ProgressData {
   if (typeof window === 'undefined') return { passedLevels: {}, bestScores: {}, lastPlayed: {} };
+  const key = userId ? `michigami-japanese-progress-${userId}` : 'michigami-japanese-progress';
   try {
-    const saved = localStorage.getItem('michigami-japanese-progress');
+    const saved = localStorage.getItem(key);
     return saved ? JSON.parse(saved) : { passedLevels: {}, bestScores: {}, lastPlayed: {} };
   } catch {
     return { passedLevels: {}, bestScores: {}, lastPlayed: {} };
   }
 }
 
-function saveProgress(data: ProgressData) {
+function saveProgress(data: ProgressData, userId?: string) {
   if (typeof window === 'undefined') return;
-  localStorage.setItem('michigami-japanese-progress', JSON.stringify(data));
+  const key = userId ? `michigami-japanese-progress-${userId}` : 'michigami-japanese-progress';
+  localStorage.setItem(key, JSON.stringify(data));
 }
 
 // ==========================================================================
@@ -460,13 +467,46 @@ export function JapaneseCourseSection() {
   const [cardIndex, setCardIndex] = useState(0);
   const [progress, setProgressState] = useState<ProgressData>(loadProgress);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
 
   const { sounds, enabled: soundEnabled, setEnabled: setSoundEnabled } = useSounds();
 
-  // Save progress on change
+  // Fetch auth + DB progress on mount
   useEffect(() => {
-    saveProgress(progress);
-  }, [progress]);
+    fetch('/api/auth/me')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.authenticated && data.user) {
+          const uid = data.user.id;
+          setUserId(uid);
+          // Fetch per-user progress from database
+          fetch('/api/cursus-japans/sync')
+            .then((r) => r.json())
+            .then((progressData) => {
+              if (progressData.success && progressData.progress) {
+                const passedLevels: Record<number, boolean> = {};
+                progressData.progress.forEach((cp: any) => {
+                  const num = BELT_TO_NUM[cp.beltLevel];
+                  if (num !== undefined && cp.isPassed) {
+                    passedLevels[num] = true;
+                  }
+                });
+                setProgressState({ passedLevels, bestScores: {}, lastPlayed: {} });
+              }
+            })
+            .catch(() => {
+              // Fallback to localStorage if API fails
+              setProgressState(loadProgress(uid));
+            });
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  // Save progress on change (user-scoped)
+  useEffect(() => {
+    saveProgress(progress, userId ?? undefined);
+  }, [progress, userId]);
 
   // Belt order for unlocking (only belt levels, not special modules)
   const beltOrder = [0, 1, 2, 3, 4, 5]; // Wit → Geel → Oranje → Groen → Blauw → Bruin

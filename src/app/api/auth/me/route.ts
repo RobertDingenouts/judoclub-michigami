@@ -20,7 +20,14 @@ export async function GET() {
         member: user.member ? {
           firstName: user.member.firstName,
           lastName: user.member.lastName,
+          email: user.member.email,
+          phone: user.member.phone,
+          dateOfBirth: user.member.dateOfBirth,
+          joinDate: user.member.joinDate,
           currentBelt: user.member.currentBelt,
+          emergencyContactName: user.member.emergencyContactName,
+          emergencyContactPhone: user.member.emergencyContactPhone,
+          medicalNotes: user.member.medicalNotes,
         } : null,
       },
     })

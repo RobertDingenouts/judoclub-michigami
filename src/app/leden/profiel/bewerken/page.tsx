@@ -101,6 +101,7 @@ export default function ProfileEditPage() {
 
       setSuccess('Profiel succesvol bijgewerkt!')
       setProfile(data.member)
+      router.refresh()
     } catch (err: any) {
       setError(err.message || 'Fout bij opslaan profiel')
     } finally {
@@ -285,11 +286,11 @@ export default function ProfileEditPage() {
               {/* Personal Info */}
               <h2 className="text-lg font-semibold text-[#2a2a2a]">Persoonlijke Gegevens</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <FormField label="Voornaam *" name="firstName" defaultValue={profile?.firstName || ''} required />
-                <FormField label="Achternaam *" name="lastName" defaultValue={profile?.lastName || ''} required />
-                <FormField label="E-mail *" name="email" type="email" defaultValue={profile?.email || ''} required />
-                <FormField label="Telefoon" name="phone" type="tel" defaultValue={profile?.phone || ''} />
-                <FormField label="Geboortedatum" name="dateOfBirth" type="date" defaultValue={profile?.dateOfBirth || ''} />
+                <FormField label="Voornaam *" name="firstName" value={profile?.firstName || ''} required />
+                <FormField label="Achternaam *" name="lastName" value={profile?.lastName || ''} required />
+                <FormField label="E-mail *" name="email" type="email" value={profile?.email || ''} required />
+                <FormField label="Telefoon" name="phone" type="tel" value={profile?.phone || ''} />
+                <FormField label="Geboortedatum" name="dateOfBirth" type="date" value={profile?.dateOfBirth || ''} />
               </div>
 
               <hr className="border-gray-100" />
@@ -297,8 +298,8 @@ export default function ProfileEditPage() {
               {/* Emergency Contact */}
               <h2 className="text-lg font-semibold text-[#2a2a2a]">Noodcontact</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <FormField label="Naam" name="emergencyContactName" defaultValue={profile?.emergencyContactName || ''} />
-                <FormField label="Telefoon" name="emergencyContactPhone" type="tel" defaultValue={profile?.emergencyContactPhone || ''} />
+                <FormField label="Naam" name="emergencyContactName" value={profile?.emergencyContactName || ''} />
+                <FormField label="Telefoon" name="emergencyContactPhone" type="tel" value={profile?.emergencyContactPhone || ''} />
               </div>
 
               <hr className="border-gray-100" />
@@ -307,7 +308,7 @@ export default function ProfileEditPage() {
               <h2 className="text-lg font-semibold text-[#2a2a2a]">Medische Notities</h2>
               <textarea
                 name="medicalNotes"
-                defaultValue={profile?.medicalNotes || ''}
+                value={profile?.medicalNotes || ''}
                 rows={4}
                 className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm focus:border-[#a90000] focus:outline-none focus:ring-2 focus:ring-[#a90000]/30"
                 placeholder="Allergieën, aandoeningen, medicijnen, etc. (alleen zichtbaar voor beheerders en instructeurs)"
@@ -518,8 +519,8 @@ export default function ProfileEditPage() {
   )
 }
 
-function FormField({ label, name, type = 'text', defaultValue = '', required = false }: {
-  label: string; name: string; type?: string; defaultValue?: string; required?: boolean
+function FormField({ label, name, type = 'text', value = '', required = false }: {
+  label: string; name: string; type?: string; value?: string; required?: boolean
 }) {
   return (
     <div>
@@ -530,7 +531,7 @@ function FormField({ label, name, type = 'text', defaultValue = '', required = f
         id={name}
         name={name}
         type={type}
-        defaultValue={defaultValue}
+        value={value}
         required={required}
         className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm focus:border-[#a90000] focus:outline-none focus:ring-2 focus:ring-[#a90000]/30 transition-colors"
       />

@@ -13,7 +13,14 @@ interface UserData {
   member: {
     firstName: string;
     lastName: string;
+    email: string;
+    phone: string | null;
+    dateOfBirth: string | null;
+    joinDate: string | null;
     currentBelt: string | null;
+    emergencyContactName: string | null;
+    emergencyContactPhone: string | null;
+    medicalNotes: string | null;
   } | null;
 }
 
@@ -170,32 +177,26 @@ export function UserDropdown({ onSectionChange }: { onSectionChange?: (section: 
 
           <div className="py-1">
             {/* Profile */}
-            <button
-              onClick={() => {
-                onSectionChange?.('profiel');
-                setOpen(false);
-              }}
+            <a
+              href="/leden/profiel/bewerken"
               className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-[#fdf6f6] hover:text-[#a90000] transition-colors"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
               Profiel & Instellingen
-            </button>
+            </a>
 
             {/* Diplomas */}
-            <button
-              onClick={() => {
-                onSectionChange?.('diplomas');
-                setOpen(false);
-              }}
+            <a
+              href="/leden/diploma's"
               className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-[#fdf6f6] hover:text-[#a90000] transition-colors"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               Mijn Diploma&apos;s
-            </button>
+            </a>
 
             {/* Admin Dashboard — only for admins */}
             {isAdmin && (
@@ -290,18 +291,12 @@ export function MobileUserAvatar({ onSectionChange }: { onSectionChange?: (secti
           <p className="text-xs font-semibold text-gray-800">{displayName}</p>
         </div>
         <div className="py-1">
-          <button
-            onClick={() => onSectionChange?.('profiel')}
-            className="w-full flex items-center gap-2 px-3 py-2 text-xs text-gray-700 hover:bg-[#fdf6f6] hover:text-[#a90000]"
-          >
+          <a href="/leden/profiel/bewerken" className="flex items-center gap-2 px-3 py-2 text-xs text-gray-700 hover:bg-[#fdf6f6] hover:text-[#a90000]">
             👤 Profiel
-          </button>
-          <button
-            onClick={() => onSectionChange?.('diplomas')}
-            className="w-full flex items-center gap-2 px-3 py-2 text-xs text-gray-700 hover:bg-[#fdf6f6] hover:text-[#a90000]"
-          >
+          </a>
+          <a href="/leden/diploma's" className="flex items-center gap-2 px-3 py-2 text-xs text-gray-700 hover:bg-[#fdf6f6] hover:text-[#a90000]">
             🏅 Diploma&apos;s
-          </button>
+          </a>
           {user.role === 'ADMIN' && (
             <a href="/admin" className="flex items-center gap-2 px-3 py-2 text-xs text-[#a90000] font-medium hover:bg-[#fdf6f6]">
               ⚙️ Admin
