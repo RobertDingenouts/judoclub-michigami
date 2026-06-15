@@ -1,166 +1,224 @@
 import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer'
 import { LOGO_URI } from './logo-uri'
 
+// -----------------------------------------------------------------------------
+// 1. CONFIGURATIE & KLEUREN
+// -----------------------------------------------------------------------------
+
+const BRAND_RED = '#a90000'
+const BRAND_GOLD = '#d4a843'
+const NEUTRAL_DARK = '#1a1a1a'
+const NEUTRAL_LIGHT = '#fffafa' // brand-50 (bijna wit)
+const NEUTRAL_GRAY = '#666666'
+
+const BELT_COLORS: Record<string, string> = {
+  WIT:       '#FFFFFF',
+  GEEL:      '#FFD700',
+  ORANJE:    '#FF8C00',
+  GROEN:     '#228B22',
+  BLAUW:     '#0000FF',
+  BRUIN_1:   '#8B4513',
+  BRUIN_2:   '#8B4513',
+  BRUIN_3:   '#8B4513',
+  Zwart_1:   '#000000',
+  Zwart_2:   '#000000',
+  Zwart_3:   '#000000',
+  COURSE_JAPANESE: BRAND_GOLD,
+  ACHIEVEMENT: BRAND_RED,
+}
+
+const BELT_LABELS_NL: Record<string, string> = {
+  WIT:       'Witte Band',
+  GEEL:      'Gele Band',
+  ORANJE:    'Oranje Band',
+  GROEN:     'Groene Band',
+  BLAUW:     'Blauwe Band',
+  BRUIN_1:   'Bruine Band 1e Kyu',
+  BRUIN_2:   'Bruine Band 2e Kyu',
+  BRUIN_3:   'Bruine Band 3e Kyu',
+  Zwart_1:   'Zwarte Band 1e Dan',
+  Zwart_2:   'Zwarte Band 2e Dan',
+  Zwart_3:   'Zwarte Band 3e Dan',
+  COURSE_JAPANESE: 'Cursus Japans',
+  ACHIEVEMENT: 'Bijzondere Prestatie',
+}
+
+// -----------------------------------------------------------------------------
+// 2. STYLESHEET (Strict @react-pdf/renderer compatible — geen borderRadius)
+// -----------------------------------------------------------------------------
+
 const styles = StyleSheet.create({
   page: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: '#fffafa', // brand-50 (Bijna wit)
-    padding: 24,
+    flexDirection: 'column',
+    backgroundColor: NEUTRAL_LIGHT,
+    padding: 40,
     fontFamily: 'Helvetica',
   },
+  // Buitenste rand: dik, rood, scherpe hoeken
   outerBorder: {
-    borderWidth: 6,
-    borderColor: '#a90000', // brand-600 (Hoofdkleur rood)
     flex: 1,
+    borderWidth: 4,
+    borderColor: BRAND_RED,
+    padding: 4,
   },
+  // Binnenste rand: dun, goud, scherpe hoeken
   innerBorder: {
+    flex: 1,
     borderWidth: 2,
-    borderColor: '#d4a843', // accent-gold (Premium accent)
-    margin: 12,
-    flex: 1,
-  },
-  contentContainer: {
+    borderColor: BRAND_GOLD,
     padding: 40,
-    flex: 1,
-    justifyContent: 'space-between',
+    flexDirection: 'column',
   },
+  // Header sectie
   header: {
     alignItems: 'center',
+    marginBottom: 30,
+  },
+  logoContainer: {
+    marginBottom: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   logo: {
     width: 70,
     height: 70,
-    marginBottom: 12,
+    marginBottom: 8,
   },
-  clubName: {
-    fontSize: 18,
-    fontFamily: 'Helvetica-Bold',
-    color: '#a90000',
+  // Typografisch logo als fallback
+  logoTextPrimary: {
+    fontFamily: 'Times-Bold',
+    fontSize: 28,
+    color: BRAND_RED,
     letterSpacing: 4,
     textTransform: 'uppercase',
   },
-  clubSub: {
-    fontSize: 10,
+  logoTextSecondary: {
     fontFamily: 'Helvetica',
-    color: '#666666',
-    letterSpacing: 3,
-    marginTop: 4,
-    textTransform: 'uppercase',
-  },
-  divider: {
-    height: 1,
-    backgroundColor: '#d4a843',
-    width: '30%',
-    alignSelf: 'center',
-    marginVertical: 15,
-  },
-  titleSection: {
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 46,
-    fontFamily: 'Times-Roman', // Serif voor formele, traditionele uitstraling
-    color: '#1a1a1a',
+    fontSize: 12,
+    color: NEUTRAL_DARK,
     letterSpacing: 6,
     textTransform: 'uppercase',
+    marginTop: 4,
   },
-  subtitle: {
-    fontSize: 12,
-    fontFamily: 'Helvetica',
-    color: '#444444',
+  mainTitle: {
+    fontFamily: 'Times-Bold',
+    fontSize: 42,
+    color: NEUTRAL_DARK,
+    letterSpacing: 8,
     textTransform: 'uppercase',
+    marginTop: 10,
+  },
+  subTitle: {
+    fontFamily: 'Helvetica',
+    fontSize: 16,
+    color: NEUTRAL_GRAY,
     letterSpacing: 2,
+    textTransform: 'uppercase',
     marginTop: 8,
   },
-  recipientSection: {
+  // Content sectie
+  content: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: 20,
   },
-  presentedTo: {
-    fontSize: 11,
-    fontFamily: 'Helvetica',
-    color: '#666666',
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-    marginBottom: 16,
+  introText: {
+    fontFamily: 'Times-Roman',
+    fontSize: 16,
+    color: NEUTRAL_DARK,
+    textAlign: 'center',
+    marginBottom: 10,
   },
   recipientName: {
+    fontFamily: 'Times-Bold',
     fontSize: 36,
-    fontFamily: 'Times-Roman',
-    color: '#1a1a1a',
-    borderBottomWidth: 1,
-    borderBottomColor: '#a90000',
-    paddingHorizontal: 20,
-    paddingBottom: 8,
-    minWidth: 300,
+    color: BRAND_RED,
     textAlign: 'center',
+    marginVertical: 15,
+    borderBottomWidth: 2,
+    borderBottomColor: BRAND_GOLD,
+    paddingBottom: 4,
   },
-  descriptionSection: {
-    alignItems: 'center',
-  },
-  description: {
-    fontSize: 13,
-    fontFamily: 'Helvetica',
-    color: '#333333',
+  descriptionText: {
+    fontFamily: 'Times-Roman',
+    fontSize: 16,
+    color: NEUTRAL_DARK,
     textAlign: 'center',
     lineHeight: 1.6,
     maxWidth: 450,
-    marginBottom: 24,
+    marginBottom: 25,
   },
-  beltContainer: {
+  // Band / Prestatie weergave
+  achievementBox: {
     alignItems: 'center',
     marginTop: 10,
+    width: '100%',
   },
   beltBar: {
-    height: 14,
-    width: 140,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: '#cccccc', // Subtiele rand zodat de witte band ook zichtbaar is
+    height: 16,
+    width: '60%',
+    marginBottom: 12,
+    // Geen borderRadius — scherpe hoeken
   },
-  beltText: {
-    fontSize: 18,
+  beltLabel: {
     fontFamily: 'Helvetica-Bold',
-    color: '#a90000',
-    letterSpacing: 1,
+    fontSize: 20,
+    color: NEUTRAL_DARK,
+    textTransform: 'uppercase',
+    letterSpacing: 2,
   },
+  // Footer sectie
   footer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
+    alignItems: 'flex-end',
+    marginTop: 40,
+    paddingTop: 20,
+    borderTopWidth: 1,
+    borderTopColor: BRAND_GOLD,
   },
   signatureBlock: {
     alignItems: 'center',
-    width: '40%',
+    width: 200,
   },
   signatureLine: {
     width: '100%',
     height: 1,
-    backgroundColor: '#1a1a1a',
-    marginBottom: 6,
+    backgroundColor: NEUTRAL_DARK,
+    marginBottom: 8,
   },
   signatureLabel: {
-    fontSize: 10,
     fontFamily: 'Helvetica',
-    color: '#666666',
+    fontSize: 11,
+    color: NEUTRAL_GRAY,
     textTransform: 'uppercase',
     letterSpacing: 1,
   },
   dateBlock: {
     alignItems: 'center',
-    width: '40%',
+    width: 200,
   },
   dateText: {
-    fontSize: 12,
-    fontFamily: 'Helvetica',
-    color: '#1a1a1a',
-    marginBottom: 6,
+    fontFamily: 'Times-Bold',
+    fontSize: 14,
+    color: NEUTRAL_DARK,
+    marginBottom: 4,
   },
+  locationText: {
+    fontFamily: 'Helvetica',
+    fontSize: 11,
+    color: NEUTRAL_GRAY,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+  },
+  // Verificatie sectie (subtiel)
   verificationSection: {
     alignItems: 'center',
     paddingTop: 15,
     borderTopWidth: 1,
     borderTopColor: '#eeeeee',
+    marginTop: 20,
   },
   verificationCode: {
     fontSize: 9,
@@ -176,33 +234,9 @@ const styles = StyleSheet.create({
   },
 })
 
-const BELT_COLORS: Record<string, string> = {
-  WIT:       '#FFFFFF',
-  GEEL:      '#FFD700',
-  ORANJE:    '#FF8C00',
-  GROEN:     '#228B22',
-  BLAUW:     '#0000FF',
-  BRUIN_1:   '#8B4513',
-  BRUIN_2:   '#8B4513',
-  BRUIN_3:   '#8B4513',
-  Zwart_1:   '#000000',
-  Zwart_2:   '#000000',
-  Zwart_3:   '#000000',
-}
-
-const BELT_LABELS_NL: Record<string, string> = {
-  WIT:       'Witte band',
-  GEEL:      'Gele band',
-  ORANJE:    'Oranje band',
-  GROEN:     'Groene band',
-  BLAUW:     'Blauwe band',
-  BRUIN_1:   'Bruine band 1e ke',
-  BRUIN_2:   'Bruine band 2e ke',
-  BRUIN_3:   'Bruine band 3e ke',
-  Zwart_1:   'Zwarte band 1e dan',
-  Zwart_2:   'Zwarte band 2e dan',
-  Zwart_3:   'Zwarte band 3e dan',
-}
+// -----------------------------------------------------------------------------
+// 3. COMPONENT
+// -----------------------------------------------------------------------------
 
 interface DiplomaPDFProps {
   recipientName: string
@@ -225,7 +259,7 @@ export function DiplomaPDFDocument({
   examiner,
   baseUrl = 'https://judoclubmichigami.nl',
 }: DiplomaPDFProps) {
-  const beltColor = BELT_COLORS[beltLevel] || '#a90000'
+  const beltColor = BELT_COLORS[beltLevel] || BRAND_RED
   const beltLabel = BELT_LABELS_NL[beltLevel] || beltLevel
   const hasBelt = beltLevel && beltLevel !== ''
   const dateStr = new Date(awardedAt).toLocaleDateString('nl-NL', {
@@ -239,66 +273,58 @@ export function DiplomaPDFDocument({
       <Page size="A4" style={styles.page}>
         <View style={styles.outerBorder}>
           <View style={styles.innerBorder}>
-            <View style={styles.contentContainer}>
-              {/* Header: Logo + Clubnaam */}
-              <View style={styles.header}>
+            {/* Header: Logo + Titel */}
+            <View style={styles.header}>
+              <View style={styles.logoContainer}>
                 <Image src={LOGO_URI} style={styles.logo} />
-                <Text style={styles.clubName}>Judoclub Michigami Steenbergen</Text>
-                <Text style={styles.clubSub}>Stichting Judo Club</Text>
+                <Text style={styles.logoTextPrimary}>Michigami</Text>
+                <Text style={styles.logoTextSecondary}>Judo Club Steenbergen</Text>
               </View>
+              <Text style={styles.mainTitle}>Diploma</Text>
+              <Text style={styles.subTitle}>Certificaat van Behaald Judo Examen</Text>
+            </View>
 
-              {/* Divider */}
-              <View style={styles.divider} />
+            {/* Content */}
+            <View style={styles.content}>
+              <Text style={styles.introText}>Hierbij wordt bevestigd dat</Text>
+              <Text style={styles.recipientName}>{recipientName}</Text>
+              <Text style={styles.descriptionText}>{description}</Text>
 
-              {/* Titel */}
-              <View style={styles.titleSection}>
-                <Text style={styles.title}>Diploma</Text>
-                <Text style={styles.subtitle}>Certificaat van Behaalde Judo Examen</Text>
-              </View>
-
-              {/* Ontvanger */}
-              <View style={styles.recipientSection}>
-                <Text style={styles.presentedTo}>Ernstig en met trots toegekend aan</Text>
-                <Text style={styles.recipientName}>{recipientName}</Text>
-              </View>
-
-              {/* Beschrijving + Band */}
-              <View style={styles.descriptionSection}>
-                <Text style={styles.description}>{description}</Text>
-                {hasBelt && (
-                  <View style={styles.beltContainer}>
-                    <View style={[styles.beltBar, { backgroundColor: beltColor }]} />
-                    <Text style={styles.beltText}>{beltLabel}</Text>
-                  </View>
-                )}
-                <Text style={[styles.description, { marginTop: 8, marginBottom: 0 }]}>
-                  {title}
-                </Text>
-              </View>
-
-              {/* Footer: Handtekening + Datum */}
-              <View style={styles.footer}>
-                <View style={styles.signatureBlock}>
-                  <View style={styles.signatureLine} />
-                  <Text style={styles.signatureLabel}>
-                    {examiner || 'Examinator'}
-                  </Text>
+              {/* Band / Prestatie */}
+              {hasBelt && (
+                <View style={styles.achievementBox}>
+                  <View style={[styles.beltBar, { backgroundColor: beltColor }]} />
+                  <Text style={styles.beltLabel}>{beltLabel}</Text>
                 </View>
-                <View style={styles.dateBlock}>
-                  <Text style={styles.dateText}>{dateStr}</Text>
-                  <Text style={styles.signatureLabel}>Datum</Text>
-                </View>
-              </View>
+              )}
 
-              {/* Verificatie */}
-              <View style={styles.verificationSection}>
-                <Text style={styles.verificationCode}>
-                  Verificatiecode: {verificationCode}
-                </Text>
-                <Text style={styles.verificationUrl}>
-                  Verifieer op {baseUrl}/diploma/verifieren/{verificationCode}
+              <Text style={[styles.descriptionText, { marginTop: 12, marginBottom: 0 }]}>
+                {title}
+              </Text>
+            </View>
+
+            {/* Footer: Handtekening + Datum */}
+            <View style={styles.footer}>
+              <View style={styles.signatureBlock}>
+                <View style={styles.signatureLine} />
+                <Text style={styles.signatureLabel}>
+                  {examiner || 'Examinator'}
                 </Text>
               </View>
+              <View style={styles.dateBlock}>
+                <Text style={styles.dateText}>{dateStr}</Text>
+                <Text style={styles.locationText}>Steenbergen</Text>
+              </View>
+            </View>
+
+            {/* Verificatie */}
+            <View style={styles.verificationSection}>
+              <Text style={styles.verificationCode}>
+                Verificatiecode: {verificationCode}
+              </Text>
+              <Text style={styles.verificationUrl}>
+                Verifieer op {baseUrl}/diploma/verifieren/{verificationCode}
+              </Text>
             </View>
           </View>
         </View>
