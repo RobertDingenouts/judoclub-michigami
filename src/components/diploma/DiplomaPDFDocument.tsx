@@ -168,6 +168,13 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 2,
   },
+  beltPrefix: {
+    fontFamily: 'Times-Roman',
+    fontSize: 16,
+    color: NEUTRAL_DARK,
+    textAlign: 'center',
+    marginBottom: 8,
+  },
   // Footer sectie
   footer: {
     flexDirection: 'row',
@@ -261,6 +268,7 @@ export function DiplomaPDFDocument({
 }: DiplomaPDFProps) {
   const beltColor = BELT_COLORS[beltLevel] || BRAND_RED
   const beltLabel = BELT_LABELS_NL[beltLevel] || beltLevel
+  const hasBelt = beltLevel && beltLevel !== '' && beltLevel !== 'COURSE_JAPANESE' && beltLevel !== 'ACHIEVEMENT'
 
   // Formateer datum naar Nederlands formaat: "13 februari 2026"
   const dateStr = new Date(awardedAt).toLocaleDateString('nl-NL', {
@@ -312,6 +320,7 @@ export function DiplomaPDFDocument({
 
               {/* Visuele weergave van de band of prestatie */}
               <View style={styles.achievementBox}>
+                {hasBelt && <Text style={styles.beltPrefix}>voor de</Text>}
                 <View style={[styles.beltBar, { backgroundColor: beltColor }]} />
                 <Text style={styles.beltLabel}>{beltLabel}</Text>
               </View>
