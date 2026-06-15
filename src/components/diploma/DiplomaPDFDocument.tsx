@@ -1,152 +1,178 @@
-import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer'
+import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer'
+import { LOGO_URI } from './logo-uri'
 
 const styles = StyleSheet.create({
   page: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 'a4',
-    height: 'a4',
-    padding: 40,
-    backgroundColor: '#fafafa',
-  },
-  diplomaContainer: {
     width: '100%',
     height: '100%',
-    borderWidth: 3,
-    borderColor: '#a90000',
-    borderRadius: 12,
-    padding: 40,
-    position: 'relative',
+    backgroundColor: '#fffafa', // brand-50 (Bijna wit)
+    padding: 24,
+    fontFamily: 'Helvetica',
+  },
+  outerBorder: {
+    borderWidth: 6,
+    borderColor: '#a90000', // brand-600 (Hoofdkleur rood)
+    flex: 1,
   },
   innerBorder: {
-    borderWidth: 1,
-    borderColor: '#d4d4d4',
-    borderRadius: 8,
-    padding: 30,
-    height: '96%',
-    position: 'relative',
+    borderWidth: 2,
+    borderColor: '#d4a843', // accent-gold (Premium accent)
+    margin: 12,
+    flex: 1,
+  },
+  contentContainer: {
+    padding: 40,
+    flex: 1,
+    justifyContent: 'space-between',
   },
   header: {
     alignItems: 'center',
-    marginBottom: 20,
+  },
+  logo: {
+    width: 70,
+    height: 70,
+    marginBottom: 12,
   },
   clubName: {
-    fontSize: 14,
-    fontFamily: 'Helvetica',
+    fontSize: 18,
+    fontFamily: 'Helvetica-Bold',
     color: '#a90000',
-    fontWeight: 'bold',
-    letterSpacing: 3,
+    letterSpacing: 4,
     textTransform: 'uppercase',
   },
+  clubSub: {
+    fontSize: 10,
+    fontFamily: 'Helvetica',
+    color: '#666666',
+    letterSpacing: 3,
+    marginTop: 4,
+    textTransform: 'uppercase',
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#d4a843',
+    width: '30%',
+    alignSelf: 'center',
+    marginVertical: 15,
+  },
+  titleSection: {
+    alignItems: 'center',
+  },
   title: {
-    fontSize: 32,
-    fontFamily: 'Helvetica-Bold',
+    fontSize: 46,
+    fontFamily: 'Times-Roman', // Serif voor formele, traditionele uitstraling
     color: '#1a1a1a',
-    textAlign: 'center',
-    marginTop: 8,
+    letterSpacing: 6,
+    textTransform: 'uppercase',
   },
   subtitle: {
-    fontSize: 14,
+    fontSize: 12,
     fontFamily: 'Helvetica',
-    color: '#666',
-    textAlign: 'center',
-    marginTop: 4,
+    color: '#444444',
+    textTransform: 'uppercase',
+    letterSpacing: 2,
+    marginTop: 8,
   },
-  beltBar: {
-    height: 8,
-    width: 200,
-    marginTop: 16,
-    borderRadius: 4,
-  },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
+  recipientSection: {
     alignItems: 'center',
   },
   presentedTo: {
-    fontSize: 12,
+    fontSize: 11,
     fontFamily: 'Helvetica',
-    color: '#888',
-    textAlign: 'center',
-    marginBottom: 8,
+    color: '#666666',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    marginBottom: 16,
   },
   recipientName: {
-    fontSize: 28,
-    fontFamily: 'Helvetica-Bold',
+    fontSize: 36,
+    fontFamily: 'Times-Roman',
     color: '#1a1a1a',
-    fontWeight: 'bold',
+    borderBottomWidth: 1,
+    borderBottomColor: '#a90000',
+    paddingHorizontal: 20,
+    paddingBottom: 8,
+    minWidth: 300,
     textAlign: 'center',
-    marginBottom: 16,
-    textDecoration: 'underline',
-    textDecorationColor: '#a90000',
-    textDecorationWidth: 2,
+  },
+  descriptionSection: {
+    alignItems: 'center',
   },
   description: {
     fontSize: 13,
     fontFamily: 'Helvetica',
-    color: '#444',
+    color: '#333333',
     textAlign: 'center',
     lineHeight: 1.6,
     maxWidth: 450,
-    marginBottom: 20,
+    marginBottom: 24,
   },
-  beltAchieved: {
+  beltContainer: {
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  beltBar: {
+    height: 14,
+    width: 140,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#cccccc', // Subtiele rand zodat de witte band ook zichtbaar is
+  },
+  beltText: {
     fontSize: 18,
     fontFamily: 'Helvetica-Bold',
     color: '#a90000',
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 8,
+    letterSpacing: 1,
   },
   footer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-end',
-    marginTop: 20,
-    paddingTop: 20,
-    borderTopWidth: 1,
-    borderTopColor: '#e0e0e0',
+    paddingHorizontal: 20,
   },
   signatureBlock: {
     alignItems: 'center',
-    flex: 1,
+    width: '40%',
   },
   signatureLine: {
-    width: 150,
+    width: '100%',
     height: 1,
-    backgroundColor: '#333',
+    backgroundColor: '#1a1a1a',
     marginBottom: 6,
   },
   signatureLabel: {
     fontSize: 10,
     fontFamily: 'Helvetica',
-    color: '#888',
-    textAlign: 'center',
+    color: '#666666',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
   },
   dateBlock: {
     alignItems: 'center',
-    flex: 1,
+    width: '40%',
+  },
+  dateText: {
+    fontSize: 12,
+    fontFamily: 'Helvetica',
+    color: '#1a1a1a',
+    marginBottom: 6,
   },
   verificationSection: {
-    position: 'absolute',
-    bottom: 20,
-    left: 40,
-    right: 40,
     alignItems: 'center',
+    paddingTop: 15,
+    borderTopWidth: 1,
+    borderTopColor: '#eeeeee',
   },
   verificationCode: {
     fontSize: 9,
-    fontFamily: 'Helvetica',
-    color: '#aaa',
-    textAlign: 'center',
+    fontFamily: 'Courier',
+    color: '#888888',
+    letterSpacing: 1,
   },
   verificationUrl: {
     fontSize: 8,
     fontFamily: 'Helvetica',
-    color: '#bbb',
-    textAlign: 'center',
-    marginTop: 2,
+    color: '#aaaaaa',
+    marginTop: 4,
   },
 })
 
@@ -201,6 +227,7 @@ export function DiplomaPDFDocument({
 }: DiplomaPDFProps) {
   const beltColor = BELT_COLORS[beltLevel] || '#a90000'
   const beltLabel = BELT_LABELS_NL[beltLevel] || beltLevel
+  const hasBelt = beltLevel && beltLevel !== ''
   const dateStr = new Date(awardedAt).toLocaleDateString('nl-NL', {
     day: 'numeric',
     month: 'long',
@@ -210,51 +237,68 @@ export function DiplomaPDFDocument({
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        <View style={styles.diplomaContainer}>
+        <View style={styles.outerBorder}>
           <View style={styles.innerBorder}>
-            {/* Header */}
-            <View style={styles.header}>
-              <Text style={styles.clubName}>Judoclub Michigami Steenbergen</Text>
-              <Text style={styles.title}>DIPLOMA</Text>
-              <Text style={styles.subtitle}>Certificaat van Behaalde Judo Examen</Text>
-              <View style={[styles.beltBar, { backgroundColor: beltColor }]} />
-            </View>
+            <View style={styles.contentContainer}>
+              {/* Header: Logo + Clubnaam */}
+              <View style={styles.header}>
+                <Image src={LOGO_URI} style={styles.logo} />
+                <Text style={styles.clubName}>Judoclub Michigami Steenbergen</Text>
+                <Text style={styles.clubSub}>Stichting Judo Club</Text>
+              </View>
 
-            {/* Content */}
-            <View style={styles.content}>
-              <Text style={styles.presentedTo}>Ernstig en met trots toegekend aan</Text>
-              <Text style={styles.recipientName}>{recipientName}</Text>
-              <Text style={styles.description}>{description}</Text>
-              <Text style={styles.beltAchieved}>{beltLabel}</Text>
-              <Text style={[styles.presentedTo, { marginTop: 8 }]}>
-                {title}
-              </Text>
-            </View>
+              {/* Divider */}
+              <View style={styles.divider} />
 
-            {/* Footer */}
-            <View style={styles.footer}>
-              <View style={styles.signatureBlock}>
-                <View style={styles.signatureLine} />
-                <Text style={styles.signatureLabel}>
-                  {examiner || 'Examinator'}
+              {/* Titel */}
+              <View style={styles.titleSection}>
+                <Text style={styles.title}>Diploma</Text>
+                <Text style={styles.subtitle}>Certificaat van Behaalde Judo Examen</Text>
+              </View>
+
+              {/* Ontvanger */}
+              <View style={styles.recipientSection}>
+                <Text style={styles.presentedTo}>Ernstig en met trots toegekend aan</Text>
+                <Text style={styles.recipientName}>{recipientName}</Text>
+              </View>
+
+              {/* Beschrijving + Band */}
+              <View style={styles.descriptionSection}>
+                <Text style={styles.description}>{description}</Text>
+                {hasBelt && (
+                  <View style={styles.beltContainer}>
+                    <View style={[styles.beltBar, { backgroundColor: beltColor }]} />
+                    <Text style={styles.beltText}>{beltLabel}</Text>
+                  </View>
+                )}
+                <Text style={[styles.description, { marginTop: 8, marginBottom: 0 }]}>
+                  {title}
                 </Text>
               </View>
-              <View style={styles.dateBlock}>
-                <Text style={{ fontSize: 12, fontFamily: 'Helvetica', color: '#444' }}>
-                  {dateStr}
-                </Text>
-                <Text style={styles.signatureLabel}>Datum</Text>
-              </View>
-            </View>
 
-            {/* Verification */}
-            <View style={styles.verificationSection}>
-              <Text style={styles.verificationCode}>
-                Verificatiecode: {verificationCode}
-              </Text>
-              <Text style={styles.verificationUrl}>
-                Verifieer op {baseUrl}/diploma/verifieren/{verificationCode}
-              </Text>
+              {/* Footer: Handtekening + Datum */}
+              <View style={styles.footer}>
+                <View style={styles.signatureBlock}>
+                  <View style={styles.signatureLine} />
+                  <Text style={styles.signatureLabel}>
+                    {examiner || 'Examinator'}
+                  </Text>
+                </View>
+                <View style={styles.dateBlock}>
+                  <Text style={styles.dateText}>{dateStr}</Text>
+                  <Text style={styles.signatureLabel}>Datum</Text>
+                </View>
+              </View>
+
+              {/* Verificatie */}
+              <View style={styles.verificationSection}>
+                <Text style={styles.verificationCode}>
+                  Verificatiecode: {verificationCode}
+                </Text>
+                <Text style={styles.verificationUrl}>
+                  Verifieer op {baseUrl}/diploma/verifieren/{verificationCode}
+                </Text>
+              </View>
             </View>
           </View>
         </View>
