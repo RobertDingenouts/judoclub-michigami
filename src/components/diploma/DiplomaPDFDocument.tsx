@@ -271,8 +271,8 @@ export function DiplomaPDFDocument({
 
   // Bepaal de beschrijvende tekst op basis van het type diploma
   const defaultDescription = beltLevel === 'COURSE_JAPANESE'
-    ? 'de cursus Japans met goed gevolg heeft voltooid en de bijbehorende kennis heeft aangetoond.'
-    : 'met succes het examen heeft afgelegd voor de'
+    ? 'de cursus Japans (judo terminologie) met goed gevolg heeft voltooid en de bijbehorende kennis heeft aangetoond.'
+    : 'met succes het examen heeft afgelegd voor de cursus judo terminologie en de'
 
   return (
     <Document>
