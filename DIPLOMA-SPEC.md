@@ -402,22 +402,39 @@ export function DiplomaPDFDocument({
 
 ---
 
-## 5. Beschikbare Assets
+## 5. Huisstijl Judoclub Michigami + Logo Instructie
 
-### Logo
-- **Pad:** `public/logo.png` (beschikbaar als `/logo.png`)
-- In de PDF: gebruik als data URI of embed de base64 string
+### Kleurenpalet (Design System)
 
-### Kleurenpalet
 ```css
---primary: #a90000        /* Rood - hoofdkleur */
---primary-dark: #8c0000   /* Donkerrood */
---text-dark: #2a2a2a      /* Tekst */
---bg-light: #f5f5f0       /* Lichte achtergrond */
---bg-dark: #1a1a1a        /* Donkere achtergrond */
+/* Brand red palette (primary) */
+--brand-900: #7a0000   /* Donkerste rood */
+--brand-700: #8c0000   /* Donker rood */
+--brand-600: #a90000   /* HOOFDKLEUR — gebruik dit */
+--brand-500: #c00000   /* Licht rood */
+--brand-100: #fdf6f6   /* Zeer licht rood (achtergrond) */
+--brand-50:  #fffafa   /* Bijna wit (achtergrond) */
+
+/* Neutral palette */
+--neutral-950: #1a1a1a   /* Bijna zwart */
+--neutral-900: #2a2a2a   /* Donkere tekst */
+--neutral-100: #f5f5f0   /* Lichte achtergrond */
+
+/* Accent */
+--accent-gold: #d4a843   /* Goud — gebruik voor premium accenten */
 ```
 
+### Typografie (Website)
+
+- **Headings:** Rokkitt (serif) — formeel, traditioneel
+- **Body:** Inter (sans-serif) — modern, leesbaar
+- **Japans:** Noto Sans JP
+- **Type scale:** Responsive clamp() van 0.7rem tot 3rem
+
+**LET OP:** In @react-pdf/renderer zijn deze fonts NIET beschikbaar. Gebruik `Helvetica`, `Helvetica-Bold`, `Times-Roman`, `Courier` als fallback.
+
 ### Bandkleuren
+
 ```
 WIT:    #FFFFFF
 GEEL:   #FFD700
@@ -427,6 +444,37 @@ BLAUW:  #0000FF
 BRUIN:  #8B4513
 ZWART:  #000000
 ```
+
+### Design Stijl
+
+- **Formeel maar toegankelijk** — judo club, geen corporate
+- **Rood (#a90000) als hoofdkleur** — nooit blauwe accenten
+- **Goud (#d4a843) voor premium accenten** — bijv. decoratieve lijnen
+- **Scherpe hoeken** — geen afgeronde borders op diploma
+- **Sobere elegantie** — niet te versierd, wel professioneel
+
+### Logo Instructie voor AI Model
+
+Het logo is beschikbaar als `public/logo.png` (1845x1846, RGBA, transparante achtergrond).
+
+**Voor @react-pdf/renderer:**
+- Het logo is te groot voor inline base64 embed (~460KB)
+- **Optie 1 (best):** Gebruik het logo als data URI met een gecomprimeerde versie. Run eerst: `convert logo.png -resize 400x400 -quality 80 logo-sm.png` en base64 encode
+- **Optie 2:** Beschrijf het logo met tekst/SVG — een judo-figuur in rode cirkel met "MICHI GAMI" eromheen
+- **Optie 3:** Gebruik `<Image src="data:image/png;base64,..." />` in de PDF met een klein logo (max 200x200px)
+
+**Logo als data URI (voor in de PDF):**
+```tsx
+import { Image } from '@react-pdf/renderer'
+// Embed base64 van gecomprimeerd logo (max 200x200px):
+const LOGO_URI = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...'
+// In de PDF:
+<Image src={LOGO_URI} style={{ width: 60, height: 60 }} />
+```
+
+**Belangrijk:** Het logo heeft transparante achtergrond — zorg dat het op een lichte achtergrond staat of met een subtiele schaduw/outline.
+
+---
 
 ---
 
@@ -441,22 +489,26 @@ Een compleet `DiplomaPDFDocument` TypeScript component dat:
 4. **Mooier is** dan het huidige design
 
 ### Design Richtlijnen:
-- Clubkleur: **#a90000** (rood)
+- Clubkleur: **#a90000** (rood) als primaire accent
+- Goud: **#d4a843** voor premium accenten (randen, lijnen)
 - Formeel, professioneel uiterlijk
 - Bandkleur visueel prominent (bijv. decoratieve rand, balk, cirkel)
 - Verificatiecode subtiel (niet storend)
 - Handtekening + datum sectie
+- **Logo** van Judoclub Michigami prominent in header
 - Werkt voor ALLE diploma types (BELT_EXAM, COURSE_JAPANESE, ACHIEVEMENT)
 - A4 formaat
+- **Scherpe hoeken** — geen afgeronde borders
+- **Sobere elegantie** — niet te versierd
 
-### Design Ideeën (optioneel):
-- Decoratieve rand met bandkleur
-- Geometrische patronen (cirkels, lijnen)
-- Gouden/rode accenten
-- Initiaals of monogram
-- Watermark effect (lichte achtergrondkleur)
-- Decoratieve lijnen tussen secties
-- Logo als data URI embedden
+### Design Ideeën:
+- Dubbele rand: buitenste in brand rood (#a90000), binnenste in goud (#d4a843)
+- Logo in header met clubnaam eronder
+- Bandkleur als horizontale balk achter de bandnaam
+- Decoratieve lijnen tussen secties (goud)
+- Initiaals of monogram als watermerk
+- Footer met handtekening (links) en datum (rechts) gescheiden door lijn
+- Verificatiecode klein en discreet onderaan
 
 ---
 
