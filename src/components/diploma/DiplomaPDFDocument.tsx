@@ -1,5 +1,5 @@
 import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer'
-import { LOGO_URI } from './logo-uri'
+import { LOGO_URI as LOGO_URI_RAW } from './logo-uri'
 
 // -----------------------------------------------------------------------------
 // 1. CONFIGURATIE & KLEUREN
@@ -8,8 +8,11 @@ import { LOGO_URI } from './logo-uri'
 const BRAND_RED = '#a90000'
 const BRAND_GOLD = '#d4a843'
 const NEUTRAL_DARK = '#1a1a1a'
-const NEUTRAL_LIGHT = '#fffafa' // brand-50 (bijna wit)
+const NEUTRAL_LIGHT = '#fffafa' // Bijna wit, brand-50
 const NEUTRAL_GRAY = '#666666'
+
+// Gebruik de LOGO_URI alleen als deze geldig is (niet leeg)
+const LOGO_URI = LOGO_URI_RAW && LOGO_URI_RAW.length > 100 ? LOGO_URI_RAW : ''
 
 const BELT_COLORS: Record<string, string> = {
   WIT:       '#FFFFFF',
@@ -23,6 +26,7 @@ const BELT_COLORS: Record<string, string> = {
   Zwart_1:   '#000000',
   Zwart_2:   '#000000',
   Zwart_3:   '#000000',
+  // Fallbacks voor niet-band diploma's
   COURSE_JAPANESE: BRAND_GOLD,
   ACHIEVEMENT: BRAND_RED,
 }
@@ -39,12 +43,13 @@ const BELT_LABELS_NL: Record<string, string> = {
   Zwart_1:   'Zwarte Band 1e Dan',
   Zwart_2:   'Zwarte Band 2e Dan',
   Zwart_3:   'Zwarte Band 3e Dan',
+  // Fallbacks voor niet-band diploma's
   COURSE_JAPANESE: 'Cursus Japans',
   ACHIEVEMENT: 'Bijzondere Prestatie',
 }
 
 // -----------------------------------------------------------------------------
-// 2. STYLESHEET (Strict @react-pdf/renderer compatible — geen borderRadius)
+// 2. STYLESHEET (Strict @react-pdf/renderer compatible)
 // -----------------------------------------------------------------------------
 
 const styles = StyleSheet.create({
@@ -54,14 +59,14 @@ const styles = StyleSheet.create({
     padding: 40,
     fontFamily: 'Helvetica',
   },
-  // Buitenste rand: dik, rood, scherpe hoeken
+  // Buitenste rand: Dik, rood, scherpe hoeken
   outerBorder: {
     flex: 1,
     borderWidth: 4,
     borderColor: BRAND_RED,
-    padding: 4,
+    padding: 4, // Ruimte tussen buitenste en binnenste rand
   },
-  // Binnenste rand: dun, goud, scherpe hoeken
+  // Binnenste rand: Dun, goud, scherpe hoeken
   innerBorder: {
     flex: 1,
     borderWidth: 2,
@@ -79,12 +84,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  logo: {
-    width: 70,
-    height: 70,
-    marginBottom: 8,
-  },
-  // Typografisch logo als fallback
+  // Typografisch logo als fallback/ondersteuning voor de afbeelding
   logoTextPrimary: {
     fontFamily: 'Times-Bold',
     fontSize: 28,
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     height: 16,
     width: '60%',
     marginBottom: 12,
-    // Geen borderRadius — scherpe hoeken
+    // Geen borderRadius volgens specificatie "Scherpe hoeken"
   },
   beltLabel: {
     fontFamily: 'Helvetica-Bold',
@@ -212,30 +212,30 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 1,
   },
-  // Verificatie sectie (subtiel)
+  // Verificatie sectie (subtiel, absolute onderaan)
   verificationSection: {
+    position: 'absolute',
+    bottom: 15,
+    left: 0,
+    right: 0,
     alignItems: 'center',
-    paddingTop: 15,
-    borderTopWidth: 1,
-    borderTopColor: '#eeeeee',
-    marginTop: 20,
   },
   verificationCode: {
+    fontFamily: 'Courier', // Monospace voor codes is altijd netjes
     fontSize: 9,
-    fontFamily: 'Courier',
-    color: '#888888',
+    color: '#999999',
     letterSpacing: 1,
   },
   verificationUrl: {
-    fontSize: 8,
     fontFamily: 'Helvetica',
-    color: '#aaaaaa',
-    marginTop: 4,
+    fontSize: 8,
+    color: '#bbbbbb',
+    marginTop: 2,
   },
 })
 
 // -----------------------------------------------------------------------------
-// 3. COMPONENT
+// 3. COMPONENT DEFINITIE
 // -----------------------------------------------------------------------------
 
 interface DiplomaPDFProps {
@@ -253,7 +253,7 @@ export function DiplomaPDFDocument({
   recipientName,
   beltLevel,
   title,
-  description = 'Hierbij wordt bevestigd dat de bovengetekende met succes het examen heeft afgelegd voor de',
+  description,
   awardedAt,
   verificationCode,
   examiner,
@@ -261,71 +261,87 @@ export function DiplomaPDFDocument({
 }: DiplomaPDFProps) {
   const beltColor = BELT_COLORS[beltLevel] || BRAND_RED
   const beltLabel = BELT_LABELS_NL[beltLevel] || beltLevel
-  const hasBelt = beltLevel && beltLevel !== ''
+
+  // Formateer datum naar Nederlands formaat: "13 februari 2026"
   const dateStr = new Date(awardedAt).toLocaleDateString('nl-NL', {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
   })
 
+  // Bepaal de beschrijvende tekst op basis van het type diploma
+  const defaultDescription = beltLevel === 'COURSE_JAPANESE'
+    ? 'de cursus Japans met goed gevolg heeft voltooid en de bijbehorende kennis heeft aangetoond.'
+    : 'met succes het examen heeft afgelegd voor de'
+
   return (
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={styles.outerBorder}>
           <View style={styles.innerBorder}>
-            {/* Header: Logo + Titel */}
+
+            {/* HEADER */}
             <View style={styles.header}>
+              {/* Logo Sectie */}
               <View style={styles.logoContainer}>
-                <Image src={LOGO_URI} style={styles.logo} />
-                <Text style={styles.logoTextPrimary}>Michigami</Text>
-                <Text style={styles.logoTextSecondary}>Judo Club Steenbergen</Text>
+                {LOGO_URI ? (
+                  <Image src={LOGO_URI} style={{ width: 80, height: 80, marginBottom: 10 }} />
+                ) : (
+                  // Typografische fallback als er geen base64 logo is,
+                  // dit ziet er alsnog zeer professioneel uit.
+                  <View style={{ alignItems: 'center' }}>
+                    <Text style={styles.logoTextPrimary}>Michigami</Text>
+                    <Text style={styles.logoTextSecondary}>Judo Club Steenbergen</Text>
+                  </View>
+                )}
               </View>
+
               <Text style={styles.mainTitle}>Diploma</Text>
-              <Text style={styles.subTitle}>Certificaat van Behaald Judo Examen</Text>
+              <Text style={styles.subTitle}>{title}</Text>
             </View>
 
-            {/* Content */}
+            {/* CONTENT */}
             <View style={styles.content}>
               <Text style={styles.introText}>Hierbij wordt bevestigd dat</Text>
+
               <Text style={styles.recipientName}>{recipientName}</Text>
-              <Text style={styles.descriptionText}>{description}</Text>
 
-              {/* Band / Prestatie */}
-              {hasBelt && (
-                <View style={styles.achievementBox}>
-                  <View style={[styles.beltBar, { backgroundColor: beltColor }]} />
-                  <Text style={styles.beltLabel}>{beltLabel}</Text>
-                </View>
-              )}
-
-              <Text style={[styles.descriptionText, { marginTop: 12, marginBottom: 0 }]}>
-                {title}
+              <Text style={styles.descriptionText}>
+                {description || defaultDescription}
               </Text>
+
+              {/* Visuele weergave van de band of prestatie */}
+              <View style={styles.achievementBox}>
+                <View style={[styles.beltBar, { backgroundColor: beltColor }]} />
+                <Text style={styles.beltLabel}>{beltLabel}</Text>
+              </View>
             </View>
 
-            {/* Footer: Handtekening + Datum */}
+            {/* FOOTER */}
             <View style={styles.footer}>
               <View style={styles.signatureBlock}>
                 <View style={styles.signatureLine} />
                 <Text style={styles.signatureLabel}>
-                  {examiner || 'Examinator'}
+                  {examiner || 'Examinator / Leraar'}
                 </Text>
               </View>
+
               <View style={styles.dateBlock}>
                 <Text style={styles.dateText}>{dateStr}</Text>
                 <Text style={styles.locationText}>Steenbergen</Text>
               </View>
             </View>
 
-            {/* Verificatie */}
+            {/* VERIFICATIE (Subtiel onderaan) */}
             <View style={styles.verificationSection}>
               <Text style={styles.verificationCode}>
-                Verificatiecode: {verificationCode}
+                Code: {verificationCode}
               </Text>
               <Text style={styles.verificationUrl}>
-                Verifieer op {baseUrl}/diploma/verifieren/{verificationCode}
+                Verifieer dit diploma op {baseUrl}/diploma/verifieren/{verificationCode}
               </Text>
             </View>
+
           </View>
         </View>
       </Page>
