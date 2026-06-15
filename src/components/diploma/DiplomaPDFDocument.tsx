@@ -291,7 +291,7 @@ export function DiplomaPDFDocument({
                   // dit ziet er alsnog zeer professioneel uit.
                   <View style={{ alignItems: 'center' }}>
                     <Text style={styles.logoTextPrimary}>Michigami</Text>
-                    <Text style={styles.logoTextSecondary}>Judo Club Steenbergen</Text>
+                    <Text style={styles.logoTextSecondary}>Judoclub Michigami</Text>
                   </View>
                 )}
               </View>
@@ -307,7 +307,7 @@ export function DiplomaPDFDocument({
               <Text style={styles.recipientName}>{recipientName}</Text>
 
               <Text style={styles.descriptionText}>
-                {description || defaultDescription}
+                {defaultDescription}
               </Text>
 
               {/* Visuele weergave van de band of prestatie */}
@@ -328,7 +328,7 @@ export function DiplomaPDFDocument({
 
               <View style={styles.dateBlock}>
                 <Text style={styles.dateText}>{dateStr}</Text>
-                <Text style={styles.locationText}>Steenbergen</Text>
+                <Text style={styles.locationText}>Nederland</Text>
               </View>
             </View>
 
