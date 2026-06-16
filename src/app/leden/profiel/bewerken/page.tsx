@@ -14,6 +14,7 @@ interface ProfileEditData {
   emergencyContactName: string
   emergencyContactPhone: string
   medicalNotes: string
+  imageUrl?: string | null
 }
 
 export default function ProfileEditPage() {
@@ -24,7 +25,9 @@ export default function ProfileEditPage() {
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
   const [profile, setProfile] = useState<ProfileEditData | null>(null)
+  const [form, setForm] = useState<ProfileEditData | null>(null)
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
+  const [avatarFile, setAvatarFile] = useState<File | null>(null)
 
   // Password change state
   const [currentPassword, setCurrentPassword] = useState('')
@@ -54,7 +57,7 @@ export default function ProfileEditPage() {
       const data = await res.json()
       if (data.authenticated && data.user) {
         const p = data.user
-        setProfile({
+        const profileData = {
           firstName: p.member?.firstName || '',
           lastName: p.member?.lastName || '',
           email: p.member?.email || p.email || '',
@@ -63,7 +66,13 @@ export default function ProfileEditPage() {
           emergencyContactName: p.member?.emergencyContactName || '',
           emergencyContactPhone: p.member?.emergencyContactPhone || '',
           medicalNotes: p.member?.medicalNotes || '',
-        })
+          imageUrl: p.imageUrl || null,
+        }
+        setProfile(profileData)
+        setForm(profileData)
+        if (p.imageUrl) {
+          setAvatarPreview(p.imageUrl)
+        }
       }
     } catch {
       // Handle error
@@ -72,22 +81,47 @@ export default function ProfileEditPage() {
     }
   }
 
+  const handleFormChange = (field: keyof ProfileEditData, value: string) => {
+    setForm(prev => prev ? { ...prev, [field]: value } : null)
+  }
+
   const handleProfileSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    if (!form) return
     setSaving(true)
     setError(null)
     setSuccess(null)
 
-    const formData = new FormData(e.currentTarget)
+    // First upload avatar if there's a new file
+    let uploadedImageUrl = form.imageUrl
+    if (avatarFile) {
+      try {
+        const avatarFormData = new FormData()
+        avatarFormData.append('avatar', avatarFile)
+        const avatarRes = await fetch('/api/user/avatar', {
+          method: 'POST',
+          body: avatarFormData,
+        })
+        const avatarData = await avatarRes.json()
+        if (!avatarRes.ok) throw new Error(avatarData.error || 'Avatar upload failed')
+        uploadedImageUrl = avatarData.imageUrl
+      } catch (err: any) {
+        setError(err.message || 'Fout bij uploaden profielfoto')
+        setSaving(false)
+        return
+      }
+    }
+
     const body = {
-      firstName: formData.get('firstName'),
-      lastName: formData.get('lastName'),
-      email: formData.get('email'),
-      phone: formData.get('phone'),
-      dateOfBirth: formData.get('dateOfBirth'),
-      emergencyContactName: formData.get('emergencyContactName'),
-      emergencyContactPhone: formData.get('emergencyContactPhone'),
-      medicalNotes: formData.get('medicalNotes'),
+      firstName: form.firstName,
+      lastName: form.lastName,
+      email: form.email,
+      phone: form.phone,
+      dateOfBirth: form.dateOfBirth,
+      emergencyContactName: form.emergencyContactName,
+      emergencyContactPhone: form.emergencyContactPhone,
+      medicalNotes: form.medicalNotes,
+      imageUrl: uploadedImageUrl,
     }
 
     try {
@@ -100,7 +134,9 @@ export default function ProfileEditPage() {
       if (!res.ok) throw new Error(data.error || 'Fout bij opslaan')
 
       setSuccess('Profiel succesvol bijgewerkt!')
-      setProfile(data.member)
+      const updatedProfile = { ...form, imageUrl: uploadedImageUrl }
+      setProfile(updatedProfile)
+      setForm(updatedProfile)
       router.refresh()
     } catch (err: any) {
       setError(err.message || 'Fout bij opslaan profiel')
@@ -163,6 +199,7 @@ export default function ProfileEditPage() {
         setError('Afbeelding mag maximaal 2MB zijn')
         return
       }
+      setAvatarFile(file)
       const reader = new FileReader()
       reader.onloadend = () => {
         setAvatarPreview(reader.result as string)
@@ -257,28 +294,28 @@ export default function ProfileEditPage() {
           {activeTab === 'gegevens' && (
             <form onSubmit={handleProfileSubmit} className="space-y-6">
               {/* Avatar */}
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-[#2a2a2a]">Profielafbeelding</h2>
-                {avatarPreview && (
-                  <div className="w-20 h-20 rounded-full border-3 border-[#a90000]/20 overflow-hidden">
-                    <img src={avatarPreview} alt="Avatar preview" className="w-full h-full object-cover" />
-                  </div>
-                )}
-              </div>
-
               <div className="flex items-center gap-4">
-                <label htmlFor="avatar" className="inline-flex items-center gap-2 rounded-lg bg-gray-100 px-4 py-2.5 text-sm font-medium text-gray-700 cursor-pointer hover:bg-gray-200 transition-colors">
-                  <Camera className="w-4 h-4" />
-                  Foto kiezen
-                </label>
-                <input
-                  id="avatar"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleAvatarChange}
-                  className="hidden"
-                />
-                <p className="text-xs text-gray-500">Max 2MB, JPG/PNG. Wordt gecrop naar vierkant.</p>
+                <div className="w-20 h-20 rounded-full border-3 border-[#a90000]/20 overflow-hidden bg-gray-100 flex items-center justify-center flex-shrink-0">
+                  {avatarPreview ? (
+                    <img src={avatarPreview} alt="Avatar" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-2xl text-gray-400">👤</span>
+                  )}
+                </div>
+                <div>
+                  <label htmlFor="avatar" className="inline-flex items-center gap-2 rounded-lg bg-gray-100 px-4 py-2.5 text-sm font-medium text-gray-700 cursor-pointer hover:bg-gray-200 transition-colors">
+                    <Camera className="w-4 h-4" />
+                    Foto kiezen
+                  </label>
+                  <input
+                    id="avatar"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAvatarChange}
+                    className="hidden"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Max 2MB, JPG/PNG. Wordt opgeslagen bij opslaan.</p>
+                </div>
               </div>
 
               <hr className="border-gray-100" />
@@ -286,11 +323,11 @@ export default function ProfileEditPage() {
               {/* Personal Info */}
               <h2 className="text-lg font-semibold text-[#2a2a2a]">Persoonlijke Gegevens</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <FormField label="Voornaam *" name="firstName" value={profile?.firstName || ''} required />
-                <FormField label="Achternaam *" name="lastName" value={profile?.lastName || ''} required />
-                <FormField label="E-mail *" name="email" type="email" value={profile?.email || ''} required />
-                <FormField label="Telefoon" name="phone" type="tel" value={profile?.phone || ''} />
-                <FormField label="Geboortedatum" name="dateOfBirth" type="date" value={profile?.dateOfBirth || ''} />
+                <FormField label="Voornaam" name="firstName" value={form?.firstName || ''} required onChange={(e) => handleFormChange('firstName', e.target.value)} />
+                <FormField label="Achternaam" name="lastName" value={form?.lastName || ''} required onChange={(e) => handleFormChange('lastName', e.target.value)} />
+                <FormField label="E-mail" name="email" type="email" value={form?.email || ''} required onChange={(e) => handleFormChange('email', e.target.value)} />
+                <FormField label="Telefoon" name="phone" type="tel" value={form?.phone || ''} onChange={(e) => handleFormChange('phone', e.target.value)} />
+                <FormField label="Geboortedatum" name="dateOfBirth" type="date" value={form?.dateOfBirth || ''} onChange={(e) => handleFormChange('dateOfBirth', e.target.value)} />
               </div>
 
               <hr className="border-gray-100" />
@@ -298,8 +335,8 @@ export default function ProfileEditPage() {
               {/* Emergency Contact */}
               <h2 className="text-lg font-semibold text-[#2a2a2a]">Noodcontact</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <FormField label="Naam" name="emergencyContactName" value={profile?.emergencyContactName || ''} />
-                <FormField label="Telefoon" name="emergencyContactPhone" type="tel" value={profile?.emergencyContactPhone || ''} />
+                <FormField label="Naam" name="emergencyContactName" value={form?.emergencyContactName || ''} onChange={(e) => handleFormChange('emergencyContactName', e.target.value)} />
+                <FormField label="Telefoon" name="emergencyContactPhone" type="tel" value={form?.emergencyContactPhone || ''} onChange={(e) => handleFormChange('emergencyContactPhone', e.target.value)} />
               </div>
 
               <hr className="border-gray-100" />
@@ -308,14 +345,15 @@ export default function ProfileEditPage() {
               <h2 className="text-lg font-semibold text-[#2a2a2a]">Medische Notities</h2>
               <textarea
                 name="medicalNotes"
-                value={profile?.medicalNotes || ''}
+                value={form?.medicalNotes || ''}
+                onChange={(e) => handleFormChange('medicalNotes', e.target.value)}
                 rows={4}
                 className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm focus:border-[#a90000] focus:outline-none focus:ring-2 focus:ring-[#a90000]/30"
                 placeholder="Allergieën, aandoeningen, medicijnen, etc. (alleen zichtbaar voor beheerders en instructeurs)"
               />
 
               {/* Actions */}
-              <div className="flex gap-3 pt-4 border-t border-gray-100">
+              <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-100">
                 <button
                   type="submit"
                   disabled={saving}
@@ -323,6 +361,9 @@ export default function ProfileEditPage() {
                 >
                   {saving ? 'Opslaan...' : 'Wijzigingen opslaan'}
                 </button>
+                <p className="text-xs text-gray-400 flex items-start">
+                  ⚠️ Bij belangrijke wijzigingen (e-mail, noodcontact, medische notities) krijgt het admin team een notificatie.
+                </p>
               </div>
             </form>
           )}
@@ -519,19 +560,20 @@ export default function ProfileEditPage() {
   )
 }
 
-function FormField({ label, name, type = 'text', value = '', required = false }: {
-  label: string; name: string; type?: string; value?: string; required?: boolean
+function FormField({ label, name, type = 'text', value = '', required = false, onChange }: {
+  label: string; name: string; type?: string; value?: string; required?: boolean; onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 }) {
   return (
     <div>
       <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-1.5">
-        {label} {required && <span className="text-red-500 ml-1">*</span>}
+        {label}{required && <span className="text-[#a90000]">*</span>}
       </label>
       <input
         id={name}
         name={name}
         type={type}
         value={value}
+        onChange={onChange}
         required={required}
         className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm focus:border-[#a90000] focus:outline-none focus:ring-2 focus:ring-[#a90000]/30 transition-colors"
       />

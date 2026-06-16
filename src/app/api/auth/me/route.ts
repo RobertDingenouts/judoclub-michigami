@@ -17,6 +17,7 @@ export async function GET() {
         name: user.name,
         role: user.role,
         currentBelt: user.currentBelt,
+        imageUrl: user.imageUrl,
         member: user.member ? {
           firstName: user.member.firstName,
           lastName: user.member.lastName,

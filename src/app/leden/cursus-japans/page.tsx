@@ -207,15 +207,14 @@ export default async function CursusJapansPage() {
 
                   {/* Action */}
                   {course?.isUnlocked && !course.isPassed && (
-                    <button
-                      className="px-4 py-2 bg-[#a90000] hover:bg-[#8c0000] text-white text-sm font-semibold rounded-lg transition-colors shadow-sm whitespace-nowrap"
-                      onClick={() => {
-                        // Navigate to SPA section for Japanese course
-                        window.location.hash = 'cursus-japans'
-                      }}
+                    <a
+                      href="/#cursus-japans"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-4 py-2 bg-[#a90000] hover:bg-[#8c0000] text-white text-sm font-semibold rounded-lg transition-colors shadow-sm whitespace-nowrap inline-block"
                     >
                       Start examen →
-                    </button>
+                    </a>
                   )}
                 </div>
               </div>

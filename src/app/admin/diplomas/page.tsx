@@ -2,6 +2,7 @@ import { db } from '@/lib/db'
 import Link from 'next/link'
 import { BELT_LABELS_NL, BELT_COLORS } from '@/lib/student-progress-types'
 import type { BeltLevel, DiplomaType } from '@prisma/client'
+import UploadDiplomaForm from '@/components/admin/UploadDiplomaForm'
 
 export const dynamic = 'force-dynamic'
 
@@ -69,6 +70,9 @@ export default async function DiplomasPage({
           </div>
         ))}
       </div>
+
+      {/* Upload physical diploma */}
+      <UploadDiplomaForm />
 
       {/* Verification section */}
       <div className="rounded-lg border border-[#a90000]/20 bg-[#fdf6f6] p-5">

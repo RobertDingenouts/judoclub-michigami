@@ -133,6 +133,7 @@ model Diploma {
   awardedAt        DateTime     @default(now())
   verificationCode String       @unique
   imageUrl         String?
+  pdfUrl           String?
   createdAt        DateTime     @default(now())
   examAttempt      ExamAttempt? @relation(fields: [examAttemptId], references: [id])
   member           Member       @relation(fields: [recipientId], references: [id])

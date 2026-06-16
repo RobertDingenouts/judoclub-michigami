@@ -24,43 +24,55 @@ export default async function DiplomasPage() {
         {diplomas.length > 0 ? (
           <div className="space-y-4">
             {diplomas.map((diploma) => (
-              <div key={diploma.id} className="rounded-lg border border-gray-100 p-4">
+              <div key={diploma.id} className="rounded-lg border border-gray-100 p-4 hover:shadow-md transition-shadow">
                 <div className="flex items-start justify-between">
-                  <div>
-                    <h3 className="font-medium text-[#2a2a2a]">{diploma.title}</h3>
-                    {diploma.description && (
-                      <p className="mt-1 text-sm text-gray-500">{diploma.description}</p>
-                    )}
-                    <p className="mt-2 text-xs text-gray-400">
-                      Uitgereikt: {new Date(diploma.awardedAt).toLocaleDateString('nl-NL')}
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h3 className="font-medium text-[#2a2a2a]">
+                        {diploma.type === 'COURSE_JAPANESE' && '🇯🇵 '}
+                        {diploma.title}
+                      </h3>
+                      <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                        diploma.type === 'BELT_EXAM' ? 'bg-red-100 text-red-800' :
+                        diploma.type === 'COURSE_JAPANESE' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-blue-100 text-blue-800'
+                      }`}>
+                        {diploma.type === 'BELT_EXAM' ? '🥋 Band Examen' :
+                         diploma.type === 'COURSE_JAPANESE' ? '🎓 Cursus Japans' : '⭐ Bijzonderheid'}
+                      </span>
+                    </div>
+                    <p className="mt-2 text-xs text-gray-400 flex items-center gap-3">
+                      <span>📅 {new Date(diploma.awardedAt).toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                      <span className="font-mono bg-gray-100 px-1.5 py-0.5 rounded">{diploma.verificationCode}</span>
                     </p>
                   </div>
-                  <div className="flex flex-col items-end gap-2">
-                    <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                      diploma.type === 'BELT_EXAM' ? 'bg-red-100 text-red-800' :
-                      diploma.type === 'COURSE_JAPANESE' ? 'bg-blue-100 text-blue-800' :
-                      'bg-yellow-100 text-yellow-800'
-                    }`}>
-                      {diploma.type === 'BELT_EXAM' ? 'Band Examen' :
-                       diploma.type === 'COURSE_JAPANESE' ? 'Cursus Japans' : 'Bijzonderheid'}
-                    </span>
-                    <Link
+                  <div className="flex flex-col items-end gap-2 ml-4">
+                    <a
                       href={`/api/diplomas/download?id=${diploma.id}`}
-                      className="text-xs text-[#a90000] hover:underline"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-[#a90000] transition-colors"
                     >
-                      Download PDF ↓
-                    </Link>
+                      👁 Bekijken
+                    </a>
+                    <a
+                      href={`/api/diplomas/download?id=${diploma.id}`}
+                      download
+                      className="inline-flex items-center gap-1 text-xs text-[#a90000] hover:underline font-medium"
+                    >
+                      ⬇ Download PDF
+                    </a>
                   </div>
-                </div>
-                <div className="mt-3 rounded bg-gray-50 px-3 py-2">
-                  <p className="text-xs text-gray-500">Verificatiecode:</p>
-                  <p className="font-mono text-sm text-gray-700">{diploma.verificationCode}</p>
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <p className="text-center text-sm text-gray-400 py-8">Nog geen diploma&apos;s verkregen</p>
+          <div className="text-center py-8">
+            <p className="text-4xl mb-3">🏆</p>
+            <p className="text-sm text-gray-400">Nog geen diploma&apos;s verkregen</p>
+            <p className="text-xs text-gray-300 mt-1">Haal je eerste examen of voltooi de Cursus Japans!</p>
+          </div>
         )}
       </div>
     </div>

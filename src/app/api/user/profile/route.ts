@@ -20,7 +20,11 @@ export async function PATCH(request: Request) {
       emergencyContactName,
       emergencyContactPhone,
       medicalNotes,
+      imageUrl,
     } = body
+
+    // Track important changes for admin notification
+    const importantChanges: string[] = []
 
     // If email is being changed, update user record too
     if (email && email !== user.email) {
@@ -28,10 +32,24 @@ export async function PATCH(request: Request) {
       if (existing) {
         return NextResponse.json({ error: 'Dit e-mailadres is al in gebruik' }, { status: 400 })
       }
+      importantChanges.push(`E-mail: ${user.email} → ${email}`)
       await db.user.update({
         where: { id: user.id },
         data: { email },
       })
+    }
+
+    // Check for other important changes
+    if (user.member) {
+      if (medicalNotes && medicalNotes !== user.member.medicalNotes) {
+        importantChanges.push('Medische notities gewijzigd')
+      }
+      if (emergencyContactName && emergencyContactName !== user.member.emergencyContactName) {
+        importantChanges.push(`Noodcontact naam: ${user.member.emergencyContactName || '(leeg)'} → ${emergencyContactName}`)
+      }
+      if (emergencyContactPhone && emergencyContactPhone !== user.member.emergencyContactPhone) {
+        importantChanges.push(`Noodcontact tel: ${user.member.emergencyContactPhone || '(leeg)'} → ${emergencyContactPhone}`)
+      }
     }
 
     const updatedMember = await db.member.update({
@@ -41,7 +59,7 @@ export async function PATCH(request: Request) {
         ...(lastName !== undefined && { lastName }),
         ...(email !== undefined && { email }),
         ...(phone !== undefined && { phone }),
-        ...(dateOfBirth !== undefined && { dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : undefined }),
+        ...(dateOfBirth !== undefined && { dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null }),
         ...(emergencyContactName !== undefined && { emergencyContactName }),
         ...(emergencyContactPhone !== undefined && { emergencyContactPhone }),
         ...(medicalNotes !== undefined && { medicalNotes }),
@@ -57,7 +75,26 @@ export async function PATCH(request: Request) {
       })
     }
 
-    return NextResponse.json({ success: true, member: updatedMember })
+    // Update imageUrl if provided
+    if (imageUrl) {
+      await db.user.update({
+        where: { id: user.id },
+        data: { imageUrl },
+      })
+    }
+
+    // Log important changes for admin notification
+    if (importantChanges.length > 0) {
+      console.log(`[PROFILE CHANGE - ${user.email}] ${importantChanges.join(' | ')}`)
+      // In a real system, this would trigger an email/notification to admins
+      // For now, we log it and the admin can check the console/Vercel logs
+    }
+
+    return NextResponse.json({
+      success: true,
+      member: updatedMember,
+      importantChanges,
+    })
   } catch (error) {
     console.error('Update profile error:', error)
     return NextResponse.json({ error: 'Fout bij bijwerken profiel' }, { status: 500 })
