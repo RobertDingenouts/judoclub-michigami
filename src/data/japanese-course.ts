@@ -25,12 +25,12 @@ const levelNames: Record<string | number, string> = {
 };
 
 export const beltColors = {
-  0: { bg: '#f0f0f0', text: '#666', border: '#e0e0e0', label: 'Wit' },
-  1: { bg: '#fff8e1', text: '#f9a825', border: '#f9c500', label: 'Geel' },
+  0: { bg: '#f0f0f0', text: '#666', border: '#e0e0e0', label: 'Witte' },
+  1: { bg: '#fff8e1', text: '#f9a825', border: '#f9c500', label: 'Gele' },
   2: { bg: '#fff3e0', text: '#e65100', border: '#f37021', label: 'Oranje' },
-  3: { bg: '#e8f5e9', text: '#2e7d32', border: '#009444', label: 'Groen' },
-  4: { bg: '#e3f2fd', text: '#1565c0', border: '#0054a6', label: 'Blauw' },
-  5: { bg: '#efebe9', text: '#5d4037', border: '#8b4513', label: 'Bruin' },
+  3: { bg: '#e8f5e9', text: '#2e7d32', border: '#009444', label: 'Groene' },
+  4: { bg: '#e3f2fd', text: '#1565c0', border: '#0054a6', label: 'Blauwe' },
+  5: { bg: '#efebe9', text: '#5d4037', border: '#8b4513', label: 'Bruine' },
 };
 
 export const japaneseCourseData = {

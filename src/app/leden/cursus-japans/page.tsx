@@ -160,7 +160,7 @@ export default async function CursusJapansPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="font-bold text-[#2a2a2a] text-base sm:text-lg">
-                        {colors.label} Band
+                        {colors.label} band
                       </h3>
                       {course?.isPassed && (
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-700">
