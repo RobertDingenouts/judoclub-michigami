@@ -1,6 +1,5 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
   title: 'Diploma Verifiëren - Judoclub Michigami',
@@ -9,9 +8,9 @@ export const metadata: Metadata = {
 
 export const dynamic = 'force-dynamic'
 
-export default async function DiplomaVerifyIndexPage({ searchParams }: { searchParams: Promise<{ get: (name: string) => string | null }> }) {
+export default async function DiplomaVerifyIndexPage({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
   const params = await searchParams
-  const error = params?.get('error')
+  const error = params?.error as string | undefined
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col py-8 sm:py-16">
@@ -44,7 +43,7 @@ export default async function DiplomaVerifyIndexPage({ searchParams }: { searchP
         )}
 
         {/* Form */}
-        <form action="/" method="GET" className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
+        <form action="/diploma/verifieren" method="GET" className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
           <div>
             <label htmlFor="code" className="block text-sm font-medium text-gray-700 mb-2">
               Verificatiecode
@@ -95,7 +94,7 @@ export default async function DiplomaVerifyIndexPage({ searchParams }: { searchP
           <InfoCard
             icon={<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-5 h-5"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>}
             title="Veilige verificatie"
-            desc="Alle verificatiecodes zijn uniek en kunnen niet worden ngemaakt"
+            desc="Alle verificatiecodes zijn uniek en kunnen niet worden nagemaakt"
           />
           <InfoCard
             icon={<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-5 h-5"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>}
