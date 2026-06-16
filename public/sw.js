@@ -1,5 +1,5 @@
 /* PWA Service Worker — Judoclub Michigami */
-const CACHE_NAME = "michigami-v4-20260612";
+const CACHE_NAME = "michigami-v5-20260616";
 
 // Assets to pre-cache on install (critical for offline)
 const PRECACHE_URLS = [
@@ -59,7 +59,7 @@ async function cacheFirst(request) {
   if (cached) return cached;
   try {
     const response = await fetch(request);
-    if (response.status === 200) {
+    if (response.status === 200 && request.method === 'GET') {
       const cache = await caches.open(CACHE_NAME);
       cache.put(request, response.clone());
     }
@@ -72,7 +72,8 @@ async function cacheFirst(request) {
 async function networkFirst(request) {
   try {
     const response = await fetch(request);
-    if (response.status === 200) {
+    // Only cache GET requests — Cache API doesn't support POST/PUT/DELETE
+    if (response.status === 200 && request.method === 'GET') {
       const cache = await caches.open(CACHE_NAME);
       cache.put(request, response.clone());
     }
