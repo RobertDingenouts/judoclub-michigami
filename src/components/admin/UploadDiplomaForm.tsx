@@ -30,9 +30,9 @@ export default function UploadDiplomaForm() {
       const data = await res.json()
       if (data.students) {
         setMembers(data.students.map((s: any) => ({
-          id: s.member?.id || s.id,
-          firstName: s.member?.firstName || s.name || '',
-          lastName: s.member?.lastName || '',
+          id: s.id,
+          firstName: s.firstName || '',
+          lastName: s.lastName || '',
         })))
       }
     } catch {
