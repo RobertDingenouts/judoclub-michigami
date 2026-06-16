@@ -192,11 +192,11 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Unlock next belt level if this one was passed
+    // Unlock all subsequent belt levels if this one was passed
     if (passed) {
       const currentIndex = BELT_ORDER.indexOf(beltLevel)
-      if (currentIndex < BELT_ORDER.length - 1) {
-        const nextBelt = BELT_ORDER[currentIndex + 1]
+      for (let i = currentIndex + 1; i < BELT_ORDER.length; i++) {
+        const nextBelt = BELT_ORDER[i]
         await upsertCourseProgress(user.id, member.id, nextBelt, {
           isUnlocked: true,
         })
@@ -254,16 +254,17 @@ export async function GET(request: NextRequest) {
 
     const existingBelts = new Set(existing.map((cp) => cp.beltLevel))
 
-    // First belt is always unlocked
+    // First belt is always unlocked; all belts after a passed one are unlocked
     for (const belt of BELT_ORDER) {
       if (!existingBelts.has(belt as any)) {
         const beltIndex = BELT_ORDER.indexOf(belt)
-        const prevPassed =
-          beltIndex === 0
-            ? true
-            : existing.some(
-                (cp) => cp.beltLevel === BELT_ORDER[beltIndex - 1] && cp.isPassed
-              )
+        // Unlock if any previous belt is passed
+        const prevPassed = existing.some(
+          (cp) => {
+            const cpIndex = BELT_ORDER.indexOf(cp.beltLevel as any)
+            return cpIndex < beltIndex && cp.isPassed
+          }
+        )
 
         await db.courseProgress.create({
           data: {
@@ -275,7 +276,7 @@ export async function GET(request: NextRequest) {
             lessonsTotal: 1,
             overallScore: 0,
             isPassed: false,
-            isUnlocked: prevPassed,
+            isUnlocked: beltIndex === 0 || prevPassed,
             wordsLearned: 0,
             wordsTotal: 0,
             wordsQuizScore: 0,

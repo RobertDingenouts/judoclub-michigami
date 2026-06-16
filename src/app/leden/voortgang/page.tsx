@@ -60,9 +60,9 @@ export default async function VoortgangPage() {
 
 function beltLabel(belt: string): string {
   const labels: Record<string, string> = {
-    WIT: 'Wit', GEEL: 'Geel', ORANJE: 'Oranje', GROEN: 'Groen',
-    BLAUW: 'Blauw', BRUIN_1: 'Bruin 1', BRUIN_2: 'Bruin 2', BRUIN_3: 'Bruin 3',
-    Zwart_1: 'Zwart 1', Zwart_2: 'Zwart 2', Zwart_3: 'Zwart 3',
+    WIT: 'Witte band', GEEL: 'Gele band', ORANJE: 'Oranje band', GROEN: 'Groene band',
+    BLAUW: 'Blauwe band', BRUIN_1: 'Bruine band 1', BRUIN_2: 'Bruine band 2', BRUIN_3: 'Bruine band 3',
+    Zwart_1: 'Zwarte band 1', Zwart_2: 'Zwarte band 2', Zwart_3: 'Zwarte band 3',
   }
   return labels[belt] || belt
 }
