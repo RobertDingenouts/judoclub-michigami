@@ -1,12 +1,11 @@
 import { NextResponse } from 'next/server'
 import { getCurrentUser } from '@/lib/auth'
 import { db } from '@/lib/db'
-import path from 'path'
-import fs from 'fs/promises'
 
 export const dynamic = 'force-dynamic'
 
 // POST - Admin uploads a physical diploma PDF/image for a member
+// Stores file as base64 in DB (Vercel serverless has no persistent filesystem)
 export async function POST(request: Request) {
   const user = await getCurrentUser()
   if (!user || user.role !== 'ADMIN') {
@@ -18,7 +17,7 @@ export async function POST(request: Request) {
     const memberId = formData.get('memberId') as string
     const diplomaType = (formData.get('diplomaType') as string) || 'ACHIEVEMENT'
     const title = formData.get('title') as string
-    const beltLevel = formData.get('beltLevel') as string | null
+    const beltLevelRaw = formData.get('beltLevel') as string | null
     const awardedAt = formData.get('awardedAt') as string | null
     const file = formData.get('file')
 
@@ -31,23 +30,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Lid niet gevonden' }, { status: 404 })
     }
 
-    // Save file
+    // Convert file to base64 data URI (Vercel can't write to filesystem)
     let pdfUrl: string | null = null
     if (file instanceof File) {
-      const ext = file.name.split('.').pop() || 'pdf'
-      const filename = `diploma-${memberId}-${Date.now()}.${ext}`
-      const publicDir = path.join(process.cwd(), 'public', 'diplomas')
-      const filePath = path.join(publicDir, filename)
-
-      try {
-        await fs.mkdir(publicDir, { recursive: true })
-      } catch {
-        // Directory might already exist
+      // Max 10MB check
+      if (file.size > 10 * 1024 * 1024) {
+        return NextResponse.json({ error: 'Bestand te groot (max 10MB)' }, { status: 400 })
       }
-
       const buffer = Buffer.from(await file.arrayBuffer())
-      await fs.writeFile(filePath, buffer)
-      pdfUrl = `/diplomas/${filename}`
+      const mimeType = file.type || 'application/pdf'
+      const base64 = buffer.toString('base64')
+      pdfUrl = `data:${mimeType};base64,${base64}`
     }
 
     // Generate verification code
@@ -61,7 +54,7 @@ export async function POST(request: Request) {
         title,
         recipientId: memberId,
         userId: member.userId,
-        beltLevel: beltLevel as any,
+        beltLevel: beltLevelRaw ? (beltLevelRaw as any) : undefined,
         awardedAt: awardedAt ? new Date(awardedAt) : new Date(),
         verificationCode,
         pdfUrl,
@@ -74,11 +67,12 @@ export async function POST(request: Request) {
         id: diploma.id,
         title: diploma.title,
         verificationCode: diploma.verificationCode,
-        pdfUrl: diploma.pdfUrl,
+        hasFile: !!pdfUrl,
       },
     })
   } catch (error) {
     console.error('Diploma upload error:', error)
-    return NextResponse.json({ error: 'Fout bij uploaden diploma' }, { status: 500 })
+    const msg = error instanceof Error ? error.message : 'Onbekende fout'
+    return NextResponse.json({ error: `Fout bij uploaden diploma: ${msg}` }, { status: 500 })
   }
 }

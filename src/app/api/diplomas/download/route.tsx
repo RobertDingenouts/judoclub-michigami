@@ -37,6 +37,24 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    // If diploma has an uploaded file (base64 data URI), serve it directly
+    if (diploma.pdfUrl && diploma.pdfUrl.startsWith('data:')) {
+      const mimeType = diploma.pdfUrl.split(';')[0].split(':')[1]
+      const base64Data = diploma.pdfUrl.split(',')[1]
+      const buffer = Buffer.from(base64Data, 'base64')
+      const member = diploma.member
+      const filename = `praktijk-diploma-${member.firstName}-${member.lastName}.pdf`
+      
+      return new NextResponse(buffer, {
+        headers: {
+          'Content-Type': mimeType,
+          'Content-Disposition': `attachment; filename="${filename}"`,
+          'Content-Length': String(buffer.length),
+        },
+      })
+    }
+
+    // Otherwise generate PDF from template
     const member = diploma.member
     const recipientName = `${member.firstName} ${member.lastName}`
     const beltLevel = diploma.beltLevel || 'WIT'
