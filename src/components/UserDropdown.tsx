@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { LogoutButton } from './LogoutButton';
+import { BELT_LABELS_NL, BELT_COLORS } from '@/lib/student-progress-types';
 
 interface UserData {
   id: string;
@@ -97,33 +98,9 @@ export function UserDropdown({ onSectionChange }: { onSectionChange?: (section: 
     .toUpperCase()
     .slice(0, 2);
 
-  const beltColors: Record<string, string> = {
-    WIT: '#ffffff',
-    WIT_GEEL: '#ffffff',
-    GEEL: '#f5c518',
-    GEEL_ORANJE: '#f5c518',
-    ORANJE: '#ff8c00',
-    ORANJE_GROEN: '#ff8c00',
-    GROEN: '#22c55e',
-    GROEN_BLAUW: '#22c55e',
-    BLAUW: '#3b82f6',
-    BLAUW_BRUIN: '#3b82f6',
-    BRUIN: '#8B4513',
-    ZWART_1: '#1a1a1a',
-    ZWART_2: '#1a1a1a',
-    ZWART_3: '#1a1a1a',
-    ZWART_4: '#1a1a1a',
-    ZWART_5: '#1a1a1a',
-    ZWART_6: '#1a1a1a',
-    ZWART_7: '#1a1a1a',
-    ZWART_8: '#1a1a1a',
-    ZWART_9: '#1a1a1a',
-    ZWART_10: '#1a1a1a',
-  };
-
   const belt = user.member?.currentBelt || user.currentBelt;
-  const beltColor = belt ? beltColors[belt] || '#999' : '#999';
-  const beltLabel = belt ? belt.replace('_', ' ').replace('Zwart', 'Zwarte') : '';
+  const beltColor = belt ? BELT_COLORS[belt] || '#999' : '#999';
+  const beltLabel = belt ? (BELT_LABELS_NL[belt] || belt) : '';
 
   const isAdmin = user.role === 'ADMIN';
 
@@ -265,32 +242,8 @@ export function MobileUserAvatar({ onSectionChange }: { onSectionChange?: (secti
     .toUpperCase()
     .slice(0, 2);
 
-  const beltColors: Record<string, string> = {
-    WIT: '#ffffff',
-    WIT_GEEL: '#ffffff',
-    GEEL: '#f5c518',
-    GEEL_ORANJE: '#f5c518',
-    ORANJE: '#ff8c00',
-    ORANJE_GROEN: '#ff8c00',
-    GROEN: '#22c55e',
-    GROEN_BLAUW: '#22c55e',
-    BLAUW: '#3b82f6',
-    BLAUW_BRUIN: '#3b82f6',
-    BRUIN: '#8B4513',
-    ZWART_1: '#1a1a1a',
-    ZWART_2: '#1a1a1a',
-    ZWART_3: '#1a1a1a',
-    ZWART_4: '#1a1a1a',
-    ZWART_5: '#1a1a1a',
-    ZWART_6: '#1a1a1a',
-    ZWART_7: '#1a1a1a',
-    ZWART_8: '#1a1a1a',
-    ZWART_9: '#1a1a1a',
-    ZWART_10: '#1a1a1a',
-  };
-
   const belt = user.member?.currentBelt || user.currentBelt;
-  const beltColor = belt ? beltColors[belt] || '#999' : '#999';
+  const beltColor = belt ? BELT_COLORS[belt] || '#999' : '#999';
 
   return (
     <div className="relative group">

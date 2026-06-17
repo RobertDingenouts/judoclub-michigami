@@ -197,6 +197,9 @@ function beltLabel(belt: string | null): string {
     ZWART_4: 'Zwart 4e Dan', ZWART_5: 'Zwart 5e Dan', ZWART_6: 'Zwart 6e Dan',
     ZWART_7: 'Zwart 7e Dan', ZWART_8: 'Zwart 8e Dan', ZWART_9: 'Zwart 9e Dan',
     ZWART_10: 'Zwart 10e Dan',
+    // Legacy values
+    BRUIN_1: 'Bruin 1e Ke', BRUIN_2: 'Bruin 2e Ke', BRUIN_3: 'Bruin 3e Ke',
+    Zwart_1: 'Zwart 1e Dan', Zwart_2: 'Zwart 2e Dan', Zwart_3: 'Zwart 3e Dan',
   }
   return labels[belt || ''] || belt || 'Onbekend'
 }

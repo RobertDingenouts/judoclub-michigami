@@ -89,7 +89,8 @@ export async function PATCH(
     return NextResponse.json({ success: true, member: updatedMember })
   } catch (error) {
     console.error('Update student error:', error)
-    return NextResponse.json({ error: 'Fout bij bijwerken student' }, { status: 500 })
+    const msg = error instanceof Error ? error.message : 'Onbekende fout'
+    return NextResponse.json({ error: `Fout bij bijwerken student: ${msg}` }, { status: 500 })
   }
 }
 

@@ -1,6 +1,7 @@
 import { getCurrentUser } from '@/lib/auth'
 import { db } from '@/lib/db'
 import type { BeltLevel } from '@prisma/client'
+import { BELT_LABELS_NL } from '@/lib/student-progress-types'
 import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
@@ -39,7 +40,7 @@ export default async function LedenDashboard() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           title="Huidige Band"
-          value={beltLabel(user.currentBelt)}
+          value={BELT_LABELS_NL[user.currentBelt as BeltLevel] || 'Niet ingesteld'}
           icon="🥋"
           href="/leden/voortgang"
           subtitle={user.currentBelt ? 'Jouw niveau' : 'Nog niet ingesteld'}
@@ -106,7 +107,7 @@ export default async function LedenDashboard() {
                   </div>
                   <div>
                     <p className="text-sm font-medium text-[#2a2a2a]">
-                      {beltLabel(cp.beltLevel)} Band — Japans
+                      {BELT_LABELS_NL[cp.beltLevel as BeltLevel] || cp.beltLevel} Band — Japans
                     </p>
                     <p className="text-xs text-gray-500">
                       {cp.lessonsCompleted}/{cp.lessonsTotal} lessen • {cp.wordsLearned}/{cp.wordsTotal} woorden
@@ -160,11 +161,4 @@ function QuickAction({ href, icon, title, desc }: { href: string; icon: string; 
   )
 }
 
-function beltLabel(belt: BeltLevel | null | undefined): string {
-  const labels: Record<string, string> = {
-    WIT: 'Wit', GEEL: 'Geel', ORANJE: 'Oranje', GROEN: 'Groen',
-    BLAUW: 'Blauw', BRUIN: 'Bruin',
-    ZWART_1: 'Zwart 1e Dan', ZWART_2: 'Zwart 2e Dan', ZWART_3: 'Zwart 3e Dan',
-  }
-  return labels[belt || ''] || belt || 'Niet ingesteld'
-}
+// beltLabel removed — uses BELT_LABELS_NL from student-progress-types

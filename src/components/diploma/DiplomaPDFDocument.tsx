@@ -36,6 +36,13 @@ const BELT_COLORS: Record<string, string> = {
   ZWART_8:       '#000000',
   ZWART_9:       '#000000',
   ZWART_10:      '#000000',
+  // Legacy
+  BRUIN_1:       '#8B4513',
+  BRUIN_2:       '#8B4513',
+  BRUIN_3:       '#8B4513',
+  Zwart_1:       '#000000',
+  Zwart_2:       '#000000',
+  Zwart_3:       '#000000',
   // Fallbacks voor niet-band diploma's
   COURSE_JAPANESE: BRAND_GOLD,
   ACHIEVEMENT: BRAND_RED,
@@ -63,6 +70,13 @@ const BELT_LABELS_NL: Record<string, string> = {
   ZWART_8:       'Zwarte Band 8e Dan',
   ZWART_9:       'Zwarte Band 9e Dan',
   ZWART_10:      'Zwarte Band 10e Dan',
+  // Legacy
+  BRUIN_1:       'Bruine Band 1e Ke',
+  BRUIN_2:       'Bruine Band 2e Ke',
+  BRUIN_3:       'Bruine Band 3e Ke',
+  Zwart_1:       'Zwarte Band 1e Dan',
+  Zwart_2:       'Zwarte Band 2e Dan',
+  Zwart_3:       'Zwarte Band 3e Dan',
   // Fallbacks voor niet-band diploma's
   COURSE_JAPANESE: 'Online Cursus Japans',
   ACHIEVEMENT: 'Bijzondere Prestatie',

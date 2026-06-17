@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { BELT_LABELS_NL, BELT_COLORS } from '@/lib/student-progress-types'
 
 interface UserProfile {
   id: string
@@ -21,30 +22,6 @@ interface UserProfile {
     emergencyContactPhone: string | null
     medicalNotes: string | null
   } | null
-}
-
-const BELT_COLORS: Record<string, string> = {
-  WIT: '#FFFFFF',
-  WIT_GEEL: '#FFFFFF',
-  GEEL: '#FFD700',
-  GEEL_ORANJE: '#FFD700',
-  ORANJE: '#FF8C00',
-  ORANJE_GROEN: '#FF8C00',
-  GROEN: '#228B22',
-  GROEN_BLAUW: '#228B22',
-  BLAUW: '#0000FF',
-  BLAUW_BRUIN: '#0000FF',
-  BRUIN: '#8B4513',
-  ZWART_1: '#000000',
-  ZWART_2: '#000000',
-  ZWART_3: '#000000',
-  ZWART_4: '#000000',
-  ZWART_5: '#000000',
-  ZWART_6: '#000000',
-  ZWART_7: '#000000',
-  ZWART_8: '#000000',
-  ZWART_9: '#000000',
-  ZWART_10: '#000000',
 }
 
 export function ProfileSection() {
@@ -100,7 +77,7 @@ export function ProfileSection() {
   const belt = profile.member?.currentBelt || profile.currentBelt
   const beltColor = belt ? BELT_COLORS[belt] || '#999' : '#999'
   const isWhiteBelt = belt === 'WIT'
-  const beltLabel = belt ? belt.replace('_', ' ').replace('Zwart', 'Zwarte band') : 'Nog geen band'
+  const beltLabel = belt ? (BELT_LABELS_NL[belt] || belt) : 'Nog geen band'
   const joinDate = profile.member?.joinDate || profile.joinDate
   const initials = displayName.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)
 
