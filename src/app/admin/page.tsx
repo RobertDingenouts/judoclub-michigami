@@ -1,12 +1,13 @@
 import { db } from '@/lib/db'
 import Link from 'next/link'
+import { LOCATION_LABELS_NL } from '@/lib/student-progress-types'
 import type { BeltLevel, ExamStatus, DiplomaType } from '@prisma/client'
 
 export const dynamic = 'force-dynamic'
 
 export default async function AdminDashboard() {
   // Fetch stats (only active members)
-  const [totalStudents, totalExams, totalDiplomas, recentExams, beltDistribution, trashedCount] = await Promise.all([
+  const [totalStudents, totalExams, totalDiplomas, recentExams, beltDistribution, trashedCount, locationDistribution] = await Promise.all([
     db.member.count({ where: { isActive: true } }),
     db.examAttempt.count(),
     db.diploma.count(),
@@ -25,6 +26,11 @@ export default async function AdminDashboard() {
       _count: { currentBelt: true },
     }),
     db.member.count({ where: { isActive: false } }),
+    db.member.groupBy({
+      where: { isActive: true, location: { not: null } },
+      by: ['location'],
+      _count: { location: true },
+    }),
   ])
 
   const beltCounts = beltDistribution.reduce<Record<string, number>>((acc, item) => {
@@ -93,6 +99,37 @@ export default async function AdminDashboard() {
           ))}
           {Object.keys(beltCounts).length === 0 && (
             <p className="col-span-6 text-center text-sm text-gray-400">Nog geen studenten geregistreerd</p>
+          )}
+        </div>
+      </div>
+
+      {/* Location distribution */}
+      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+        <h2 className="mb-4 text-lg font-semibold text-[#2a2a2a]">Trainingslocaties</h2>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {locationDistribution.map((item) => {
+            const locationName = LOCATION_LABELS_NL[item.location as keyof typeof LOCATION_LABELS_NL] || item.location
+            const percentage = totalStudents > 0 ? Math.round((item._count.location / totalStudents) * 100) : 0
+            return (
+              <div key={item.location} className="rounded-lg border border-gray-100 bg-gray-50 p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">📍 {locationName}</p>
+                    <p className="mt-1 text-3xl font-bold text-[#a90000]">{item._count.location}</p>
+                    <p className="mt-1 text-xs text-gray-400">{percentage}% van alle studenten</p>
+                  </div>
+                  <Link
+                    href={`/admin/students?location=${item.location}`}
+                    className="rounded-md border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:bg-gray-50"
+                  >
+                    Bekijk →
+                  </Link>
+                </div>
+              </div>
+            )
+          })}
+          {locationDistribution.length === 0 && (
+            <p className="col-span-2 text-center text-sm text-gray-400">Nog geen locaties toegekend aan studenten</p>
           )}
         </div>
       </div>

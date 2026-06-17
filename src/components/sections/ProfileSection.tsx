@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { BELT_LABELS_NL, BELT_COLORS } from '@/lib/student-progress-types'
+import { BELT_LABELS_NL, BELT_COLORS, LOCATION_LABELS_NL } from '@/lib/student-progress-types'
 
 interface UserProfile {
   id: string
@@ -17,6 +17,7 @@ interface UserProfile {
     phone: string | null
     dateOfBirth: string | null
     currentBelt: string | null
+    location: string | null
     joinDate: string
     emergencyContactName: string | null
     emergencyContactPhone: string | null
@@ -200,6 +201,14 @@ export function ProfileSection() {
                 <span className="text-sm text-gray-500">Lid sinds</span>
                 <span className="text-sm font-medium text-gray-800">
                   {new Date(joinDate).toLocaleDateString('nl-NL', { month: 'long', year: 'numeric' })}
+                </span>
+              </div>
+            )}
+            {profile.member.location && (
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-500">Trainingslocatie</span>
+                <span className="text-sm font-medium text-gray-800">
+                  📍 {LOCATION_LABELS_NL[profile.member.location as keyof typeof LOCATION_LABELS_NL] || profile.member.location}
                 </span>
               </div>
             )}

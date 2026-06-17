@@ -114,6 +114,7 @@ export async function GET() {
       email: user.member?.email || user.email,
       phone: user.member?.phone || '',
       dateOfBirth: user.member?.dateOfBirth?.toISOString().split('T')[0] || '',
+      location: user.member?.location || '',
       emergencyContactName: user.member?.emergencyContactName || '',
       emergencyContactPhone: user.member?.emergencyContactPhone || '',
       medicalNotes: user.member?.medicalNotes || '',

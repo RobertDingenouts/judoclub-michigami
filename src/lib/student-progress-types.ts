@@ -116,6 +116,22 @@ export function prevBelt(current: BeltLevel): BeltLevel | null {
 }
 
 // ============================================================================
+// TRAINING LOCATIONS
+// ============================================================================
+
+export const TRAINING_LOCATIONS = [
+  { value: 'STeenbergen', label: 'Steenbergen' },
+  { value: 'OUD_VOSSEMEER', label: 'Oud-Vossemeer' },
+] as const
+
+export type TrainingLocation = typeof TRAINING_LOCATIONS[number]['value']
+
+export const LOCATION_LABELS_NL: Record<TrainingLocation, string> = {
+  'STeenbergen':   'Steenbergen',
+  'OUD_VOSSEMEER': 'Oud-Vossemeer',
+}
+
+// ============================================================================
 // COURSE PROGRESS TYPES (Cursus Japans)
 // ============================================================================
 

@@ -12,6 +12,7 @@ interface StudentData {
   phone: string | null
   dateOfBirth: string | null
   currentBelt: string | null
+  location: string | null
   joinDate: string
   isActive: boolean
   emergencyContactName: string | null
@@ -112,6 +113,7 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
       phone: formData.get('phone') as string || null,
       dateOfBirth: formData.get('dateOfBirth') as string || null,
       currentBelt: formData.get('currentBelt') as string || null,
+      location: formData.get('location') as string || null,
       joinDate: formData.get('joinDate') as string || null,
       role: formData.get('role') as string || null,
       isActive: formData.get('isActive') === 'on',
@@ -196,6 +198,18 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
                 {ROLES.map(r => (
                   <option key={r.value} value={r.value}>{r.label}</option>
                 ))}
+              </select>
+            </div>
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-gray-700">Trainingslocatie</label>
+              <select
+                name="location"
+                defaultValue={student.location || ''}
+                className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+              >
+                <option value="">Geen locatie</option>
+                <option value="STeenbergen">Steenbergen</option>
+                <option value="OUD_VOSSEMEER">Oud-Vossemeer</option>
               </select>
             </div>
           </div>

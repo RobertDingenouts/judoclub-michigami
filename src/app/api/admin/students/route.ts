@@ -43,7 +43,7 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json()
-    const { firstName, lastName, email, phone, dateOfBirth, currentBelt, emergencyContactName, emergencyContactPhone, medicalNotes } = body
+    const { firstName, lastName, email, phone, dateOfBirth, currentBelt, location, emergencyContactName, emergencyContactPhone, medicalNotes } = body
 
     if (!firstName || !lastName) {
       return NextResponse.json({ error: 'Naam is verplicht' }, { status: 400 })
@@ -68,6 +68,7 @@ export async function POST(request: Request) {
         phone,
         dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : undefined,
         currentBelt: currentBelt as BeltLevel | null,
+        location: location || null,
         emergencyContactName,
         emergencyContactPhone,
         medicalNotes,

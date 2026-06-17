@@ -1,6 +1,6 @@
 import { db } from '@/lib/db'
 import Link from 'next/link'
-import { BELT_LABELS_NL, BELT_COLORS } from '@/lib/student-progress-types'
+import { BELT_LABELS_NL, BELT_COLORS, LOCATION_LABELS_NL } from '@/lib/student-progress-types'
 import type { BeltLevel } from '@prisma/client'
 
 export const dynamic = 'force-dynamic'
@@ -8,11 +8,12 @@ export const dynamic = 'force-dynamic'
 export default async function StudentsPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ q?: string; belt?: string; trashed?: string }>
+  searchParams?: Promise<{ q?: string; belt?: string; trashed?: string; location?: string }>
 }) {
   const params = await searchParams
   const query = params?.q || ''
   const beltFilter = params?.belt || ''
+  const locationFilter = params?.location || ''
   const showTrashed = params?.trashed === 'true'
 
   // Build where clause
@@ -25,6 +26,7 @@ export default async function StudentsPage({
     ]
   }
   if (beltFilter) where.currentBelt = beltFilter as BeltLevel
+  if (locationFilter) where.location = locationFilter
 
   const [students, totalStudents] = await Promise.all([
     db.member.findMany({
@@ -108,6 +110,15 @@ export default async function StudentsPage({
               <option key={b.currentBelt} value={b.currentBelt}>{BELT_LABELS_NL[b.currentBelt as BeltLevel] || b.currentBelt}</option>
             ))}
           </select>
+          <select
+            name="location"
+            defaultValue={locationFilter}
+            className="rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+          >
+            <option value="">Alle locaties</option>
+            <option value="STeenbergen">Steenbergen</option>
+            <option value="OUD_VOSSEMEER">Oud-Vossemeer</option>
+          </select>
         </form>
       </div>
 
@@ -139,6 +150,11 @@ export default async function StudentsPage({
                     </span>
                     {student.user.role === 'ADMIN' && (
                       <span className="rounded bg-[#a90000]/10 px-1.5 py-0.5 text-xs font-medium text-[#a90000]">Admin</span>
+                    )}
+                    {student.location && (
+                      <span className="rounded bg-blue-50 px-1.5 py-0.5 text-xs font-medium text-blue-700">
+                        📍 {LOCATION_LABELS_NL[student.location as keyof typeof LOCATION_LABELS_NL] || student.location}
+                      </span>
                     )}
                   </div>
                 </div>

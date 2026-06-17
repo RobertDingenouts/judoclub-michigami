@@ -26,6 +26,7 @@ export async function GET() {
           dateOfBirth: user.member.dateOfBirth,
           joinDate: user.member.joinDate,
           currentBelt: user.member.currentBelt,
+          location: user.member.location,
           emergencyContactName: user.member.emergencyContactName,
           emergencyContactPhone: user.member.emergencyContactPhone,
           medicalNotes: user.member.medicalNotes,

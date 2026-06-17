@@ -36,6 +36,7 @@ model Member {
   phone                 String?
   dateOfBirth           DateTime?
   currentBelt           BeltLevel?
+  location              String?
   joinDate              DateTime      @default(now())
   isActive              Boolean       @default(true)
   emergencyContactName  String?
@@ -49,6 +50,7 @@ model Member {
   user                  User          @relation(fields: [userId], references: [id])
 
   @@index([lastName, firstName])
+  @@index([location])
 }
 
 model Event {

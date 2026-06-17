@@ -1,7 +1,7 @@
 import { db } from '@/lib/db'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { BELT_LABELS_NL, BELT_COLORS } from '@/lib/student-progress-types'
+import { BELT_LABELS_NL, BELT_COLORS, LOCATION_LABELS_NL } from '@/lib/student-progress-types'
 import type { BeltLevel, ExamStatus } from '@prisma/client'
 
 export const dynamic = 'force-dynamic'
@@ -88,6 +88,10 @@ export default async function StudentDetailPage({
               value={member.dateOfBirth ? new Date(member.dateOfBirth).toLocaleDateString('nl-NL') : '-'}
             />
             <DetailRow label="Lid sinds" value={new Date(member.joinDate).toLocaleDateString('nl-NL')} />
+            <DetailRow
+              label="Trainingslocatie"
+              value={member.location ? (LOCATION_LABELS_NL[member.location as keyof typeof LOCATION_LABELS_NL] || member.location) : '-'}
+            />
             <DetailRow label="Noodcontact" value={member.emergencyContactName || '-'} />
             <DetailRow label="Noodtel" value={member.emergencyContactPhone || '-'} />
             <DetailRow label="Gebruikersnaam" value={member.user.name || '-'} />

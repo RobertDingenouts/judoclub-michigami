@@ -54,6 +54,7 @@ export async function PATCH(
       ...(body.dateOfBirth !== undefined && { dateOfBirth: body.dateOfBirth ? new Date(body.dateOfBirth) : undefined }),
       ...(body.currentBelt !== undefined && body.currentBelt !== '' && { currentBelt: body.currentBelt as BeltLevel }),
       ...(body.currentBelt === '' && { currentBelt: null }),
+      ...(body.location !== undefined && { location: body.location || null }),
       ...(body.joinDate !== undefined && { joinDate: body.joinDate ? new Date(body.joinDate) : undefined }),
       ...(body.isActive !== undefined && { isActive: body.isActive }),
       ...(body.emergencyContactName !== undefined && { emergencyContactName: body.emergencyContactName }),

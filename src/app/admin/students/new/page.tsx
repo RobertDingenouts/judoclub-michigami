@@ -36,6 +36,7 @@ export default function NewStudentPage() {
       phone: formData.get('phone') as string || undefined,
       dateOfBirth: formData.get('dateOfBirth') as string || undefined,
       currentBelt: formData.get('currentBelt') as string || undefined,
+      location: formData.get('location') as string || undefined,
       emergencyContactName: formData.get('emergencyContactName') as string || undefined,
       emergencyContactPhone: formData.get('emergencyContactPhone') as string || undefined,
       medicalNotes: formData.get('medicalNotes') as string || undefined,
@@ -97,6 +98,17 @@ export default function NewStudentPage() {
                 {BELTS.map(b => (
                   <option key={b.value} value={b.value}>{b.label}</option>
                 ))}
+              </select>
+            </div>
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-gray-700">Trainingslocatie</label>
+              <select
+                name="location"
+                className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+              >
+                <option value="">Selecteer locatie</option>
+                <option value="STeenbergen">Steenbergen</option>
+                <option value="OUD_VOSSEMEER">Oud-Vossemeer</option>
               </select>
             </div>
           </div>

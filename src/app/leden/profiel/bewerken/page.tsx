@@ -11,6 +11,7 @@ interface ProfileEditData {
   email: string
   phone: string
   dateOfBirth: string
+  location: string
   emergencyContactName: string
   emergencyContactPhone: string
   medicalNotes: string
@@ -63,6 +64,7 @@ export default function ProfileEditPage() {
           email: p.member?.email || p.email || '',
           phone: p.member?.phone || '',
           dateOfBirth: p.member?.dateOfBirth ? new Date(p.member.dateOfBirth).toISOString().split('T')[0] : '',
+          location: p.member?.location || '',
           emergencyContactName: p.member?.emergencyContactName || '',
           emergencyContactPhone: p.member?.emergencyContactPhone || '',
           medicalNotes: p.member?.medicalNotes || '',
@@ -328,6 +330,24 @@ export default function ProfileEditPage() {
                 <FormField label="E-mail" name="email" type="email" value={form?.email || ''} required onChange={(e) => handleFormChange('email', e.target.value)} />
                 <FormField label="Telefoon" name="phone" type="tel" value={form?.phone || ''} onChange={(e) => handleFormChange('phone', e.target.value)} />
                 <FormField label="Geboortedatum" name="dateOfBirth" type="date" value={form?.dateOfBirth || ''} onChange={(e) => handleFormChange('dateOfBirth', e.target.value)} />
+              </div>
+
+              <hr className="border-gray-100" />
+
+              {/* Location (read-only) */}
+              <h2 className="text-lg font-semibold text-[#2a2a2a]">Trainingslocatie</h2>
+              <div className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-gray-700">Locatie</span>
+                  <span className="text-sm text-gray-600">
+                    {form?.location ? (
+                      <>📍 {form.location === 'STeenbergen' ? 'Steenbergen' : form.location === 'OUD_VOSSEMEER' ? 'Oud-Vossemeer' : form.location}</>
+                    ) : (
+                      <span className="text-gray-400 italic">Nog geen locatie toegekend</span>
+                    )}
+                  </span>
+                </div>
+                <p className="text-xs text-gray-400 mt-1">Contacteer de admin om je locatie te wijzigen.</p>
               </div>
 
               <hr className="border-gray-100" />
