@@ -156,7 +156,7 @@ export async function POST(request: NextRequest) {
       if (!existingDiploma) {
         const beltLabel = BELT_LABELS[beltLevel] || beltLevel
         const recipientName = `${member.firstName} ${member.lastName}`
-        const title = `Cursus Japans — ${beltLabel}`
+        const title = `Online Cursus Japans — ${beltLabel}`
         const description = `Hierbij wordt bevestigd dat ${recipientName} met succes het examen voor de Japanse judo-terminologie (${beltLabel}) heeft afgelegd bij Judoclub Michigami Steenbergen.`
 
         let verificationCode = generateVerificationCode()

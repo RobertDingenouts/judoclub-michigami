@@ -44,7 +44,7 @@ const BELT_LABELS_NL: Record<string, string> = {
   Zwart_2:   'Zwarte Band 2e Dan',
   Zwart_3:   'Zwarte Band 3e Dan',
   // Fallbacks voor niet-band diploma's
-  COURSE_JAPANESE: 'Cursus Japans',
+  COURSE_JAPANESE: 'Online Cursus Japans',
   ACHIEVEMENT: 'Bijzondere Prestatie',
 }
 
