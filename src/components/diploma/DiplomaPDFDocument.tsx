@@ -108,6 +108,13 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     marginTop: 10,
   },
+  websiteUrl: {
+    fontFamily: 'Helvetica',
+    fontSize: 10,
+    color: NEUTRAL_GRAY,
+    letterSpacing: 2,
+    marginTop: 4,
+  },
   subTitle: {
     fontFamily: 'Helvetica',
     fontSize: 16,
@@ -279,7 +286,7 @@ export function DiplomaPDFDocument({
 
   // Bepaal de beschrijvende tekst op basis van het type diploma
   const defaultDescription = beltLevel === 'COURSE_JAPANESE'
-    ? 'de cursus Japans (judo terminologie) met goed gevolg heeft voltooid en de bijbehorende kennis heeft aangetoond.'
+    ? 'de online cursus Japans (judo terminologie) met goed gevolg heeft voltooid en de bijbehorende kennis heeft aangetoond.'
     : 'met succes het examen heeft afgelegd voor de cursus judo terminologie'
 
   return (
@@ -306,6 +313,7 @@ export function DiplomaPDFDocument({
 
               <Text style={styles.mainTitle}>Diploma</Text>
               <Text style={styles.subTitle}>{title}</Text>
+              <Text style={styles.websiteUrl}>www.judoclubmichigami.nl</Text>
             </View>
 
             {/* CONTENT */}
