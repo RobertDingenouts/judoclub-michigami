@@ -30,6 +30,13 @@ export const BELT_ORDER: BeltLevel[] = [
   'ZWART_8',
   'ZWART_9',
   'ZWART_10',
+  // Legacy
+  'BRUIN_1',
+  'BRUIN_2',
+  'BRUIN_3',
+  'Zwart_1',
+  'Zwart_2',
+  'Zwart_3',
 ]
 
 export const BELT_COLORS: Record<BeltLevel, string> = {
@@ -54,6 +61,13 @@ export const BELT_COLORS: Record<BeltLevel, string> = {
   ZWART_8:       '#000000',
   ZWART_9:       '#000000',
   ZWART_10:      '#000000',
+  // Legacy
+  BRUIN_1:       '#8B4513',
+  BRUIN_2:       '#8B4513',
+  BRUIN_3:       '#8B4513',
+  Zwart_1:       '#000000',
+  Zwart_2:       '#000000',
+  Zwart_3:       '#000000',
 }
 
 export const BELT_LABELS_NL: Record<BeltLevel, string> = {
@@ -78,6 +92,13 @@ export const BELT_LABELS_NL: Record<BeltLevel, string> = {
   ZWART_8:       'Zwarte band 8e dan',
   ZWART_9:       'Zwarte band 9e dan',
   ZWART_10:      'Zwarte band 10e dan',
+  // Legacy
+  BRUIN_1:       'Bruine band 1e ke',
+  BRUIN_2:       'Bruine band 2e ke',
+  BRUIN_3:       'Bruine band 3e ke',
+  Zwart_1:       'Zwarte band 1e dan',
+  Zwart_2:       'Zwarte band 2e dan',
+  Zwart_3:       'Zwarte band 3e dan',
 }
 
 export function beltIndex(belt: BeltLevel): number {

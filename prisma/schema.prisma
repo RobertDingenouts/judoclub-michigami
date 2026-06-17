@@ -198,6 +198,13 @@ enum BeltLevel {
   ZWART_8
   ZWART_9
   ZWART_10
+  // Legacy values - will be migrated
+  BRUIN_1
+  BRUIN_2
+  BRUIN_3
+  Zwart_1
+  Zwart_2
+  Zwart_3
 }
 
 enum EventType {
