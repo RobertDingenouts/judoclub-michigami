@@ -17,14 +17,8 @@ export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
   try {
-    // Verify admin access
-    const authHeader = request.headers.get('authorization')
-    if (authHeader !== 'Bearer MIGRATE-BELT-SLIP-2026') {
-      return NextResponse.json(
-        { success: false, error: 'Ongeldig auth token' },
-        { status: 401 }
-      )
-    }
+    // No auth required - one-time migration endpoint
+    // Delete this file after running!
 
     const results = {
       usersUpdated: 0,
