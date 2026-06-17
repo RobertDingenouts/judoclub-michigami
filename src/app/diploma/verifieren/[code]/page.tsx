@@ -146,8 +146,8 @@ export default async function DiplomaVerifyPage({ params }: DiplomaVerifyPagePro
 function beltLabel(belt: string | null): string {
   const labels: Record<string, string> = {
     WIT: 'Witte band', GEEL: 'Gele band', ORANJE: 'Oranje band', GROEN: 'Groene band',
-    BLAUW: 'Blauwe band', BRUIN_1: 'Bruine band 1e ke', BRUIN_2: 'Bruine band 2e ke', BRUIN_3: 'Bruine band 3e ke',
-    Zwart_1: 'Zwarte band 1e dan', Zwart_2: 'Zwarte band 2e dan', Zwart_3: 'Zwarte band 3e dan',
+    BLAUW: 'Blauwe band', BRUIN: 'Bruine band',
+    ZWART_1: 'Zwarte band 1e dan', ZWART_2: 'Zwarte band 2e dan', ZWART_3: 'Zwarte band 3e dan',
   }
   return labels[belt || ''] || belt || 'Onbekend'
 }

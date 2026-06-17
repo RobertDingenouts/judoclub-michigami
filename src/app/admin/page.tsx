@@ -190,9 +190,13 @@ function StatCard({ title, value, icon, href, subtitle }: { title: string; value
 
 function beltLabel(belt: string | null): string {
   const labels: Record<string, string> = {
-    WIT: 'Wit', GEEL: 'Geel', ORANJE: 'Oranje', GROEN: 'Groen',
-    BLAUW: 'Blauw', BRUIN_1: 'Bruin 1', BRUIN_2: 'Bruin 2', BRUIN_3: 'Bruin 3',
-    Zwart_1: 'Zwart 1', Zwart_2: 'Zwart 2', Zwart_3: 'Zwart 3',
+    WIT: 'Wit', WIT_GEEL: 'Wit+Geel', GEEL: 'Geel', GEEL_ORANJE: 'Geel+Oranje',
+    ORANJE: 'Oranje', ORANJE_GROEN: 'Oranje+Groen', GROEN: 'Groen', GROEN_BLAUW: 'Groen+Blauw',
+    BLAUW: 'Blauw', BLAUW_BRUIN: 'Blauw+Bruin', BRUIN: 'Bruin',
+    ZWART_1: 'Zwart 1e Dan', ZWART_2: 'Zwart 2e Dan', ZWART_3: 'Zwart 3e Dan',
+    ZWART_4: 'Zwart 4e Dan', ZWART_5: 'Zwart 5e Dan', ZWART_6: 'Zwart 6e Dan',
+    ZWART_7: 'Zwart 7e Dan', ZWART_8: 'Zwart 8e Dan', ZWART_9: 'Zwart 9e Dan',
+    ZWART_10: 'Zwart 10e Dan',
   }
   return labels[belt || ''] || belt || 'Onbekend'
 }

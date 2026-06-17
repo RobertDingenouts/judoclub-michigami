@@ -11,10 +11,9 @@ const BELT_TO_LEVEL: Record<string, number> = {
   ORANJE: 2,
   GROEN: 3,
   BLAUW: 4,
-  BRUIN_1: 5,
+  BRUIN: 5,
 }
-
-const BELT_ORDER = ['WIT', 'GEEL', 'ORANJE', 'GROEN', 'BLAUW', 'BRUIN_1'] as const
+const BELT_ORDER = ['WIT', 'GEEL', 'ORANJE', 'GROEN', 'BLAUW', 'BRUIN'] as const
 
 export default async function CursusJapansPage() {
   const user = await getCurrentUser()

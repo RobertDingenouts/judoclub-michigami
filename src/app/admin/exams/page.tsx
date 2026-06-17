@@ -70,7 +70,7 @@ export default async function ExamsPage({
         </select>
         <select name="belt" defaultValue={beltFilter} className="rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none">
           <option value="">Alle banden</option>
-          {['WIT', 'GEEL', 'ORANJE', 'GROEN', 'BLAUW', 'BRUIN_1', 'BRUIN_2', 'BRUIN_3', 'Zwart_1'].map(b => (
+          {['WIT', 'GEEL', 'ORANJE', 'GROEN', 'BLAUW', 'BRUIN', 'ZWART_1'].map(b => (
             <option key={b} value={b}>{BELT_LABELS_NL[b as BeltLevel]}</option>
           ))}
         </select>

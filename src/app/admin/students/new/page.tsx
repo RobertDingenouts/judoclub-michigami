@@ -10,12 +10,12 @@ const BELTS = [
   { value: 'ORANJE', label: 'Oranje' },
   { value: 'GROEN', label: 'Groen' },
   { value: 'BLAUW', label: 'Blauw' },
-  { value: 'BRUIN_1', label: 'Bruin 1' },
-  { value: 'BRUIN_2', label: 'Bruin 2' },
-  { value: 'BRUIN_3', label: 'Bruin 3' },
-  { value: 'Zwart_1', label: 'Zwart 1' },
-  { value: 'Zwart_2', label: 'Zwart 2' },
-  { value: 'Zwart_3', label: 'Zwart 3' },
+  { value: 'BRUIN', label: 'Bruine band' },
+  { value: 'BRUIN', label: 'Bruine band' },
+  { value: 'BRUIN', label: 'Bruine band' },
+  { value: 'ZWART_1', label: 'Zwarte band 1e Dan' },
+  { value: 'ZWART_2', label: 'Zwarte band 2e Dan' },
+  { value: 'ZWART_3', label: 'Zwarte band 3e Dan' },
 ]
 
 export default function NewStudentPage() {

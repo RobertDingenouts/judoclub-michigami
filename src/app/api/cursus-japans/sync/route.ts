@@ -19,11 +19,11 @@ const LEVEL_TO_BELT: Record<number, string> = {
   2: 'ORANJE',
   3: 'GROEN',
   4: 'BLAUW',
-  5: 'BRUIN_1',
+  5: 'BRUIN',
 }
 
 // Belt order for unlocking
-const BELT_ORDER = ['WIT', 'GEEL', 'ORANJE', 'GROEN', 'BLAUW', 'BRUIN_1'] as const
+const BELT_ORDER = ['WIT', 'GEEL', 'ORANJE', 'GROEN', 'BLAUW', 'BRUIN'] as const
 type JapaneseBelt = (typeof BELT_ORDER)[number]
 
 function generateVerificationCode(): string {
@@ -38,7 +38,7 @@ const BELT_LABELS: Record<string, string> = {
   ORANJE: 'Oranje Band',
   GROEN: 'Groene Band',
   BLAUW: 'Blauwe Band',
-  BRUIN_1: 'Bruine Band',
+  BRUIN: 'Bruine Band',
 }
 
 async function upsertCourseProgress(

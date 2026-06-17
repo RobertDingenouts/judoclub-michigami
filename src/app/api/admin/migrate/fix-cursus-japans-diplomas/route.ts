@@ -15,7 +15,7 @@ export async function POST() {
   }
 
   try {
-    const BELT_ORDER = ['WIT', 'GEEL', 'ORANJE', 'GROEN', 'BLAUW', 'BRUIN_1'] as const
+    const BELT_ORDER = ['WIT', 'GEEL', 'ORANJE', 'GROEN', 'BLAUW', 'BRUIN'] as const
 
     const BELT_LABELS: Record<string, string> = {
       WIT: 'Witte Band',
@@ -23,7 +23,7 @@ export async function POST() {
       ORANJE: 'Oranje Band',
       GROEN: 'Groene Band',
       BLAUW: 'Blauwe Band',
-      BRUIN_1: 'Bruine Band',
+      BRUIN: 'Bruine Band',
     }
 
     function generateCode(): string {

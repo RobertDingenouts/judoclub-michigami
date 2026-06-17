@@ -84,17 +84,27 @@ export default function UploadDiplomaForm() {
   }
 
   const beltOptions = [
-    { value: 'WIT', label: 'Wit' },
-    { value: 'GEEL', label: 'Geel' },
-    { value: 'ORANJE', label: 'Oranje' },
-    { value: 'GROEN', label: 'Groen' },
-    { value: 'BLAUW', label: 'Blauw' },
-    { value: 'BRUIN_1', label: 'Bruin 1' },
-    { value: 'BRUIN_2', label: 'Bruin 2' },
-    { value: 'BRUIN_3', label: 'Bruin 3' },
-    { value: 'Zwart_1', label: 'Zwart 1e Dan' },
-    { value: 'Zwart_2', label: 'Zwart 2e Dan' },
-    { value: 'Zwart_3', label: 'Zwart 3e Dan' },
+    { value: 'WIT', label: 'Witte band' },
+    { value: 'WIT_GEEL', label: 'Witte band met gele slip' },
+    { value: 'GEEL', label: 'Gele band' },
+    { value: 'GEEL_ORANJE', label: 'Gele band met oranje slip' },
+    { value: 'ORANJE', label: 'Oranje band' },
+    { value: 'ORANJE_GROEN', label: 'Oranje band met groene slip' },
+    { value: 'GROEN', label: 'Groene band' },
+    { value: 'GROEN_BLAUW', label: 'Groene band met blauwe slip' },
+    { value: 'BLAUW', label: 'Blauwe band' },
+    { value: 'BLAUW_BRUIN', label: 'Blauwe band met bruine slip' },
+    { value: 'BRUIN', label: 'Bruine band' },
+    { value: 'ZWART_1', label: 'Zwarte band 1e Dan' },
+    { value: 'ZWART_2', label: 'Zwarte band 2e Dan' },
+    { value: 'ZWART_3', label: 'Zwarte band 3e Dan' },
+    { value: 'ZWART_4', label: 'Zwarte band 4e Dan' },
+    { value: 'ZWART_5', label: 'Zwarte band 5e Dan' },
+    { value: 'ZWART_6', label: 'Zwarte band 6e Dan' },
+    { value: 'ZWART_7', label: 'Zwarte band 7e Dan' },
+    { value: 'ZWART_8', label: 'Zwarte band 8e Dan' },
+    { value: 'ZWART_9', label: 'Zwarte band 9e Dan' },
+    { value: 'ZWART_10', label: 'Zwarte band 10e Dan' },
   ]
 
   return (

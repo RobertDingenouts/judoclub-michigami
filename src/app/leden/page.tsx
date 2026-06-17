@@ -163,8 +163,8 @@ function QuickAction({ href, icon, title, desc }: { href: string; icon: string; 
 function beltLabel(belt: BeltLevel | null | undefined): string {
   const labels: Record<string, string> = {
     WIT: 'Wit', GEEL: 'Geel', ORANJE: 'Oranje', GROEN: 'Groen',
-    BLAUW: 'Blauw', BRUIN_1: 'Bruin 1', BRUIN_2: 'Bruin 2', BRUIN_3: 'Bruin 3',
-    Zwart_1: 'Zwart 1', Zwart_2: 'Zwart 2', Zwart_3: 'Zwart 3',
+    BLAUW: 'Blauw', BRUIN: 'Bruin',
+    ZWART_1: 'Zwart 1e Dan', ZWART_2: 'Zwart 2e Dan', ZWART_3: 'Zwart 3e Dan',
   }
   return labels[belt || ''] || belt || 'Niet ingesteld'
 }

@@ -30,7 +30,7 @@ async function main() {
       passwordHash: adminPasswordHash,
       name: 'Robert Dingenouts',
       role: 'ADMIN',
-      currentBelt: 'Zwart_1',
+      currentBelt: 'ZWART_1',
     },
   })
 
@@ -41,7 +41,7 @@ async function main() {
       firstName: 'Robert',
       lastName: 'Dingenouts',
       email: 'admin@judoclubmichigami.nl',
-      currentBelt: 'Zwart_1',
+      currentBelt: 'ZWART_1',
       joinDate: new Date('2010-01-01'),
     },
   })

@@ -120,7 +120,7 @@ interface ProgressData {
 
 // Belt level ↔ number mapping
 const BELT_TO_NUM: Record<string, number> = {
-  WIT: 0, GEEL: 1, ORANJE: 2, GROEN: 3, BLAUW: 4, BRUIN_1: 5,
+  WIT: 0, GEEL: 1, ORANJE: 2, GROEN: 3, BLAUW: 4, BRUIN: 5,
 };
 
 function loadProgress(userId?: string): ProgressData {

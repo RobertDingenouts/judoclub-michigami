@@ -123,17 +123,27 @@ export async function generateTestPDF(): Promise<Blob> {
 // ============================================================================
 
 const BELT_LABELS_NL: Record<string, string> = {
-  WIT:       'Witte band',
-  GEEL:      'Gele band',
-  ORANJE:    'Oranje band',
-  GROEN:     'Groene band',
-  BLAUW:     'Blauwe band',
-  BRUIN_1:   'Bruine band 1e ke',
-  BRUIN_2:   'Bruine band 2e ke',
-  BRUIN_3:   'Bruine band 3e ke',
-  Zwart_1:   'Zwarte band 1e dan',
-  Zwart_2:   'Zwarte band 2e dan',
-  Zwart_3:   'Zwarte band 3e dan',
+  WIT:           'Witte band',
+  WIT_GEEL:      'Witte band met gele slip',
+  GEEL:          'Gele band',
+  GEEL_ORANJE:   'Gele band met oranje slip',
+  ORANJE:        'Oranje band',
+  ORANJE_GROEN:  'Oranje band met groene slip',
+  GROEN:         'Groene band',
+  GROEN_BLAUW:   'Groene band met blauwe slip',
+  BLAUW:         'Blauwe band',
+  BLAUW_BRUIN:   'Blauwe band met bruine slip',
+  BRUIN:         'Bruine band',
+  ZWART_1:       'Zwarte band 1e dan',
+  ZWART_2:       'Zwarte band 2e dan',
+  ZWART_3:       'Zwarte band 3e dan',
+  ZWART_4:       'Zwarte band 4e dan',
+  ZWART_5:       'Zwarte band 5e dan',
+  ZWART_6:       'Zwarte band 6e dan',
+  ZWART_7:       'Zwarte band 7e dan',
+  ZWART_8:       'Zwarte band 8e dan',
+  ZWART_9:       'Zwarte band 9e dan',
+  ZWART_10:      'Zwarte band 10e dan',
 }
 
 export function getBeltLabel(beltLevel: string): string {

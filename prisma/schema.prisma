@@ -178,16 +178,26 @@ enum Role {
 
 enum BeltLevel {
   WIT
+  WIT_GEEL
   GEEL
+  GEEL_ORANJE
   ORANJE
+  ORANJE_GROEN
   GROEN
+  GROEN_BLAUW
   BLAUW
-  BRUIN_1
-  BRUIN_2
-  BRUIN_3
-  Zwart_1
-  Zwart_2
-  Zwart_3
+  BLAUW_BRUIN
+  BRUIN
+  ZWART_1
+  ZWART_2
+  ZWART_3
+  ZWART_4
+  ZWART_5
+  ZWART_6
+  ZWART_7
+  ZWART_8
+  ZWART_9
+  ZWART_10
 }
 
 enum EventType {
