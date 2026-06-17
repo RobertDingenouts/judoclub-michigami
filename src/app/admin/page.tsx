@@ -5,9 +5,9 @@ import type { BeltLevel, ExamStatus, DiplomaType } from '@prisma/client'
 export const dynamic = 'force-dynamic'
 
 export default async function AdminDashboard() {
-  // Fetch stats
-  const [totalStudents, totalExams, totalDiplomas, recentExams, beltDistribution] = await Promise.all([
-    db.member.count(),
+  // Fetch stats (only active members)
+  const [totalStudents, totalExams, totalDiplomas, recentExams, beltDistribution, trashedCount] = await Promise.all([
+    db.member.count({ where: { isActive: true } }),
     db.examAttempt.count(),
     db.diploma.count(),
     db.examAttempt.findMany({
@@ -19,10 +19,12 @@ export default async function AdminDashboard() {
       },
       where: { examDate: { not: null } },
     }),
-    db.user.groupBy({
+    db.member.groupBy({
+      where: { isActive: true },
       by: ['currentBelt'],
       _count: { currentBelt: true },
     }),
+    db.member.count({ where: { isActive: false } }),
   ])
 
   const beltCounts = beltDistribution.reduce<Record<string, number>>((acc, item) => {
@@ -54,7 +56,7 @@ export default async function AdminDashboard() {
           value={totalStudents}
           icon="👥"
           href="/admin/students"
-          subtitle="Aangemeld"
+          subtitle={`${trashedCount > 0 ? `${trashedCount} in prullenbak` : 'Aangemeld'}`}
         />
         <StatCard
           title="Examens"

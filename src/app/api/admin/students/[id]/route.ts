@@ -94,7 +94,7 @@ export async function PATCH(
   }
 }
 
-// DELETE - Soft delete student
+// DELETE - Soft delete student (or permanent with ?permanent=true)
 export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -104,7 +104,16 @@ export async function DELETE(
 
   try {
     const { id } = await params
-    await db.member.update({ where: { id }, data: { isActive: false } })
+    const url = new URL(request.url)
+    const permanent = url.searchParams.get('permanent') === 'true'
+
+    if (permanent) {
+      // Hard delete - also delete related records
+      await db.member.delete({ where: { id } })
+    } else {
+      // Soft delete
+      await db.member.update({ where: { id }, data: { isActive: false } })
+    }
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Delete student error:', error)

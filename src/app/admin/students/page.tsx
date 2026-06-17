@@ -8,14 +8,15 @@ export const dynamic = 'force-dynamic'
 export default async function StudentsPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ q?: string; belt?: string }>
+  searchParams?: Promise<{ q?: string; belt?: string; trashed?: string }>
 }) {
   const params = await searchParams
   const query = params?.q || ''
   const beltFilter = params?.belt || ''
+  const showTrashed = params?.trashed === 'true'
 
   // Build where clause
-  const where: any = { isActive: true }
+  const where: any = { isActive: !showTrashed }
   if (query) {
     where.OR = [
       { firstName: { contains: query, mode: 'insensitive' as const } },
@@ -57,15 +58,29 @@ export default async function StudentsPage({
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[#2a2a2a]">Studenten</h1>
-          <p className="text-sm text-gray-500 mt-1">{totalStudents} studenten gevonden</p>
+          <h1 className="text-2xl font-bold text-[#2a2a2a]">{showTrashed ? '🗑️ Prullenbak' : 'Studenten'}</h1>
+          <p className="text-sm text-gray-500 mt-1">{totalStudents} {showTrashed ? 'in prullenbak' : 'studenten gevonden'}</p>
         </div>
-        <Link href="/admin/students/new" className="inline-flex items-center gap-2 rounded-md bg-[#a90000] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#8c0000]">
-          <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
-            <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
-          </svg>
-          Student Toevoegen
-        </Link>
+        <div className="flex gap-2">
+          {!showTrashed && (
+            <Link href="/admin/students?trashed=true" className="inline-flex items-center gap-2 rounded-md border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50">
+              🗑️ Prullenbak
+            </Link>
+          )}
+          {showTrashed && (
+            <Link href="/admin/students" className="inline-flex items-center gap-2 rounded-md border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50">
+              ← Terug naar studenten
+            </Link>
+          )}
+          {!showTrashed && (
+            <Link href="/admin/students/new" className="inline-flex items-center gap-2 rounded-md bg-[#a90000] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#8c0000]">
+              <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
+                <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+              </svg>
+              Student Toevoegen
+            </Link>
+          )}
+        </div>
       </div>
 
       {/* Filters */}
@@ -144,12 +159,56 @@ export default async function StudentsPage({
                   >
                     Bekijken
                   </Link>
-                  <Link
-                    href={`/admin/students/${student.id}/edit`}
-                    className="rounded-md bg-[#a90000]/10 px-3 py-1.5 text-xs font-medium text-[#a90000] transition-colors hover:bg-[#a90000]/20"
-                  >
-                    Bewerken
-                  </Link>
+                  {!showTrashed && (
+                    <Link
+                      href={`/admin/students/${student.id}/edit`}
+                      className="rounded-md bg-[#a90000]/10 px-3 py-1.5 text-xs font-medium text-[#a90000] transition-colors hover:bg-[#a90000]/20"
+                    >
+                      Bewerken
+                    </Link>
+                  )}
+                  {showTrashed ? (
+                    <>
+                      <button
+                        onClick={async () => {
+                          await fetch(`/api/admin/students/${student.id}`, {
+                            method: 'PATCH',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ isActive: true }),
+                          })
+                          window.location.reload()
+                        }}
+                        className="rounded-md bg-green-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-green-700"
+                      >
+                        Herstel
+                      </button>
+                      <button
+                        onClick={async () => {
+                          if (!confirm('Definitief verwijderen? Dit kan niet ongedaan worden.')) return
+                          await fetch(`/api/admin/students/${student.id}?permanent=true`, { method: 'DELETE' })
+                          window.location.reload()
+                        }}
+                        className="rounded-md bg-red-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-red-700"
+                      >
+                        Definitief
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      onClick={async () => {
+                        if (!confirm(`${student.firstName} ${student.lastName} naar prullenbak?`)) return
+                        await fetch(`/api/admin/students/${student.id}`, {
+                          method: 'PATCH',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ isActive: false }),
+                        })
+                        window.location.reload()
+                      }}
+                      className="rounded-md border border-red-200 px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-50"
+                    >
+                      Verwijderen
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
