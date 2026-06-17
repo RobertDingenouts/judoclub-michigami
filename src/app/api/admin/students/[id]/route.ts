@@ -46,21 +46,24 @@ export async function PATCH(
     if (!member) return NextResponse.json({ error: 'Student niet gevonden' }, { status: 404 })
 
     // Update member fields
+    const memberData: any = {
+      ...(body.firstName !== undefined && { firstName: body.firstName }),
+      ...(body.lastName !== undefined && { lastName: body.lastName }),
+      ...(body.email !== undefined && { email: body.email }),
+      ...(body.phone !== undefined && { phone: body.phone }),
+      ...(body.dateOfBirth !== undefined && { dateOfBirth: body.dateOfBirth ? new Date(body.dateOfBirth) : undefined }),
+      ...(body.currentBelt !== undefined && body.currentBelt !== '' && { currentBelt: body.currentBelt as BeltLevel }),
+      ...(body.currentBelt === '' && { currentBelt: null }),
+      ...(body.joinDate !== undefined && { joinDate: body.joinDate ? new Date(body.joinDate) : undefined }),
+      ...(body.isActive !== undefined && { isActive: body.isActive }),
+      ...(body.emergencyContactName !== undefined && { emergencyContactName: body.emergencyContactName }),
+      ...(body.emergencyContactPhone !== undefined && { emergencyContactPhone: body.emergencyContactPhone }),
+      ...(body.medicalNotes !== undefined && { medicalNotes: body.medicalNotes }),
+    }
+    
     const updatedMember = await db.member.update({
       where: { id },
-      data: {
-        ...(body.firstName !== undefined && { firstName: body.firstName }),
-        ...(body.lastName !== undefined && { lastName: body.lastName }),
-        ...(body.email !== undefined && { email: body.email }),
-        ...(body.phone !== undefined && { phone: body.phone }),
-        ...(body.dateOfBirth !== undefined && { dateOfBirth: body.dateOfBirth ? new Date(body.dateOfBirth) : undefined }),
-        ...(body.currentBelt !== undefined && { currentBelt: body.currentBelt as BeltLevel }),
-        ...(body.joinDate !== undefined && { joinDate: body.joinDate ? new Date(body.joinDate) : undefined }),
-        ...(body.isActive !== undefined && { isActive: body.isActive }),
-        ...(body.emergencyContactName !== undefined && { emergencyContactName: body.emergencyContactName }),
-        ...(body.emergencyContactPhone !== undefined && { emergencyContactPhone: body.emergencyContactPhone }),
-        ...(body.medicalNotes !== undefined && { medicalNotes: body.medicalNotes }),
-      },
+      data: memberData,
     })
 
     // Sync belt to user if changed
