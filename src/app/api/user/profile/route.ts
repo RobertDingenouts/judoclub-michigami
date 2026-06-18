@@ -23,6 +23,21 @@ export async function PATCH(request: Request) {
       imageUrl,
     } = body
 
+    // Defensive: if no Member record, create one on-the-fly
+    let member = user.member
+    if (!member) {
+      member = await db.member.create({
+        data: {
+          userId: user.id,
+          firstName: firstName || (user.name || '').split(' ')[0] || 'Admin',
+          lastName: lastName || (user.name || '').split(' ').slice(1).join(' ') || '',
+          email: email || user.email,
+          joinDate: new Date(),
+          currentBelt: 'WIT' as any,
+        },
+      })
+    }
+
     // Track important changes for admin notification
     const importantChanges: string[] = []
 
@@ -40,20 +55,18 @@ export async function PATCH(request: Request) {
     }
 
     // Check for other important changes
-    if (user.member) {
-      if (medicalNotes && medicalNotes !== user.member.medicalNotes) {
-        importantChanges.push('Medische notities gewijzigd')
-      }
-      if (emergencyContactName && emergencyContactName !== user.member.emergencyContactName) {
-        importantChanges.push(`Noodcontact naam: ${user.member.emergencyContactName || '(leeg)'} → ${emergencyContactName}`)
-      }
-      if (emergencyContactPhone && emergencyContactPhone !== user.member.emergencyContactPhone) {
-        importantChanges.push(`Noodcontact tel: ${user.member.emergencyContactPhone || '(leeg)'} → ${emergencyContactPhone}`)
-      }
+    if (medicalNotes && medicalNotes !== member.medicalNotes) {
+      importantChanges.push('Medische notities gewijzigd')
+    }
+    if (emergencyContactName && emergencyContactName !== member.emergencyContactName) {
+      importantChanges.push(`Noodcontact naam: ${member.emergencyContactName || '(leeg)'} → ${emergencyContactName}`)
+    }
+    if (emergencyContactPhone && emergencyContactPhone !== member.emergencyContactPhone) {
+      importantChanges.push(`Noodcontact tel: ${member.emergencyContactPhone || '(leeg)'} → ${emergencyContactPhone}`)
     }
 
     const updatedMember = await db.member.update({
-      where: { id: user.member!.id },
+      where: { id: member.id },
       data: {
         ...(firstName !== undefined && { firstName }),
         ...(lastName !== undefined && { lastName }),

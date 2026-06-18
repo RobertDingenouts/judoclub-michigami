@@ -101,13 +101,17 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const member = user.member
-    if (!member) {
-      return NextResponse.json(
-        { success: false, error: 'Geen lidprofiel gevonden' },
-        { status: 403 }
-      )
-    }
+    // Defensive: auto-create Member for admin users without one
+    const member = user.member || await db.member.create({
+      data: {
+        userId: user.id,
+        firstName: (user.name || '').split(' ')[0] || 'Admin',
+        lastName: (user.name || '').split(' ').slice(1).join(' ') || '',
+        email: user.email,
+        joinDate: new Date(),
+        currentBelt: 'WIT' as any,
+      },
+    })
 
     const body = await request.json()
     const { beltLevel: levelNum, score, totalQuestions, wordsLearned, wordsTotal } = body
@@ -236,13 +240,17 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const member = user.member
-    if (!member) {
-      return NextResponse.json(
-        { success: false, error: 'Geen lidprofiel gevonden' },
-        { status: 403 }
-      )
-    }
+    // Defensive: auto-create Member for admin users without one
+    const member = user.member || await db.member.create({
+      data: {
+        userId: user.id,
+        firstName: (user.name || '').split(' ')[0] || 'Admin',
+        lastName: (user.name || '').split(' ').slice(1).join(' ') || '',
+        email: user.email,
+        joinDate: new Date(),
+        currentBelt: 'WIT' as any,
+      },
+    })
 
     // Initialize missing belt levels
     const existing = await db.courseProgress.findMany({
