@@ -107,7 +107,7 @@ export default async function LedenDashboard() {
                   </div>
                   <div>
                     <p className="text-sm font-medium text-[#2a2a2a]">
-                      {BELT_LABELS_NL[cp.beltLevel as BeltLevel] || cp.beltLevel} Band — Japans
+                      {BELT_LABELS_NL[cp.beltLevel as BeltLevel] || cp.beltLevel} — Japans
                     </p>
                     <p className="text-xs text-gray-500">
                       {cp.lessonsCompleted}/{cp.lessonsTotal} lessen • {cp.wordsLearned}/{cp.wordsTotal} woorden

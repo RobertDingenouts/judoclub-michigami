@@ -11,6 +11,7 @@ interface UserData {
   name: string | null;
   role: string;
   currentBelt: string | null;
+  imageUrl: string | null;
   member: {
     firstName: string;
     lastName: string;
@@ -113,14 +114,22 @@ export function UserDropdown({ onSectionChange }: { onSectionChange?: (section: 
       >
         {/* Avatar circle */}
         <div
-          className="relative flex items-center justify-center w-9 h-9 rounded-full text-xs font-bold text-white flex-shrink-0 shadow-sm border-2"
+          className="relative flex items-center justify-center w-9 h-9 rounded-full text-xs font-bold text-white flex-shrink-0 shadow-sm border-2 overflow-hidden"
           style={{
-            backgroundColor: beltColor,
-            borderColor: beltColor === '#ffffff' ? '#e0e0e0' : 'rgba(255,255,255,0.3)',
+            backgroundColor: user.imageUrl ? 'transparent' : beltColor,
+            borderColor: user.imageUrl ? beltColor : (beltColor === '#ffffff' ? '#e0e0e0' : 'rgba(255,255,255,0.3)'),
           }}
           title={beltLabel || 'Lid'}
         >
-          {initials}
+          {user.imageUrl ? (
+            <img
+              src={user.imageUrl}
+              alt={displayName}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            initials
+          )}
           {/* Online indicator */}
           <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-green-500 border-2 border-white" />
         </div>
@@ -129,7 +138,7 @@ export function UserDropdown({ onSectionChange }: { onSectionChange?: (section: 
         <div className="flex-1 text-left min-w-0">
           <p className="text-sm font-medium text-gray-700 truncate">{displayName}</p>
           <p className="text-[10px] text-gray-400 truncate">
-            {beltLabel ? `${beltLabel} band` : 'Lid'}
+            {beltLabel || 'Lid'}
             {isAdmin ? ' · Admin' : ''}
           </p>
         </div>
@@ -157,7 +166,7 @@ export function UserDropdown({ onSectionChange }: { onSectionChange?: (section: 
                   className="w-4 h-1 rounded-full"
                   style={{ backgroundColor: beltColor }}
                 />
-                <span className="text-xs text-gray-500">{beltLabel} band</span>
+                <span className="text-xs text-gray-500">{beltLabel}</span>
               </div>
             )}
           </div>
@@ -248,14 +257,22 @@ export function MobileUserAvatar({ onSectionChange }: { onSectionChange?: (secti
   return (
     <div className="relative group">
       <button
-        className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-[10px] font-bold text-white shadow-md border-2"
+        className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-[10px] font-bold text-white shadow-md border-2 overflow-hidden"
         style={{
-          backgroundColor: beltColor,
-          borderColor: beltColor === '#ffffff' ? '#ddd' : 'rgba(255,255,255,0.3)',
+          backgroundColor: user.imageUrl ? 'transparent' : beltColor,
+          borderColor: user.imageUrl ? beltColor : (beltColor === '#ffffff' ? '#ddd' : 'rgba(255,255,255,0.3)'),
         }}
         title={displayName}
       >
-        {initials}
+        {user.imageUrl ? (
+          <img
+            src={user.imageUrl}
+            alt={displayName}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          initials
+        )}
       </button>
 
       {/* Tooltip-style dropdown on hover/focus — mobile friendly tap target */}
