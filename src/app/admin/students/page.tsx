@@ -13,7 +13,7 @@ export default async function StudentsPage({
   const params = await searchParams
   const query = params?.q || ''
   const beltFilter = params?.belt || ''
-  const locationFilter = params?.location || ''
+  // const locationFilter = params?.location || ''  // TODO: re-enable
   const showTrashed = params?.trashed === 'true'
 
   // Build where clause
@@ -26,7 +26,7 @@ export default async function StudentsPage({
     ]
   }
   if (beltFilter) where.currentBelt = beltFilter as BeltLevel
-  if (locationFilter) where.location = locationFilter
+  // if (locationFilter) where.location = locationFilter  // TODO: re-enable
 
   let error: string | null = null
   let students: any[] = []
@@ -133,6 +133,7 @@ export default async function StudentsPage({
               <option key={b.currentBelt} value={b.currentBelt}>{BELT_LABELS_NL[b.currentBelt as BeltLevel] || b.currentBelt}</option>
             ))}
           </select>
+          {/* TODO: re-enable location filter
           <select
             name="location"
             defaultValue={locationFilter}
@@ -142,6 +143,7 @@ export default async function StudentsPage({
             <option value="STeenbergen">Steenbergen</option>
             <option value="OUD_VOSSEMEER">Oud-Vossemeer</option>
           </select>
+          */}
         </form>
       </div>
 
@@ -174,11 +176,13 @@ export default async function StudentsPage({
                     {student.user?.role === 'ADMIN' && (
                       <span className="rounded bg-[#a90000]/10 px-1.5 py-0.5 text-xs font-medium text-[#a90000]">Admin</span>
                     )}
+                    {/* TODO: re-enable location badge
                     {student.location && (
                       <span className="rounded bg-blue-50 px-1.5 py-0.5 text-xs font-medium text-blue-700">
                         📍 {locationLabel(student.location)}
                       </span>
                     )}
+                    */}
                   </div>
                 </div>
               </div>
