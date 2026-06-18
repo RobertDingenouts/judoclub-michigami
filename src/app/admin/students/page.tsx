@@ -1,6 +1,6 @@
 import { db } from '@/lib/db'
 import Link from 'next/link'
-import { BELT_LABELS_NL, BELT_COLORS, LOCATION_LABELS_NL } from '@/lib/student-progress-types'
+import { BELT_LABELS_NL, BELT_COLORS } from '@/lib/student-progress-types'
 import type { BeltLevel } from '@prisma/client'
 
 export const dynamic = 'force-dynamic'
@@ -171,7 +171,7 @@ export default async function StudentsPage({
                     )}
                     {student.location && (
                       <span className="rounded bg-blue-50 px-1.5 py-0.5 text-xs font-medium text-blue-700">
-                        📍 {LOCATION_LABELS_NL[student.location as keyof typeof LOCATION_LABELS_NL] || student.location}
+                        📍 {student.location === 'STeenbergen' ? 'Steenbergen' : student.location === 'OUD_VOSSEMEER' ? 'Oud-Vossemeer' : student.location}
                       </span>
                     )}
                   </div>
