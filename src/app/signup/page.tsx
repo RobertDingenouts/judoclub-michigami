@@ -96,16 +96,15 @@ export default function SignUpPage() {
       <div className="w-full max-w-md rounded-xl border border-gray-200 bg-white p-8 shadow-lg">
         {/* Logo */}
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#a90000]/10">
-            <svg viewBox="0 0 40 40" className="h-10 w-10" fill="none">
-              <rect x="2" y="4" width="4" height="32" rx="1" fill="#a90000" />
-              <rect x="34" y="4" width="4" height="32" rx="1" fill="#a90000" />
-              <rect x="0" y="2" width="40" height="4" rx="2" fill="#c00000" />
-              <rect x="4" y="8" width="32" height="3" rx="1" fill="#d90000" />
-            </svg>
+          <div className="mx-auto mb-4 h-16 w-16">
+            <img
+              src="/logo-hd.png"
+              alt="Judoclub Michigami"
+              className="h-16 w-16 object-contain rounded-full bg-[#a90000]/10 p-1"
+            />
           </div>
           <h1 className="text-2xl font-bold text-[#2a2a2a]">Lid Registreren</h1>
-          <p className="mt-1 text-sm text-gray-500">Judoclub Michigami Steenbergen</p>
+          <p className="mt-1 text-sm text-gray-500">Judoclub Michigami</p>
         </div>
 
         {/* Error message */}

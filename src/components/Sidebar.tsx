@@ -25,14 +25,9 @@ export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
       {/* Logo / Header */}
       <div className="p-6 border-b border-judo-red-border">
         <div className="flex items-center gap-3">
-          {/* Torii gate icon */}
+          {/* Logo */}
           <div className="w-10 h-10 flex items-center justify-center">
-            <svg viewBox="0 0 40 40" className="w-10 h-10" fill="none">
-              <rect x="2" y="4" width="4" height="32" rx="1" fill="#a90000" />
-              <rect x="34" y="4" width="4" height="32" rx="1" fill="#a90000" />
-              <rect x="0" y="2" width="40" height="4" rx="2" fill="#c00000" />
-              <rect x="4" y="8" width="32" height="3" rx="1" fill="#d90000" />
-            </svg>
+            <img src="/logo-hd.png" alt="Michigami" className="w-10 h-10 object-contain" />
           </div>
           <div>
             <h1 className="text-lg font-bold text-judo-red">Michigami</h1>
