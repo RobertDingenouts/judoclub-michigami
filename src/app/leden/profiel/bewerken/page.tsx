@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Camera, Shield, Bell, Eye, EyeOff, CheckCircle } from 'lucide-react'
+import { compressImage } from '@/lib/image-compression'
 
 interface ProfileEditData {
   firstName: string
@@ -29,6 +30,7 @@ export default function ProfileEditPage() {
   const [form, setForm] = useState<ProfileEditData | null>(null)
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
   const [avatarFile, setAvatarFile] = useState<File | null>(null)
+  const [compressing, setCompressing] = useState(false)
 
   // Password change state
   const [currentPassword, setCurrentPassword] = useState('')
@@ -194,19 +196,33 @@ export default function ProfileEditPage() {
     setSaving(false)
   }
 
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (file) {
-      if (file.size > 2 * 1024 * 1024) {
-        setError('Afbeelding mag maximaal 2MB zijn')
-        return
-      }
+    if (!file) return
+
+    // Show immediate preview (original)
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      setAvatarPreview(reader.result as string)
+    }
+    reader.readAsDataURL(file)
+
+    // Compress in background
+    setCompressing(true)
+    setError(null)
+    try {
+      const compressed = await compressImage(file)
+      setAvatarFile(compressed)
+      const origKB = (file.size / 1024).toFixed(0)
+      const compKB = (compressed.size / 1024).toFixed(0)
+      setError(null)
+      setSuccess(`Foto gecomprimeerd: ${origKB}KB → ${compKB}KB`)
+    } catch (err) {
+      console.error('Compressie mislukt, gebruik origineel:', err)
       setAvatarFile(file)
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setAvatarPreview(reader.result as string)
-      }
-      reader.readAsDataURL(file)
+      setError('Compressie mislukt — origineel bestand wordt gebruikt.')
+    } finally {
+      setCompressing(false)
     }
   }
 
@@ -307,7 +323,7 @@ export default function ProfileEditPage() {
                 <div>
                   <label htmlFor="avatar" className="inline-flex items-center gap-2 rounded-lg bg-gray-100 px-4 py-2.5 text-sm font-medium text-gray-700 cursor-pointer hover:bg-gray-200 transition-colors">
                     <Camera className="w-4 h-4" />
-                    Foto kiezen
+                    {compressing ? 'Verwerken...' : 'Foto kiezen'}
                   </label>
                   <input
                     id="avatar"
@@ -315,8 +331,10 @@ export default function ProfileEditPage() {
                     accept="image/*"
                     onChange={handleAvatarChange}
                     className="hidden"
+                    disabled={compressing}
                   />
-                  <p className="text-xs text-gray-500 mt-1">Max 2MB, JPG/PNG. Wordt opgeslagen bij opslaan.</p>
+                  <p className="text-xs text-gray-500 mt-1">Automatisch verkleind voor optimale kwaliteit.</p>
+                  {compressing && <p className="text-xs text-[#a90000] mt-0.5 animate-pulse">Foto wordt verkleind...</p>}
                 </div>
               </div>
 

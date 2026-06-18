@@ -23,9 +23,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Alleen JPG, PNG en WebP toegestaan' }, { status: 400 })
     }
 
-    // Validate file size (max 1MB for base64 storage)
-    if (avatarFile.size > 1 * 1024 * 1024) {
-      return NextResponse.json({ error: 'Bestand is te groot (max 1MB)' }, { status: 400 })
+    // Validate file size (max 5MB safety net — client compresses to ~300KB)
+    if (avatarFile.size > 5 * 1024 * 1024) {
+      return NextResponse.json({ error: 'Bestand is te groot (max 5MB)' }, { status: 400 })
     }
 
     // Convert to base64 data URL
