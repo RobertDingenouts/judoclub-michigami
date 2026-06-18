@@ -1,6 +1,7 @@
 import { db } from '@/lib/db'
 import Link from 'next/link'
 import { BELT_LABELS_NL, BELT_COLORS } from '@/lib/student-progress-types'
+import { StudentActions } from './StudentActions'
 import type { BeltLevel } from '@prisma/client'
 
 export const dynamic = 'force-dynamic'
@@ -195,64 +196,12 @@ export default async function StudentsPage({
                 </div>
 
                 {/* Actions */}
-                <div className="flex gap-2">
-                  <Link
-                    href={`/admin/students/${student.id}`}
-                    className="rounded-md border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:bg-gray-50"
-                  >
-                    Bekijken
-                  </Link>
-                  {!showTrashed && (
-                    <Link
-                      href={`/admin/students/${student.id}/edit`}
-                      className="rounded-md bg-[#a90000]/10 px-3 py-1.5 text-xs font-medium text-[#a90000] transition-colors hover:bg-[#a90000]/20"
-                    >
-                      Bewerken
-                    </Link>
-                  )}
-                  {showTrashed ? (
-                    <>
-                      <button
-                        onClick={async () => {
-                          await fetch(`/api/admin/students/${student.id}`, {
-                            method: 'PATCH',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ isActive: true }),
-                          })
-                          window.location.reload()
-                        }}
-                        className="rounded-md bg-green-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-green-700"
-                      >
-                        Herstel
-                      </button>
-                      <button
-                        onClick={async () => {
-                          if (!confirm('Definitief verwijderen? Dit kan niet ongedaan worden.')) return
-                          await fetch(`/api/admin/students/${student.id}?permanent=true`, { method: 'DELETE' })
-                          window.location.reload()
-                        }}
-                        className="rounded-md bg-red-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-red-700"
-                      >
-                        Definitief
-                      </button>
-                    </>
-                  ) : (
-                    <button
-                      onClick={async () => {
-                        if (!confirm(`${student.firstName} ${student.lastName} naar prullenbak?`)) return
-                        await fetch(`/api/admin/students/${student.id}`, {
-                          method: 'PATCH',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ isActive: false }),
-                        })
-                        window.location.reload()
-                      }}
-                      className="rounded-md border border-red-200 px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-50"
-                    >
-                      Verwijderen
-                    </button>
-                  )}
-                </div>
+                <StudentActions
+                  studentId={student.id}
+                  firstName={student.firstName}
+                  lastName={student.lastName}
+                  showTrashed={showTrashed}
+                />
               </div>
             </div>
 
@@ -260,8 +209,8 @@ export default async function StudentsPage({
             {student.courseProgress?.length > 0 && (
               <div className="mt-4 space-y-2 border-t border-gray-100 pt-4">
                 <p className="text-xs font-medium text-gray-500">Cursus Japans voortgang:</p>
-                {student.courseProgress.slice(0, 3).map((course: any) => (
-                  <div key={course.courseName} className="flex items-center gap-3">
+                {student.courseProgress.slice(0, 3).map((course: any, idx: number) => (
+                  <div key={`${course.courseName}-${idx}`} className="flex items-center gap-3">
                     <span className="w-32 truncate text-xs text-gray-500">{course.courseName.replace('japanese_', '').replace('_', ' ')}</span>
                     <div className="flex-1 rounded-full bg-gray-200">
                       <div
