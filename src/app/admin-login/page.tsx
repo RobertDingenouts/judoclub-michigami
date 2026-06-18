@@ -87,7 +87,7 @@ export default function LoginPage() {
             <img
               src="/logo-hd.png"
               alt="Judoclub Michigami"
-              className="h-16 w-16 object-contain rounded-full bg-[#a90000]/10 p-1"
+              className="h-16 w-16 object-contain rounded-full"
             />
           </div>
           <h1 className="text-2xl font-bold text-[#2a2a2a]">Admin Dashboard</h1>
