@@ -1,15 +1,18 @@
 import { NextResponse } from 'next/server'
-import { getCurrentUser } from '@/lib/auth'
 import { db } from '@/lib/db'
 
 export const dynamic = 'force-dynamic'
 
 // One-time migration: add new profile fields to Member table
-// Run via browser console as admin, then DELETE this endpoint
-export async function POST() {
-  const user = await getCurrentUser()
-  if (!user || user.role !== 'ADMIN') {
-    return NextResponse.json({ error: 'Admin required' }, { status: 403 })
+// NO auth check - getCurrentUser() fails because Prisma expects columns that don't exist yet
+// Run once via browser console or curl, then DELETE this endpoint
+// Token check as basic protection
+const MIGRATE_TOKEN = 'michigami-migrate-2026'
+
+export async function POST(request: Request) {
+  const token = request.headers.get('x-migrate-token') || ''
+  if (token !== MIGRATE_TOKEN) {
+    return NextResponse.json({ error: 'Invalid token' }, { status: 403 })
   }
 
   const columns = [
