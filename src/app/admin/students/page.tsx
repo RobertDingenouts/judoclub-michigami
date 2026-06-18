@@ -26,7 +26,7 @@ export default async function StudentsPage({
     ]
   }
   if (beltFilter) where.currentBelt = beltFilter as BeltLevel
-  if (locationFilter) where.location = locationFilter
+  // if (locationFilter) where.location = locationFilter  // TODO: re-enable after Prisma client sync
 
   let error: string | null = null
   let students: any[] = []
