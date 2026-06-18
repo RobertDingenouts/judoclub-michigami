@@ -10,7 +10,6 @@ export default async function StudentsPage({
 }: {
   searchParams?: Promise<{ q?: string; belt?: string; trashed?: string; location?: string }>
 }) {
-  let error: string | null = null
   const params = await searchParams
   const query = params?.q || ''
   const beltFilter = params?.belt || ''
@@ -29,6 +28,7 @@ export default async function StudentsPage({
   if (beltFilter) where.currentBelt = beltFilter as BeltLevel
   if (locationFilter) where.location = locationFilter
 
+  let error: string | null = null
   let students: any[] = []
   let totalStudents = 0
   let belts: any[] = []
@@ -50,7 +50,7 @@ export default async function StudentsPage({
             select: { courseName: true, lessonsCompleted: true, lessonsTotal: true, overallScore: true },
           },
         },
-      }) as any,
+      }),
       db.member.count({ where }),
       db.user.findMany({
         select: { currentBelt: true },
@@ -58,12 +58,11 @@ export default async function StudentsPage({
         where: { currentBelt: { not: null } },
       }),
     ])
-    students = s
+    students = s as any[]
     totalStudents = c
     belts = b
   } catch (e: any) {
     error = `Database fout: ${e.message}`
-    console.error('Students page error:', e)
   }
 
   return (
@@ -71,7 +70,6 @@ export default async function StudentsPage({
       {error && (
         <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-center">
           <p className="text-red-700 font-medium">{error}</p>
-          <p className="text-red-500 text-sm mt-2">Probeer later opnieuw of contacteer de admin.</p>
         </div>
       )}
 
@@ -166,7 +164,7 @@ export default async function StudentsPage({
                     <span className="text-xs font-medium text-gray-600">
                       {BELT_LABELS_NL[student.currentBelt as BeltLevel] || 'Geen band'}
                     </span>
-                    {student.user.role === 'ADMIN' && (
+                    {student.user?.role === 'ADMIN' && (
                       <span className="rounded bg-[#a90000]/10 px-1.5 py-0.5 text-xs font-medium text-[#a90000]">Admin</span>
                     )}
                     {student.location && (
@@ -181,7 +179,7 @@ export default async function StudentsPage({
               <div className="flex items-center gap-4">
                 {/* Stats */}
                 <div className="hidden text-sm text-gray-500 md:block">
-                  <span className="mr-4">🎯 {student.examAttempts.length} examens</span>
+                  <span className="mr-4">🎯 {student.examAttempts?.length || 0} examens</span>
                   <span>🥋 {BELT_LABELS_NL[student.currentBelt as BeltLevel] || 'Geen band'}</span>
                 </div>
 
@@ -248,7 +246,7 @@ export default async function StudentsPage({
             </div>
 
             {/* Course progress mini-bar */}
-            {student.courseProgress.length > 0 && (
+            {student.courseProgress?.length > 0 && (
               <div className="mt-4 space-y-2 border-t border-gray-100 pt-4">
                 <p className="text-xs font-medium text-gray-500">Cursus Japans voortgang:</p>
                 {student.courseProgress.slice(0, 3).map((course) => (
