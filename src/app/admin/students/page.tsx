@@ -10,6 +10,7 @@ export default async function StudentsPage({
 }: {
   searchParams?: Promise<{ q?: string; belt?: string; trashed?: string; location?: string }>
 }) {
+  let error: string | null = null
   const params = await searchParams
   const query = params?.q || ''
   const beltFilter = params?.belt || ''
@@ -28,35 +29,52 @@ export default async function StudentsPage({
   if (beltFilter) where.currentBelt = beltFilter as BeltLevel
   if (locationFilter) where.location = locationFilter
 
-  const [students, totalStudents] = await Promise.all([
-    db.member.findMany({
-      where,
-      orderBy: { lastName: 'asc' },
-      include: {
-        user: { select: { role: true, currentBelt: true } },
-        examAttempts: {
-          where: { status: 'COMPLETED_PASSED' },
-          orderBy: { examDate: 'desc' },
-          take: 1,
-        },
-        courseProgress: {
-          where: { isUnlocked: true },
-          select: { courseName: true, lessonsCompleted: true, lessonsTotal: true, overallScore: true },
-        },
-      },
-    }),
-    db.member.count({ where }),
-  ])
+  let students: any[] = []
+  let totalStudents = 0
+  let belts: any[] = []
 
-  // Get all unique belts for filter
-  const belts = await db.user.findMany({
-    select: { currentBelt: true },
-    distinct: ['currentBelt'],
-    where: { currentBelt: { not: null } },
-  })
+  try {
+    const [s, c, b] = await Promise.all([
+      db.member.findMany({
+        where,
+        orderBy: { lastName: 'asc' },
+        include: {
+          user: { select: { role: true, currentBelt: true } },
+          examAttempts: {
+            where: { status: 'COMPLETED_PASSED' },
+            orderBy: { examDate: 'desc' },
+            take: 1,
+          },
+          courseProgress: {
+            where: { isUnlocked: true },
+            select: { courseName: true, lessonsCompleted: true, lessonsTotal: true, overallScore: true },
+          },
+        },
+      }) as any,
+      db.member.count({ where }),
+      db.user.findMany({
+        select: { currentBelt: true },
+        distinct: ['currentBelt'],
+        where: { currentBelt: { not: null } },
+      }),
+    ])
+    students = s
+    totalStudents = c
+    belts = b
+  } catch (e: any) {
+    error = `Database fout: ${e.message}`
+    console.error('Students page error:', e)
+  }
 
   return (
     <div className="space-y-6">
+      {error && (
+        <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-center">
+          <p className="text-red-700 font-medium">{error}</p>
+          <p className="text-red-500 text-sm mt-2">Probeer later opnieuw of contacteer de admin.</p>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
