@@ -34,11 +34,24 @@ model Member {
   lastName              String
   email                 String?
   phone                 String?
+  phone2                String?
   dateOfBirth           DateTime?
+  gender                String?
+  address               String?
+  postalCode            String?
+  city                  String?
   currentBelt           BeltLevel?
   location              String?
   joinDate              DateTime      @default(now())
   isActive              Boolean       @default(true)
+  whatsappGroup         String?
+  portraitRights        Boolean?
+  nameMention           Boolean?
+  privacyAgreed         Boolean?
+  privacyAgreedAt       DateTime?
+  termsAgreed           Boolean?
+  termsAgreedAt         DateTime?
+  remarks               String?
   emergencyContactName  String?
   emergencyContactPhone String?
   medicalNotes          String?

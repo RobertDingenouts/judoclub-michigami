@@ -16,7 +16,18 @@ export async function PATCH(request: Request) {
       lastName,
       email,
       phone,
+      phone2,
       dateOfBirth,
+      gender,
+      address,
+      postalCode,
+      city,
+      whatsappGroup,
+      portraitRights,
+      nameMention,
+      privacyAgreed,
+      termsAgreed,
+      remarks,
       emergencyContactName,
       emergencyContactPhone,
       medicalNotes,
@@ -65,18 +76,41 @@ export async function PATCH(request: Request) {
       importantChanges.push(`Noodcontact tel: ${member.emergencyContactPhone || '(leeg)'} → ${emergencyContactPhone}`)
     }
 
+    // Build member update data
+    const memberData: any = {}
+    if (firstName !== undefined) memberData.firstName = firstName
+    if (lastName !== undefined) memberData.lastName = lastName
+    if (email !== undefined) memberData.email = email
+    if (phone !== undefined) memberData.phone = phone
+    if (phone2 !== undefined) memberData.phone2 = phone2
+    if (dateOfBirth !== undefined) memberData.dateOfBirth = dateOfBirth ? new Date(dateOfBirth) : null
+    if (gender !== undefined) memberData.gender = gender
+    if (address !== undefined) memberData.address = address
+    if (postalCode !== undefined) memberData.postalCode = postalCode
+    if (city !== undefined) memberData.city = city
+    if (whatsappGroup !== undefined) memberData.whatsappGroup = whatsappGroup
+    if (portraitRights !== undefined) memberData.portraitRights = portraitRights
+    if (nameMention !== undefined) memberData.nameMention = nameMention
+    if (remarks !== undefined) memberData.remarks = remarks
+    if (emergencyContactName !== undefined) memberData.emergencyContactName = emergencyContactName
+    if (emergencyContactPhone !== undefined) memberData.emergencyContactPhone = emergencyContactPhone
+    if (medicalNotes !== undefined) memberData.medicalNotes = medicalNotes
+
+    // Handle privacy agreement
+    if (privacyAgreed !== undefined) {
+      memberData.privacyAgreed = privacyAgreed
+      memberData.privacyAgreedAt = privacyAgreed ? new Date() : null
+    }
+
+    // Handle terms agreement
+    if (termsAgreed !== undefined) {
+      memberData.termsAgreed = termsAgreed
+      memberData.termsAgreedAt = termsAgreed ? new Date() : null
+    }
+
     const updatedMember = await db.member.update({
       where: { id: member.id },
-      data: {
-        ...(firstName !== undefined && { firstName }),
-        ...(lastName !== undefined && { lastName }),
-        ...(email !== undefined && { email }),
-        ...(phone !== undefined && { phone }),
-        ...(dateOfBirth !== undefined && { dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null }),
-        ...(emergencyContactName !== undefined && { emergencyContactName }),
-        ...(emergencyContactPhone !== undefined && { emergencyContactPhone }),
-        ...(medicalNotes !== undefined && { medicalNotes }),
-      },
+      data: memberData,
       include: { user: true },
     })
 
@@ -99,8 +133,6 @@ export async function PATCH(request: Request) {
     // Log important changes for admin notification
     if (importantChanges.length > 0) {
       console.log(`[PROFILE CHANGE - ${user.email}] ${importantChanges.join(' | ')}`)
-      // In a real system, this would trigger an email/notification to admins
-      // For now, we log it and the admin can check the console/Vercel logs
     }
 
     return NextResponse.json({
@@ -126,8 +158,21 @@ export async function GET() {
       lastName: user.member?.lastName || '',
       email: user.member?.email || user.email,
       phone: user.member?.phone || '',
+      phone2: user.member?.phone2 || '',
       dateOfBirth: user.member?.dateOfBirth?.toISOString().split('T')[0] || '',
+      gender: user.member?.gender || '',
+      address: user.member?.address || '',
+      postalCode: user.member?.postalCode || '',
+      city: user.member?.city || '',
       location: user.member?.location || '',
+      whatsappGroup: user.member?.whatsappGroup || '',
+      portraitRights: user.member?.portraitRights ?? null,
+      nameMention: user.member?.nameMention ?? null,
+      privacyAgreed: user.member?.privacyAgreed ?? null,
+      privacyAgreedAt: user.member?.privacyAgreedAt?.toISOString() || null,
+      termsAgreed: user.member?.termsAgreed ?? null,
+      termsAgreedAt: user.member?.termsAgreedAt?.toISOString() || null,
+      remarks: user.member?.remarks || '',
       emergencyContactName: user.member?.emergencyContactName || '',
       emergencyContactPhone: user.member?.emergencyContactPhone || '',
       medicalNotes: user.member?.medicalNotes || '',

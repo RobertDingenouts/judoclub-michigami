@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Camera, Shield, Bell, Eye, EyeOff, CheckCircle } from 'lucide-react'
+import { Camera, Shield, Eye, EyeOff } from 'lucide-react'
 import { compressImage } from '@/lib/image-compression'
 
 interface ProfileEditData {
@@ -11,8 +11,21 @@ interface ProfileEditData {
   lastName: string
   email: string
   phone: string
+  phone2: string
   dateOfBirth: string
+  gender: string
+  address: string
+  postalCode: string
+  city: string
   location: string
+  whatsappGroup: string
+  portraitRights: boolean | null
+  nameMention: boolean | null
+  privacyAgreed: boolean | null
+  privacyAgreedAt: string | null
+  termsAgreed: boolean | null
+  termsAgreedAt: string | null
+  remarks: string
   emergencyContactName: string
   emergencyContactPhone: string
   medicalNotes: string
@@ -23,7 +36,7 @@ export default function ProfileEditPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [activeTab, setActiveTab] = useState<'gegevens' | 'wachtwoord' | 'notificaties'>('gegevens')
+  const [activeTab, setActiveTab] = useState<'gegevens' | 'wachtwoord' | 'akkoorden'>('gegevens')
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
   const [profile, setProfile] = useState<ProfileEditData | null>(null)
@@ -40,16 +53,6 @@ export default function ProfileEditPage() {
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
-  // Notification preferences state
-  const [notifications, setNotifications] = useState({
-    emailTraining: true,
-    emailExams: true,
-    emailDiplomas: true,
-    emailAnnouncements: true,
-    pushEnabled: true,
-    smsEnabled: false,
-  })
-
   useEffect(() => {
     fetchProfile()
   }, [])
@@ -65,8 +68,21 @@ export default function ProfileEditPage() {
           lastName: p.member?.lastName || '',
           email: p.member?.email || p.email || '',
           phone: p.member?.phone || '',
+          phone2: p.member?.phone2 || '',
           dateOfBirth: p.member?.dateOfBirth ? new Date(p.member.dateOfBirth).toISOString().split('T')[0] : '',
+          gender: p.member?.gender || '',
+          address: p.member?.address || '',
+          postalCode: p.member?.postalCode || '',
+          city: p.member?.city || '',
           location: p.member?.location || '',
+          whatsappGroup: p.member?.whatsappGroup || '',
+          portraitRights: p.member?.portraitRights ?? null,
+          nameMention: p.member?.nameMention ?? null,
+          privacyAgreed: p.member?.privacyAgreed ?? null,
+          privacyAgreedAt: p.member?.privacyAgreedAt || null,
+          termsAgreed: p.member?.termsAgreed ?? null,
+          termsAgreedAt: p.member?.termsAgreedAt || null,
+          remarks: p.member?.remarks || '',
           emergencyContactName: p.member?.emergencyContactName || '',
           emergencyContactPhone: p.member?.emergencyContactPhone || '',
           medicalNotes: p.member?.medicalNotes || '',
@@ -85,7 +101,7 @@ export default function ProfileEditPage() {
     }
   }
 
-  const handleFormChange = (field: keyof ProfileEditData, value: string) => {
+  const handleFormChange = (field: keyof ProfileEditData, value: string | boolean) => {
     setForm(prev => prev ? { ...prev, [field]: value } : null)
   }
 
@@ -121,7 +137,16 @@ export default function ProfileEditPage() {
       lastName: form.lastName,
       email: form.email,
       phone: form.phone,
+      phone2: form.phone2,
       dateOfBirth: form.dateOfBirth,
+      gender: form.gender,
+      address: form.address,
+      postalCode: form.postalCode,
+      city: form.city,
+      whatsappGroup: form.whatsappGroup,
+      portraitRights: form.portraitRights,
+      nameMention: form.nameMention,
+      remarks: form.remarks,
       emergencyContactName: form.emergencyContactName,
       emergencyContactPhone: form.emergencyContactPhone,
       medicalNotes: form.medicalNotes,
@@ -144,6 +169,46 @@ export default function ProfileEditPage() {
       router.refresh()
     } catch (err: any) {
       setError(err.message || 'Fout bij opslaan profiel')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleAgreementsSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (!form) return
+    setSaving(true)
+    setError(null)
+    setSuccess(null)
+
+    const body = {
+      privacyAgreed: form.privacyAgreed,
+      termsAgreed: form.termsAgreed,
+    }
+
+    try {
+      const res = await fetch('/api/user/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Fout bij opslaan')
+
+      setSuccess('Akkoorden succesvol bijgewerkt!')
+      const now = new Date().toISOString()
+      const updatedForm = {
+        ...form,
+        privacyAgreed: form.privacyAgreed,
+        privacyAgreedAt: form.privacyAgreed ? now : null,
+        termsAgreed: form.termsAgreed,
+        termsAgreedAt: form.termsAgreed ? now : null,
+      }
+      setProfile(updatedForm)
+      setForm(updatedForm)
+      router.refresh()
+    } catch (err: any) {
+      setError(err.message || 'Fout bij opslaan akkoorden')
     } finally {
       setSaving(false)
     }
@@ -184,18 +249,6 @@ export default function ProfileEditPage() {
     }
   }
 
-  const handleNotificationsSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setSaving(true)
-    setError(null)
-    setSuccess(null)
-
-    // Save to localStorage
-    localStorage.setItem('notificationPrefs', JSON.stringify(notifications))
-    setSuccess('Notificatievoorkeuren opgeslagen!')
-    setSaving(false)
-  }
-
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
@@ -224,6 +277,13 @@ export default function ProfileEditPage() {
     } finally {
       setCompressing(false)
     }
+  }
+
+  const formatDate = (dateStr: string | null) => {
+    if (!dateStr) return '—'
+    return new Date(dateStr).toLocaleDateString('nl-NL', {
+      day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
+    })
   }
 
   if (loading) {
@@ -285,14 +345,14 @@ export default function ProfileEditPage() {
               <Shield className="w-4 h-4" /> Wachtwoord
             </button>
             <button
-              onClick={() => { setActiveTab('notificaties'); setError(null); setSuccess(null); }}
+              onClick={() => { setActiveTab('akkoorden'); setError(null); setSuccess(null); }}
               className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-                activeTab === 'notificaties'
+                activeTab === 'akkoorden'
                   ? 'border-[#a90000] text-[#a90000]'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200'
               }`}
             >
-              <Bell className="w-4 h-4" /> Notificaties
+              Akkoorden
             </button>
           </nav>
         </div>
@@ -346,8 +406,70 @@ export default function ProfileEditPage() {
                 <FormField label="Voornaam" name="firstName" value={form?.firstName || ''} required onChange={(e) => handleFormChange('firstName', e.target.value)} />
                 <FormField label="Achternaam" name="lastName" value={form?.lastName || ''} required onChange={(e) => handleFormChange('lastName', e.target.value)} />
                 <FormField label="E-mail" name="email" type="email" value={form?.email || ''} required onChange={(e) => handleFormChange('email', e.target.value)} />
-                <FormField label="Telefoon" name="phone" type="tel" value={form?.phone || ''} onChange={(e) => handleFormChange('phone', e.target.value)} />
                 <FormField label="Geboortedatum" name="dateOfBirth" type="date" value={form?.dateOfBirth || ''} onChange={(e) => handleFormChange('dateOfBirth', e.target.value)} />
+                <FormField label="Geslacht" name="gender" value={form?.gender || ''} onChange={(e) => handleFormChange('gender', e.target.value)} placeholder="Bijv. man, vrouw, anders" />
+              </div>
+
+              <hr className="border-gray-100" />
+
+              {/* Adres */}
+              <h2 className="text-lg font-semibold text-[#2a2a2a]">Adres</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <FormField label="Straat + huisnummer" name="address" value={form?.address || ''} onChange={(e) => handleFormChange('address', e.target.value)} />
+                <div className="grid grid-cols-2 gap-3">
+                  <FormField label="Postcode" name="postalCode" value={form?.postalCode || ''} onChange={(e) => handleFormChange('postalCode', e.target.value)} />
+                  <FormField label="Woonplaats" name="city" value={form?.city || ''} onChange={(e) => handleFormChange('city', e.target.value)} />
+                </div>
+              </div>
+
+              <hr className="border-gray-100" />
+
+              {/* Contact */}
+              <h2 className="text-lg font-semibold text-[#2a2a2a]">Contact</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <FormField label="Telefoonnummer 1" name="phone" type="tel" value={form?.phone || ''} onChange={(e) => handleFormChange('phone', e.target.value)} />
+                <FormField label="Telefoonnummer 2" name="phone2" type="tel" value={form?.phone2 || ''} onChange={(e) => handleFormChange('phone2', e.target.value)} />
+              </div>
+
+              <hr className="border-gray-100" />
+
+              {/* Groepsapp */}
+              <h2 className="text-lg font-semibold text-[#2a2a2a]">Groepsapp</h2>
+              <p className="text-sm text-gray-500 mb-3">Wil je toegevoegd worden aan onze judoclub groepsapp voor belangrijke mededelingen en updates?</p>
+              <div className="space-y-2">
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="whatsappGroup"
+                    value=""
+                    checked={form?.whatsappGroup === '' || !form?.whatsappGroup}
+                    onChange={() => handleFormChange('whatsappGroup', '')}
+                    className="text-[#a90000] focus:ring-[#a90000]"
+                  />
+                  <span className="text-sm text-gray-700">Nee, bedankt</span>
+                </label>
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="whatsappGroup"
+                    value="ja1"
+                    checked={form?.whatsappGroup === 'ja1'}
+                    onChange={() => handleFormChange('whatsappGroup', 'ja1')}
+                    className="text-[#a90000] focus:ring-[#a90000]"
+                  />
+                  <span className="text-sm text-gray-700">Ja, met telefoonnummer 1</span>
+                </label>
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="whatsappGroup"
+                    value="ja2"
+                    checked={form?.whatsappGroup === 'ja2'}
+                    onChange={() => handleFormChange('whatsappGroup', 'ja2')}
+                    className="text-[#a90000] focus:ring-[#a90000]"
+                  />
+                  <span className="text-sm text-gray-700">Ja, met telefoonnummer 2</span>
+                </label>
               </div>
 
               <hr className="border-gray-100" />
@@ -385,9 +507,22 @@ export default function ProfileEditPage() {
                 name="medicalNotes"
                 value={form?.medicalNotes || ''}
                 onChange={(e) => handleFormChange('medicalNotes', e.target.value)}
-                rows={4}
+                rows={3}
                 className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm focus:border-[#a90000] focus:outline-none focus:ring-2 focus:ring-[#a90000]/30"
                 placeholder="Allergieën, aandoeningen, medicijnen, etc. (alleen zichtbaar voor beheerders en instructeurs)"
+              />
+
+              <hr className="border-gray-100" />
+
+              {/* Opmerkingen */}
+              <h2 className="text-lg font-semibold text-[#2a2a2a]">Overige Opmerkingen</h2>
+              <textarea
+                name="remarks"
+                value={form?.remarks || ''}
+                onChange={(e) => handleFormChange('remarks', e.target.value)}
+                rows={3}
+                className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm focus:border-[#a90000] focus:outline-none focus:ring-2 focus:ring-[#a90000]/30"
+                placeholder="Opmerkingen voor de club (optioneel)"
               />
 
               {/* Actions */}
@@ -522,72 +657,149 @@ export default function ProfileEditPage() {
             </form>
           )}
 
-          {activeTab === 'notificaties' && (
-            <form onSubmit={handleNotificationsSubmit} className="space-y-6">
-              <h2 className="text-lg font-semibold text-[#2a2a2a]">Notificatievoorkeuren</h2>
+          {activeTab === 'akkoorden' && (
+            <form onSubmit={handleAgreementsSubmit} className="space-y-6 max-w-2xl">
+              <h2 className="text-lg font-semibold text-[#2a2a2a]">Akkoorden & Toestemmingen</h2>
               <p className="text-sm text-gray-500">
-                Kies welke notificaties je wilt ontvangen. Instellingen worden lokaal opgeslagen.
+                Hieronder kun je je toestemmingen beheren. Deze zijn gegeven bij je inschrijving.
               </p>
 
-              <div className="space-y-4">
-                <h3 className="text-sm font-medium text-gray-700">E-mail notificaties</h3>
-                <NotificationToggle
-                  label="Trainingstijden wijzigingen"
-                  desc="Wijzigingen in de trainingsschema's"
-                  checked={notifications.emailTraining}
-                  onChange={(checked) => setNotifications({ ...notifications, emailTraining: checked })}
-                />
-                <NotificationToggle
-                  label="Examengegevens"
-                  desc="Informatie over aankomende examens"
-                  checked={notifications.emailExams}
-                  onChange={(checked) => setNotifications({ ...notifications, emailExams: checked })}
-                />
-                <NotificationToggle
-                  label="Diploma's uitgegeven"
-                  desc="Melding wanneer je een diploma hebt behaald"
-                  checked={notifications.emailDiplomas}
-                  onChange={(checked) => setNotifications({ ...notifications, emailDiplomas: checked })}
-                />
-                <NotificationToggle
-                  label="Algemene mededelingen"
-                  desc="Nieuwsbrieven en clubmededelingen"
-                  checked={notifications.emailAnnouncements}
-                  onChange={(checked) => setNotifications({ ...notifications, emailAnnouncements: checked })}
-                />
+              {/* Portretrecht */}
+              <div className="rounded-lg border border-gray-200 p-4 space-y-3">
+                <h3 className="font-medium text-[#2a2a2a]">Portretrecht — Foto's & Video's</h3>
+                <p className="text-sm text-gray-600">
+                  Mag de judoclub foto's en video's van je maken tijdens evenementen en trainingen en deze gebruiken voor promotiedoeleinden op social media en onze website?
+                </p>
+                <div className="space-y-2">
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="portraitRights"
+                      checked={form?.portraitRights === true}
+                      onChange={() => handleFormChange('portraitRights', true)}
+                      className="text-[#a90000] focus:ring-[#a90000]"
+                    />
+                    <span className="text-sm text-gray-700">Ja, ik geef toestemming</span>
+                  </label>
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="portraitRights"
+                      checked={form?.portraitRights === false}
+                      onChange={() => handleFormChange('portraitRights', false)}
+                      className="text-[#a90000] focus:ring-[#a90000]"
+                    />
+                    <span className="text-sm text-gray-700">Nee, ik geef geen toestemming</span>
+                  </label>
+                  {form?.portraitRights === null && (
+                    <p className="text-xs text-amber-600 bg-amber-50 rounded px-3 py-2">
+                      ⚠️ Nog niet ingesteld. Kies een optie hierboven.
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Naam vermelden */}
+              <div className="rounded-lg border border-gray-200 p-4 space-y-3">
+                <h3 className="font-medium text-[#2a2a2a]">Naam Vermelden</h3>
+                <p className="text-sm text-gray-600">
+                  Mag de judoclub je naam vermelden in nieuwsberichten op social media en onze website?
+                </p>
+                <div className="space-y-2">
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="nameMention"
+                      checked={form?.nameMention === true}
+                      onChange={() => handleFormChange('nameMention', true)}
+                      className="text-[#a90000] focus:ring-[#a90000]"
+                    />
+                    <span className="text-sm text-gray-700">Ja, ik geef toestemming</span>
+                  </label>
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="nameMention"
+                      checked={form?.nameMention === false}
+                      onChange={() => handleFormChange('nameMention', false)}
+                      className="text-[#a90000] focus:ring-[#a90000]"
+                    />
+                    <span className="text-sm text-gray-700">Nee, ik geef geen toestemming</span>
+                  </label>
+                  {form?.nameMention === null && (
+                    <p className="text-xs text-amber-600 bg-amber-50 rounded px-3 py-2">
+                      ⚠️ Nog niet ingesteld. Kies een optie hierboven.
+                    </p>
+                  )}
+                </div>
               </div>
 
               <hr className="border-gray-100" />
 
-              <div className="space-y-4">
-                <h3 className="text-sm font-medium text-gray-700">Push notificaties</h3>
-                <NotificationToggle
-                  label="Push notificaties inschakelen"
-                  desc="Ontvang direct meldingen in de app/browser"
-                  checked={notifications.pushEnabled}
-                  onChange={(checked) => setNotifications({ ...notifications, pushEnabled: checked })}
-                />
+              {/* Privacyverklaring */}
+              <div className="rounded-lg border border-gray-200 p-4 space-y-3">
+                <h3 className="font-medium text-[#2a2a2a]">Privacyverklaring</h3>
+                <p className="text-sm text-gray-600">
+                  Ga je akkoord met het gebruik van je persoonsgegevens zoals beschreven in de privacyverklaring?
+                </p>
+                <a href="/#juridisch" target="_blank" className="text-sm text-[#a90000] hover:underline inline-block">
+                  📄 Privacyverklaring lezen →
+                </a>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    id="privacyAgreed"
+                    checked={form?.privacyAgreed || false}
+                    onChange={(e) => handleFormChange('privacyAgreed', e.target.checked)}
+                    className="rounded text-[#a90000] focus:ring-[#a90000]"
+                  />
+                  <label htmlFor="privacyAgreed" className="text-sm text-gray-700 cursor-pointer">
+                    Ik ga akkoord met de privacyverklaring
+                  </label>
+                </div>
+                {form?.privacyAgreedAt && (
+                  <p className="text-xs text-gray-400">
+                    Akkoord gegeven op {formatDate(form.privacyAgreedAt)}
+                  </p>
+                )}
               </div>
 
-              <hr className="border-gray-100" />
-
-              <div className="space-y-4">
-                <h3 className="text-sm font-medium text-gray-700">SMS notificaties</h3>
-                <NotificationToggle
-                  label="SMS notificaties"
-                  desc="Belangrijke mededelingen via SMS (noodcontact, acute wijzigingen)"
-                  checked={notifications.smsEnabled}
-                  onChange={(checked) => setNotifications({ ...notifications, smsEnabled: checked })}
-                />
+              {/* Algemene Voorwaarden */}
+              <div className="rounded-lg border border-gray-200 p-4 space-y-3">
+                <h3 className="font-medium text-[#2a2a2a]">Algemene Voorwaarden</h3>
+                <p className="text-sm text-gray-600">
+                  Ga je akkoord met de algemene voorwaarden van Judoclub Michigami?
+                </p>
+                <a href="/#juridisch" target="_blank" className="text-sm text-[#a90000] hover:underline inline-block">
+                  📄 Algemene voorwaarden lezen →
+                </a>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    id="termsAgreed"
+                    checked={form?.termsAgreed || false}
+                    onChange={(e) => handleFormChange('termsAgreed', e.target.checked)}
+                    className="rounded text-[#a90000] focus:ring-[#a90000]"
+                  />
+                  <label htmlFor="termsAgreed" className="text-sm text-gray-700 cursor-pointer">
+                    Ik ga akkoord met de algemene voorwaarden
+                  </label>
+                </div>
+                {form?.termsAgreedAt && (
+                  <p className="text-xs text-gray-400">
+                    Akkoord gegeven op {formatDate(form.termsAgreedAt)}
+                  </p>
+                )}
               </div>
 
-              <div className="flex gap-3 pt-4 border-t border-gray-100">
+              {/* Actions */}
+              <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-100">
                 <button
                   type="submit"
                   disabled={saving}
                   className="inline-flex items-center gap-2 rounded-lg bg-[#a90000] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#8c0000] disabled:opacity-50"
                 >
-                  {saving ? 'Opslaan...' : 'Voorkeuren opslaan'}
+                  {saving ? 'Opslaan...' : 'Akkoorden opslaan'}
                 </button>
               </div>
             </form>
@@ -598,8 +810,8 @@ export default function ProfileEditPage() {
   )
 }
 
-function FormField({ label, name, type = 'text', value = '', required = false, onChange }: {
-  label: string; name: string; type?: string; value?: string; required?: boolean; onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+function FormField({ label, name, type = 'text', value = '', required = false, onChange, placeholder }: {
+  label: string; name: string; type?: string; value?: string; required?: boolean; onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void; placeholder?: string
 }) {
   return (
     <div>
@@ -613,35 +825,10 @@ function FormField({ label, name, type = 'text', value = '', required = false, o
         value={value}
         onChange={onChange}
         required={required}
+        placeholder={placeholder}
         className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm focus:border-[#a90000] focus:outline-none focus:ring-2 focus:ring-[#a90000]/30 transition-colors"
       />
     </div>
-  )
-}
-
-function NotificationToggle({ label, desc, checked, onChange }: {
-  label: string; desc: string; checked: boolean; onChange: (checked: boolean) => void
-}) {
-  return (
-    <label className="flex items-center justify-between cursor-pointer">
-      <div className="flex-1">
-        <p className="text-sm font-medium text-gray-700">{label}</p>
-        <p className="text-xs text-gray-500">{desc}</p>
-      </div>
-      <button
-        type="button"
-        onClick={() => onChange(!checked)}
-        role="switch"
-        aria-checked={checked}
-        className={`relative inline-flex h-6 w-11 rounded-full transition-colors ${
-          checked ? 'bg-[#a90000]' : 'bg-gray-200'
-        }`}
-      >
-        <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-          checked ? 'translate-x-6' : 'translate-x-1'
-        }`} />
-      </button>
-    </label>
   )
 }
 
