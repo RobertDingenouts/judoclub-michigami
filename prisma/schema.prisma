@@ -259,6 +259,7 @@ model MembershipApplication {
   postalCode       String?
   city             String?
   location         String
+  preferredGroup   String?
   isChild          Boolean          @default(false)
   parentName       String?
   parentEmail      String?

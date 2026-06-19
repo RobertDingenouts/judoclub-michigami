@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { TRAINING_GROUPS } from '@/lib/student-progress-types'
 
 export default function InschrijvenPage() {
   const router = useRouter()
@@ -22,6 +23,7 @@ export default function InschrijvenPage() {
     postalCode: '',
     city: '',
     location: '',
+    preferredGroup: '',
     isChild: false,
     parentName: '',
     parentEmail: '',
@@ -239,6 +241,19 @@ export default function InschrijvenPage() {
                   <option value="">Selecteer locatie...</option>
                   <option value="STeenbergen">Steenbergen</option>
                   <option value="OUD_VOSSEMEER">Oud-Vossemeer</option>
+                </select>
+              </div>
+
+              {/* Voorkeursgroep */}
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-gray-700">Voorkeursgroep</label>
+                <p className="text-xs text-gray-500 mb-1.5">Selecteer je voorkeur, de admin bepaalt de definitieve indeling.</p>
+                <select value={form.preferredGroup} onChange={e => update('preferredGroup', e.target.value)}
+                  className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]">
+                  <option value="">Selecteer groep...</option>
+                  {TRAINING_GROUPS.map(g => (
+                    <option key={g.value} value={g.value}>{g.label}</option>
+                  ))}
                 </select>
               </div>
 
