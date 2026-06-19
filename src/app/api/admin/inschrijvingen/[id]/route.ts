@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { isAdmin, hashPassword, requireAdmin } from '@/lib/auth'
+import { requireAdmin, hashPassword } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
 
@@ -65,11 +65,11 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
           isActive: true,
           whatsappGroup: null,
           portraitRights: application.portraitRights ?? true,
-          nameMention: null,
+          nameMention: application.nameMention ?? true,
           privacyAgreed: application.privacyAgreed,
-          privacyAgreedAt: new Date(),
+          privacyAgreedAt: application.privacyAgreedAt ?? new Date(),
           termsAgreed: application.termsAgreed,
-          termsAgreedAt: new Date(),
+          termsAgreedAt: application.termsAgreedAt ?? new Date(),
           remarks: adminNotes ? `Goedgekeurd: ${adminNotes}` : null,
           emergencyContactName: application.emergencyContact || null,
           emergencyContactPhone: null,

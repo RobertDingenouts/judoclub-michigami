@@ -255,7 +255,6 @@ model MembershipApplication {
   postalCode       String?
   city             String?
   location         String
-  membershipType   String
   isChild          Boolean          @default(false)
   parentName       String?
   parentEmail      String?
@@ -264,8 +263,12 @@ model MembershipApplication {
   emergencyContact String?
   costAgreed       Boolean          @default(false)
   privacyAgreed    Boolean          @default(false)
+  privacyAgreedAt  DateTime?
   termsAgreed      Boolean          @default(false)
+  termsAgreedAt    DateTime?
+  codeOfConduct    Boolean          @default(false)
   portraitRights   Boolean?
+  nameMention      Boolean?
   status           ApplicationStatus @default(PENDING)
   adminNotes       String?
   approvedBy       String?

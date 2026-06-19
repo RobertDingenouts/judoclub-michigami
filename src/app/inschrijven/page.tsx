@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { membershipInfo } from '@/data/membership'
 
 export default function InschrijvenPage() {
   const router = useRouter()
@@ -23,7 +22,6 @@ export default function InschrijvenPage() {
     postalCode: '',
     city: '',
     location: '',
-    membershipType: '',
     isChild: false,
     parentName: '',
     parentEmail: '',
@@ -33,7 +31,9 @@ export default function InschrijvenPage() {
     costAgreed: false,
     privacyAgreed: false,
     termsAgreed: false,
+    codeOfConduct: false,
     portraitRights: true,
+    nameMention: true,
   })
 
   const update = (field: string, value: any) => setForm(prev => ({ ...prev, [field]: value }))
@@ -44,7 +44,6 @@ export default function InschrijvenPage() {
     if (!form.phone.trim()) return 'Vul je telefoonnummer in'
     if (!form.dateOfBirth) return 'Vul je geboortedatum in'
     if (!form.location) return 'Kies een locatie'
-    if (!form.membershipType) return 'Kies een lidmaatschapstype'
     return null
   }
 
@@ -52,6 +51,7 @@ export default function InschrijvenPage() {
     if (!form.costAgreed) return 'Je moet akkoord gaan met de kosten'
     if (!form.privacyAgreed) return 'Je moet de privacyverklaring accepteren'
     if (!form.termsAgreed) return 'Je moet de algemene voorwaarden accepteren'
+    if (!form.codeOfConduct) return 'Je moet de gedragscode accepteren'
     if (form.isChild && (!form.parentName.trim() || !form.parentEmail.trim())) return 'Vul de gegevens van de ouder/voogd in'
     return null
   }
@@ -230,28 +230,16 @@ export default function InschrijvenPage() {
                 </div>
               </div>
 
-              {/* Locatie + Lidmaatschap */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="mb-1.5 block text-sm font-medium text-gray-700">Trainingslocatie *</label>
-                  <select value={form.location} onChange={e => update('location', e.target.value)}
-                    className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
-                    required>
-                    <option value="">Selecteer locatie...</option>
-                    <option value="STeenbergen">Steenbergen</option>
-                    <option value="OUD_VOSSEMEER">Oud-Vossemeer</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="mb-1.5 block text-sm font-medium text-gray-700">Lidmaatschapstype *</label>
-                  <select value={form.membershipType} onChange={e => update('membershipType', e.target.value)}
-                    className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
-                    required>
-                    <option value="">Selecteer...</option>
-                    <option value="JEUGD">Jeugd (6-12 jaar) — €42/kwartaal</option>
-                    <option value="VOLWASSENEN">Volwassenen (13+) — €42/kwartaal</option>
-                  </select>
-                </div>
+              {/* Locatie */}
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-gray-700">Trainingslocatie *</label>
+                <select value={form.location} onChange={e => update('location', e.target.value)}
+                  className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+                  required>
+                  <option value="">Selecteer locatie...</option>
+                  <option value="STeenbergen">Steenbergen</option>
+                  <option value="OUD_VOSSEMEER">Oud-Vossemeer</option>
+                </select>
               </div>
 
               {/* Is child? */}
@@ -320,7 +308,7 @@ export default function InschrijvenPage() {
                 <h3 className="text-sm font-semibold text-[#2a2a2a] mb-3">Kostenoverzicht</h3>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Lidmaatschap ({form.membershipType === 'JEUGD' ? 'Jeugd' : 'Volwassenen'})</span>
+                    <span className="text-gray-600">Lidmaatschap</span>
                     <span className="font-medium">€42 per kwartaal</span>
                   </div>
                   <div className="flex justify-between">
@@ -370,12 +358,32 @@ export default function InschrijvenPage() {
                 </label>
 
                 <label className="flex items-start gap-3 rounded-lg border border-gray-200 p-3 cursor-pointer hover:bg-gray-50">
-                  <input type="checkbox" checked={form.portraitRights ?? true} onChange={e => update('portraitRights', e.target.checked)}
+                  <input type="checkbox" checked={form.codeOfConduct} onChange={e => update('codeOfConduct', e.target.checked)}
                     className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[#a90000] focus:ring-[#a90000]" />
                   <span className="text-sm text-gray-700">
-                    Ik ga akkoord met het maken en gebruiken van foto's/video's voor promotie van de club (portretrecht).
+                    Ik ga akkoord met de <a href="/#juridisch" target="_blank" className="text-[#a90000] underline">gedragscode</a> van Judoclub Michigami. *
                   </span>
                 </label>
+
+                <div className="border-t border-gray-200 pt-3">
+                  <p className="text-sm font-medium text-[#2a2a2a] mb-2">Instellingen</p>
+
+                  <label className="flex items-start gap-3 rounded-lg border border-gray-200 p-3 cursor-pointer hover:bg-gray-50">
+                    <input type="checkbox" checked={form.portraitRights ?? true} onChange={e => update('portraitRights', e.target.checked)}
+                      className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[#a90000] focus:ring-[#a90000]" />
+                    <span className="text-sm text-gray-700">
+                      Portretrecht: ik ga akkoord met het maken en gebruiken van foto's/video's voor promotie van de club.
+                    </span>
+                  </label>
+
+                  <label className="flex items-start gap-3 rounded-lg border border-gray-200 p-3 cursor-pointer hover:bg-gray-50">
+                    <input type="checkbox" checked={form.nameMention ?? true} onChange={e => update('nameMention', e.target.checked)}
+                      className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[#a90000] focus:ring-[#a90000]" />
+                    <span className="text-sm text-gray-700">
+                      Naam vermelden: ik ga akkoord met het vermelden van mijn naam in nieuwsberichten en op de website.
+                    </span>
+                  </label>
+                </div>
               </div>
 
               {/* Buttons */}

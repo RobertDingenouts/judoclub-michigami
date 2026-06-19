@@ -14,7 +14,6 @@ interface Application {
   postalCode: string | null
   city: string | null
   location: string
-  membershipType: string
   isChild: boolean
   parentName: string | null
   parentEmail: string | null
@@ -23,8 +22,12 @@ interface Application {
   emergencyContact: string | null
   costAgreed: boolean
   privacyAgreed: boolean
+  privacyAgreedAt: Date | null
   termsAgreed: boolean
+  termsAgreedAt: Date | null
+  codeOfConduct: boolean
   portraitRights: boolean | null
+  nameMention: boolean | null
   status: 'PENDING' | 'APPROVED' | 'REJECTED'
   adminNotes: string | null
   approvedBy: string | null
@@ -174,7 +177,6 @@ export default function InschrijvingenClient({ applications }: InschrijvingenCli
                     <span>{app.email}</span>
                     {app.phone && <span>{app.phone}</span>}
                     <span>{app.location === 'STeenbergen' ? 'Steenbergen' : 'Oud-Vossemeer'}</span>
-                    <span>{app.membershipType === 'JEUGD' ? 'Jeugd' : 'Volwassenen'}</span>
                   </div>
                   <div className="mt-1 text-xs text-gray-400">
                     Verzonden op {formatDateTime(app.createdAt)}
@@ -217,7 +219,6 @@ export default function InschrijvingenClient({ applications }: InschrijvingenCli
               <div><strong>E-mail:</strong> {selectedApp.email}</div>
               <div><strong>Telefoon:</strong> {selectedApp.phone || '-'}</div>
               <div><strong>Locatie:</strong> {selectedApp.location === 'STeenbergen' ? 'Steenbergen' : 'Oud-Vossemeer'}</div>
-              <div><strong>Type:</strong> {selectedApp.membershipType === 'JEUGD' ? 'Jeugd' : 'Volwassenen'}</div>
               {selectedApp.isChild && <div><strong>Ouder:</strong> {selectedApp.parentName || '-'}</div>}
             </div>
 
@@ -315,9 +316,19 @@ export default function InschrijvingenClient({ applications }: InschrijvingenCli
                 <h3 className="text-sm font-semibold text-[#2a2a2a] mb-2">Lidmaatschap</h3>
                 <div className="grid grid-cols-2 gap-2 text-sm">
                   <div><span className="text-gray-500">Locatie:</span> {selectedApp.location === 'STeenbergen' ? 'Steenbergen' : 'Oud-Vossemeer'}</div>
-                  <div><span className="text-gray-500">Type:</span> {selectedApp.membershipType === 'JEUGD' ? 'Jeugd' : 'Volwassenen'}</div>
-                  <div><span className="text-gray-500">Portretrecht:</span> {selectedApp.portraitRights ? 'Ja' : 'Nee'}</div>
                   <div><span className="text-gray-500">Status:</span> {formatStatus(selectedApp.status)}</div>
+                  <div><span className="text-gray-500">Portretrecht:</span> {selectedApp.portraitRights ? 'Ja' : 'Nee'}</div>
+                  <div><span className="text-gray-500">Naam vermelden:</span> {selectedApp.nameMention ? 'Ja' : 'Nee'}</div>
+                </div>
+              </div>
+
+              <div className="rounded-lg border border-gray-200 bg-gray-50 p-3">
+                <h3 className="text-sm font-semibold text-[#2a2a2a] mb-2">Akkoorden</h3>
+                <div className="space-y-1 text-sm">
+                  <div><span className="text-gray-500">Kosten:</span> {selectedApp.costAgreed ? '✓ Akkoord' : '✗ Niet akkoord'}</div>
+                  <div><span className="text-gray-500">Privacy:</span> {selectedApp.privacyAgreed ? '✓ Akkoord' : '✗ Niet akkoord'}</div>
+                  <div><span className="text-gray-500">Voorwaarden:</span> {selectedApp.termsAgreed ? '✓ Akkoord' : '✗ Niet akkoord'}</div>
+                  <div><span className="text-gray-500">Gedragscode:</span> {selectedApp.codeOfConduct ? '✓ Akkoord' : '✗ Niet akkoord'}</div>
                 </div>
               </div>
 

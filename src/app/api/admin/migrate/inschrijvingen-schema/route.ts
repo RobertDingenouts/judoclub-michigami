@@ -4,7 +4,7 @@ import { isAdmin } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
 
-// One-time migration: create MembershipApplication table
+// One-time migration: create/update MembershipApplication table
 // Run via: fetch('/api/admin/migrate/inschrijvingen-schema', {method:'POST'}).then(r=>r.json()).then(console.log)
 export async function POST(request: NextRequest) {
   try {
@@ -44,7 +44,6 @@ export async function POST(request: NextRequest) {
           "postalCode" text,
           "city" text,
           "location" text NOT NULL,
-          "membershipType" text NOT NULL,
           "isChild" boolean DEFAULT false,
           "parentName" text,
           "parentEmail" text,
@@ -53,8 +52,12 @@ export async function POST(request: NextRequest) {
           "emergencyContact" text,
           "costAgreed" boolean DEFAULT false,
           "privacyAgreed" boolean DEFAULT false,
+          "privacyAgreedAt" timestamp(3) precision 3,
           "termsAgreed" boolean DEFAULT false,
+          "termsAgreedAt" timestamp(3) precision 3,
+          "codeOfConduct" boolean DEFAULT false,
           "portraitRights" boolean,
+          "nameMention" boolean,
           "status" "ApplicationStatus" DEFAULT 'PENDING',
           "adminNotes" text,
           "approvedBy" text,
@@ -69,6 +72,31 @@ export async function POST(request: NextRequest) {
       results.push('MembershipApplication table created')
     } catch (e: any) {
       results.push(`MembershipApplication table: ${e.message}`)
+    }
+
+    // Add missing columns (in case table already exists from previous migration)
+    const columnsToAdd = [
+      ['privacyAgreedAt', 'timestamp(3) precision 3'],
+      ['termsAgreedAt', 'timestamp(3) precision 3'],
+      ['codeOfConduct', 'boolean DEFAULT false'],
+      ['nameMention', 'boolean'],
+    ]
+
+    for (const [col, type] of columnsToAdd) {
+      try {
+        await db.$executeRawUnsafe(`ALTER TABLE "MembershipApplication" ADD COLUMN IF NOT EXISTS "${col}" ${type}`)
+        results.push(`Column ${col} added/exists`)
+      } catch (e: any) {
+        results.push(`Column ${col}: ${e.message}`)
+      }
+    }
+
+    // Drop membershipType column if it exists (no longer needed)
+    try {
+      await db.$executeRawUnsafe(`ALTER TABLE "MembershipApplication" DROP COLUMN IF EXISTS "membershipType"`)
+      results.push('membershipType column dropped (no longer needed)')
+    } catch (e: any) {
+      results.push(`Drop membershipType: ${e.message}`)
     }
 
     // Create indexes

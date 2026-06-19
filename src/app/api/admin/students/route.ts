@@ -49,22 +49,35 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Naam is verplicht' }, { status: 400 })
     }
 
-    // Create user record (password hashed with bcrypt)
-    const user = await db.user.create({
-      data: {
-        email: email || `${firstName.toLowerCase()}.${lastName.toLowerCase()}@local`,
-        name: `${firstName} ${lastName}`,
-        role: Role.MEMBER,
-        currentBelt: currentBelt as BeltLevel | null,
-      },
-    })
+    let userId: string | null = null
+
+    // Only create User account if email is provided
+    if (email && email.trim()) {
+      const existingUser = await db.user.findUnique({
+        where: { email: email.trim().toLowerCase() },
+      })
+
+      if (existingUser) {
+        return NextResponse.json({ error: 'Er is al een lid met dit e-mailadres' }, { status: 409 })
+      }
+
+      // Create user without password — lid moet zich eerst registreren of admin stelt wachtwoord in
+      const user = await db.user.create({
+        data: {
+          email: email.trim().toLowerCase(),
+          name: `${firstName} ${lastName}`,
+          role: Role.MEMBER,
+        },
+      })
+      userId = user.id
+    }
 
     const member = await db.member.create({
       data: {
-        userId: user.id,
+        userId: userId!,
         firstName,
         lastName,
-        email,
+        email: email?.trim() || null,
         phone,
         dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : undefined,
         currentBelt: currentBelt as BeltLevel | null,
@@ -75,7 +88,12 @@ export async function POST(request: Request) {
       },
     })
 
-    return NextResponse.json({ success: true, member: { ...member, userId: user.id } })
+    return NextResponse.json({
+      success: true,
+      member: { ...member, userId },
+      hasAccount: !!userId,
+      message: userId ? 'Student toegevoegd met account' : 'Student toegevoegd zonder account (geen e-mail ingevuld)',
+    })
   } catch (error) {
     console.error('Create student error:', error)
     return NextResponse.json({ error: 'Fout bij aanmaken student' }, { status: 500 })

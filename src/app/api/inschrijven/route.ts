@@ -18,7 +18,6 @@ export async function POST(request: NextRequest) {
       postalCode,
       city,
       location,
-      membershipType,
       isChild,
       parentName,
       parentEmail,
@@ -28,16 +27,18 @@ export async function POST(request: NextRequest) {
       costAgreed,
       privacyAgreed,
       termsAgreed,
+      codeOfConduct,
       portraitRights,
+      nameMention,
     } = body as Record<string, any>
 
     // Validation
-    if (!firstName || !lastName || !email || !location || !membershipType) {
+    if (!firstName || !lastName || !email || !location) {
       return NextResponse.json({ success: false, error: 'Vul alle verplichte velden in' }, { status: 400 })
     }
 
-    if (!costAgreed || !privacyAgreed || !termsAgreed) {
-      return NextResponse.json({ success: false, error: 'Accepteer alle akkoorden' }, { status: 400 })
+    if (!costAgreed || !privacyAgreed || !termsAgreed || !codeOfConduct) {
+      return NextResponse.json({ success: false, error: 'Accepteer alle verplichte akkoorden' }, { status: 400 })
     }
 
     // Check if email already has a pending application
@@ -74,7 +75,6 @@ export async function POST(request: NextRequest) {
         postalCode: postalCode?.trim() || null,
         city: city?.trim() || null,
         location: location.trim(),
-        membershipType: membershipType.trim(),
         isChild: isChild || false,
         parentName: parentName?.trim() || null,
         parentEmail: parentEmail?.trim() || null,
@@ -83,8 +83,12 @@ export async function POST(request: NextRequest) {
         emergencyContact: emergencyContact?.trim() || null,
         costAgreed: true,
         privacyAgreed: true,
+        privacyAgreedAt: new Date(),
         termsAgreed: true,
+        termsAgreedAt: new Date(),
+        codeOfConduct: true,
         portraitRights: portraitRights ?? true,
+        nameMention: nameMention ?? true,
         status: 'PENDING',
       },
     })
