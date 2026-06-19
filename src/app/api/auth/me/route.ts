@@ -39,6 +39,8 @@ export async function GET() {
           privacyAgreedAt: (user.member as any).privacyAgreedAt,
           termsAgreed: (user.member as any).termsAgreed,
           termsAgreedAt: (user.member as any).termsAgreedAt,
+          codeOfConduct: (user.member as any).codeOfConduct,
+          codeOfConductAt: (user.member as any).codeOfConductAt,
           remarks: (user.member as any).remarks,
           emergencyContactName: user.member.emergencyContactName,
           emergencyContactPhone: user.member.emergencyContactPhone,

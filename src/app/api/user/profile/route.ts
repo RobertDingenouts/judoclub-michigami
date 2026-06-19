@@ -27,6 +27,7 @@ export async function PATCH(request: Request) {
       nameMention,
       privacyAgreed,
       termsAgreed,
+      codeOfConduct,
       remarks,
       emergencyContactName,
       emergencyContactPhone,
@@ -108,6 +109,12 @@ export async function PATCH(request: Request) {
       memberData.termsAgreedAt = termsAgreed ? new Date() : null
     }
 
+    // Handle code of conduct agreement
+    if (codeOfConduct !== undefined) {
+      memberData.codeOfConduct = codeOfConduct
+      memberData.codeOfConductAt = codeOfConduct ? new Date() : null
+    }
+
     const updatedMember = await db.member.update({
       where: { id: member.id },
       data: memberData,
@@ -172,6 +179,8 @@ export async function GET() {
       privacyAgreedAt: user.member?.privacyAgreedAt?.toISOString() || null,
       termsAgreed: user.member?.termsAgreed ?? null,
       termsAgreedAt: user.member?.termsAgreedAt?.toISOString() || null,
+      codeOfConduct: user.member?.codeOfConduct ?? null,
+      codeOfConductAt: user.member?.codeOfConductAt?.toISOString() || null,
       remarks: user.member?.remarks || '',
       emergencyContactName: user.member?.emergencyContactName || '',
       emergencyContactPhone: user.member?.emergencyContactPhone || '',

@@ -50,7 +50,9 @@ model Member {
   privacyAgreed         Boolean?
   privacyAgreedAt       DateTime?
   termsAgreed           Boolean?
-  termsAgreedAt         DateTime?
+  termsAgreedAt       DateTime?
+  codeOfConduct       Boolean?
+  codeOfConductAt     DateTime?
   remarks               String?
   emergencyContactName  String?
   emergencyContactPhone String?

@@ -3,7 +3,8 @@
 import Link from 'next/link'
 import type { BeltLevel } from '@prisma/client'
 import { BeltBadge } from './BeltBadge'
-import { LOCATION_LABELS_NL } from '@/lib/student-progress-types'
+import { BELT_COLORS, LOCATION_LABELS_NL } from '@/lib/student-progress-types'
+import { getDanColorClass, isSlipBelt } from '@/lib/belt-utils'
 
 interface MemberCardProps {
   memberId: string
@@ -13,7 +14,12 @@ interface MemberCardProps {
   location: string | null
   currentBelt: BeltLevel | null
   currentBeltLabel: string
+  currentBeltIsSlip: boolean
+  currentBeltIsDan: boolean
+  danNumber: number | null
+  danColorClass: string
   timeInBelt: { text: string }
+  nextBelt: BeltLevel | null
   nextBeltLabel: string | null
   nextBeltIsSlip: boolean
   examCount: number
@@ -21,55 +27,101 @@ interface MemberCardProps {
 
 export function MemberCard({
   memberId, firstName, lastName, isYouth, location,
-  currentBelt, currentBeltLabel, timeInBelt,
-  nextBeltLabel, nextBeltIsSlip, examCount,
+  currentBelt, currentBeltLabel, currentBeltIsSlip, currentBeltIsDan,
+  danColorClass, timeInBelt, nextBelt, nextBeltLabel, nextBeltIsSlip, examCount,
 }: MemberCardProps) {
   const locLabel = location ? (LOCATION_LABELS_NL as any)[location] || location : '—'
+  const nextColor = nextBelt ? (BELT_COLORS[nextBelt] || '#CCCCCC') : null
+  const nextDanClass = nextBelt ? getDanColorClass(nextBelt) : ''
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4 transition-shadow hover:shadow-md">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        {/* Left: Name + info */}
-        <div className="space-y-1">
-          <h3 className="font-semibold text-[#2a2a2a]">{firstName} {lastName}</h3>
-          <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500">
-            <span className="rounded bg-gray-100 px-2 py-0.5">{locLabel}</span>
-            <span className={`rounded px-2 py-0.5 ${isYouth ? 'bg-blue-50 text-blue-700' : 'bg-green-50 text-green-700'}`}>
-              {isYouth ? 'Jeugd' : 'Volw.'}
+    <div className="rounded-lg border border-gray-200 bg-white hover:shadow-md transition-shadow">
+      {/* Desktop: compact table row */}
+      <div className="hidden sm:grid sm:grid-cols-12 gap-3 items-center px-4 py-2.5">
+        {/* Naam + locatie */}
+        <div className="col-span-3">
+          <p className="font-semibold text-sm text-[#2a2a2a]">{firstName} {lastName}</p>
+          <div className="flex items-center gap-1.5 mt-0.5">
+            <span className="text-xs text-gray-500">{locLabel}</span>
+            <span className={`text-[10px] font-medium px-1.5 py-0 rounded ${isYouth ? 'bg-blue-50 text-blue-600' : 'bg-green-50 text-green-600'}`}>
+              {isYouth ? 'J' : 'V'}
             </span>
-            {examCount > 0 && (
-              <span className="rounded bg-amber-50 px-2 py-0.5 text-amber-700">
-                {examCount} examen{examCount > 1 ? 's' : ''}
-              </span>
-            )}
           </div>
         </div>
 
-        {/* Middle: Current belt + time */}
-        <div className="space-y-1">
-          <BeltBadge belt={currentBelt} />
-          <p className="text-xs text-gray-500">In bezit: {timeInBelt.text}</p>
+        {/* Huidige graad */}
+        <div className="col-span-3">
+          <BeltBadge belt={currentBelt} size="sm" />
+          <p className="text-xs text-gray-400 mt-0.5">In bezit: {timeInBelt.text}</p>
         </div>
 
-        {/* Right: Next belt + action */}
-        <div className="flex flex-col items-end gap-2">
+        {/* Volgende graad */}
+        <div className="col-span-3">
           {nextBeltLabel ? (
-            <div>
-              <p className="text-xs text-gray-400">Volgende:</p>
-              <p className={`text-sm font-medium ${nextBeltIsSlip ? 'text-purple-600' : 'text-[#a90000]'}`}>
-                {nextBeltLabel}
-                {nextBeltIsSlip && <span className="ml-1 text-xs text-purple-400">(slip)</span>}
-              </p>
+            <div className="flex items-center gap-2">
+              <BeltBadge belt={nextBelt} size="sm" showLabel={false} />
+              <div>
+                <p className={`text-sm font-medium ${nextBeltIsSlip ? 'text-purple-600' : 'text-[#a90000]'}`}>
+                  {nextBeltLabel}
+                </p>
+                {nextBeltIsSlip && <span className="text-[10px] text-purple-400">slip</span>}
+              </div>
             </div>
           ) : (
             <span className="text-xs font-medium text-gray-400">Max graad ✓</span>
           )}
+        </div>
+
+        {/* Acties */}
+        <div className="col-span-3 flex items-center justify-end gap-3">
+          {examCount > 0 && (
+            <span className="text-xs text-gray-400">{examCount} examen{examCount > 1 ? 's' : ''}</span>
+          )}
           <Link
             href={`/admin/students/${memberId}`}
-            className="text-xs font-medium text-[#a90000] hover:underline"
+            className="text-xs font-medium text-[#a90000] hover:underline whitespace-nowrap"
           >
             Bekijken →
           </Link>
+        </div>
+      </div>
+
+      {/* Mobile: stacked card */}
+      <div className="sm:hidden p-3 space-y-2">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="font-semibold text-[#2a2a2a]">{firstName} {lastName}</p>
+            <div className="flex items-center gap-2 mt-0.5">
+              <span className="text-xs text-gray-500">{locLabel}</span>
+              <span className={`text-[10px] font-medium px-1.5 py-0 rounded ${isYouth ? 'bg-blue-50 text-blue-600' : 'bg-green-50 text-green-600'}`}>
+                {isYouth ? 'Jeugd' : 'Volw.'}
+              </span>
+            </div>
+          </div>
+          <Link href={`/admin/students/${memberId}`} className="text-xs font-medium text-[#a90000]">
+            Bekijken →
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <p className="text-xs text-gray-400 mb-1">Huidige graad</p>
+            <BeltBadge belt={currentBelt} size="sm" />
+            <p className="text-xs text-gray-400 mt-1">{timeInBelt.text}</p>
+          </div>
+          <div>
+            <p className="text-xs text-gray-400 mb-1">Volgende graad</p>
+            {nextBeltLabel ? (
+              <div className="flex items-center gap-2">
+                <BeltBadge belt={nextBelt} size="sm" showLabel={false} />
+                <p className={`text-sm font-medium ${nextBeltIsSlip ? 'text-purple-600' : 'text-[#a90000]'}`}>
+                  {nextBeltLabel}
+                </p>
+              </div>
+            ) : (
+              <span className="text-xs text-gray-400">Max graad ✓</span>
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -25,6 +25,8 @@ interface ProfileEditData {
   privacyAgreedAt: string | null
   termsAgreed: boolean | null
   termsAgreedAt: string | null
+  codeOfConduct: boolean | null
+  codeOfConductAt: string | null
   remarks: string
   emergencyContactName: string
   emergencyContactPhone: string
@@ -82,6 +84,8 @@ export default function ProfileEditPage() {
           privacyAgreedAt: p.member?.privacyAgreedAt || null,
           termsAgreed: p.member?.termsAgreed ?? null,
           termsAgreedAt: p.member?.termsAgreedAt || null,
+          codeOfConduct: p.member?.codeOfConduct ?? null,
+          codeOfConductAt: p.member?.codeOfConductAt || null,
           remarks: p.member?.remarks || '',
           emergencyContactName: p.member?.emergencyContactName || '',
           emergencyContactPhone: p.member?.emergencyContactPhone || '',
@@ -184,6 +188,7 @@ export default function ProfileEditPage() {
     const body = {
       privacyAgreed: form.privacyAgreed,
       termsAgreed: form.termsAgreed,
+      codeOfConduct: form.codeOfConduct,
     }
 
     try {
@@ -203,6 +208,8 @@ export default function ProfileEditPage() {
         privacyAgreedAt: form.privacyAgreed ? now : null,
         termsAgreed: form.termsAgreed,
         termsAgreedAt: form.termsAgreed ? now : null,
+        codeOfConduct: form.codeOfConduct,
+        codeOfConductAt: form.codeOfConduct ? now : null,
       }
       setProfile(updatedForm)
       setForm(updatedForm)
@@ -799,6 +806,39 @@ export default function ProfileEditPage() {
                 {form?.termsAgreedAt && (
                   <p className="text-xs text-gray-400">
                     Akkoord gegeven op {formatDate(form.termsAgreedAt)}
+                  </p>
+                )}
+              </div>
+
+              {/* Gedragscode */}
+              <div className="rounded-lg border border-gray-200 p-4 space-y-3">
+                <h3 className="font-medium text-[#2a2a2a]">Gedragscode</h3>
+                <p className="text-sm text-gray-600">
+                  Ga je akkoord met de gedragscode van Judoclub Michigami?
+                </p>
+                <a href="/#juridisch" target="_blank" className="text-sm text-[#a90000] hover:underline inline-block">
+                  📄 Gedragscode lezen →
+                </a>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    id="codeOfConduct"
+                    checked={form?.codeOfConduct || false}
+                    onChange={(e) => handleFormChange('codeOfConduct', e.target.checked)}
+                    className="rounded text-[#a90000] focus:ring-[#a90000]"
+                  />
+                  <label htmlFor="codeOfConduct" className="text-sm text-gray-700 cursor-pointer">
+                    Ik ga akkoord met de gedragscode
+                  </label>
+                </div>
+                {form?.codeOfConduct && form?.codeOfConductAt && (
+                  <p className="text-xs text-gray-400">
+                    Akkoord gegeven op {formatDate(form.codeOfConductAt)}
+                  </p>
+                )}
+                {form?.codeOfConduct === null && (
+                  <p className="text-xs text-amber-600 bg-amber-50 rounded px-3 py-2">
+                    ⚠️ Nog niet ingesteld. Vink aan als je akkoord gaat.
                   </p>
                 )}
               </div>
