@@ -1,13 +1,10 @@
 'use client';
 
-import { useState } from 'react';
 import { membershipInfo } from '@/data/membership';
 import { Calendar } from 'lucide-react';
 import { openProeflesForm } from '@/lib/form-events';
-import { SignupConfirmationModal } from '@/components/SignupConfirmationModal';
 
 export function MembershipSection() {
-  const [signupOpen, setSignupOpen] = useState(false);
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -87,8 +84,8 @@ export function MembershipSection() {
           <Calendar className="w-5 h-5" /> Gratis Proefles
         </button>
         <div className="text-xs text-gray-500">of</div>
-        <button
-          onClick={() => setSignupOpen(true)}
+        <a
+          href="/inschrijven"
           className="inline-flex items-center gap-2 bg-gradient-to-r from-[#a90000] to-[#c00000] text-white px-6 py-3 rounded-xl font-bold text-sm sm:text-base hover:from-[#8c0000] hover:to-[#a00000] transition-all shadow-md hover:shadow-lg"
         >
           {membershipInfo.signupText}
@@ -105,11 +102,8 @@ export function MembershipSection() {
               d="M14 5l7 7m0 0l-7 7m7-7H3"
             />
           </svg>
-        </button>
+        </a>
       </div>
-
-      {/* Signup Confirmation Modal */}
-      <SignupConfirmationModal open={signupOpen} onClose={() => setSignupOpen(false)} signupUrl={membershipInfo.signupUrl} />
     </div>
   );
 }

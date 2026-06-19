@@ -32,6 +32,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         {/* Navigation */}
         <nav className="flex-1 space-y-1 p-3">
           <AdminLink href="/admin" icon="📊" label="Overzicht" />
+          <AdminLink href="/admin/inschrijvingen" icon="📝" label="Inschrijvingen" />
           <AdminLink href="/admin/students" icon="👥" label="Studenten" />
           <AdminLink href="/admin/exams" icon="🎯" label="Examens" />
           <AdminLink href="/admin/progress" icon="📈" label="Voortgang" />
