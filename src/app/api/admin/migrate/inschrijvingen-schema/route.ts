@@ -80,6 +80,7 @@ export async function POST(request: NextRequest) {
       ['termsAgreedAt', 'timestamp(3) precision 3'],
       ['codeOfConduct', 'boolean DEFAULT false'],
       ['nameMention', 'boolean'],
+      ['preferredGroup', 'text'],
     ]
 
     for (const [col, type] of columnsToAdd) {
