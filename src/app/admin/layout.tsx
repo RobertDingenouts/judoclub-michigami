@@ -37,6 +37,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <AdminLink href="/admin/exams" icon="🎯" label="Examens" />
           <AdminLink href="/admin/progress" icon="📈" label="Voortgang" />
           <AdminLink href="/admin/diplomas" icon="🏆" label="Diploma's" />
+          <AdminLink href="/admin/bandoverzicht" icon="🥋" label="Bandoverzicht" />
           <AdminLink href="/diploma/verifieren" icon="🔍" label="Diploma Verifiëren" />
         </nav>
 

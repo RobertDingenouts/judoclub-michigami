@@ -256,4 +256,26 @@
   [data-pull-to-refresh] {
     overscroll-behavior: contain;
   }
+
+  /* ============================================
+     DAN GRADE BELT PATTERNS
+     ============================================ */
+  .belt-dan-black {
+    background-color: #000000;
+  }
+
+  .belt-dan-red-white {
+    background: repeating-linear-gradient(
+      45deg,
+      #C41E3A,
+      #C41E3A 8px,
+      #FFFFFF 8px,
+      #FFFFFF 16px
+    );
+    border: 1px solid #C41E3A;
+  }
+
+  .belt-dan-red {
+    background-color: #C41E3A;
+  }
 }
