@@ -3,8 +3,9 @@
 import Link from 'next/link'
 import type { BeltLevel } from '@prisma/client'
 import { BeltBadge } from './BeltBadge'
-import { BELT_COLORS, LOCATION_LABELS_NL } from '@/lib/student-progress-types'
+import { BELT_COLORS, LOCATION_LABELS_NL, GROUP_SHORT_LABELS } from '@/lib/student-progress-types'
 import { getDanColorClass, isSlipBelt } from '@/lib/belt-utils'
+import type { TrainingGroupValue } from '@/lib/student-progress-types'
 
 interface MemberCardProps {
   memberId: string
@@ -12,6 +13,8 @@ interface MemberCardProps {
   lastName: string
   isYouth: boolean
   location: string | null
+  trainingGroups: TrainingGroupValue[]
+  primaryGroup: TrainingGroupValue | null
   currentBelt: BeltLevel | null
   currentBeltLabel: string
   currentBeltIsSlip: boolean
@@ -26,13 +29,27 @@ interface MemberCardProps {
 }
 
 export function MemberCard({
-  memberId, firstName, lastName, isYouth, location,
+  memberId, firstName, lastName, isYouth, location, trainingGroups, primaryGroup,
   currentBelt, currentBeltLabel, currentBeltIsSlip, currentBeltIsDan,
   danColorClass, timeInBelt, nextBelt, nextBeltLabel, nextBeltIsSlip, examCount,
 }: MemberCardProps) {
   const locLabel = location ? (LOCATION_LABELS_NL as any)[location] || location : '—'
   const nextColor = nextBelt ? (BELT_COLORS[nextBelt] || '#CCCCCC') : null
   const nextDanClass = nextBelt ? getDanColorClass(nextBelt) : ''
+
+  const groupBadges = (trainingGroups || []).map(g => (
+    <span
+      key={g}
+      className={`text-[10px] font-medium px-1.5 py-0 rounded ${
+        g === primaryGroup
+          ? 'bg-[#a90000] text-white'
+          : 'bg-gray-100 text-gray-600'
+      }`}
+      title={g === primaryGroup ? 'Hoofdgroep (examens)' : ''}
+    >
+      {GROUP_SHORT_LABELS[g] || g}
+    </span>
+  ))
 
   return (
     <div className="rounded-lg border border-gray-200 bg-white hover:shadow-md transition-shadow">
@@ -41,11 +58,16 @@ export function MemberCard({
         {/* Naam + locatie */}
         <div className="col-span-3">
           <p className="font-semibold text-sm text-[#2a2a2a]">{firstName} {lastName}</p>
-          <div className="flex items-center gap-1.5 mt-0.5">
+          <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
             <span className="text-xs text-gray-500">{locLabel}</span>
             <span className={`text-[10px] font-medium px-1.5 py-0 rounded ${isYouth ? 'bg-blue-50 text-blue-600' : 'bg-green-50 text-green-600'}`}>
               {isYouth ? 'J' : 'V'}
             </span>
+            {groupBadges.length > 0 && (
+              <div className="flex gap-1 ml-1">
+                {groupBadges}
+              </div>
+            )}
           </div>
         </div>
 

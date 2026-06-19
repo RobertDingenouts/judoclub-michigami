@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { TRAINING_GROUPS, GROUP_LABELS_NL } from '@/lib/student-progress-types'
+import type { TrainingGroupValue } from '@/lib/student-progress-types'
 
 interface StudentData {
   id: string
@@ -13,6 +15,8 @@ interface StudentData {
   dateOfBirth: string | null
   currentBelt: string | null
   location: string | null
+  trainingGroups: TrainingGroupValue[] | null
+  primaryGroup: TrainingGroupValue | null
   joinDate: string
   isActive: boolean
   emergencyContactName: string | null
@@ -117,6 +121,8 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
       joinDate: formData.get('joinDate') as string || null,
       role: formData.get('role') as string || null,
       isActive: formData.get('isActive') === 'on',
+      trainingGroups: JSON.parse(formData.get('trainingGroups') as string || '[]'),
+      primaryGroup: formData.get('primaryGroup') as string || null,
       emergencyContactName: formData.get('emergencyContactName') as string || null,
       emergencyContactPhone: formData.get('emergencyContactPhone') as string || null,
       medicalNotes: formData.get('medicalNotes') as string || null,
@@ -213,6 +219,49 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
               </select>
             </div>
           </div>
+        </div>
+
+        {/* Training groups */}
+        <div>
+          <h2 className="text-lg font-semibold text-[#2a2a2a] mb-4">Trainingsgroepen</h2>
+          <p className="text-sm text-gray-500 mb-3">Selecteer de groepen waar deze student aan deelneemt.</p>
+          <div className="space-y-2">
+            {TRAINING_GROUPS.map(group => {
+              const isSelected = (student.trainingGroups || []).includes(group.value)
+              return (
+                <label key={group.value} className="flex items-center gap-3 rounded-lg border border-gray-200 p-3 cursor-pointer hover:bg-gray-50">
+                  <input
+                    type="checkbox"
+                    name="trainingGroups"
+                    value={group.value}
+                    defaultChecked={isSelected}
+                    className="h-4 w-4 rounded border-gray-300 text-[#a90000] focus:ring-[#a90000]"
+                  />
+                  <div>
+                    <span className="text-sm font-medium text-gray-700">{group.label}</span>
+                  </div>
+                </label>
+              )
+            })}
+          </div>
+          {(student.trainingGroups || []).length > 1 && (
+            <div className="mt-4">
+              <label className="mb-1.5 block text-sm font-medium text-gray-700">
+                Hoofdgroep (voor examens)
+                <span className="text-xs text-gray-400 font-normal ml-2">— deze groep wordt gebruikt voor bandexamens</span>
+              </label>
+              <select
+                name="primaryGroup"
+                defaultValue={student.primaryGroup || ''}
+                className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+              >
+                <option value="">Selecteer hoofdgroep...</option>
+                {TRAINING_GROUPS.filter(g => (student.trainingGroups || []).includes(g.value)).map(g => (
+                  <option key={g.value} value={g.value}>{GROUP_LABELS_NL[g.value]}</option>
+                ))}
+              </select>
+            </div>
+          )}
         </div>
 
         {/* Emergency contact */}

@@ -5,6 +5,7 @@ import { Filters } from '@/components/band-overzicht/Filters'
 import { Summary } from '@/components/band-overzicht/Summary'
 import { MemberCard } from '@/components/band-overzicht/MemberCard'
 import type { BeltLevel } from '@prisma/client'
+import type { TrainingGroupValue } from '@/lib/student-progress-types'
 import {
   isYouth, getNextBelt, getTimeInBelt, isSlipBelt, isDanGrade,
   getDanNumber, getDanColorClass, getBeltLabel,
@@ -18,6 +19,8 @@ interface BeltOverviewMember {
   lastName: string
   isYouth: boolean
   location: string | null
+  trainingGroups: TrainingGroupValue[]
+  primaryGroup: TrainingGroupValue | null
   currentBelt: BeltLevel | null
   currentBeltLabel: string
   currentBeltIsSlip: boolean
@@ -32,10 +35,13 @@ interface BeltOverviewMember {
   examCount: number
 }
 
-async function fetchMembers(location: string, belt: string, q: string) {
+async function fetchMembers(location: string, belt: string, group: string, q: string) {
   const where: any = { isActive: true }
   if (location && location !== 'ALL') where.location = location
   if (belt) where.currentBelt = belt
+  if (group && group !== 'ALL') {
+    where.trainingGroups = { array_contains: [group] }
+  }
   if (q) {
     where.OR = [
       { firstName: { contains: q, mode: 'insensitive' } },
@@ -67,7 +73,9 @@ async function fetchMembers(location: string, belt: string, q: string) {
       firstName: m.firstName,
       lastName: m.lastName,
       isYouth: youth,
-      location: m.location,
+      location: (m as any).location || null,
+      trainingGroups: (m as any).trainingGroups || [],
+      primaryGroup: (m as any).primaryGroup || null,
       currentBelt: beltVal,
       currentBeltLabel: getBeltLabel(beltVal),
       currentBeltIsSlip: beltVal ? isSlipBelt(beltVal) : false,
@@ -87,7 +95,7 @@ async function fetchMembers(location: string, belt: string, q: string) {
 export default async function BandOverzichtPage({
   searchParams,
 }: {
-  searchParams: Promise<{ location?: string; belt?: string; q?: string }>
+  searchParams: Promise<{ location?: string; belt?: string; group?: string; q?: string }>
 }) {
   const admin = await requireAdmin()
   if (!admin) redirect('/admin-login')
@@ -95,13 +103,14 @@ export default async function BandOverzichtPage({
   const params = await searchParams
   const location = params.location || 'ALL'
   const belt = params.belt || ''
+  const group = params.group || 'ALL'
   const q = params.q || ''
 
   let members: BeltOverviewMember[] = []
   let error: string | null = null
 
   try {
-    members = await fetchMembers(location, belt, q)
+    members = await fetchMembers(location, belt, group, q)
   } catch (e: any) {
     error = `Database fout: ${e.message}`
   }

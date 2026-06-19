@@ -53,7 +53,9 @@ model Member {
   termsAgreedAt       DateTime?
   codeOfConduct       Boolean?
   codeOfConductAt     DateTime?
-  remarks               String?
+  trainingGroups      Json?
+  primaryGroup        String?
+  remarks             String?
   emergencyContactName  String?
   emergencyContactPhone String?
   medicalNotes          String?

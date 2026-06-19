@@ -18,12 +18,16 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const location = searchParams.get('location') || 'ALL'
   const belt = searchParams.get('belt') || ''
+  const group = searchParams.get('group') || 'ALL'
   const q = searchParams.get('q') || ''
 
   try {
     const where: any = { isActive: true }
     if (location !== 'ALL') where.location = location
     if (belt) where.currentBelt = belt
+    if (group !== 'ALL') {
+      where.trainingGroups = { array_contains: [group] }
+    }
     if (q) {
       where.OR = [
         { firstName: { contains: q, mode: 'insensitive' } },
@@ -58,6 +62,8 @@ export async function GET(request: NextRequest) {
         age: youth ? null : null,
         isYouth: youth,
         location: m.location,
+        trainingGroups: (m as any).trainingGroups || [],
+        primaryGroup: (m as any).primaryGroup || null,
         currentBelt: beltVal,
         currentBeltLabel: getBeltLabel(beltVal),
         currentBeltColor: getBeltColor(beltVal),

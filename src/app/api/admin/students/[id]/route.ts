@@ -57,6 +57,8 @@ export async function PATCH(
       ...(body.location !== undefined && { location: body.location || null }),
       ...(body.joinDate !== undefined && { joinDate: body.joinDate ? new Date(body.joinDate) : undefined }),
       ...(body.isActive !== undefined && { isActive: body.isActive }),
+      ...(body.trainingGroups !== undefined && { trainingGroups: body.trainingGroups }),
+      ...(body.primaryGroup !== undefined && { primaryGroup: body.primaryGroup || null }),
       ...(body.emergencyContactName !== undefined && { emergencyContactName: body.emergencyContactName }),
       ...(body.emergencyContactPhone !== undefined && { emergencyContactPhone: body.emergencyContactPhone }),
       ...(body.medicalNotes !== undefined && { medicalNotes: body.medicalNotes }),

@@ -1,12 +1,17 @@
 'use client'
 
 import { useSearchParams, usePathname, useRouter } from 'next/navigation'
-import { BELT_LABELS_NL } from '@/lib/student-progress-types'
+import { BELT_LABELS_NL, TRAINING_GROUPS, GROUP_LABELS_NL } from '@/lib/student-progress-types'
+import type { TrainingGroupValue } from '@/lib/student-progress-types'
 
 const ALL_BELTS = Object.entries(BELT_LABELS_NL)
   .filter(([key]) => !key.includes('_1') || key === 'ZWART_1')
   .filter(([key]) => !['BRUIN_1', 'BRUIN_2', 'BRUIN_3', 'Zwart_1', 'Zwart_2', 'Zwart_3'].includes(key))
   .map(([value, label]) => ({ value, label }))
+
+const ALL_GROUPS: { value: string; label: string }[] = [
+  ...TRAINING_GROUPS.map(g => ({ value: g.value, label: GROUP_LABELS_NL[g.value as TrainingGroupValue] })),
+]
 
 export function Filters() {
   const searchParams = useSearchParams()
@@ -15,6 +20,7 @@ export function Filters() {
 
   const currentLocation = searchParams.get('location') || 'ALL'
   const currentBelt = searchParams.get('belt') || ''
+  const currentGroup = searchParams.get('group') || 'ALL'
   const currentQ = searchParams.get('q') || ''
 
   const updateParam = (key: string, value: string) => {
@@ -47,6 +53,18 @@ export function Filters() {
         <option value="ALL">Alle locaties</option>
         <option value="STeenbergen">Steenbergen</option>
         <option value="OUD_VOSSEMEER">Oud-Vossemeer</option>
+      </select>
+
+      {/* Group filter */}
+      <select
+        value={currentGroup}
+        onChange={(e) => updateParam('group', e.target.value === 'ALL' ? '' : e.target.value)}
+        className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none"
+      >
+        <option value="ALL">Alle groepen</option>
+        {ALL_GROUPS.map((g) => (
+          <option key={g.value} value={g.value}>{g.label}</option>
+        ))}
       </select>
 
       {/* Belt filter */}

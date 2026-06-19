@@ -132,6 +132,30 @@ export const LOCATION_LABELS_NL: Record<TrainingLocation, string> = {
 }
 
 // ============================================================================
+// TRAINING GROUPS
+// ============================================================================
+
+export const TRAINING_GROUPS = [
+  { value: 'VRI_JONG', label: 'Vrijdag 18:45 - 19:45 (6-9 jaar)', day: 'vrijdag', startTime: '18:45', endTime: '19:45', ageMin: 6, ageMax: 9 },
+  { value: 'VRI_OUD',  label: 'Vrijdag 19:45 - 20:45 (9+ jaar)', day: 'vrijdag', startTime: '19:45', endTime: '20:45', ageMin: 9, ageMax: null },
+  { value: 'WOEN',     label: 'Woensdagavond', day: 'woensdag', startTime: '', endTime: '', ageMin: null, ageMax: null },
+] as const
+
+export type TrainingGroupValue = typeof TRAINING_GROUPS[number]['value']
+
+export const GROUP_LABELS_NL: Record<TrainingGroupValue, string> = {
+  'VRI_JONG': 'Vrijdag 18:45',
+  'VRI_OUD':  'Vrijdag 19:45',
+  'WOEN':     'Woensdag',
+}
+
+export const GROUP_SHORT_LABELS: Record<TrainingGroupValue, string> = {
+  'VRI_JONG': 'Vri 18:45',
+  'VRI_OUD':  'Vri 19:45',
+  'WOEN':     'Woe',
+}
+
+// ============================================================================
 // COURSE PROGRESS TYPES (Cursus Japans)
 // ============================================================================
 
