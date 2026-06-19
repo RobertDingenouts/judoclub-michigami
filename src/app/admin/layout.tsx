@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { isAdmin } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import { LogoutButton } from '@/components/LogoutButton'
+import { AdminMobileNav } from './AdminMobileNav'
 
 export const dynamic = 'force-dynamic'
 
@@ -14,7 +15,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   return (
     <div className="flex min-h-screen bg-[#f5f5f0]">
-      {/* Sidebar */}
+      {/* Sidebar (desktop) */}
       <aside className="hidden w-[260px] flex-col border-r border-gray-200 bg-white lg:flex">
         {/* Header */}
         <div className="border-b border-gray-200 p-5">
@@ -35,9 +36,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <AdminLink href="/admin/inschrijvingen" icon="📝" label="Inschrijvingen" />
           <AdminLink href="/admin/students" icon="👥" label="Studenten" />
           <AdminLink href="/admin/exams" icon="🎯" label="Examens" />
+          <AdminLink href="/admin/bandoverzicht" icon="🥋" label="Bandoverzicht" />
           <AdminLink href="/admin/progress" icon="📈" label="Voortgang" />
           <AdminLink href="/admin/diplomas" icon="🏆" label="Diploma's" />
-          <AdminLink href="/admin/bandoverzicht" icon="🥋" label="Bandoverzicht" />
           <AdminLink href="/diploma/verifieren" icon="🔍" label="Diploma Verifiëren" />
         </nav>
 
@@ -60,9 +61,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </div>
           <span className="text-sm font-bold">Admin</span>
         </div>
-        <Link href="/" className="text-xs text-gray-500 hover:text-[#a90000]">
-          ← Website
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link href="/" className="text-xs text-gray-500 hover:text-[#a90000]">
+            ← Website
+          </Link>
+          <AdminMobileNav />
+        </div>
       </div>
 
       {/* Main content */}
