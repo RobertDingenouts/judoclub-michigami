@@ -470,6 +470,17 @@ export default function ProfileEditPage() {
                   />
                   <span className="text-sm text-gray-700">Ja, met telefoonnummer 2</span>
                 </label>
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="whatsappGroup"
+                    value="ja12"
+                    checked={form?.whatsappGroup === 'ja12'}
+                    onChange={() => handleFormChange('whatsappGroup', 'ja12')}
+                    className="text-[#a90000] focus:ring-[#a90000]"
+                  />
+                  <span className="text-sm text-gray-700">Ja, met beide telefoonnummers</span>
+                </label>
               </div>
 
               <hr className="border-gray-100" />
