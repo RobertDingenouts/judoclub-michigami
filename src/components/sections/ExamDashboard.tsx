@@ -407,7 +407,7 @@ export function ExamDashboard() {
                       const num = catId === 'ukemi-waza' ? (idx + 1) : (viewMode === 'new' ? (prev + idx + 1) : (idx + 1));
                       const techImg = getTechImage(catId, tech.nameJa);
                       const hasImg = techImg?.available;
-                      const imgSrc = techImg?.gif || techImg?.thumbnail;
+                      const imgSrc = techImg?.thumbnail;
 
                       return (
                         <div key={tech.id} className={`p-2 sm:p-3 rounded-lg border-l-4 shadow-sm hover:shadow-md transition-all ${tech.forbidden ? 'border-l-red-500 bg-red-50' : 'border-l-[#a90000] bg-white'}`}>

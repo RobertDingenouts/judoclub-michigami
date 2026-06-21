@@ -243,11 +243,10 @@ function Flashcard({ term, onFlip }: { term: JudoTerm; onFlip: () => void }) {
           {/* Technique image */}
           {(() => {
             const img = getTermImage(term);
-            if (img?.available && (img.gif || img.thumbnail)) {
-              const src = img.gif || img.thumbnail;
+            if (img?.available && img.thumbnail) {
               return (
                 <div className="mt-2 w-full max-w-[180px] rounded-lg overflow-hidden border border-[#e8eaed] bg-white">
-                  <img src={src} alt={term.uitspraak} className="w-full h-auto" />
+                  <img src={img.thumbnail} alt={term.uitspraak} className="w-full h-auto" />
                 </div>
               );
             }

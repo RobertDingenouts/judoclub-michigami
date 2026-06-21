@@ -10,7 +10,7 @@ import { AnimatedCard, AnimatedButton, subtleHover } from '@/components/ui/anima
 // ==========================================================================
 // LIGHTBOX COMPONENT
 // ==========================================================================
-function ImageLightbox({ src, onClose, gifSrc }: { src?: string; gifSrc?: string; onClose: () => void }) {
+function ImageLightbox({ src, onClose }: { src?: string; onClose: () => void }) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -32,9 +32,7 @@ function ImageLightbox({ src, onClose, gifSrc }: { src?: string; gifSrc?: string
         >
           <X className="w-4 h-4" />
         </button>
-        {gifSrc ? (
-          <img src={gifSrc} alt="" className="w-full h-auto rounded-lg shadow-2xl" />
-        ) : src ? (
+        {src ? (
           <img src={src} alt="" className="w-full h-auto rounded-lg shadow-2xl" />
         ) : (
           <div className="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center">
@@ -53,7 +51,7 @@ export function TechniquesSection() {
   const [activeCategory, setActiveCategory] = useState(0);
   const [expandedTech, setExpandedTech] = useState<number | null>(null);
   const [showImages, setShowImages] = useState(true);
-  const [lightbox, setLightbox] = useState<{ src?: string; gifSrc?: string } | null>(null);
+  const [lightbox, setLightbox] = useState<{ src?: string } | null>(null);
 
   const category = techniqueCategories[activeCategory];
 
@@ -93,7 +91,7 @@ export function TechniquesSection() {
         {category.techniques.map((tech) => {
           const img = getTechniqueImage(category.key, tech.id);
           const hasImage = img?.available;
-          const primarySrc = img?.gif || img?.thumbnail;
+          const primarySrc = img?.thumbnail;
 
           return (
             <AnimatedCard key={tech.id} variants={subtleHover}>
@@ -108,7 +106,7 @@ export function TechniquesSection() {
                       {showImages && hasImage && primarySrc && (
                         <div
                           className="flex-shrink-0 w-14 h-14 rounded-lg overflow-hidden border border-gray-200 cursor-pointer hover:ring-2 hover:ring-[#a90000] transition-all"
-                          onClick={(e) => { e.stopPropagation(); setLightbox({ src: img?.thumbnail, gifSrc: img?.gif }); }}
+                          onClick={(e) => { e.stopPropagation(); setLightbox({ src: primarySrc }); }}
                         >
                           <img
                             src={primarySrc}
@@ -128,22 +126,10 @@ export function TechniquesSection() {
                   {expandedTech === tech.id && (
                     <div className="px-3 sm:px-4 pb-3 sm:pb-4 space-y-2 border-t border-[#e8eaed] pt-3">
                       {/* Full image in expanded view */}
-                      {showImages && hasImage && img?.gif && (
+                      {showImages && hasImage && img?.thumbnail && (
                         <div
                           className="rounded-lg overflow-hidden bg-gray-100 border border-[#e8eaed] cursor-pointer hover:ring-2 hover:ring-[#a90000] transition-all"
-                          onClick={() => setLightbox({ src: img?.thumbnail, gifSrc: img?.gif })}
-                        >
-                          <img
-                            src={img.gif}
-                            alt={tech.name}
-                            className="w-full h-auto"
-                          />
-                        </div>
-                      )}
-                      {showImages && hasImage && !img?.gif && img?.thumbnail && (
-                        <div
-                          className="rounded-lg overflow-hidden bg-gray-100 border border-[#e8eaed] cursor-pointer hover:ring-2 hover:ring-[#a90000] transition-all"
-                          onClick={() => setLightbox({ src: img?.thumbnail })}
+                          onClick={() => setLightbox({ src: img.thumbnail })}
                         >
                           <img
                             src={img.thumbnail}
@@ -178,7 +164,6 @@ export function TechniquesSection() {
       {lightbox && (
         <ImageLightbox
           src={lightbox.src}
-          gifSrc={lightbox.gifSrc}
           onClose={() => setLightbox(null)}
         />
       )}
