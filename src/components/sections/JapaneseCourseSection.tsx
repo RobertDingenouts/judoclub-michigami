@@ -2,7 +2,22 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { getLevels, type JudoLevel, type JudoTerm, beltColors } from '@/data/japanese-course';
-import { Lock, Unlock, Trophy, ChevronLeft, ChevronRight, RotateCcw, Volume2, VolumeX, Star } from 'lucide-react';
+import { Lock, Unlock, Trophy, ChevronLeft, ChevronRight, RotateCcw, Volume2, VolumeX, Star, ImageOff } from 'lucide-react';
+import { techniqueCategories } from '@/data/techniques';
+import { getTechniqueImage } from '@/data/technique-images';
+
+/** Map een JudoTerm naar een techniek afbeelding */
+function getTermImage(term: JudoTerm) {
+  // Zoek de techniek in alle categorieën op basis van uitspraak (Japanese naam)
+  for (const cat of techniqueCategories) {
+    const tech = cat.techniques.find(t => t.name === term.uitspraak);
+    if (tech) {
+      const img = getTechniqueImage(cat.key, tech.id);
+      if (img?.available) return img;
+    }
+  }
+  return null;
+}
 
 // ==========================================================================
 // SOUND SYSTEM (Web Audio API)
@@ -215,16 +230,29 @@ function Flashcard({ term, onFlip }: { term: JudoTerm; onFlip: () => void }) {
           className="absolute inset-0 bg-[#fdf6f6] rounded-2xl shadow-lg border-2 border-[#a90000] flex flex-col items-center justify-center p-6"
           style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
         >
-          <span className="inline-block px-3 py-1 bg-[#a90000] text-white text-xs font-bold rounded-full mb-4">
+          <span className="inline-block px-3 py-1 bg-[#a90000] text-white text-xs font-bold rounded-full mb-3">
             {term.categorie}
           </span>
-          <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 text-center break-words w-full">
+          <p className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 text-center break-words w-full">
             {term.nederlands}
           </p>
-          <div className="flex items-center gap-2 mt-3">
+          <div className="flex items-center gap-2 mt-2">
             <span className="text-sm text-[#a90000] font-semibold">{term.uitspraak}</span>
             <PlayButton term={term.uitspraak} size="sm" />
           </div>
+          {/* Technique image */}
+          {(() => {
+            const img = getTermImage(term);
+            if (img?.available && (img.gif || img.thumbnail)) {
+              const src = img.gif || img.thumbnail;
+              return (
+                <div className="mt-2 w-full max-w-[180px] rounded-lg overflow-hidden border border-[#e8eaed] bg-white">
+                  <img src={src} alt={term.uitspraak} className="w-full h-auto" />
+                </div>
+              );
+            }
+            return null;
+          })()}
           <p className="text-gray-400 text-xs mt-2">Klik om terug te gaan</p>
         </div>
       </div>
