@@ -219,7 +219,7 @@ function Flashcard({ term, onFlip }: { term: JudoTerm; onFlip: () => void }) {
         className="cursor-pointer"
         onClick={() => { setFlipped(!flipped); onFlip(); }}
       >
-        <div className={`relative w-full h-72 sm:h-80 transition-transform duration-500 ${flipped ? '[transform:rotateY(180deg)]' : ''}`} style={{ transformStyle: 'preserve-3d' }}>
+        <div className={`relative w-full h-[320px] sm:h-[340px] transition-transform duration-500 ${flipped ? '[transform:rotateY(180deg)]' : ''}`} style={{ transformStyle: 'preserve-3d' }}>
           {/* Front */}
           <div
             className="absolute inset-0 bg-white rounded-2xl shadow-lg border-2 border-[#e8eaed] flex flex-col items-center justify-center p-6"
