@@ -128,13 +128,13 @@ export function TechniquesSection() {
                       {/* Full image in expanded view */}
                       {showImages && hasImage && img?.thumbnail && (
                         <div
-                          className="rounded-lg overflow-hidden bg-gray-100 border border-[#e8eaed] cursor-pointer hover:ring-2 hover:ring-[#a90000] transition-all"
+                          className="rounded-lg bg-gray-100 border border-[#e8eaed] cursor-pointer hover:ring-2 hover:ring-[#a90000] transition-all"
                           onClick={() => setLightbox({ src: img.thumbnail })}
                         >
                           <img
                             src={img.thumbnail}
                             alt={tech.name}
-                            className="w-full h-auto"
+                            className="w-full h-auto rounded-lg"
                           />
                         </div>
                       )}

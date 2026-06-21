@@ -245,8 +245,8 @@ function Flashcard({ term, onFlip }: { term: JudoTerm; onFlip: () => void }) {
             const img = getTermImage(term);
             if (img?.available && img.thumbnail) {
               return (
-                <div className="mt-2 w-full max-w-[180px] rounded-lg overflow-hidden border border-[#e8eaed] bg-white">
-                  <img src={img.thumbnail} alt={term.uitspraak} className="w-full h-auto" />
+                <div className="mt-2 w-full max-w-[180px] mx-auto rounded-lg border border-[#e8eaed] bg-white">
+                  <img src={img.thumbnail} alt={term.uitspraak} className="w-full h-auto rounded-lg" />
                 </div>
               );
             }
