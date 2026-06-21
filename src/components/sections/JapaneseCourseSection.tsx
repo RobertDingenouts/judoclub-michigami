@@ -2,19 +2,27 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { getLevels, type JudoLevel, type JudoTerm, beltColors } from '@/data/japanese-course';
-import { Lock, Unlock, Trophy, ChevronLeft, ChevronRight, RotateCcw, Volume2, VolumeX, Star, ImageOff } from 'lucide-react';
+import { Lock, Unlock, Trophy, ChevronLeft, ChevronRight, RotateCcw, Volume2, VolumeX, Star, ImageOff, Play, X } from 'lucide-react';
 import { techniqueCategories } from '@/data/techniques';
 import { getTechniqueImage } from '@/data/technique-images';
 
 /** Map een JudoTerm naar een techniek afbeelding */
 function getTermImage(term: JudoTerm) {
-  // Zoek de techniek in alle categorieën op basis van uitspraak (Japanese naam)
   for (const cat of techniqueCategories) {
     const tech = cat.techniques.find(t => t.name === term.uitspraak);
     if (tech) {
       const img = getTechniqueImage(cat.key, tech.id);
       if (img?.available) return img;
     }
+  }
+  return null;
+}
+
+/** Haal YouTube ID op bij een JudoTerm */
+function getTermYouTubeId(term: JudoTerm): string | null {
+  for (const cat of techniqueCategories) {
+    const tech = cat.techniques.find(t => t.name === term.uitspraak);
+    if (tech?.youtubeId) return tech.youtubeId;
   }
   return null;
 }
@@ -202,60 +210,100 @@ function PlayButton({ term, size = 'md' }: { term: string; size?: 'sm' | 'md' })
 // ==========================================================================
 function Flashcard({ term, onFlip }: { term: JudoTerm; onFlip: () => void }) {
   const [flipped, setFlipped] = useState(false);
+  const [showVideo, setShowVideo] = useState(false);
+  const youtubeId = getTermYouTubeId(term);
 
   return (
-    <div
-      className="cursor-pointer"
-      onClick={() => { setFlipped(!flipped); onFlip(); }}
-    >
-      <div className={`relative w-full h-64 sm:h-72 transition-transform duration-500 ${flipped ? '[transform:rotateY(180deg)]' : ''}`} style={{ transformStyle: 'preserve-3d' }}>
-        {/* Front */}
-        <div
-          className="absolute inset-0 bg-white rounded-2xl shadow-lg border-2 border-[#e8eaed] flex flex-col items-center justify-center p-6"
-          style={{ backfaceVisibility: 'hidden' }}
-        >
-          <span className="inline-block px-3 py-1 bg-[#a90000] text-white text-xs font-bold rounded-full mb-4">
-            {term.categorie}
-          </span>
-          <div className="flex items-center gap-3">
-            <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#a90000] text-center break-words">
-              {term.uitspraak}
-            </h3>
-            <PlayButton term={term.uitspraak} />
+    <>
+      <div
+        className="cursor-pointer"
+        onClick={() => { setFlipped(!flipped); onFlip(); }}
+      >
+        <div className={`relative w-full h-64 sm:h-72 transition-transform duration-500 ${flipped ? '[transform:rotateY(180deg)]' : ''}`} style={{ transformStyle: 'preserve-3d' }}>
+          {/* Front */}
+          <div
+            className="absolute inset-0 bg-white rounded-2xl shadow-lg border-2 border-[#e8eaed] flex flex-col items-center justify-center p-6"
+            style={{ backfaceVisibility: 'hidden' }}
+          >
+            <span className="inline-block px-3 py-1 bg-[#a90000] text-white text-xs font-bold rounded-full mb-4">
+              {term.categorie}
+            </span>
+            <div className="flex items-center gap-3">
+              <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#a90000] text-center break-words">
+                {term.uitspraak}
+              </h3>
+              <PlayButton term={term.uitspraak} />
+            </div>
+            <p className="text-gray-400 text-xs mt-4">Klik om te draaien</p>
           </div>
-          <p className="text-gray-400 text-xs mt-4">Klik om te draaien</p>
-        </div>
-        {/* Back */}
-        <div
-          className="absolute inset-0 bg-[#fdf6f6] rounded-2xl shadow-lg border-2 border-[#a90000] flex flex-col items-center justify-center p-6"
-          style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
-        >
-          <span className="inline-block px-3 py-1 bg-[#a90000] text-white text-xs font-bold rounded-full mb-3">
-            {term.categorie}
-          </span>
-          <p className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 text-center break-words w-full">
-            {term.nederlands}
-          </p>
-          <div className="flex items-center gap-2 mt-2">
-            <span className="text-sm text-[#a90000] font-semibold">{term.uitspraak}</span>
-            <PlayButton term={term.uitspraak} size="sm" />
+          {/* Back */}
+          <div
+            className="absolute inset-0 bg-[#fdf6f6] rounded-2xl shadow-lg border-2 border-[#a90000] flex flex-col items-center justify-center p-6"
+            style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
+          >
+            <span className="inline-block px-3 py-1 bg-[#a90000] text-white text-xs font-bold rounded-full mb-3">
+              {term.categorie}
+            </span>
+            <p className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 text-center break-words w-full">
+              {term.nederlands}
+            </p>
+            <div className="flex items-center gap-2 mt-2">
+              <span className="text-sm text-[#a90000] font-semibold">{term.uitspraak}</span>
+              <PlayButton term={term.uitspraak} size="sm" />
+            </div>
+            {/* Technique image */}
+            {(() => {
+              const img = getTermImage(term);
+              if (img?.available && img.thumbnail) {
+                return (
+                  <div className="mt-2 w-full max-w-[180px] mx-auto rounded-lg border border-[#e8eaed] bg-white">
+                    <img src={img.thumbnail} alt={term.uitspraak} className="w-full h-auto rounded-lg" />
+                  </div>
+                );
+              }
+              return null;
+            })()}
+            {/* Video button */}
+            {youtubeId && (
+              <button
+                onClick={(e) => { e.stopPropagation(); setShowVideo(true); }}
+                className="mt-2 flex items-center gap-1.5 px-3 py-1.5 bg-[#a90000] hover:bg-[#8c0000] text-white text-xs font-semibold rounded-lg transition-colors shadow-sm"
+              >
+                <Play className="w-3.5 h-3.5" />
+                Bekijk video
+              </button>
+            )}
+            <p className="text-gray-400 text-xs mt-2">Klik om terug te gaan</p>
           </div>
-          {/* Technique image */}
-          {(() => {
-            const img = getTermImage(term);
-            if (img?.available && img.thumbnail) {
-              return (
-                <div className="mt-2 w-full max-w-[180px] mx-auto rounded-lg border border-[#e8eaed] bg-white">
-                  <img src={img.thumbnail} alt={term.uitspraak} className="w-full h-auto rounded-lg" />
-                </div>
-              );
-            }
-            return null;
-          })()}
-          <p className="text-gray-400 text-xs mt-2">Klik om terug te gaan</p>
         </div>
       </div>
-    </div>
+      {/* Video modal */}
+      {showVideo && youtubeId && (
+        <div
+          className="fixed inset-0 z-[9999] bg-black/80 flex items-center justify-center p-4"
+          onClick={(e) => { e.stopPropagation(); setShowVideo(false); }}
+        >
+          <div className="relative w-full max-w-2xl" onClick={e => e.stopPropagation()}>
+            <button
+              onClick={() => setShowVideo(false)}
+              className="absolute -top-3 -right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-gray-100 z-10"
+            >
+              <X className="w-4 h-4" />
+            </button>
+            <div className="aspect-video rounded-xl overflow-hidden shadow-2xl bg-black">
+              <iframe
+                src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1`}
+                title={term.uitspraak}
+                className="w-full h-full"
+                allow="autoplay; encrypted-media"
+                allowFullScreen
+              />
+            </div>
+            <p className="text-white text-center text-sm mt-3 font-medium">{term.uitspraak} — {term.nederlands}</p>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
