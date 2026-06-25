@@ -79,8 +79,8 @@ function Lightbox({
         </svg>
       </button>
 
-      <div className="max-w-4xl max-h-[80vh] flex flex-col items-center" onClick={(e) => e.stopPropagation()}>
-        <div className="relative w-full max-w-3xl max-h-[70vh] flex items-center justify-center">
+      <div className="max-w-4xl max-h-[80vh] flex flex-col items-center min-h-0" onClick={(e) => e.stopPropagation()}>
+        <div className="relative w-full max-w-3xl flex-1 min-h-0 max-h-[70vh] flex items-center justify-center">
           <Image
             src={current.src}
             alt={current.caption}
