@@ -37,7 +37,7 @@ export default async function StudentDetailPage({
           </Link>
           <div>
             <h1 className="text-2xl font-bold text-[#2a2a2a]">{member.firstName} {member.lastName}</h1>
-            <p className="text-sm text-gray-500 mt-1">{member.email || member.user.email}</p>
+            <p className="text-sm text-gray-500 mt-1">{member.email || member.user.email || 'Geen e-mail'}</p>
           </div>
         </div>
         <div className="flex gap-2">

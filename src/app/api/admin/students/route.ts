@@ -49,9 +49,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Naam is verplicht' }, { status: 400 })
     }
 
-    let userId: string | null = null
+    let userId: string = ''
 
-    // Only create User account if email is provided
+    // Check if email already exists (only if email provided)
     if (email && email.trim()) {
       const existingUser = await db.user.findUnique({
         where: { email: email.trim().toLowerCase() },
@@ -60,21 +60,21 @@ export async function POST(request: Request) {
       if (existingUser) {
         return NextResponse.json({ error: 'Er is al een lid met dit e-mailadres' }, { status: 409 })
       }
-
-      // Create user without password — lid moet zich eerst registreren of admin stelt wachtwoord in
-      const user = await db.user.create({
-        data: {
-          email: email.trim().toLowerCase(),
-          name: `${firstName} ${lastName}`,
-          role: Role.MEMBER,
-        },
-      })
-      userId = user.id
     }
+
+    // Always create User record (required for Member relation) — email can be null
+    const user = await db.user.create({
+      data: {
+        email: email && email.trim() ? email.trim().toLowerCase() : null,
+        name: `${firstName} ${lastName}`,
+        role: Role.MEMBER,
+      },
+    })
+    userId = user.id
 
     const member = await db.member.create({
       data: {
-        userId: userId!,
+        userId,
         firstName,
         lastName,
         email: email?.trim() || null,

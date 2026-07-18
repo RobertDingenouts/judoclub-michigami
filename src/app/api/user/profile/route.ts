@@ -43,7 +43,7 @@ export async function PATCH(request: Request) {
           userId: user.id,
           firstName: firstName || (user.name || '').split(' ')[0] || 'Admin',
           lastName: lastName || (user.name || '').split(' ').slice(1).join(' ') || '',
-          email: email || user.email,
+          email: email || user.email || null,
           joinDate: new Date(),
           currentBelt: 'WIT' as any,
         },
@@ -54,12 +54,12 @@ export async function PATCH(request: Request) {
     const importantChanges: string[] = []
 
     // If email is being changed, update user record too
-    if (email && email !== user.email) {
+    if (email && email !== (user.email || '')) {
       const existing = await db.user.findUnique({ where: { email } })
       if (existing) {
         return NextResponse.json({ error: 'Dit e-mailadres is al in gebruik' }, { status: 400 })
       }
-      importantChanges.push(`E-mail: ${user.email} → ${email}`)
+      importantChanges.push(`E-mail: ${user.email || '(geen)'} → ${email}`)
       await db.user.update({
         where: { id: user.id },
         data: { email },
@@ -139,7 +139,7 @@ export async function PATCH(request: Request) {
 
     // Log important changes for admin notification
     if (importantChanges.length > 0) {
-      console.log(`[PROFILE CHANGE - ${user.email}] ${importantChanges.join(' | ')}`)
+      console.log(`[PROFILE CHANGE - ${user.email || user.id}] ${importantChanges.join(' | ')}`)
     }
 
     return NextResponse.json({
@@ -163,7 +163,7 @@ export async function GET() {
     member: {
       firstName: user.member?.firstName || '',
       lastName: user.member?.lastName || '',
-      email: user.member?.email || user.email,
+      email: user.member?.email || user.email || null,
       phone: user.member?.phone || '',
       phone2: user.member?.phone2 || '',
       dateOfBirth: user.member?.dateOfBirth?.toISOString().split('T')[0] || '',

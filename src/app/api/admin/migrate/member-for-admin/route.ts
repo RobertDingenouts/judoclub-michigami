@@ -33,7 +33,7 @@ export async function POST() {
 
     const created: any[] = []
     for (const user of withoutMember) {
-      const nameParts = (user.name || user.email.split('@')[0]).split(' ')
+      const nameParts = (user.name || user.email?.split('@')[0] || 'Admin').split(' ')
       const firstName = nameParts[0] || 'Admin'
       const lastName = nameParts.slice(1).join(' ') || ''
 
@@ -42,7 +42,7 @@ export async function POST() {
           userId: user.id,
           firstName,
           lastName,
-          email: user.email,
+          email: user.email || null,
           joinDate: new Date(),
           currentBelt: 'WIT' as any,
         },

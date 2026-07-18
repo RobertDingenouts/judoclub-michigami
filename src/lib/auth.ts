@@ -13,7 +13,7 @@ import * as bcrypt from 'bcryptjs'
 
 export interface SessionData {
   userId: string
-  email: string
+  email?: string | null
   name?: string
   role: Role
   loginTime: number
@@ -41,7 +41,7 @@ export async function setSession(data: SessionData) {
   const session = await getSession()
   Object.assign(session, data)
   session.userId = data.userId
-  session.email = data.email
+  session.email = data.email || undefined
   session.name = data.name
   session.role = data.role
   session.loginTime = Date.now()

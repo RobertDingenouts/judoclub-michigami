@@ -13,7 +13,7 @@ export async function GET() {
       authenticated: true,
       user: {
         id: user.id,
-        email: user.email,
+        email: user.email || null,
         name: user.name,
         role: user.role,
         currentBelt: user.currentBelt,
