@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { isAdmin } from '@/lib/auth'
+import { isAdmin, hashPassword } from '@/lib/auth'
 import type { BeltLevel, Role, ExamStatus } from '@prisma/client'
 
 export const dynamic = 'force-dynamic'
@@ -87,6 +87,15 @@ export async function PATCH(
           ...(body.role !== undefined && { role: body.role as Role }),
           ...(body.joinDate !== undefined && { joinDate: body.joinDate ? new Date(body.joinDate) : undefined }),
         },
+      })
+    }
+
+    // Set password if provided
+    if (body.tempPassword && body.tempPassword.trim()) {
+      const passwordHash = await hashPassword(body.tempPassword.trim())
+      await db.user.update({
+        where: { id: member.userId },
+        data: { passwordHash },
       })
     }
 

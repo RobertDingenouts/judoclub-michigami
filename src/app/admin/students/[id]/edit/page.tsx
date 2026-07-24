@@ -285,6 +285,17 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
           />
         </div>
 
+        {/* Login access */}
+        <div>
+          <h2 className="text-lg font-semibold text-[#2a2a2a] mb-4">Inlog Account</h2>
+          <p className="text-sm text-gray-500 mb-4">
+            {student.email
+              ? 'Email is ingevuld — stel een tijdelijk wachtwoord in zodat dit lid kan inloggen.'
+              : 'Zodra je een email invult, kun je hier een tijdelijk wachtwoord instellen.'}
+          </p>
+          <FormField label="Tijdelijk wachtwoord" name="tempPassword" type="password" defaultValue="" placeholder="Vul in om wachtwoord te instellen" />
+        </div>
+
         {/* Status */}
         <div>
           <label className="flex items-center gap-3">
@@ -319,8 +330,8 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
   )
 }
 
-function FormField({ label, name, type = 'text', defaultValue = '', required = false }: {
-  label: string; name: string; type?: string; defaultValue?: string; required?: boolean
+function FormField({ label, name, type = 'text', defaultValue = '', required = false, placeholder }: {
+  label: string; name: string; type?: string; defaultValue?: string; required?: boolean; placeholder?: string
 }) {
   return (
     <div>
@@ -333,6 +344,7 @@ function FormField({ label, name, type = 'text', defaultValue = '', required = f
         type={type}
         defaultValue={defaultValue}
         required={required}
+        placeholder={placeholder}
         className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
       />
     </div>
