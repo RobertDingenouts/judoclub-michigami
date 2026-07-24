@@ -69,20 +69,21 @@ export async function PATCH(
       data: memberData,
     })
 
-    // Sync belt to user if changed
-    if (body.currentBelt) {
+    // Sync email to user if changed (so member can login)
+    if (body.email !== undefined) {
+      const emailValue = body.email && body.email.trim() ? body.email.trim().toLowerCase() : null
       await db.user.update({
         where: { id: member.userId },
-        data: {
-          currentBelt: body.currentBelt as BeltLevel,
-          ...(body.role !== undefined && { role: body.role as Role }),
-          ...(body.joinDate !== undefined && { joinDate: body.joinDate ? new Date(body.joinDate) : undefined }),
-        },
+        data: { email: emailValue },
       })
-    } else if (body.role !== undefined || body.joinDate !== undefined) {
+    }
+
+    // Sync belt/role/joinDate to user if changed
+    if (body.currentBelt || body.role !== undefined || body.joinDate !== undefined) {
       await db.user.update({
         where: { id: member.userId },
         data: {
+          ...(body.currentBelt !== undefined && { currentBelt: body.currentBelt as BeltLevel || null }),
           ...(body.role !== undefined && { role: body.role as Role }),
           ...(body.joinDate !== undefined && { joinDate: body.joinDate ? new Date(body.joinDate) : undefined }),
         },
