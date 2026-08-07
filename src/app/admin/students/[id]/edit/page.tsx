@@ -290,7 +290,7 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
           <h2 className="text-lg font-semibold text-[#2a2a2a] mb-4">Inlog Account</h2>
           <p className="text-sm text-gray-500 mb-4">
             {student.email
-              ? 'Email is ingevuld — stel een tijdelijk wachtwoord in zodat dit lid kan inloggen.'
+              ? 'Laat leeg om het huidige wachtwoord te behouden. Vul alleen in om het wachtwoord te wijzigen.'
               : 'Zodra je een email invult, kun je hier een tijdelijk wachtwoord instellen.'}
           </p>
           <FormField label="Tijdelijk wachtwoord" name="tempPassword" type="password" defaultValue="" placeholder="Vul in om wachtwoord te instellen" />
