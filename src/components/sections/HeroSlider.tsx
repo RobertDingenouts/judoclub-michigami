@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
+import { ArrowRight, PlayCircle } from 'lucide-react';
 
 const heroImages = [
-  // Dojo / Club sfeer
   { src: '/hero/dojo-2024.jpg' },
   { src: '/hero/insta-jubileum-2024.webp' },
   { src: '/hero/michigami-25jaar-1.jpg' },
@@ -37,10 +37,6 @@ const heroImages = [
   { src: '/hero/budodag-actie-4.jpg' },
 ];
 
-function ClubLogo({ className = "", alt = "Judoclub Michigami" }: { className?: string; alt?: string }) {
-  return <Image src="/logo.png" alt={alt} width={64} height={64} className={className} />;
-}
-
 export function HeroSlider() {
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -60,72 +56,107 @@ export function HeroSlider() {
   }, [isPaused, nextSlide]);
 
   return (
-    <div>
-      <div
-        className="relative h-56 sm:h-64 md:h-80 lg:h-96 overflow-hidden rounded-2xl group/slider"
-        onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
-      >
-        {heroImages.map((image, idx) => (
-          <div
-            key={idx}
-            className={`absolute inset-0 transition-opacity duration-1000 ${
-              idx === current ? 'opacity-100' : 'opacity-0'
-            }`}
-          >
-            <div className="relative w-full h-full">
-              <Image
-                src={image.src}
-                alt="Judoclub Michigami"
-                fill
-                sizes="100vw"
-                className="object-cover"
-                priority={idx === 0}
-              />
-            </div>
-          </div>
-        ))}
-
-        {/* Navigation arrows */}
-        <button
-          onClick={prevSlide}
-          className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity z-20"
-          aria-label="Vorige foto"
+    <div
+      className="relative h-[440px] sm:h-[520px] lg:h-[600px] w-full overflow-hidden rounded-2xl group/slider shadow-xl shadow-black/10"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
+      {/* Slides with Ken Burns zoom */}
+      {heroImages.map((image, idx) => (
+        <div
+          key={idx}
+          className={`absolute inset-0 transition-opacity duration-1000 ${
+            idx === current ? 'opacity-100 z-10' : 'opacity-0 z-0'
+          }`}
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="sm:w-5 sm:h-5"><path d="M15 18l-6-6 6-6"/></svg>
-        </button>
-        <button
-          onClick={nextSlide}
-          className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity z-20"
-          aria-label="Volgende foto"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="sm:w-5 sm:h-5"><path d="M9 18l6-6-6-6"/></svg>
-        </button>
-
-        {/* Dots */}
-        <div className="absolute bottom-3 right-4 sm:bottom-4 sm:right-6 flex gap-1.5 z-20">
-          {heroImages.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => setCurrent(idx)}
-              className={`transition-all ${
-                idx === current ? 'bg-white w-5' : 'bg-white/50 hover:bg-white/80 w-2'
-              } h-2 rounded-full`}
-              aria-label={`Ga naar foto ${idx + 1}`}
+          <div className={`relative w-full h-full ${idx === current ? 'animate-heroZoom' : ''}`}>
+            <Image
+              src={image.src}
+              alt="Judoclub Michigami"
+              fill
+              sizes="100vw"
+              className="object-cover"
+              priority={idx === 0}
             />
-          ))}
+          </div>
+        </div>
+      ))}
+
+      {/* Dark gradient overlays for text legibility */}
+      <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/80 via-black/30 to-black/40" />
+      <div className="absolute inset-0 z-20 bg-gradient-to-r from-[#a90000]/30 to-transparent mix-blend-multiply" />
+
+      {/* Hero content */}
+      <div className="absolute inset-0 z-30 flex flex-col justify-center px-5 sm:px-10 lg:px-14">
+        <div className="max-w-2xl">
+          <div className="flex items-center gap-3 mb-4">
+            <Image
+              src="/logo-hd.png"
+              alt="Judoclub Michigami"
+              width={56}
+              height={56}
+              className="w-12 h-12 sm:w-14 sm:h-14 object-contain drop-shadow-lg"
+            />
+            <span className="text-white/80 text-sm sm:text-base font-medium tracking-wide uppercase">
+              Judoclub Michigami
+            </span>
+          </div>
+
+          <h1 className="text-3xl sm:text-4xl lg:text-6xl font-extrabold text-white leading-tight drop-shadow-lg">
+            Judo voor jong & oud
+          </h1>
+
+          <p className="mt-3 sm:mt-4 text-base sm:text-lg lg:text-2xl text-white/90 font-light drop-shadow-md max-w-xl">
+            Van kleuters tot volwassenen — recreatief of competitief, in Steenbergen & Oud-Vossemeer.
+          </p>
+
+          <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3">
+            <a
+              href="/inschrijven"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#a90000] px-6 py-3 text-base font-semibold text-white shadow-lg shadow-red-900/40 transition-all hover:bg-[#8c0000] hover:scale-[1.03] active:scale-95"
+            >
+              <PlayCircle className="w-5 h-5" />
+              Gratis proefles
+            </a>
+            <a
+              href="/leden"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-white/15 backdrop-blur-md px-6 py-3 text-base font-semibold text-white ring-1 ring-white/40 transition-all hover:bg-white/25 hover:scale-[1.03] active:scale-95"
+            >
+              Lid worden
+              <ArrowRight className="w-5 h-5" />
+            </a>
+          </div>
         </div>
       </div>
 
-      {/* Welkom banner — verplaatst van Wat is Judo tab */}
-      <div className="mt-4 rounded-2xl overflow-hidden shadow-lg border border-[#fce0e0]">
-        <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] p-4 sm:p-6 text-white">
-          <div className="flex items-center gap-3 mb-2">
-            <ClubLogo className="w-10 h-10 object-contain flex-shrink-0" />
-            <h3 className="text-xl sm:text-2xl font-bold">🥋 Welkom bij Judoclub Michigami!</h3>
-          </div>
-          <p className="text-white/90 text-sm sm:text-base">Judo voor jong en oud — van kleuters tot volwassenen, recreatief of competitief.</p>
-        </div>
+      {/* Navigation arrows */}
+      <button
+        onClick={prevSlide}
+        className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity z-40"
+        aria-label="Vorige foto"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="sm:w-5 sm:h-5"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <button
+        onClick={nextSlide}
+        className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity z-40"
+        aria-label="Volgende foto"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="sm:w-5 sm:h-5"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+
+      {/* Dots */}
+      <div className="absolute bottom-4 right-4 sm:bottom-5 sm:right-6 flex gap-1.5 z-40">
+        {heroImages.map((_, idx) => (
+          <button
+            key={idx}
+            onClick={() => setCurrent(idx)}
+            className={`transition-all ${
+              idx === current ? 'bg-white w-5' : 'bg-white/50 hover:bg-white/80 w-2'
+            } h-2 rounded-full`}
+            aria-label={`Ga naar foto ${idx + 1}`}
+          />
+        ))}
       </div>
     </div>
   );
