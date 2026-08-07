@@ -83,8 +83,12 @@ export default function SignUpPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#f5f5f0] px-4">
-      <div className="absolute top-6 left-6">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#f5f5f0] px-4">
+      {/* Decorative background blobs */}
+      <div className="pointer-events-none absolute -top-24 -right-24 h-72 w-72 rounded-full bg-[#a90000]/10 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-[#a90000]/10 blur-3xl" />
+
+      <div className="absolute top-6 left-6 z-10">
         <Link href="/" className="flex items-center gap-2 text-sm font-medium text-[#a90000] hover:text-[#8c0000]">
           <svg viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5">
             <path fillRule="evenodd" d="M9.793 14.707a1 1 0 010-1.414L12.179 11H5a1 1 0 110-2h7.179l-2.386-2.386a1 1 0 111.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
@@ -93,23 +97,23 @@ export default function SignUpPage() {
         </Link>
       </div>
 
-      <div className="w-full max-w-md rounded-xl border border-gray-200 bg-white p-8 shadow-lg">
+      <div className="relative z-10 w-full max-w-md rounded-3xl border border-white/60 bg-white/90 p-8 shadow-[0_8px_40px_-8px_rgba(169,0,0,0.18)] backdrop-blur-xl">
         {/* Logo */}
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 h-16 w-16">
+          <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-[#fdf6f6] to-white p-1 shadow-sm ring-4 ring-[#a90000]/10">
             <img
               src="/logo-hd.png"
               alt="Judoclub Michigami"
               className="h-16 w-16 object-contain rounded-full"
             />
           </div>
-          <h1 className="text-2xl font-bold text-[#2a2a2a]">Lid Registreren</h1>
+          <h1 className="font-display text-3xl font-bold text-[#2a2a2a]">Lid Registreren</h1>
           <p className="mt-1 text-sm text-gray-500">Judoclub Michigami</p>
         </div>
 
         {/* Error message */}
         {error && (
-          <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700 border border-red-200">
+          <div className="mb-4 rounded-xl bg-red-50 p-3 text-sm text-red-700 border border-red-200">
             {error}
           </div>
         )}
@@ -127,7 +131,7 @@ export default function SignUpPage() {
               autoComplete="name"
               required
               defaultValue={name}
-              className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+              className="w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm transition-all focus:border-[#a90000] focus:outline-none focus:ring-2 focus:ring-[#a90000]/20"
               placeholder="Jan Jansen"
             />
           </div>
@@ -143,7 +147,7 @@ export default function SignUpPage() {
               autoComplete="email"
               required
               defaultValue={email}
-              className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+              className="w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm transition-all focus:border-[#a90000] focus:outline-none focus:ring-2 focus:ring-[#a90000]/20"
               placeholder="jan@voorbeeld.nl"
             />
           </div>
@@ -159,7 +163,7 @@ export default function SignUpPage() {
               autoComplete="new-password"
               required
               minLength={6}
-              className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+              className="w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm transition-all focus:border-[#a90000] focus:outline-none focus:ring-2 focus:ring-[#a90000]/20"
               placeholder="Minimaal 6 karakters"
             />
           </div>
@@ -175,7 +179,7 @@ export default function SignUpPage() {
               autoComplete="new-password"
               required
               minLength={6}
-              className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+              className="w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm transition-all focus:border-[#a90000] focus:outline-none focus:ring-2 focus:ring-[#a90000]/20"
               placeholder="Herhaal je wachtwoord"
             />
           </div>

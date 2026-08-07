@@ -28,7 +28,7 @@ export function ContactSection() {
         {/* Contact Form */}
         <div className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] overflow-hidden">
           <div className="p-4 sm:p-5 border-b border-[#e8eaed]">
-            <h2 className="text-lg sm:text-xl font-bold text-[#8c0000]">Contactformulier</h2>
+            <h2 className="text-lg sm:text-xl font-bold text-[#8c0000] section-title">Contactformulier</h2>
           </div>
           <div className="p-2">
             <iframe
@@ -47,7 +47,7 @@ export function ContactSection() {
         <div className="space-y-6">
           {/* Club Info */}
           <div className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] p-4 sm:p-6">
-            <h2 className="text-lg sm:text-xl font-bold text-[#8c0000] mb-4">
+            <h2 className="text-lg sm:text-xl font-bold text-[#8c0000] mb-4 section-title">
               {contactInfo.clubName}
             </h2>
             <div className="space-y-3 text-sm sm:text-base text-gray-600">
@@ -83,7 +83,7 @@ export function ContactSection() {
 
           {/* Social Links */}
           <div className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] p-4 sm:p-6">
-            <h2 className="text-lg sm:text-xl font-bold text-[#8c0000] mb-4">
+            <h2 className="text-lg sm:text-xl font-bold text-[#8c0000] mb-4 section-title">
               Volg ons
             </h2>
             <div className="flex flex-wrap gap-3">
@@ -126,7 +126,7 @@ export function ContactSection() {
      {/* Location Map */}
           <div className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] overflow-hidden">
             <div className="p-4 sm:p-5 border-b border-[#e8eaed]">
-              <h2 className="text-lg sm:text-xl font-bold text-[#8c0000]">Onze locatie</h2>
+              <h2 className="text-lg sm:text-xl font-bold text-[#8c0000] section-title">Onze locatie</h2>
             </div>
             <div className="p-4 space-y-3">
               <div className="flex items-start gap-3">

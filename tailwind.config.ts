@@ -65,9 +65,18 @@ const config: Config = {
 			},
 			animation: {
 				heroZoom: 'heroZoom 7s ease-out forwards',
-			}
+			},
+			fontFamily: {
+				display: ['var(--font-oswald)', 'var(--font-rokkitt)', 'Impact', 'sans-serif'],
+				heading: ['var(--font-rokkitt)', 'Georgia', 'serif'],
+				body: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+			},
+			boxShadow: {
+				card: '0 1px 3px 0 rgb(0 0 0 / 0.06), 0 4px 16px -2px rgb(169 0 0 / 0.05)',
+				'card-hover': '0 4px 12px -2px rgb(0 0 0 / 0.10), 0 12px 32px -4px rgb(169 0 0 / 0.12)',
+			},
 		}
-  },
+	},
   plugins: [tailwindcssAnimate],
 };
 export default config;

@@ -120,7 +120,7 @@ export function HeroSlider() {
             </span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl lg:text-6xl font-extrabold text-white leading-tight drop-shadow-lg">
+          <h1 className="font-display text-4xl sm:text-5xl lg:text-7xl font-bold text-white leading-[1.05] drop-shadow-xl">
             Judo voor jong & oud
           </h1>
 

@@ -33,7 +33,7 @@ export function SidebarContent({ activeSection, onSelect }: { activeSection: Sec
       {/* Logo / Brand */}
       <div className="p-4 border-b border-[#e8eaed] flex flex-col items-center">
         <AnimatedCard variants={subtleHover}>
-          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#fdf6f6] to-white border-2 border-[#c00000]/10 flex items-center justify-center mb-2 shadow-sm">
+          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#fdf6f6] to-white border-2 border-[#c00000]/15 flex items-center justify-center mb-2 shadow-sm ring-4 ring-white/40">
             <Image src="/logo.png" alt="Judoclub Michigami" width={72} height={72} className="object-contain" />
           </div>
         </AnimatedCard>
@@ -63,8 +63,8 @@ export function SidebarContent({ activeSection, onSelect }: { activeSection: Sec
               {!searchQuery.trim() && (
                 <div className="flex items-center">
                   <AnimatedButton onClick={() => onSelect(groupHubMap[group.label] as Section)} variants={subtleHover}>
-                    <div className="flex-1 flex items-center gap-2 px-2 py-1.5 text-xs font-semibold text-gray-400 uppercase tracking-wider hover:text-gray-600 transition-colors">
-                      <span className="text-sm">{group.emoji}</span>
+                    <div className="flex-1 flex items-center gap-2 px-2 py-1.5 text-[11px] font-bold text-gray-500 uppercase tracking-wider hover:text-[#c00000] transition-colors">
+                      <span className="text-base leading-none">{group.emoji}</span>
                       <span>{group.label}</span>
                     </div>
                   </AnimatedButton>
@@ -100,13 +100,13 @@ export function SidebarContent({ activeSection, onSelect }: { activeSection: Sec
                           transition={{ duration: 0.2 }}
                           className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all ${
                             activeSection === item.key
-                              ? 'bg-[#fdf6f6] text-[#c00000] font-medium'
+                              ? 'bg-gradient-to-r from-[#fdf6f6] to-white text-[#c00000] font-semibold shadow-sm ring-1 ring-[#c00000]/10'
                               : 'text-gray-600 hover:bg-[#f8f9fa] hover:text-gray-800'
                           }`}>
                         {item.icon}
                         <span className="truncate">{item.label}</span>
                         {activeSection === item.key && (
-                          <div className="w-1 h-1 rounded-full bg-[#a90000] ml-auto flex-shrink-0" />
+                          <div className="w-1.5 h-4 rounded-full bg-gradient-to-b from-[#c00000] to-[#a90000] ml-auto flex-shrink-0" />
                         )}
                       </motion.div>
                     </AnimatedButton>

@@ -46,7 +46,7 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
         <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
           <div className="relative">
             <div className="px-4 py-3 border-b border-gray-100/50 flex items-center justify-between">
-              <h3 className="font-bold text-gray-800 flex items-center gap-2">
+              <h3 className="font-bold text-gray-800 flex items-center gap-2 section-title">
                 <Calendar className="w-4 h-4" style={{ color: '#c00000' }} /> Agenda
               </h3>
               <button onClick={() => onNavigate('agenda')} className="text-xs font-medium hover:underline" style={{ color: '#c00000' }}>
@@ -73,7 +73,7 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
 
       {/* Bento Grid — Snel naar */}
       <div>
-        <h2 className="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
+        <h2 className="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2 section-title">
           <Sparkles className="w-5 h-5 text-[#c00000]" /> Snel naar...
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 items-stretch">

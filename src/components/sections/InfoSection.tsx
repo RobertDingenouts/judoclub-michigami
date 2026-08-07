@@ -62,7 +62,7 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
                   <Calendar className="w-5 h-5 text-[#c00000]" />
                 </div>
                 <div className="space-y-4">
-                  <h3 className="font-bold text-gray-800 mb-2">Onze geschiedenis</h3>
+                  <h3 className="font-bold text-gray-800 mb-2 section-title">Onze geschiedenis</h3>
                   {clubInfo.history.split('\n\n').map((paragraph, i) => {
                     const headerMatch = paragraph.match(/^##\s+(.+)$/);
                     if (headerMatch) {
@@ -84,7 +84,7 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
         <TabsContent value="leiding" className="space-y-4 mt-4">
           <Card className="border-0 shadow-sm">
             <CardContent className="p-4 sm:p-6 space-y-4">
-              <h3 className="font-bold text-gray-800 flex items-center gap-2">
+              <h3 className="font-bold text-gray-800 flex items-center gap-2 section-title">
                 <Users className="w-5 h-5 text-[#c00000]" /> Huidige leiding
               </h3>
               <p className="text-sm text-gray-600 leading-relaxed">
@@ -112,7 +112,7 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
 
           <Card className="border-0 shadow-sm">
             <CardContent className="p-4 sm:p-6 space-y-3">
-              <h3 className="font-bold text-gray-800 flex items-center gap-2">
+              <h3 className="font-bold text-gray-800 flex items-center gap-2 section-title">
                 <Award className="w-5 h-5 text-[#c00000]" /> Oprichter & Erfenis
               </h3>
               <div className="p-4 rounded-xl bg-gradient-to-br from-[#fdf6f6] to-white border border-[#fce0e0]">
@@ -135,7 +135,7 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
         <TabsContent value="judo" className="space-y-4 mt-4">
           <Card className="border-0 shadow-sm">
             <CardContent className="p-4 sm:p-6 space-y-4">
-              <h3 className="font-bold text-gray-800 text-lg">Wat is judo?</h3>
+              <h3 className="font-bold text-gray-800 text-lg section-title">Wat is judo?</h3>
               {clubInfo.whatIsJudo.split('\n\n').map((paragraph, i) => {
                 if (paragraph.startsWith('## ')) {
                   return <h4 key={i} className="font-bold text-base text-[#c00000] mt-6 mb-2 first:mt-0">{paragraph.replace('## ', '')}</h4>;
