@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, AlertTriangle, Check, ExternalLink } from 'lucide-react';
+import { X, AlertTriangle, Check, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 import { membershipInfo } from '@/data/membership';
 
 export function SignupConfirmationModal({ open, onClose, signupUrl }: { open: boolean; onClose: () => void; signupUrl: string }) {
@@ -98,22 +99,18 @@ export function SignupConfirmationModal({ open, onClose, signupUrl }: { open: bo
 
                 {/* Action buttons */}
                 <div className="flex flex-col gap-2 pt-2">
-                  <a
+                  <Link
                     href={signupUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    onClick={() => handleOpenChange(false)}
                     className={`flex items-center justify-center gap-2 w-full px-6 py-3 rounded-xl font-bold text-sm sm:text-base transition-all ${
                       confirmed
                         ? 'bg-gradient-to-r from-[#a90000] to-[#c00000] text-white hover:from-[#8c0000] hover:to-[#a00000] shadow-md hover:shadow-lg'
-                        : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                        : 'bg-gray-200 text-gray-400 cursor-not-allowed pointer-events-none'
                     }`}
-                    onClick={(e) => {
-                      if (!confirmed) e.preventDefault();
-                    }}
                   >
-                    <ExternalLink className="w-4 h-4" />
+                    <ArrowRight className="w-4 h-4" />
                     Doorgaan naar inschrijfformulier
-                  </a>
+                  </Link>
 
                   <button
                     onClick={() => handleOpenChange(false)}

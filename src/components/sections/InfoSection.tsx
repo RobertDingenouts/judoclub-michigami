@@ -309,7 +309,7 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
       </Card>
 
       {/* Signup Confirmation Modal */}
-      <SignupConfirmationModal open={signupOpen} onClose={() => setSignupOpen(false)} signupUrl="https://forms.office.com/r/8Vw9kPcLT6" />
+      <SignupConfirmationModal open={signupOpen} onClose={() => setSignupOpen(false)} signupUrl="/inschrijven" />
     </div>
   );
 }

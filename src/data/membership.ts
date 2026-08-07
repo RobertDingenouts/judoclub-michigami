@@ -20,7 +20,7 @@ export const membershipInfo: MembershipInfo = {
   title: 'Lid worden',
   subtitle: 'Word lid van Judoclub Michigami',
   trialLessons: '3 gratis proeflessen',
-  signupUrl: 'https://forms.office.com/r/8Vw9kPcLT6',
+  signupUrl: '/inschrijven',
   signupText: 'Inschrijven',
   tiers: [
     {
