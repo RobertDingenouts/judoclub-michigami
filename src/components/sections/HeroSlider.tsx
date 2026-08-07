@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
-import { ArrowRight, PlayCircle } from 'lucide-react';
+import { PlayCircle, ArrowRight } from 'lucide-react';
+import { openProeflesForm } from '@/lib/form-events';
 
 const heroImages = [
   { src: '/hero/dojo-2024.jpg' },
@@ -40,6 +41,7 @@ const heroImages = [
 export function HeroSlider() {
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const touchStartX = useRef<number | null>(null);
 
   const nextSlide = useCallback(() => {
     setCurrent(prev => (prev + 1) % heroImages.length);
@@ -55,11 +57,27 @@ export function HeroSlider() {
     return () => clearInterval(timer);
   }, [isPaused, nextSlide]);
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+    if (Math.abs(deltaX) > 40) {
+      if (deltaX > 0) prevSlide();
+      else nextSlide();
+    }
+    touchStartX.current = null;
+  };
+
   return (
     <div
-      className="relative h-[440px] sm:h-[520px] lg:h-[600px] w-full overflow-hidden rounded-2xl group/slider shadow-xl shadow-black/10"
+      className="relative h-[440px] sm:h-[520px] lg:h-[600px] w-full overflow-hidden rounded-2xl group/slider shadow-xl shadow-black/10 touch-pan-y"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
       {/* Slides with Ken Burns zoom */}
       {heroImages.map((image, idx) => (
@@ -111,15 +129,15 @@ export function HeroSlider() {
           </p>
 
           <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3">
-            <a
-              href="/inschrijven"
+            <button
+              onClick={openProeflesForm}
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#a90000] px-6 py-3 text-base font-semibold text-white shadow-lg shadow-red-900/40 transition-all hover:bg-[#8c0000] hover:scale-[1.03] active:scale-95"
             >
               <PlayCircle className="w-5 h-5" />
               Gratis proefles
-            </a>
+            </button>
             <a
-              href="/leden"
+              href="/inschrijven"
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-white/15 backdrop-blur-md px-6 py-3 text-base font-semibold text-white ring-1 ring-white/40 transition-all hover:bg-white/25 hover:scale-[1.03] active:scale-95"
             >
               Lid worden
@@ -145,18 +163,25 @@ export function HeroSlider() {
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="sm:w-5 sm:h-5"><path d="M9 18l6-6-6-6"/></svg>
       </button>
 
-      {/* Dots */}
-      <div className="absolute bottom-4 right-4 sm:bottom-5 sm:right-6 flex gap-1.5 z-40">
-        {heroImages.map((_, idx) => (
-          <button
-            key={idx}
-            onClick={() => setCurrent(idx)}
-            className={`transition-all ${
-              idx === current ? 'bg-white w-5' : 'bg-white/50 hover:bg-white/80 w-2'
-            } h-2 rounded-full`}
-            aria-label={`Ga naar foto ${idx + 1}`}
-          />
-        ))}
+      {/* Progress indicator (compact instead of many dots) */}
+      <div className="absolute bottom-4 right-4 sm:bottom-5 sm:right-6 flex items-center gap-2 z-40">
+        <button
+          onClick={prevSlide}
+          className="w-9 h-9 rounded-full bg-black/55 hover:bg-black/75 text-white flex items-center justify-center transition-colors backdrop-blur-sm"
+          aria-label="Vorige foto"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <span className="text-white text-sm font-semibold tabular-nums bg-black/55 backdrop-blur-sm px-3 py-1.5 rounded-full min-w-[64px] text-center">
+          {current + 1} / {heroImages.length}
+        </span>
+        <button
+          onClick={nextSlide}
+          className="w-9 h-9 rounded-full bg-black/55 hover:bg-black/75 text-white flex items-center justify-center transition-colors backdrop-blur-sm"
+          aria-label="Volgende foto"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
       </div>
     </div>
   );
