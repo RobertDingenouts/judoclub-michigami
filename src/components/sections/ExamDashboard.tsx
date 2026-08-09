@@ -1,28 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronDown, ChevronUp, Play, X, Eye, EyeOff } from 'lucide-react';
+import { ChevronDown, ChevronUp, Play, X } from 'lucide-react';
 import { AnimatedCard, AnimatedButton, subtleHover } from '@/components/ui/animated-card';
-import { getTechniqueImage } from '@/data/technique-images';
-import { techniqueCategories } from '@/data/techniques';
-
-/** Map ExamDashboard cat keys → technique-images.ts cat keys */
-const CAT_KEY_MAP: Record<string, string> = {
-  'ukemi-waza': 'valbreken', 'ashi-waza': 'beenworpen', 'koshi-waza': 'heupworpen',
-  'kata-waza': 'schouderworpen', 'te-waza': 'armworpen', 'sutemi-waza': 'offerworpen',
-  'osaekomi-waza': 'houdgrepen', 'shime-waza': 'wurgingen', 'kansetsu-waza': 'armklemmen',
-};
-
-/** Haal de afbeelding op bij een techniek naam */
-function getTechImage(catKey: string, nameJa: string) {
-  const imgKey = CAT_KEY_MAP[catKey];
-  if (!imgKey) return null;
-  const cat = techniqueCategories.find(c => c.key === imgKey);
-  if (!cat) return null;
-  const tech = cat.techniques.find(t => t.name === nameJa);
-  if (!tech) return null;
-  return getTechniqueImage(imgKey, tech.id);
-}
 
 // ==========================================================================
 // TYPES
@@ -280,7 +260,6 @@ export function ExamDashboard() {
   const [fromBeltId, setFromBeltId] = useState('wit');
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
   const [videoModal, setVideoModal] = useState<{ youtubeId: string; nameJa: string; nameNl: string } | null>(null);
-  const [showImages, setShowImages] = useState(true);
 
   const selectedBelt = BELT_LEVELS.find(b => b.id === selectedBeltId)!;
   const fromBelt = BELT_LEVELS.find(b => b.id === fromBeltId);
@@ -405,18 +384,10 @@ export function ExamDashboard() {
                   <div className="grid gap-2 pt-2 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                     {techniques.map((tech, idx) => {
                       const num = catId === 'ukemi-waza' ? (idx + 1) : (viewMode === 'new' ? (prev + idx + 1) : (idx + 1));
-                      const techImg = getTechImage(catId, tech.nameJa);
-                      const hasImg = techImg?.available;
-                      const imgSrc = techImg?.thumbnail;
 
                       return (
                         <div key={tech.id} className={`p-2 sm:p-3 rounded-lg border-l-4 shadow-sm hover:shadow-md transition-all ${tech.forbidden ? 'border-l-red-500 bg-red-50' : 'border-l-[#a90000] bg-white'}`}>
                           <div className="flex items-start gap-2">
-                            {showImages && hasImg && imgSrc && (
-                              <div className="flex-shrink-0 w-10 h-10 rounded overflow-hidden border border-gray-200">
-                                <img src={imgSrc} alt={tech.nameJa} className="w-full h-full object-cover" />
-                              </div>
-                            )}
                             <span className={`font-semibold text-sm flex-1 ${tech.forbidden ? 'text-red-500' : 'text-gray-800'}`}>
                               {num}. {tech.nameJa}
                             </span>
@@ -513,16 +484,6 @@ export function ExamDashboard() {
                 ))}
               </select>
             )}
-          </div>
-
-          {/* Image Toggle */}
-          <div className="flex justify-end">
-            <AnimatedButton onClick={() => setShowImages(!showImages)} variants={subtleHover}>
-              <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${showImages ? 'bg-[#a90000] text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}>
-                {showImages ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
-                {showImages ? 'Foto\'s tonen' : 'Foto\'s verbergen'}
-              </div>
-            </AnimatedButton>
           </div>
         </div>
       </div>
