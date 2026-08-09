@@ -90,8 +90,8 @@ export async function PATCH(
       })
     }
 
-    // Set password if provided
-    if (body.tempPassword && body.tempPassword.trim()) {
+    // Set password if provided (only when the member has a linked user account)
+    if (body.tempPassword && body.tempPassword.trim() && member.userId) {
       const passwordHash = await hashPassword(body.tempPassword.trim())
       await db.user.update({
         where: { id: member.userId },

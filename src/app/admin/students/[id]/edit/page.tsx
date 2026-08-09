@@ -110,25 +110,35 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
     setSuccess(false)
 
     const formData = new FormData(e.currentTarget)
-    const body: Record<string, any> = {
-      firstName: formData.get('firstName') as string,
-      lastName: formData.get('lastName') as string,
-      email: formData.get('email') as string || null,
-      phone: formData.get('phone') as string || null,
-      dateOfBirth: formData.get('dateOfBirth') as string || null,
-      currentBelt: formData.get('currentBelt') as string || null,
-      location: formData.get('location') as string || null,
-      joinDate: formData.get('joinDate') as string || null,
-      role: formData.get('role') as string || null,
-      isActive: formData.get('isActive') === 'on',
-      trainingGroups: JSON.parse(formData.get('trainingGroups') as string || '[]'),
-      primaryGroup: formData.get('primaryGroup') as string || null,
-      emergencyContactName: formData.get('emergencyContactName') as string || null,
-      emergencyContactPhone: formData.get('emergencyContactPhone') as string || null,
-      medicalNotes: formData.get('medicalNotes') as string || null,
-    }
 
     try {
+      // trainingGroups komt van meerdere checkboxes -> FormData geeft een
+      // comma-string (geen JSON). Parse veilig naar een array.
+      const rawGroups = formData.getAll('trainingGroups')
+      const trainingGroups =
+        rawGroups.length > 0
+          ? rawGroups.map((g) => String(g))
+          : JSON.parse((formData.get('trainingGroups') as string) || '[]')
+
+      const body: Record<string, any> = {
+        firstName: formData.get('firstName') as string,
+        lastName: formData.get('lastName') as string,
+        email: formData.get('email') as string || null,
+        phone: formData.get('phone') as string || null,
+        dateOfBirth: formData.get('dateOfBirth') as string || null,
+        currentBelt: formData.get('currentBelt') as string || null,
+        location: formData.get('location') as string || null,
+        joinDate: formData.get('joinDate') as string || null,
+        role: formData.get('role') as string || null,
+        isActive: formData.get('isActive') === 'on',
+        trainingGroups,
+        primaryGroup: formData.get('primaryGroup') as string || null,
+        emergencyContactName: formData.get('emergencyContactName') as string || null,
+        emergencyContactPhone: formData.get('emergencyContactPhone') as string || null,
+        medicalNotes: formData.get('medicalNotes') as string || null,
+        tempPassword: (formData.get('tempPassword') as string) || '',
+      }
+
       const res = await fetch(`/api/admin/students/${student.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
