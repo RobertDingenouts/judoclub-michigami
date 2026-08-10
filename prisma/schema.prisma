@@ -8,15 +8,27 @@ datasource db {
 }
 
 model User {
-  id             String         @id @default(cuid())
-  email          String?        @unique
-  passwordHash   String?
-  name           String?
-  imageUrl       String?
-  role           Role           @default(MEMBER)
-  currentBelt    BeltLevel?
-  joinDate       DateTime?
-  is_active      Boolean        @default(true)
+  id               String         @id @default(cuid())
+  email            String?        @unique
+  passwordHash     String?
+  name             String?
+  imageUrl         String?
+  role             Role           @default(MEMBER)
+  currentBelt      BeltLevel?
+  joinDate         DateTime?
+  is_active        Boolean        @default(true)
+
+  // E-mailverificatie
+  emailVerified      DateTime?
+  emailVerifyToken   String?    @unique
+  emailVerifyExpires DateTime?
+  // Het nieuwe adres dat wacht op bevestiging (oude blijft login tot bevestigd)
+  pendingEmail       String?
+
+  // Wachtwoord-reset
+  resetToken     String?    @unique
+  resetTokenExpires DateTime?
+
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
   courseProgress CourseProgress[]

@@ -6,6 +6,7 @@ import { cookies } from 'next/headers'
 import { db } from './db'
 import type { Role } from '@prisma/client'
 import * as bcrypt from 'bcryptjs'
+import { randomBytes } from 'crypto'
 
 // ============================================================================
 // Session types & config
@@ -63,6 +64,15 @@ export async function hashPassword(password: string): Promise<string> {
 
 export async function verifyPassword(password: string, hash: string): Promise<boolean> {
   return bcrypt.compare(password, hash)
+}
+
+// ============================================================================
+// Token helpers (email verification & password reset)
+// ============================================================================
+
+/** Genereert een cryptografisch veilige token voor verificatie/reset. */
+export function generateToken(): string {
+  return randomBytes(32).toString('hex')
 }
 
 // ============================================================================

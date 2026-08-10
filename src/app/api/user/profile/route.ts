@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import { getCurrentUser } from '@/lib/auth'
+import { generateToken } from '@/lib/auth'
 import { db } from '@/lib/db'
+import { sendEmail, buildEmailChangeConfirmEmail, buildEmailChangeNoticeEmail } from '@/lib/email'
 
 export const dynamic = 'force-dynamic'
 
@@ -52,18 +54,60 @@ export async function PATCH(request: Request) {
 
     // Track important changes for admin notification
     const importantChanges: string[] = []
+    let emailChangePending = false
 
-    // If email is being changed, update user record too
+    // If email is being changed: veilig proces.
+    // Oude adres blijft login tot het nieuwe bevestigd is.
     if (email && email !== (user.email || '')) {
-      const existing = await db.user.findUnique({ where: { email } })
-      if (existing) {
-        return NextResponse.json({ error: 'Dit e-mailadres is al in gebruik' }, { status: 400 })
+      const normalized = email.trim().toLowerCase()
+      if (normalized === user.email?.toLowerCase()) {
+        // geen echte wijziging
+      } else {
+        const existing = await db.user.findFirst({
+          where: { email: normalized, NOT: { id: user.id } },
+        })
+        if (existing) {
+          return NextResponse.json({ error: 'Dit e-mailadres is al in gebruik' }, { status: 400 })
+        }
+
+        const token = generateToken()
+        const expires = new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 uur
+
+        // Zet pendingEmail + token; het oude adres blijft actief als login
+        await db.user.update({
+          where: { id: user.id },
+          data: {
+            pendingEmail: normalized,
+            emailVerifyToken: token,
+            emailVerifyExpires: expires,
+          },
+        })
+
+        // Bevestigingsmail naar NIEUW adres
+        try {
+          const tpl = buildEmailChangeConfirmEmail(user.name || 'lid', normalized, token)
+          await sendEmail({ to: normalized, subject: tpl.subject, html: tpl.html })
+        } catch (mailErr) {
+          console.error('Verificatiemail nieuw adres mislukt:', mailErr)
+          // Niet blokkeren: gebruiker kan later opnieuw bevestigen
+        }
+
+        // Beveiligingsmelding naar OUD adres
+        if (user.email) {
+          try {
+            const notice = buildEmailChangeNoticeEmail(user.name || 'lid', normalized)
+            await sendEmail({ to: user.email, subject: notice.subject, html: notice.html })
+          } catch (mailErr) {
+            console.error('Beveiligingsmelding oud adres mislukt:', mailErr)
+          }
+        }
+
+        importantChanges.push(`E-mail wijziging aangevraagd: ${user.email || '(geen)'} → ${normalized} (wacht op bevestiging)`)
+        emailChangePending = true
+
+        // email NOOIT direct overschrijven — pas na bevestiging via verify-email
+        // We overschrijven member.email ook nog niet; dat gebeurt bij verificatie.
       }
-      importantChanges.push(`E-mail: ${user.email || '(geen)'} → ${email}`)
-      await db.user.update({
-        where: { id: user.id },
-        data: { email },
-      })
     }
 
     // Check for other important changes
@@ -146,6 +190,7 @@ export async function PATCH(request: Request) {
       success: true,
       member: updatedMember,
       importantChanges,
+      emailChangePending,
     })
   } catch (error) {
     console.error('Update profile error:', error)

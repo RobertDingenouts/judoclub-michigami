@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getCurrentUser } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { verifyPassword, hashPassword } from '@/lib/auth'
+import { sendEmail, buildPasswordChangedEmail } from '@/lib/email'
 
 export const dynamic = 'force-dynamic'
 
@@ -38,8 +39,18 @@ export async function POST(request: Request) {
     // Update password
     await db.user.update({
       where: { id: user.id },
-      data: { passwordHash: newPasswordHash },
+      data: { passwordHash: newPasswordHash, emailVerified: user.emailVerified || new Date() },
     })
+
+    // Beveiligingsmelding
+    if (user.email) {
+      try {
+        const tpl = buildPasswordChangedEmail(user.name || 'lid')
+        await sendEmail({ to: user.email, subject: tpl.subject, html: tpl.html })
+      } catch (mailErr) {
+        console.error('Wachtwoord-gewijzigd mail mislukt:', mailErr)
+      }
+    }
 
     return NextResponse.json({ success: true, message: 'Wachtwoord succesvol gewijzigd' })
   } catch (error) {

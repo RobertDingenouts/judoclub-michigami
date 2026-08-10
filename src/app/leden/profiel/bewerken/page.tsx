@@ -32,6 +32,8 @@ interface ProfileEditData {
   emergencyContactPhone: string
   medicalNotes: string
   imageUrl?: string | null
+  emailVerified?: string | null
+  pendingEmail?: string | null
 }
 
 export default function ProfileEditPage() {
@@ -91,6 +93,8 @@ export default function ProfileEditPage() {
           emergencyContactPhone: p.member?.emergencyContactPhone || '',
           medicalNotes: p.member?.medicalNotes || '',
           imageUrl: p.imageUrl || null,
+          emailVerified: p.emailVerified || null,
+          pendingEmail: p.pendingEmail || null,
         }
         setProfile(profileData)
         setForm(profileData)
@@ -166,7 +170,11 @@ export default function ProfileEditPage() {
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Fout bij opslaan')
 
-      setSuccess('Profiel succesvol bijgewerkt!')
+      let successMsg = 'Profiel succesvol bijgewerkt!'
+      if (data.emailChangePending) {
+        successMsg = 'Profiel bijgewerkt! We hebben een bevestigingsmail gestuurd naar je nieuwe adres. Je oude adres blijft werken tot je bevestigt.'
+      }
+      setSuccess(successMsg)
       const updatedProfile = { ...form, imageUrl: uploadedImageUrl }
       setProfile(updatedProfile)
       setForm(updatedProfile)
@@ -373,6 +381,22 @@ export default function ProfileEditPage() {
           {success && (
             <div className="mb-6 rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-700 flex items-center gap-2">
               {success}
+            </div>
+          )}
+
+          {/* E-mailverificatie status */}
+          {form && !form.emailVerified && !form.pendingEmail && (
+            <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800 flex items-center gap-2">
+              <span>⚠️</span>
+              <span>Je e-mailadres is nog niet bevestigd. Controleer je inbox voor de bevestigingsmail (of vraag een nieuwe aan via uitloggen en opnieuw registreren).</span>
+            </div>
+          )}
+          {form && form.pendingEmail && (
+            <div className="mb-6 rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-800 flex items-center gap-2">
+              <span>📧</span>
+              <span>
+                Er wacht een bevestiging op <strong>{form.pendingEmail}</strong>. Je oude adres blijft actief tot je de mail hebt bevestigd.
+              </span>
             </div>
           )}
 

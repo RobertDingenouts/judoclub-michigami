@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { isAdmin, hashPassword } from '@/lib/auth'
+import { sendEmail, buildAdminWelcomeEmail } from '@/lib/email'
 import type { BeltLevel, Role, ExamStatus } from '@prisma/client'
 
 export const dynamic = 'force-dynamic'
@@ -95,8 +96,22 @@ export async function PATCH(
       const passwordHash = await hashPassword(body.tempPassword.trim())
       await db.user.update({
         where: { id: member.userId },
-        data: { passwordHash },
+        data: { passwordHash, emailVerified: new Date() },
       })
+
+      // Welkomstmail met tijdelijk wachtwoord (best-effort)
+      if (body.email) {
+        try {
+          const tpl = buildAdminWelcomeEmail(
+            member.firstName || (body.firstName as string) || 'lid',
+            body.email.trim().toLowerCase(),
+            body.tempPassword.trim()
+          )
+          await sendEmail({ to: body.email.trim().toLowerCase(), subject: tpl.subject, html: tpl.html })
+        } catch (mailErr) {
+          console.error('Welkomstmail mislukt:', mailErr)
+        }
+      }
     }
 
     return NextResponse.json({ success: true, member: updatedMember })

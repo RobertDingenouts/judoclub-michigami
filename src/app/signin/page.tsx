@@ -32,6 +32,29 @@ export default function SignInPage() {
   const router = useRouter()
   const [email, setEmail] = useState('')
   const [error, setError] = useState<string | null>(null)
+  const [forgotOpen, setForgotOpen] = useState(false)
+  const [forgotEmail, setForgotEmail] = useState('')
+  const [forgotStatus, setForgotStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
+  const [forgotMsg, setForgotMsg] = useState('')
+
+  async function handleForgot(e: React.FormEvent) {
+    e.preventDefault()
+    setForgotStatus('sending')
+    setForgotMsg('')
+    try {
+      const res = await fetch('/api/auth/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: forgotEmail }),
+      })
+      const data = await res.json()
+      if (!res.ok || !data.success) throw new Error(data.error || 'Kon verzoek niet verwerken')
+      setForgotStatus('sent')
+    } catch (err: any) {
+      setForgotStatus('error')
+      setForgotMsg(err.message || 'Er is een fout opgetreden')
+    }
+  }
 
   async function handleSubmit(formData: FormData) {
     setError(null)
@@ -139,6 +162,48 @@ export default function SignInPage() {
 
           <SubmitButton />
         </form>
+
+        <div className="mt-4 text-center">
+          <button
+            type="button"
+            onClick={() => { setForgotOpen(!forgotOpen); setForgotStatus('idle'); setForgotMsg('') }}
+            className="text-sm text-gray-500 hover:text-[#a90000] underline-offset-2 hover:underline"
+          >
+            Wachtwoord vergeten?
+          </button>
+        </div>
+
+        {forgotOpen && (
+          <div className="mt-4 rounded-xl border border-gray-200 bg-gray-50 p-4">
+            {forgotStatus === 'sent' ? (
+              <p className="text-sm text-green-700">
+                Als dit e-mailadres bij ons bekend is, hebben we een reset-link gestuurd. Controleer je inbox.
+              </p>
+            ) : (
+              <form onSubmit={handleForgot} className="space-y-3">
+                <p className="text-xs text-gray-600">Vul je e-mailadres in en we sturen je een link om je wachtwoord te resetten.</p>
+                <input
+                  type="email"
+                  required
+                  value={forgotEmail}
+                  onChange={(e) => setForgotEmail(e.target.value)}
+                  placeholder="jeroen@voorbeeld.nl"
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+                />
+                {forgotStatus === 'error' && (
+                  <p className="text-xs text-red-600">{forgotMsg}</p>
+                )}
+                <button
+                  type="submit"
+                  disabled={forgotStatus === 'sending'}
+                  className="w-full rounded-md bg-[#a90000] px-4 py-2 text-sm font-medium text-white hover:bg-[#8c0000] disabled:opacity-50"
+                >
+                  {forgotStatus === 'sending' ? 'Bezig...' : 'Verstuur reset-link'}
+                </button>
+              </form>
+            )}
+          </div>
+        )}
 
         <p className="mt-6 text-center text-sm text-gray-500">
           Nog geen account?{' '}
