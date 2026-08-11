@@ -49,8 +49,9 @@ export function TechniquesSection() {
                   >
                     <div className="flex items-start gap-3">
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-gray-800 text-sm">{tech.dutch}</h3>
-                        <p className="text-xs text-gray-500 mt-0.5">{tech.name}</p>
+                        <h3 className="font-semibold text-gray-800 text-base leading-tight">{tech.japanese}</h3>
+                        <p className="text-xs text-gray-600 mt-1">{tech.dutch}</p>
+                        <p className="text-[11px] text-gray-400 mt-0.5">{tech.name}</p>
                       </div>
                       {expandedTech === tech.id ? <EyeOff className="w-4 h-4 text-gray-400 flex-shrink-0" /> : <Eye className="w-4 h-4 text-gray-400 flex-shrink-0" />}
                     </div>
