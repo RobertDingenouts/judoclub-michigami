@@ -83,7 +83,7 @@ export function NewsSlider({ articles, onNavigate }: { articles: NewsArticle[]; 
       onTouchEnd={handleTouchEnd}
     >
       {/* Header bar */}
-      <div className="px-4 py-3 border-b border-[#b08d3e]/20 flex items-center justify-between">
+      <div className="px-4 py-3 border-b border-[#2a2a2a]/10 flex items-center justify-between">
         <h3 className="font-bold text-[#1c1915] flex items-center gap-2 section-title">
           <Sparkles className="w-4 h-4" style={{ color: '#a90000' }} /> Nieuws
         </h3>

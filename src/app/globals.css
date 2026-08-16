@@ -126,7 +126,7 @@
    SHADCN/UI COLORS — Light Mode (:root)
    ============================================ */
 :root {
-  --background: #fbf9f4;
+  --background: #f6f1e7;
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -143,7 +143,7 @@
   --destructive: oklch(0.577 0.245 27.325);
   --border: #e8e0d0;
   --input: #e8e0d0;
-  --ring: #b08d3e;
+  --ring: #a90000;
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -214,7 +214,7 @@
     overflow-x: hidden;
     max-width: 100vw;
     font-family: var(--font-body);
-    background-color: var(--washi-50);
+    background-color: var(--washi-100);
   }
   #__next {
     overflow-x: hidden;
@@ -374,27 +374,27 @@
 
   /* Washi paper background — subtle fiber texture */
   .bg-washi {
-    background-color: var(--washi-50);
+    background-color: var(--washi-100);
     background-image:
-      radial-gradient(ellipse 80% 50% at 20% -10%, rgba(169, 0, 0, 0.045), transparent),
-      radial-gradient(ellipse 60% 40% at 90% 0%, rgba(212, 168, 67, 0.06), transparent),
-      repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(28, 25, 21, 0.012) 2px, rgba(28, 25, 21, 0.012) 3px),
-      repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(28, 25, 21, 0.010) 2px, rgba(28, 25, 21, 0.010) 3px);
+      radial-gradient(ellipse 90% 60% at 25% -10%, rgba(169, 0, 0, 0.035), transparent),
+      radial-gradient(ellipse 60% 50% at 100% 110%, rgba(28, 25, 21, 0.03), transparent),
+      repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(28, 25, 21, 0.022) 3px, rgba(28, 25, 21, 0.022) 4px),
+      repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(28, 25, 21, 0.018) 3px, rgba(28, 25, 21, 0.018) 4px);
   }
 
-  /* Washi card — warm paper surface with gold hairline */
+  /* Washi card — warm paper surface with sumi hairline */
   .card-washi {
     background:
       linear-gradient(160deg, rgba(255, 255, 255, 0.75), rgba(251, 249, 244, 0.55)),
       var(--washi-100);
-    border: 1px solid rgba(176, 141, 62, 0.22);
+    border: 1px solid rgba(28, 25, 21, 0.10);
     box-shadow:
       0 1px 2px rgba(28, 25, 21, 0.04),
       0 6px 20px -8px rgba(28, 25, 21, 0.08);
     transition: box-shadow 0.35s ease, transform 0.35s ease, border-color 0.35s ease;
   }
   .card-washi:hover {
-    border-color: rgba(176, 141, 62, 0.45);
+    border-color: rgba(28, 25, 21, 0.22);
     box-shadow:
       0 2px 4px rgba(28, 25, 21, 0.05),
       0 14px 34px -10px rgba(169, 0, 0, 0.14);
@@ -416,39 +416,6 @@
     box-shadow:
       0 2px 4px rgba(28, 25, 21, 0.05),
       0 14px 34px -10px rgba(39, 70, 110, 0.16);
-  }
-
-  /* Corner accents — gold L-brackets (traditional frame corners) */
-  .frame-corners {
-    position: relative;
-  }
-  .frame-corners::before,
-  .frame-corners::after {
-    content: "";
-    position: absolute;
-    width: 14px;
-    height: 14px;
-    border-color: var(--kin-500);
-    border-style: solid;
-    opacity: 0.7;
-    pointer-events: none;
-    transition: width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
-  }
-  .frame-corners::before {
-    top: 6px;
-    left: 6px;
-    border-width: 1.5px 0 0 1.5px;
-  }
-  .frame-corners::after {
-    bottom: 6px;
-    right: 6px;
-    border-width: 0 1.5px 1.5px 0;
-  }
-  .frame-corners:hover::before,
-  .frame-corners:hover::after {
-    width: 22px;
-    height: 22px;
-    opacity: 1;
   }
 
   /* Hanko — red seal stamp (brand mark) */
@@ -493,33 +460,10 @@
     letter-spacing: 0.08em;
   }
 
-  /* Gold hairline divider with center diamond */
+  /* Minimal hairline divider (used on dark hero) */
   .divider-kin {
-    position: relative;
     height: 1px;
-    background: linear-gradient(90deg, transparent, var(--kin-400) 20%, var(--kin-400) 80%, transparent);
-  }
-  .divider-kin::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 6px;
-    height: 6px;
-    transform: translate(-50%, -50%) rotate(45deg);
-    background: var(--kin-400);
-  }
-
-  /* Asanoha (hemp leaf) subtle pattern overlay — used on dark surfaces */
-  .pattern-asanoha {
-    background-image: url("data:image/svg+xml,%3Csvg width='56' height='100' viewBox='0 0 56 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M28 0L56 25L56 75L28 100L0 75L0 25Z M28 0L28 100 M0 25L56 75 M56 25L0 75 M0 50L56 50 M28 25L28 75' fill='none' stroke='%23d4a843' stroke-width='0.6'/%3E%3C/svg%3E");
-    background-size: 56px 100px;
-  }
-
-  /* Seigaiha (blue ocean waves) — subtle repeating arcs */
-  .pattern-seigaiha {
-    background-image: url("data:image/svg+xml,%3Csvg width='80' height='40' viewBox='0 0 80 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23a90000' stroke-width='0.8'%3E%3Ccircle cx='40' cy='40' r='36'/%3E%3Ccircle cx='40' cy='40' r='28'/%3E%3Ccircle cx='40' cy='40' r='20'/%3E%3Ccircle cx='40' cy='40' r='12'/%3E%3Ccircle cx='40' cy='40' r='4'/%3E%3Ccircle cx='0' cy='40' r='36'/%3E%3Ccircle cx='0' cy='40' r='28'/%3E%3Ccircle cx='0' cy='40' r='20'/%3E%3Ccircle cx='0' cy='40' r='12'/%3E%3Ccircle cx='0' cy='40' r='4'/%3E%3Ccircle cx='80' cy='40' r='36'/%3E%3Ccircle cx='80' cy='40' r='28'/%3E%3Ccircle cx='80' cy='40' r='20'/%3E%3Ccircle cx='80' cy='40' r='12'/%3E%3Ccircle cx='80' cy='40' r='4'/%3E%3C/g%3E%3C/svg%3E");
-    background-size: 80px 40px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.65), transparent);
   }
 
   /* Enso brush circle — decorative */
@@ -582,22 +526,22 @@
     box-shadow: 0 4px 14px -2px rgba(169, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
   .btn-outline-kin {
-    background: rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.08);
     color: #fff;
-    border: 1px solid rgba(212, 168, 67, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.45);
     backdrop-filter: blur(8px);
     transition: all 0.25s ease;
   }
   .btn-outline-kin:hover {
-    background: rgba(212, 168, 67, 0.15);
-    border-color: var(--kin-400);
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.85);
   }
 
   /* Focus ring — gold */
   .focus-kin:focus {
     outline: none;
-    box-shadow: 0 0 0 2px var(--washi-50), 0 0 0 4px rgba(212, 168, 67, 0.6);
-    border-color: var(--kin-500);
+    box-shadow: 0 0 0 2px var(--washi-50), 0 0 0 4px rgba(169, 0, 0, 0.35);
+    border-color: var(--shu-500);
   }
 
   /* Scrollbar — subtle sumi */

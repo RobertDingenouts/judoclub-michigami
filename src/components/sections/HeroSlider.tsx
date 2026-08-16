@@ -104,27 +104,15 @@ export function HeroSlider() {
       <div className="absolute inset-0 z-20 bg-gradient-to-t from-[#14120e]/90 via-[#14120e]/35 to-[#14120e]/45" />
       <div className="absolute inset-0 z-20 bg-gradient-to-r from-[#14120e]/60 via-transparent to-transparent" />
       {/* Vermilion ember glow, bottom-left */}
-      <div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-[#a90000]/25 blur-3xl z-20" />
-
-      {/* Asanoha pattern whisper — top right */}
-      <div className="absolute top-0 right-0 w-1/3 h-full pattern-asanoha opacity-[0.05] z-20 pointer-events-none" />
-
-      {/* Gold hairline frame — inset, traditional */}
-      <div className="absolute inset-3 sm:inset-4 z-30 pointer-events-none border border-[#d4a843]/35 rounded-xl" />
-      <div className="absolute inset-3 sm:inset-4 z-30 pointer-events-none">
-        <span className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-[#d4a843]/80 rounded-tl-xl" />
-        <span className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-[#d4a843]/80 rounded-tr-xl" />
-        <span className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-[#d4a843]/80 rounded-bl-xl" />
-        <span className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-[#d4a843]/80 rounded-br-xl" />
-      </div>
+      <div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-[#a90000]/12 blur-3xl z-20" />
 
       {/* Vertical kanji — 柔道 (judo), right edge, classical */}
       <div className="absolute right-6 sm:right-9 top-1/2 -translate-y-1/2 z-30 hidden sm:flex flex-col items-center gap-4 pointer-events-none">
         <span className="text-vertical font-mincho text-3xl lg:text-4xl text-white/85 tracking-[0.5em] drop-shadow-lg">
           柔道
         </span>
-        <span className="w-px h-10 bg-gradient-to-b from-[#d4a843]/80 to-transparent" />
-        <span className="text-vertical text-[10px] lg:text-xs text-[#d4a843]/90 tracking-[0.4em] font-medium">
+        <span className="w-px h-10 bg-gradient-to-b from-white/50 to-transparent" />
+        <span className="text-vertical text-[10px] lg:text-xs text-white/50 tracking-[0.4em] font-medium">
           柔心剛意
         </span>
       </div>
@@ -141,7 +129,7 @@ export function HeroSlider() {
               <span className="text-white/90 text-sm sm:text-base font-medium tracking-[0.18em] uppercase">
                 Judoclub Michigami
               </span>
-              <span className="text-[#d4a843] text-[10px] sm:text-xs font-mincho tracking-[0.3em]">
+              <span className="text-white/60 text-[10px] sm:text-xs font-mincho tracking-[0.3em]">
                 道上
               </span>
             </div>
@@ -176,7 +164,7 @@ export function HeroSlider() {
           </div>
 
           {/* Est. line — mincho, gold */}
-          <p className="mt-6 text-[11px] sm:text-xs text-[#d4a843]/80 font-mincho tracking-[0.35em]">
+          <p className="mt-6 text-[11px] sm:text-xs text-white/55 font-mincho tracking-[0.35em]">
             OPGERICHT 1993 · 心技体
           </p>
         </div>

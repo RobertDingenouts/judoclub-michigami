@@ -31,12 +31,11 @@ export function SidebarContent({ activeSection, onSelect }: { activeSection: Sec
   return (
     <div className="flex flex-col h-full bg-washi">
       {/* Logo / Brand — washi + hanko */}
-      <div className="p-4 border-b border-[#b08d3e]/25 flex flex-col items-center relative overflow-hidden">
+      <div className="p-4 border-b border-[#2a2a2a]/10 flex flex-col items-center relative overflow-hidden">
         {/* Faint seigaiha waves behind the logo */}
-        <div className="absolute inset-0 pattern-seigaiha opacity-[0.05] pointer-events-none" />
         <div className="relative">
           <AnimatedCard variants={subtleHover}>
-            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-white to-[#fbf9f4] border border-[#b08d3e]/40 flex items-center justify-center mb-2 shadow-sm ring-4 ring-white/50">
+            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-white to-[#fbf9f4] border border-[#2a2a2a]/15 flex items-center justify-center mb-2 shadow-sm ring-4 ring-white/50">
               <Image src="/logo.png" alt="Judoclub Michigami" width={72} height={72} className="object-contain" />
             </div>
           </AnimatedCard>
@@ -58,7 +57,7 @@ export function SidebarContent({ activeSection, onSelect }: { activeSection: Sec
             placeholder="Zoek..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 text-sm bg-white/70 border border-[#b08d3e]/25 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#a90000]/30 focus:border-[#a90000] placeholder:text-[#8a7f70] focus-kin"
+            className="w-full pl-9 pr-3 py-2 text-sm bg-white/70 border border-[#2a2a2a]/10 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#a90000]/30 focus:border-[#a90000] placeholder:text-[#8a7f70] focus-kin"
           />
         </div>
       </div>
@@ -128,7 +127,7 @@ export function SidebarContent({ activeSection, onSelect }: { activeSection: Sec
               {/* Separator — gold hairline */}
               {!searchQuery.trim() && (
                 <div className="px-2 py-1.5">
-                  <div className="h-px bg-gradient-to-r from-transparent via-[#b08d3e]/40 to-transparent" />
+                  <div className="h-px bg-gradient-to-r from-transparent via-[#2a2a2a]/15 to-transparent" />
                 </div>
               )}
             </div>
@@ -142,8 +141,7 @@ export function SidebarContent({ activeSection, onSelect }: { activeSection: Sec
       </div>
 
       {/* Footer */}
-      <div className="p-3 border-t border-[#b08d3e]/25 relative overflow-hidden">
-        <div className="absolute inset-0 pattern-asanoha opacity-[0.04] pointer-events-none" />
+      <div className="p-3 border-t border-[#2a2a2a]/10 relative overflow-hidden">
         <div className="relative flex items-center gap-2 justify-center">
           <AnimatedButton as="a" href="https://www.facebook.com/judoclubmichigami" target="_blank" rel="noopener noreferrer" variants={subtleHover}>
             <div className="p-1.5 rounded-md hover:bg-[#a90000]/[0.06] text-[#8a7f70] hover:text-[#a90000] transition-colors">

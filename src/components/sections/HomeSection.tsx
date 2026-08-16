@@ -45,7 +45,7 @@ function BentoTile({
 
   return (
     <button onClick={onClick} className="w-full block text-left group">
-      <div className={`relative overflow-hidden rounded-xl card-washi ${toneClasses} frame-corners p-4 sm:p-5 transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.99] h-full min-h-[140px]`}>
+      <div className={`relative overflow-hidden rounded-xl card-washi ${toneClasses} p-4 sm:p-5 transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.99] h-full min-h-[140px]`}>
         {/* Ghost kanji — large, faint, top-right */}
         <span
           aria-hidden
@@ -90,14 +90,14 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
       <HeroSlider />
 
       {/* Nieuws Slider */}
-      <div className="relative overflow-hidden rounded-xl card-washi frame-corners group transition-all hover:shadow-lg">
+      <div className="relative overflow-hidden rounded-xl card-washi group transition-all hover:shadow-lg">
         <NewsSlider articles={latestNews} onNavigate={() => onNavigate('nieuws')} />
       </div>
 
       {/* Agenda */}
-      <div className="relative overflow-hidden rounded-xl card-washi frame-corners group">
+      <div className="relative overflow-hidden rounded-xl card-washi group">
         <div className="relative">
-          <div className="px-4 py-3 border-b border-[#b08d3e]/20 flex items-center justify-between">
+          <div className="px-4 py-3 border-b border-[#2a2a2a]/10 flex items-center justify-between">
             <h3 className="font-bold text-[#1c1915] flex items-center gap-2 section-title">
               <Calendar className="w-4 h-4" style={{ color: '#a90000' }} /> Agenda
             </h3>
@@ -144,7 +144,7 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
               icon={<Calendar className="w-6 h-6" />}
               large
             >
-              <div className="mt-4 pt-3 border-t border-[#b08d3e]/20 space-y-2">
+              <div className="mt-4 pt-3 border-t border-[#2a2a2a]/10 space-y-2">
                 {upcomingEvents.slice(0, 2).map((item, idx) => (
                   <div key={idx} className="flex items-center gap-2 text-xs text-[#6b6155]">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#a90000] flex-shrink-0" />
@@ -167,7 +167,7 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
             <>
               <ProeflesBottomSheet trigger={
                 <div className="w-full block">
-                  <div className="relative overflow-hidden rounded-xl card-washi frame-corners p-4 transition-all duration-300 hover:shadow-md active:scale-[0.99] group h-full min-h-[140px]">
+                  <div className="relative overflow-hidden rounded-xl card-washi p-4 transition-all duration-300 hover:shadow-md active:scale-[0.99] group h-full min-h-[140px]">
                     <span aria-hidden className="kanji-ghost top-1 right-2 text-6xl opacity-70">試</span>
                     <div className="relative h-full flex flex-col items-center justify-center gap-2 text-center">
                       <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(39,174,96,0.10)' }}><Users className="w-6 h-6 text-[#27ae60]" /></div>
@@ -179,7 +179,7 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
               } />
               <ContactBottomSheet trigger={
                 <div className="w-full block">
-                  <div className="relative overflow-hidden rounded-xl card-washi frame-corners p-4 transition-all duration-300 hover:shadow-md active:scale-[0.99] group h-full min-h-[140px]">
+                  <div className="relative overflow-hidden rounded-xl card-washi p-4 transition-all duration-300 hover:shadow-md active:scale-[0.99] group h-full min-h-[140px]">
                     <span aria-hidden className="kanji-ghost top-1 right-2 text-6xl opacity-70">連</span>
                     <div className="relative h-full flex flex-col items-center justify-center gap-2 text-center">
                       <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(169,0,0,0.08)' }}><Mail className="w-6 h-6" style={{ color: '#a90000' }} /></div>
@@ -190,7 +190,7 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
               } />
               <LocationBottomSheet trigger={
                 <div className="w-full block">
-                  <div className="relative overflow-hidden rounded-xl card-washi frame-corners p-4 transition-all duration-300 hover:shadow-md active:scale-[0.99] group h-full min-h-[140px]">
+                  <div className="relative overflow-hidden rounded-xl card-washi p-4 transition-all duration-300 hover:shadow-md active:scale-[0.99] group h-full min-h-[140px]">
                     <span aria-hidden className="kanji-ghost top-1 right-2 text-6xl opacity-70">地</span>
                     <div className="relative h-full flex flex-col items-center justify-center gap-2 text-center">
                       <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(39,70,110,0.10)' }}><MapPin className="w-6 h-6" style={{ color: '#27466e' }} /></div>
@@ -213,7 +213,7 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
 
       {/* Training Info */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-stretch">
-        <div className="relative overflow-hidden rounded-xl card-washi frame-corners p-5 h-full min-h-[180px] flex flex-col">
+        <div className="relative overflow-hidden rounded-xl card-washi p-5 h-full min-h-[180px] flex flex-col">
           <span aria-hidden className="kanji-ghost -top-2 -right-1 text-8xl opacity-60">水</span>
           <div className="relative flex items-start gap-4">
             <div className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: 'rgba(169,0,0,0.08)' }}>
@@ -234,7 +234,7 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
           </div>
         </div>
 
-        <div className="relative overflow-hidden rounded-xl card-washi card-washi--ai frame-corners p-5 h-full min-h-[180px] flex flex-col">
+        <div className="relative overflow-hidden rounded-xl card-washi card-washi--ai p-5 h-full min-h-[180px] flex flex-col">
           <span aria-hidden className="kanji-ghost -top-2 -right-1 text-8xl opacity-60">金</span>
           <div className="relative flex items-start gap-4">
             <div className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: 'rgba(39,70,110,0.08)' }}>
