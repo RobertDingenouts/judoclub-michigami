@@ -18,7 +18,7 @@ export function Summary({ total, youth, adults, danGrades }: SummaryProps) {
   return (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
       {stats.map((s) => (
-        <div key={s.label} className={`rounded-lg p-4 ${s.color}`}>
+        <div key={s.label} className={`rounded-none p-4 ${s.color}`}>
           <p className="text-2xl font-bold">{s.value}</p>
           <p className="text-xs font-medium opacity-75">{s.label}</p>
         </div>

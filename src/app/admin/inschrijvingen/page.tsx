@@ -31,19 +31,19 @@ export default async function AdminInschrijvingenPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+        <div className="rounded-none border border-gray-200 bg-white p-4 shadow-sm">
           <div className="text-2xl font-bold text-[#2a2a2a]">{stats.total}</div>
           <div className="text-xs text-gray-500">Totaal</div>
         </div>
-        <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 shadow-sm">
+        <div className="rounded-none border border-yellow-200 bg-yellow-50 p-4 shadow-sm">
           <div className="text-2xl font-bold text-yellow-700">{stats.pending}</div>
           <div className="text-xs text-yellow-600">In afwachting</div>
         </div>
-        <div className="rounded-lg border border-green-200 bg-green-50 p-4 shadow-sm">
+        <div className="rounded-none border border-green-200 bg-green-50 p-4 shadow-sm">
           <div className="text-2xl font-bold text-green-700">{stats.approved}</div>
           <div className="text-xs text-green-600">Goedgekeurd</div>
         </div>
-        <div className="rounded-lg border border-red-200 bg-red-50 p-4 shadow-sm">
+        <div className="rounded-none border border-red-200 bg-red-50 p-4 shadow-sm">
           <div className="text-2xl font-bold text-red-700">{stats.rejected}</div>
           <div className="text-xs text-red-600">Afgewezen</div>
         </div>

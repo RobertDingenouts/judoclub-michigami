@@ -20,12 +20,12 @@ export default async function VoortgangPage() {
         <p className="text-sm text-gray-500 mt-1">Examens en bandprogressie</p>
       </div>
 
-      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="rounded-none border border-gray-200 bg-white p-6 shadow-sm">
         <h2 className="mb-4 text-lg font-semibold text-[#2a2a2a]">Examen Geschiedenis</h2>
         {exams.length > 0 ? (
           <div className="space-y-3">
             {exams.map((exam) => (
-              <div key={exam.id} className="flex items-center justify-between rounded-lg border border-gray-100 p-4">
+              <div key={exam.id} className="flex items-center justify-between rounded-none border border-gray-100 p-4">
                 <div>
                   <p className="text-sm font-medium text-[#2a2a2a]">
                     {beltLabel(exam.beltLevel)} Examen
@@ -36,7 +36,7 @@ export default async function VoortgangPage() {
                   </p>
                 </div>
                 <div className="text-right">
-                  <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                  <span className={`inline-flex rounded-none px-2.5 py-0.5 text-xs font-medium ${
                     exam.status === 'COMPLETED_PASSED' ? 'bg-green-100 text-green-800' :
                     exam.status === 'COMPLETED_FAILED' ? 'bg-red-100 text-red-800' :
                     'bg-yellow-100 text-yellow-800'

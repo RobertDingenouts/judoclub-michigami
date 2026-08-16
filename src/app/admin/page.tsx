@@ -88,11 +88,11 @@ export default async function AdminDashboard() {
       </div>
 
       {/* Belt distribution */}
-      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="rounded-none border border-gray-200 bg-white p-6 shadow-sm">
         <h2 className="mb-4 text-lg font-semibold text-[#2a2a2a]">Bandverdeling</h2>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6">
           {Object.entries(beltCounts).map(([belt, count]) => (
-            <div key={belt} className="rounded-lg border border-gray-100 bg-gray-50 p-3 text-center">
+            <div key={belt} className="rounded-none border border-gray-100 bg-gray-50 p-3 text-center">
               <div className="text-2xl font-bold text-[#a90000]">{count}</div>
               <div className="mt-1 truncate text-xs font-medium text-gray-600">{beltLabel(belt)}</div>
             </div>
@@ -104,14 +104,14 @@ export default async function AdminDashboard() {
       </div>
 
       {/* Location distribution */}
-      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="rounded-none border border-gray-200 bg-white p-6 shadow-sm">
         <h2 className="mb-4 text-lg font-semibold text-[#2a2a2a]">Trainingslocaties</h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {locationDistribution.map((item) => {
             const locationName = LOCATION_LABELS_NL[item.location as keyof typeof LOCATION_LABELS_NL] || item.location
             const percentage = totalStudents > 0 ? Math.round((item._count.location / totalStudents) * 100) : 0
             return (
-              <div key={item.location} className="rounded-lg border border-gray-100 bg-gray-50 p-4">
+              <div key={item.location} className="rounded-none border border-gray-100 bg-gray-50 p-4">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-500">📍 {locationName}</p>
@@ -120,7 +120,7 @@ export default async function AdminDashboard() {
                   </div>
                   <Link
                     href={`/admin/students?location=${item.location}`}
-                    className="rounded-md border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:bg-gray-50"
+                    className="rounded-none border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:bg-gray-50"
                   >
                     Bekijk →
                   </Link>
@@ -135,7 +135,7 @@ export default async function AdminDashboard() {
       </div>
 
       {/* Recent exams */}
-      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="rounded-none border border-gray-200 bg-white p-6 shadow-sm">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold text-[#2a2a2a]">Recente Examens</h2>
           <Link href="/admin/exams" className="text-sm text-[#a90000] hover:underline">
@@ -146,9 +146,9 @@ export default async function AdminDashboard() {
         {recentExams.length > 0 ? (
           <div className="space-y-3">
             {recentExams.map((exam) => (
-              <div key={exam.id} className="flex items-center justify-between rounded-lg border border-gray-100 p-4">
+              <div key={exam.id} className="flex items-center justify-between rounded-none border border-gray-100 p-4">
                 <div className="flex items-center gap-4">
-                  <div className={`flex h-10 w-10 items-center justify-center rounded-full text-lg ${
+                  <div className={`flex h-10 w-10 items-center justify-center rounded-none text-lg ${
                     exam.status === 'COMPLETED_PASSED' ? 'bg-green-100 text-green-700' :
                     exam.status === 'COMPLETED_FAILED' ? 'bg-red-100 text-red-700' :
                     'bg-yellow-100 text-yellow-700'
@@ -166,7 +166,7 @@ export default async function AdminDashboard() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${statusBadge(exam.status)}`}>
+                  <span className={`inline-flex rounded-none px-2.5 py-0.5 text-xs font-medium ${statusBadge(exam.status)}`}>
                     {statusLabel(exam.status)}
                   </span>
                   {exam.overallScore != null && (
@@ -182,24 +182,24 @@ export default async function AdminDashboard() {
       </div>
 
       {/* Quick actions */}
-      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="rounded-none border border-gray-200 bg-white p-6 shadow-sm">
         <h2 className="mb-4 text-lg font-semibold text-[#2a2a2a]">Snelle Acties</h2>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-          <Link href="/admin/students" className="flex items-center gap-3 rounded-lg border border-gray-200 p-4 transition-colors hover:border-[#a90000] hover:bg-[#fdf6f6]">
+          <Link href="/admin/students" className="flex items-center gap-3 rounded-none border border-gray-200 p-4 transition-colors hover:border-[#a90000] hover:bg-[#fdf6f6]">
             <span className="text-xl">➕</span>
             <div>
               <p className="text-sm font-medium text-[#2a2a2a]">Student Toevoegen</p>
               <p className="text-xs text-gray-500">Nieuwe student registreren</p>
             </div>
           </Link>
-          <Link href="/admin/exams" className="flex items-center gap-3 rounded-lg border border-gray-200 p-4 transition-colors hover:border-[#a90000] hover:bg-[#fdf6f6]">
+          <Link href="/admin/exams" className="flex items-center gap-3 rounded-none border border-gray-200 p-4 transition-colors hover:border-[#a90000] hover:bg-[#fdf6f6]">
             <span className="text-xl">📝</span>
             <div>
               <p className="text-sm font-medium text-[#2a2a2a]">Examen Plannen</p>
               <p className="text-xs text-gray-500">Nieuw examen registreren</p>
             </div>
           </Link>
-          <Link href="/admin/diplomas" className="flex items-center gap-3 rounded-lg border border-gray-200 p-4 transition-colors hover:border-[#a90000] hover:bg-[#fdf6f6]">
+          <Link href="/admin/diplomas" className="flex items-center gap-3 rounded-none border border-gray-200 p-4 transition-colors hover:border-[#a90000] hover:bg-[#fdf6f6]">
             <span className="text-xl">🎓</span>
             <div>
               <p className="text-sm font-medium text-[#2a2a2a]">Diploma&apos;s Beheren</p>
@@ -214,7 +214,7 @@ export default async function AdminDashboard() {
 
 function StatCard({ title, value, icon, href, subtitle }: { title: string; value: string | number; icon: string; href: string; subtitle: string }) {
   return (
-    <Link href={href} className="group rounded-lg border border-gray-200 bg-white p-5 shadow-sm transition-colors hover:border-[#a90000]">
+    <Link href={href} className="group rounded-none border border-gray-200 bg-white p-5 shadow-sm transition-colors hover:border-[#a90000]">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm font-medium text-gray-500">{title}</p>

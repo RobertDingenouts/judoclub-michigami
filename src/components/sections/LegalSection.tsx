@@ -7,7 +7,7 @@ function LegalSectionItem({ section, index }: { section: { heading: string; cont
   const [expanded, setExpanded] = useState(index === 0);
 
   return (
-    <div className="border border-[#e8eaed] rounded-xl overflow-hidden">
+    <div className="border border-[#e8eaed] rounded-none overflow-hidden">
       <button
         onClick={() => setExpanded(!expanded)}
         className="w-full flex items-center justify-between p-4 sm:p-5 text-left hover:bg-[#fdf6f6] transition-colors"
@@ -43,7 +43,7 @@ function DocumentCard({
   return (
     <button
       onClick={onClick}
-      className={`w-full text-left p-4 sm:p-5 rounded-xl border-2 transition-all ${
+      className={`w-full text-left p-4 sm:p-5 rounded-none border-2 transition-all ${
         isActive
           ? 'border-[#a90000] bg-gradient-to-r from-[#fdf6f6] to-white shadow-sm'
           : 'border-[#e8eaed] bg-white hover:border-[#ddc0c0] hover:shadow-sm'
@@ -51,7 +51,7 @@ function DocumentCard({
     >
       <div className="flex items-start gap-3">
         <div
-          className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center ${
+          className={`flex-shrink-0 w-10 h-10 rounded-none flex items-center justify-center ${
             isActive ? 'bg-gradient-to-br from-[#a90000] to-[#c00000]' : 'bg-[#fdf6f6]'
           }`}
         >
@@ -92,7 +92,7 @@ export function LegalSection() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
+      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-none p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
         <svg
           viewBox="0 0 100 80"
           className="absolute top-0 right-0 w-20 sm:w-24 md:w-32 h-20 sm:h-24 md:h-32 text-white opacity-[0.06]"
@@ -105,7 +105,7 @@ export function LegalSection() {
         </svg>
         <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">Juridisch</h1>
         <p className="text-white/80 mt-1 text-xs sm:text-sm">Algemene voorwaarden, gedragscode en privacyverklaring</p>
-        <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-full mt-2 sm:mt-3" />
+        <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-none mt-2 sm:mt-3" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
@@ -124,7 +124,7 @@ export function LegalSection() {
         {/* Document Content */}
         <div className="lg:col-span-2">
           {activeDoc && (
-            <div className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] overflow-hidden">
+            <div className="bg-white rounded-none shadow-sm border border-[#e8eaed] overflow-hidden">
               <div className="p-4 sm:p-6 border-b border-[#e8eaed]">
                 <h2 className="font-bold text-[#8c0000] text-base sm:text-lg">{activeDoc.title}</h2>
                 {activeDoc.version && (

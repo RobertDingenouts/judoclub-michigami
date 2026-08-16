@@ -20,11 +20,11 @@ export default async function DiplomasPage() {
         <p className="text-sm text-gray-500 mt-1">Jouw verkregen diploma&apos;s en certificaten</p>
       </div>
 
-      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="rounded-none border border-gray-200 bg-white p-6 shadow-sm">
         {diplomas.length > 0 ? (
           <div className="space-y-4">
             {diplomas.map((diploma) => (
-              <div key={diploma.id} className="rounded-lg border border-gray-100 p-4 hover:shadow-md transition-shadow">
+              <div key={diploma.id} className="rounded-none border border-gray-100 p-4 hover:shadow-md transition-shadow">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 flex-wrap">
@@ -32,7 +32,7 @@ export default async function DiplomasPage() {
                         {diploma.type === 'COURSE_JAPANESE' && '🇯🇵 '}
                         {diploma.title}
                       </h3>
-                      <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                      <span className={`inline-flex rounded-none px-2.5 py-0.5 text-xs font-medium ${
                         diploma.type === 'BELT_EXAM' ? 'bg-red-100 text-red-800' :
                         diploma.type === 'COURSE_JAPANESE' ? 'bg-yellow-100 text-yellow-800' :
                         'bg-blue-100 text-blue-800'

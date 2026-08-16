@@ -7,7 +7,7 @@ export function LocationSection() {
   return (
     <div className="space-y-6 pb-4 sm:pb-0">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
+      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-none p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
         <svg
           viewBox="0 0 100 80"
           className="absolute top-0 right-0 w-20 sm:w-24 md:w-32 h-20 sm:h-24 md:h-32 text-white opacity-[0.06]"
@@ -22,13 +22,13 @@ export function LocationSection() {
         <p className="text-white/80 mt-1 text-xs sm:text-sm">
           Waar je onze trainingen kunt vinden
         </p>
-        <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-full mt-2 sm:mt-3" />
+        <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-none mt-2 sm:mt-3" />
       </div>
 
       {/* Location Cards */}
       <div className="space-y-8">
         {locationData.map((location, idx) => (
-          <div key={idx} className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] overflow-hidden">
+          <div key={idx} className="bg-white rounded-none shadow-sm border border-[#e8eaed] overflow-hidden">
             {/* Map */}
             <GoogleMapEmbed
               center={[location.coordinates.lat, location.coordinates.lng]}
@@ -52,7 +52,7 @@ export function LocationSection() {
               </div>
 
               {location.isPrimary && (
-                <div className="mt-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#fdf6f6] text-[#a90000] text-xs font-semibold">
+                <div className="mt-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-none bg-[#fdf6f6] text-[#a90000] text-xs font-semibold">
                   <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>

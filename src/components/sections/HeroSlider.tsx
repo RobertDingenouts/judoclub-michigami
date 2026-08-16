@@ -108,6 +108,10 @@ export function HeroSlider() {
 
       {/* Vertical kanji — 柔道 (judo), right edge, classical */}
       <div className="absolute right-6 sm:right-9 top-1/2 -translate-y-1/2 z-30 hidden sm:flex flex-col items-center gap-4 pointer-events-none">
+        {/* Enso brush circle — draws itself, then breathes */}
+        <svg width="64" height="64" viewBox="0 0 100 100" className="mb-2" aria-hidden>
+          <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="7" strokeLinecap="round" className="enso-draw" transform="rotate(-90 50 50)" />
+        </svg>
         <span className="text-vertical font-mincho text-3xl lg:text-4xl text-white/85 tracking-[0.5em] drop-shadow-lg">
           柔道
         </span>
@@ -122,7 +126,7 @@ export function HeroSlider() {
         <div className="max-w-2xl">
           {/* Brand row: hanko seal + name */}
           <div className="flex items-center gap-3 mb-5">
-            <span className="hanko hanko--lg w-11 h-11 sm:w-12 sm:h-12 text-lg sm:text-xl rotate-[-4deg]">
+            <span className="hanko hanko--lg w-11 h-11 sm:w-12 sm:h-12 text-lg sm:text-xl animate-hankoStamp">
               道
             </span>
             <div className="flex items-baseline gap-2.5">
@@ -173,14 +177,14 @@ export function HeroSlider() {
       {/* Navigation arrows */}
       <button
         onClick={prevSlide}
-        className="absolute left-5 sm:left-7 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity z-40 backdrop-blur-sm border border-white/15"
+        className="absolute left-5 sm:left-7 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-none bg-black/40 hover:bg-black/60 text-white flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity z-40 backdrop-blur-sm border border-white/15"
         aria-label="Vorige foto"
       >
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="sm:w-5 sm:h-5"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
       <button
         onClick={nextSlide}
-        className="absolute right-5 sm:right-7 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity z-40 backdrop-blur-sm border border-white/15"
+        className="absolute right-5 sm:right-7 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-none bg-black/40 hover:bg-black/60 text-white flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity z-40 backdrop-blur-sm border border-white/15"
         aria-label="Volgende foto"
       >
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="sm:w-5 sm:h-5"><path d="M9 18l6-6-6-6"/></svg>
@@ -190,17 +194,17 @@ export function HeroSlider() {
       <div className="absolute bottom-6 right-6 sm:bottom-8 sm:right-9 flex items-center gap-2 z-40">
         <button
           onClick={prevSlide}
-          className="w-9 h-9 rounded-full bg-black/55 hover:bg-black/75 text-white flex items-center justify-center transition-colors backdrop-blur-sm border border-white/15"
+          className="w-9 h-9 rounded-none bg-black/55 hover:bg-black/75 text-white flex items-center justify-center transition-colors backdrop-blur-sm border border-white/15"
           aria-label="Vorige foto"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 18l-6-6 6-6"/></svg>
         </button>
-        <span className="text-white text-sm font-semibold tabular-nums bg-black/55 backdrop-blur-sm px-3 py-1.5 rounded-full min-w-[64px] text-center border border-white/15">
+        <span className="text-white text-sm font-semibold tabular-nums bg-black/55 backdrop-blur-sm px-3 py-1.5 rounded-none min-w-[64px] text-center border border-white/15">
           {current + 1} / {heroImages.length}
         </span>
         <button
           onClick={nextSlide}
-          className="w-9 h-9 rounded-full bg-black/55 hover:bg-black/75 text-white flex items-center justify-center transition-colors backdrop-blur-sm border border-white/15"
+          className="w-9 h-9 rounded-none bg-black/55 hover:bg-black/75 text-white flex items-center justify-center transition-colors backdrop-blur-sm border border-white/15"
           aria-label="Volgende foto"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 18l6-6-6-6"/></svg>

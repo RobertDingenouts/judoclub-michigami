@@ -134,7 +134,7 @@ export default async function BandOverzichtPage({
 
       {/* Error */}
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+        <div className="rounded-none border border-red-200 bg-red-50 p-4 text-sm text-red-700">
           {error}
         </div>
       )}
@@ -147,7 +147,7 @@ export default async function BandOverzichtPage({
 
       {/* Member list */}
       {members.length === 0 && !error ? (
-        <div className="rounded-lg border border-gray-200 bg-white p-8 text-center text-sm text-gray-400">
+        <div className="rounded-none border border-gray-200 bg-white p-8 text-center text-sm text-gray-400">
           Geen leden gevonden met de huidige filters.
         </div>
       ) : (

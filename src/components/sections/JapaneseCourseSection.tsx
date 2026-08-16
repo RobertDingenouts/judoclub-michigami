@@ -194,7 +194,7 @@ function PlayButton({ term, size = 'md' }: { term: string; size?: 'sm' | 'md' })
   return (
     <button
       onClick={play}
-      className={`${btnPadding} rounded-full bg-[#fdf6f6] hover:bg-[#fce4e4] border border-[#f0d0d0] hover:border-[#a90000] transition-all flex items-center justify-center ${playing ? 'text-[#a90000] scale-110' : 'text-gray-400 hover:text-[#a90000]'}`}
+      className={`${btnPadding} rounded-none bg-[#fdf6f6] hover:bg-[#fce4e4] border border-[#f0d0d0] hover:border-[#a90000] transition-all flex items-center justify-center ${playing ? 'text-[#a90000] scale-110' : 'text-gray-400 hover:text-[#a90000]'}`}
       title="Uitspraak horen"
     >
       {playing
@@ -222,10 +222,10 @@ function Flashcard({ term, onFlip }: { term: JudoTerm; onFlip: () => void }) {
         <div className={`relative w-full h-[340px] sm:h-[360px] transition-transform duration-500 ${flipped ? '[transform:rotateY(180deg)]' : ''}`} style={{ transformStyle: 'preserve-3d' }}>
           {/* Front */}
           <div
-            className="absolute inset-0 bg-white rounded-2xl shadow-lg border-2 border-[#e8eaed] flex flex-col items-center justify-center p-6"
+            className="absolute inset-0 bg-white rounded-none shadow-lg border-2 border-[#e8eaed] flex flex-col items-center justify-center p-6"
             style={{ backfaceVisibility: 'hidden' }}
           >
-            <span className="inline-block px-3 py-1 bg-[#a90000] text-white text-xs font-bold rounded-full mb-4">
+            <span className="inline-block px-3 py-1 bg-[#a90000] text-white text-xs font-bold rounded-none mb-4">
               {term.categorie}
             </span>
             <div className="flex items-center gap-3">
@@ -238,10 +238,10 @@ function Flashcard({ term, onFlip }: { term: JudoTerm; onFlip: () => void }) {
           </div>
           {/* Back */}
           <div
-            className="absolute inset-0 bg-[#fdf6f6] rounded-2xl shadow-lg border-2 border-[#a90000] flex flex-col items-center justify-center p-6"
+            className="absolute inset-0 bg-[#fdf6f6] rounded-none shadow-lg border-2 border-[#a90000] flex flex-col items-center justify-center p-6"
             style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
           >
-            <span className="inline-block px-3 py-1 bg-[#a90000] text-white text-xs font-bold rounded-full mb-3">
+            <span className="inline-block px-3 py-1 bg-[#a90000] text-white text-xs font-bold rounded-none mb-3">
               {term.categorie}
             </span>
             <p className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 text-center break-words w-full">
@@ -256,8 +256,8 @@ function Flashcard({ term, onFlip }: { term: JudoTerm; onFlip: () => void }) {
               const img = getTermImage(term);
               if (img?.available && img.thumbnail) {
                 return (
-                  <div className="mt-2 w-full max-w-[180px] mx-auto rounded-lg border border-[#e8eaed] bg-white">
-                    <img src={img.thumbnail} alt={term.uitspraak} className="w-full h-auto rounded-lg" />
+                  <div className="mt-2 w-full max-w-[180px] mx-auto rounded-none border border-[#e8eaed] bg-white">
+                    <img src={img.thumbnail} alt={term.uitspraak} className="w-full h-auto rounded-none" />
                   </div>
                 );
               }
@@ -267,7 +267,7 @@ function Flashcard({ term, onFlip }: { term: JudoTerm; onFlip: () => void }) {
             {youtubeId && (
               <button
                 onClick={(e) => { e.stopPropagation(); setShowVideo(true); }}
-                className="mt-2 flex items-center gap-1.5 px-3 py-1.5 bg-[#a90000] hover:bg-[#8c0000] text-white text-xs font-semibold rounded-lg transition-colors shadow-sm"
+                className="mt-2 flex items-center gap-1.5 px-3 py-1.5 bg-[#a90000] hover:bg-[#8c0000] text-white text-xs font-semibold rounded-none transition-colors shadow-sm"
               >
                 <Play className="w-3.5 h-3.5" />
                 Bekijk video
@@ -286,11 +286,11 @@ function Flashcard({ term, onFlip }: { term: JudoTerm; onFlip: () => void }) {
           <div className="relative w-full max-w-2xl" onClick={e => e.stopPropagation()}>
             <button
               onClick={() => setShowVideo(false)}
-              className="absolute -top-3 -right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-gray-100 z-10"
+              className="absolute -top-3 -right-3 w-8 h-8 bg-white rounded-none flex items-center justify-center shadow-lg hover:bg-gray-100 z-10"
             >
               <X className="w-4 h-4" />
             </button>
-            <div className="aspect-video rounded-xl overflow-hidden shadow-2xl bg-black">
+            <div className="aspect-video rounded-none overflow-hidden shadow-2xl bg-black">
               <iframe
                 src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1`}
                 title={term.uitspraak}
@@ -385,7 +385,7 @@ function QuizMode({ level, onPass, onNext, onPrev }: { level: JudoLevel; onPass:
 
   if (level.terms.length === 0) {
     return (
-      <div className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] p-6 sm:p-8">
+      <div className="bg-white rounded-none shadow-sm border border-[#e8eaed] p-6 sm:p-8">
         <p className="text-gray-500 text-center">Geen termen beschikbaar voor deze module.</p>
       </div>
     );
@@ -398,28 +398,28 @@ function QuizMode({ level, onPass, onNext, onPrev }: { level: JudoLevel; onPass:
     const percentage = Math.round((score / questions.length) * 100);
     const passed = percentage >= 80;
     return (
-      <div className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] p-6 sm:p-8 text-center relative overflow-hidden">
+      <div className="bg-white rounded-none shadow-sm border border-[#e8eaed] p-6 sm:p-8 text-center relative overflow-hidden">
         {passed && (
           <div className="absolute inset-0 bg-gradient-to-br from-yellow-50 via-green-50 to-transparent opacity-50" />
         )}
         <div className="relative z-10">
-          <div className={`w-20 h-20 rounded-full mx-auto mb-4 flex items-center justify-center ${passed ? 'bg-gradient-to-br from-yellow-400 to-yellow-600' : 'bg-gray-200'}`}>
+          <div className={`w-20 h-20 rounded-none mx-auto mb-4 flex items-center justify-center ${passed ? 'bg-gradient-to-br from-yellow-400 to-yellow-600' : 'bg-gray-200'}`}>
             {passed ? <Trophy className="w-10 h-10 text-white" /> : <RotateCcw className="w-10 h-10 text-gray-400" />}
           </div>
           <h3 className={`text-2xl sm:text-3xl font-bold mb-2 ${passed ? 'text-[#198754]' : 'text-[#dc3545]'}`}>
             {passed ? '🎉 Gefeliciteerd!' : 'Blijf oefenen!'}
           </h3>
           <p className="text-5xl font-bold text-[#8c0000] my-4">{score} / {questions.length}</p>
-          <div className="w-full h-4 bg-gray-100 rounded-full mb-4 overflow-hidden">
+          <div className="w-full h-4 bg-gray-100 rounded-none mb-4 overflow-hidden">
             <div
-              className={`h-full rounded-full transition-all duration-1000 ${passed ? 'bg-gradient-to-r from-green-400 to-green-600' : 'bg-red-400'}`}
+              className={`h-full rounded-none transition-all duration-1000 ${passed ? 'bg-gradient-to-r from-green-400 to-green-600' : 'bg-red-400'}`}
               style={{ width: `${percentage}%` }}
             />
           </div>
           <p className="text-gray-500 mb-2">{percentage}% goed — {passed ? '(≥80% geslaagd!)' : '(min. 80% nodig)'}</p>
           {passed && (
             <div className="mt-3 space-y-2">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-50 border border-yellow-200 rounded-full">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-50 border border-yellow-200 rounded-none">
                 <span className="text-yellow-600 text-lg">🎓</span>
                 <span className="text-sm font-bold text-yellow-700">Diploma ontvangen!</span>
               </div>
@@ -430,7 +430,7 @@ function QuizMode({ level, onPass, onNext, onPrev }: { level: JudoLevel; onPass:
             {passed && onNext && (
               <button
                 onClick={onNext}
-                className="bg-gradient-to-r from-[#a90000] to-[#8c0000] hover:from-[#8c0000] hover:to-[#700000] text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-md hover:shadow-lg"
+                className="bg-gradient-to-r from-[#a90000] to-[#8c0000] hover:from-[#8c0000] hover:to-[#700000] text-white px-6 py-2.5 rounded-none font-semibold text-sm transition-all shadow-md hover:shadow-lg"
               >
                 Volgende band →
               </button>
@@ -438,14 +438,14 @@ function QuizMode({ level, onPass, onNext, onPrev }: { level: JudoLevel; onPass:
             {passed && onPrev && (
               <button
                 onClick={onPrev}
-                className="bg-white border-2 border-[#a90000] text-[#a90000] hover:bg-[#fdf6f6] px-6 py-2.5 rounded-xl font-semibold text-sm transition-colors"
+                className="bg-white border-2 border-[#a90000] text-[#a90000] hover:bg-[#fdf6f6] px-6 py-2.5 rounded-none font-semibold text-sm transition-colors"
               >
                 ← Terug naar modules
               </button>
             )}
             <button
               onClick={startQuiz}
-              className="bg-white border-2 border-gray-200 hover:border-[#a90000] text-gray-600 hover:text-[#a90000] px-6 py-2.5 rounded-xl font-semibold text-sm transition-colors"
+              className="bg-white border-2 border-gray-200 hover:border-[#a90000] text-gray-600 hover:text-[#a90000] px-6 py-2.5 rounded-none font-semibold text-sm transition-colors"
             >
               Opnieuw proberen
             </button>
@@ -470,11 +470,11 @@ function QuizMode({ level, onPass, onNext, onPrev }: { level: JudoLevel; onPass:
   const progress = ((currentIndex + 1) / questions.length) * 100;
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] p-4 sm:p-6">
+    <div className="bg-white rounded-none shadow-sm border border-[#e8eaed] p-4 sm:p-6">
       {/* Progress Bar */}
-      <div className="w-full h-3 bg-gray-100 rounded-full mb-4 overflow-hidden">
+      <div className="w-full h-3 bg-gray-100 rounded-none mb-4 overflow-hidden">
         <div
-          className="h-full bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-full transition-all duration-500"
+          className="h-full bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-none transition-all duration-500"
           style={{ width: `${progress}%` }}
         />
       </div>
@@ -513,7 +513,7 @@ function QuizMode({ level, onPass, onNext, onPrev }: { level: JudoLevel; onPass:
               key={idx}
               onClick={() => handleAnswer(option, idx)}
               disabled={showFeedback}
-              className={`p-3 sm:p-4 rounded-xl border-2 font-semibold text-sm sm:text-base transition-all flex items-center justify-center gap-2 ${btnClass} ${!showFeedback ? 'cursor-pointer hover:shadow-sm' : 'cursor-default'}`}
+              className={`p-3 sm:p-4 rounded-none border-2 font-semibold text-sm sm:text-base transition-all flex items-center justify-center gap-2 ${btnClass} ${!showFeedback ? 'cursor-pointer hover:shadow-sm' : 'cursor-default'}`}
             >
               {showFeedback && option === correctAnswer && <span className="text-lg">✓</span>}
               {showFeedback && option === selected && option !== correctAnswer && <span className="text-lg">✗</span>}
@@ -677,7 +677,7 @@ export function JapaneseCourseSection() {
           </button>
           <button
             onClick={() => setSoundEnabled(!soundEnabled)}
-            className={`p-2 rounded-lg transition-colors ${soundEnabled ? 'text-[#a90000] bg-[#fdf6f6]' : 'text-gray-400'}`}
+            className={`p-2 rounded-none transition-colors ${soundEnabled ? 'text-[#a90000] bg-[#fdf6f6]' : 'text-gray-400'}`}
             title={soundEnabled ? 'Geluid uit' : 'Geluid aan'}
           >
             {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
@@ -685,10 +685,10 @@ export function JapaneseCourseSection() {
         </div>
 
         {/* Belt info header */}
-        <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-4 sm:p-5 text-white shadow-lg relative overflow-hidden">
+        <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-none p-4 sm:p-5 text-white shadow-lg relative overflow-hidden">
           <div className="flex items-center gap-3">
             <div
-              className="w-12 h-12 rounded-xl flex items-center justify-center text-xl font-bold shadow"
+              className="w-12 h-12 rounded-none flex items-center justify-center text-xl font-bold shadow"
               style={{ backgroundColor: selectedLevel.color }}
             >
               {typeof selectedLevel.id === 'number' ? `${selectedLevel.id + 1}` : '📚'}
@@ -698,7 +698,7 @@ export function JapaneseCourseSection() {
               <p className="text-white/70 text-xs sm:text-sm">{selectedLevel.terms.length} termen</p>
             </div>
             {progress.passedLevels[selectedLevel.id] && (
-              <div className="ml-auto flex items-center gap-1 bg-green-500/20 px-3 py-1 rounded-full">
+              <div className="ml-auto flex items-center gap-1 bg-green-500/20 px-3 py-1 rounded-none">
                 <Star className="w-4 h-4 text-yellow-300" />
                 <span className="text-xs font-bold text-green-200">Geslaagd!</span>
               </div>
@@ -707,10 +707,10 @@ export function JapaneseCourseSection() {
         </div>
 
         {/* Mode selector */}
-        <div className="flex bg-[#f5f5f0] rounded-xl p-1">
+        <div className="flex bg-[#f5f5f0] rounded-none p-1">
           <button
             onClick={() => { setMode('learn'); sounds.click(); }}
-            className={`flex-1 py-2.5 rounded-lg font-bold text-sm uppercase transition-all ${
+            className={`flex-1 py-2.5 rounded-none font-bold text-sm uppercase transition-all ${
               mode === 'learn'
                 ? 'bg-[#a90000] text-white shadow-md'
                 : 'text-gray-500 hover:text-gray-700'
@@ -720,7 +720,7 @@ export function JapaneseCourseSection() {
           </button>
           <button
             onClick={() => { setMode('quiz'); sounds.click(); }}
-            className={`flex-1 py-2.5 rounded-lg font-bold text-sm uppercase transition-all ${
+            className={`flex-1 py-2.5 rounded-none font-bold text-sm uppercase transition-all ${
               mode === 'quiz'
                 ? 'bg-[#a90000] text-white shadow-md'
                 : 'text-gray-500 hover:text-gray-700'
@@ -743,16 +743,16 @@ export function JapaneseCourseSection() {
               <button
                 onClick={() => navigateCard('prev')}
                 disabled={cardIndex === 0}
-                className="p-2.5 rounded-lg bg-white border border-[#e8eaed] hover:bg-[#fdf6f6] transition-colors disabled:opacity-30 disabled:cursor-not-allowed shadow-sm pointer-events-auto"
+                className="p-2.5 rounded-none bg-white border border-[#e8eaed] hover:bg-[#fdf6f6] transition-colors disabled:opacity-30 disabled:cursor-not-allowed shadow-sm pointer-events-auto"
               >
                 <ChevronLeft className="w-5 h-5 text-[#a90000]" />
               </button>
 
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg shadow-sm border border-[#e8eaed]">
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-none shadow-sm border border-[#e8eaed]">
                 <span className="text-sm font-bold text-[#a90000]">{cardIndex + 1}</span>
-                <div className="w-16 h-2 bg-gray-100 rounded-full overflow-hidden">
+                <div className="w-16 h-2 bg-gray-100 rounded-none overflow-hidden">
                   <div
-                    className="h-full bg-[#a90000] rounded-full transition-all"
+                    className="h-full bg-[#a90000] rounded-none transition-all"
                     style={{ width: `${((cardIndex + 1) / selectedLevel.terms.length) * 100}%` }}
                   />
                 </div>
@@ -762,7 +762,7 @@ export function JapaneseCourseSection() {
               <button
                 onClick={() => navigateCard('next')}
                 disabled={cardIndex === selectedLevel.terms.length - 1}
-                className="p-2.5 rounded-lg bg-white border border-[#e8eaed] hover:bg-[#fdf6f6] transition-colors disabled:opacity-30 disabled:cursor-not-allowed shadow-sm pointer-events-auto"
+                className="p-2.5 rounded-none bg-white border border-[#e8eaed] hover:bg-[#fdf6f6] transition-colors disabled:opacity-30 disabled:cursor-not-allowed shadow-sm pointer-events-auto"
               >
                 <ChevronRight className="w-5 h-5 text-[#a90000]" />
               </button>
@@ -807,7 +807,7 @@ export function JapaneseCourseSection() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
+      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-none p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
         <svg
           viewBox="0 0 100 80"
           className="absolute top-0 right-0 w-20 sm:w-24 md:w-32 h-20 sm:h-24 md:h-32 text-white opacity-[0.06]"
@@ -827,13 +827,13 @@ export function JapaneseCourseSection() {
           </div>
           <button
             onClick={() => setSoundEnabled(!soundEnabled)}
-            className={`p-2 rounded-lg transition-colors ${soundEnabled ? 'text-white bg-white/20' : 'text-white/40'}`}
+            className={`p-2 rounded-none transition-colors ${soundEnabled ? 'text-white bg-white/20' : 'text-white/40'}`}
             title={soundEnabled ? 'Geluid uit' : 'Geluid aan'}
           >
             {soundEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
           </button>
         </div>
-        <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-full mt-2 sm:mt-3" />
+        <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-none mt-2 sm:mt-3" />
       </div>
 
       {/* Progress overview */}
@@ -841,14 +841,14 @@ export function JapaneseCourseSection() {
         const passedCount = beltOrder.filter(b => progress.passedLevels[b]).length;
         const totalBelts = beltOrder.length;
         return (
-          <div className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] p-4 sm:p-5">
+          <div className="bg-white rounded-none shadow-sm border border-[#e8eaed] p-4 sm:p-5">
             <div className="flex items-center justify-between mb-2">
               <h3 className="font-bold text-gray-800 text-sm">Jouw voortgang</h3>
               <span className="text-xs font-bold text-[#a90000]">{passedCount}/{totalBelts} banden geslaagd</span>
             </div>
-            <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden">
+            <div className="w-full h-3 bg-gray-100 rounded-none overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-[#a90000] to-yellow-500 rounded-full transition-all duration-1000"
+                className="h-full bg-gradient-to-r from-[#a90000] to-yellow-500 rounded-none transition-all duration-1000"
                 style={{ width: `${(passedCount / totalBelts) * 100}%` }}
               />
             </div>
@@ -869,7 +869,7 @@ export function JapaneseCourseSection() {
                 key={level.id}
                 onClick={() => { if (unlocked) { setSelectedLevel(level); sounds.click(); } }}
                 disabled={!unlocked}
-                className={`group rounded-2xl shadow-sm border-b-4 transition-all text-left relative overflow-hidden ${
+                className={`group rounded-none shadow-sm border-b-4 transition-all text-left relative overflow-hidden ${
                   unlocked
                     ? 'bg-white hover:shadow-md cursor-pointer'
                     : 'bg-gray-50 opacity-60 cursor-not-allowed'
@@ -879,7 +879,7 @@ export function JapaneseCourseSection() {
                 {/* Locked overlay */}
                 {!unlocked && (
                   <div className="absolute inset-0 bg-gray-100/60 flex items-center justify-center z-10">
-                    <div className="bg-white rounded-full p-3 shadow-lg">
+                    <div className="bg-white rounded-none p-3 shadow-lg">
                       <Lock className="w-6 h-6 text-gray-400" />
                     </div>
                   </div>
@@ -888,7 +888,7 @@ export function JapaneseCourseSection() {
                 {/* Passed badge */}
                 {passed && (
                   <div className="absolute top-3 right-3 z-20">
-                    <div className="bg-green-500 text-white rounded-full p-1 shadow">
+                    <div className="bg-green-500 text-white rounded-none p-1 shadow">
                       <Star className="w-3 h-3" />
                     </div>
                   </div>
@@ -921,7 +921,7 @@ export function JapaneseCourseSection() {
       </div>
 
       {/* Footer */}
-      <div className="bg-[#fdf6f6] rounded-2xl p-4 sm:p-5 border border-[#e8eaed]">
+      <div className="bg-[#fdf6f6] rounded-none p-4 sm:p-5 border border-[#e8eaed]">
         <p className="text-xs sm:text-sm text-gray-600 leading-relaxed text-center">
           <strong>Hoe werkt het?</strong> — Leer de termen met flashcards, doe dan het examen (min. 80% nodig).
           Haal je een band? Dan ontgrendel je automatisch de volgende! 🥋

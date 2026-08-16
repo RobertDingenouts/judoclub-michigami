@@ -35,7 +35,7 @@ export function SidebarContent({ activeSection, onSelect }: { activeSection: Sec
         {/* Faint seigaiha waves behind the logo */}
         <div className="relative">
           <AnimatedCard variants={subtleHover}>
-            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-white to-[#fbf9f4] border border-[#2a2a2a]/15 flex items-center justify-center mb-2 shadow-sm ring-4 ring-white/50">
+            <div className="w-24 h-24 rounded-none bg-gradient-to-br from-white to-[#fbf9f4] border border-[#2a2a2a]/15 flex items-center justify-center mb-2 shadow-sm ring-4 ring-white/50">
               <Image src="/logo.png" alt="Judoclub Michigami" width={72} height={72} className="object-contain" />
             </div>
           </AnimatedCard>
@@ -114,7 +114,7 @@ export function SidebarContent({ activeSection, onSelect }: { activeSection: Sec
                         {item.icon}
                         <span className="truncate">{item.label}</span>
                         {activeSection === item.key && (
-                          <div className="w-1.5 h-4 rounded-full bg-gradient-to-b from-[#c00000] to-[#8c0000] ml-auto flex-shrink-0" />
+                          <div className="w-1.5 h-4 rounded-none bg-gradient-to-b from-[#c00000] to-[#8c0000] ml-auto flex-shrink-0" />
                         )}
                       </motion.div>
                     </AnimatedButton>

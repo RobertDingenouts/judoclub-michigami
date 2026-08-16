@@ -89,8 +89,8 @@ export default function InschrijvenPage() {
   if (submitted) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#f5f5f0] px-4">
-        <div className="w-full max-w-md rounded-xl border border-gray-200 bg-white p-8 shadow-lg text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+        <div className="w-full max-w-md rounded-none border border-gray-200 bg-white p-8 shadow-lg text-center">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-none bg-green-100">
             <svg className="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
@@ -103,7 +103,7 @@ export default function InschrijvenPage() {
             Controleer je e-mail ({form.email}) voor bevestiging.
           </p>
           <div className="mt-8">
-            <Link href="/" className="inline-flex items-center gap-2 rounded-md bg-[#a90000] px-6 py-2.5 text-sm font-medium text-white hover:bg-[#8c0000]">
+            <Link href="/" className="inline-flex items-center gap-2 rounded-none bg-[#a90000] px-6 py-2.5 text-sm font-medium text-white hover:bg-[#8c0000]">
               Terug naar website
             </Link>
           </div>
@@ -138,23 +138,23 @@ export default function InschrijvenPage() {
 
         {/* Progress steps */}
         <div className="mb-8 flex items-center justify-center gap-4">
-          <div className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium ${step >= 1 ? 'bg-[#a90000] text-white' : 'bg-gray-200 text-gray-500'}`}>
-            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/20 text-xs">1</span>
+          <div className={`flex items-center gap-2 rounded-none px-4 py-2 text-sm font-medium ${step >= 1 ? 'bg-[#a90000] text-white' : 'bg-gray-200 text-gray-500'}`}>
+            <span className="flex h-6 w-6 items-center justify-center rounded-none bg-white/20 text-xs">1</span>
             Persoonlijke gegevens
           </div>
           <div className={`h-px w-8 ${step >= 2 ? 'bg-[#a90000]' : 'bg-gray-300'}`} />
-          <div className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium ${step >= 2 ? 'bg-[#a90000] text-white' : 'bg-gray-200 text-gray-500'}`}>
-            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/20 text-xs">2</span>
+          <div className={`flex items-center gap-2 rounded-none px-4 py-2 text-sm font-medium ${step >= 2 ? 'bg-[#a90000] text-white' : 'bg-gray-200 text-gray-500'}`}>
+            <span className="flex h-6 w-6 items-center justify-center rounded-none bg-white/20 text-xs">2</span>
             Akkoorden & Kosten
           </div>
         </div>
 
         {/* Error */}
         {error && (
-          <div className="mb-6 rounded-lg bg-red-50 p-3 text-sm text-red-700 border border-red-200">{error}</div>
+          <div className="mb-6 rounded-none bg-red-50 p-3 text-sm text-red-700 border border-red-200">{error}</div>
         )}
 
-        <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        <div className="rounded-none border border-gray-200 bg-white p-6 shadow-sm">
           {step === 1 && (
             <div className="space-y-5">
               <h2 className="text-lg font-semibold text-[#2a2a2a]">Persoonlijke gegevens</h2>
@@ -164,13 +164,13 @@ export default function InschrijvenPage() {
                 <div>
                   <label className="mb-1.5 block text-sm font-medium text-gray-700">Voornaam *</label>
                   <input type="text" required value={form.firstName} onChange={e => update('firstName', e.target.value)}
-                    className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+                    className="w-full rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
                     placeholder="Jan" />
                 </div>
                 <div>
                   <label className="mb-1.5 block text-sm font-medium text-gray-700">Achternaam *</label>
                   <input type="text" required value={form.lastName} onChange={e => update('lastName', e.target.value)}
-                    className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+                    className="w-full rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
                     placeholder="Jansen" />
                 </div>
               </div>
@@ -180,13 +180,13 @@ export default function InschrijvenPage() {
                 <div>
                   <label className="mb-1.5 block text-sm font-medium text-gray-700">E-mailadres *</label>
                   <input type="email" required value={form.email} onChange={e => update('email', e.target.value)}
-                    className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+                    className="w-full rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
                     placeholder="jan@voorbeeld.nl" />
                 </div>
                 <div>
                   <label className="mb-1.5 block text-sm font-medium text-gray-700">Telefoonnummer *</label>
                   <input type="tel" required value={form.phone} onChange={e => update('phone', e.target.value)}
-                    className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+                    className="w-full rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
                     placeholder="06-12345678" />
                 </div>
               </div>
@@ -196,12 +196,12 @@ export default function InschrijvenPage() {
                 <div>
                   <label className="mb-1.5 block text-sm font-medium text-gray-700">Geboortedatum *</label>
                   <input type="date" required value={form.dateOfBirth} onChange={e => update('dateOfBirth', e.target.value)}
-                    className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]" />
+                    className="w-full rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]" />
                 </div>
                 <div>
                   <label className="mb-1.5 block text-sm font-medium text-gray-700">Geslacht</label>
                   <select value={form.gender} onChange={e => update('gender', e.target.value)}
-                    className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]">
+                    className="w-full rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]">
                     <option value="">Selecteer...</option>
                     <option value="M">Mannelijk</option>
                     <option value="V">Vrouwelijk</option>
@@ -214,20 +214,20 @@ export default function InschrijvenPage() {
               <div>
                 <label className="mb-1.5 block text-sm font-medium text-gray-700">Straat + huisnummer</label>
                 <input type="text" value={form.address} onChange={e => update('address', e.target.value)}
-                  className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+                  className="w-full rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
                   placeholder="Forumlust 123" />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="mb-1.5 block text-sm font-medium text-gray-700">Postcode</label>
                   <input type="text" value={form.postalCode} onChange={e => update('postalCode', e.target.value)}
-                    className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+                    className="w-full rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
                     placeholder="4881 AA" />
                 </div>
                 <div>
                   <label className="mb-1.5 block text-sm font-medium text-gray-700">Woonplaats</label>
                   <input type="text" value={form.city} onChange={e => update('city', e.target.value)}
-                    className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+                    className="w-full rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
                     placeholder="Steenbergen" />
                 </div>
               </div>
@@ -236,7 +236,7 @@ export default function InschrijvenPage() {
               <div>
                 <label className="mb-1.5 block text-sm font-medium text-gray-700">Trainingslocatie *</label>
                 <select value={form.location} onChange={e => update('location', e.target.value)}
-                  className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+                  className="w-full rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
                   required>
                   <option value="">Selecteer locatie...</option>
                   <option value="STeenbergen">Steenbergen</option>
@@ -249,7 +249,7 @@ export default function InschrijvenPage() {
                 <label className="mb-1.5 block text-sm font-medium text-gray-700">Voorkeursgroep</label>
                 <p className="text-xs text-gray-500 mb-1.5">Selecteer je voorkeur, de admin bepaalt de definitieve indeling.</p>
                 <select value={form.preferredGroup} onChange={e => update('preferredGroup', e.target.value)}
-                  className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]">
+                  className="w-full rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]">
                   <option value="">Selecteer groep...</option>
                   {TRAINING_GROUPS.map(g => (
                     <option key={g.value} value={g.value}>{g.label}</option>
@@ -258,7 +258,7 @@ export default function InschrijvenPage() {
               </div>
 
               {/* Is child? */}
-              <div className="flex items-center gap-2 rounded-lg border border-gray-200 p-3">
+              <div className="flex items-center gap-2 rounded-none border border-gray-200 p-3">
                 <input type="checkbox" id="isChild" checked={form.isChild} onChange={e => update('isChild', e.target.checked)}
                   className="h-4 w-4 rounded border-gray-300 text-[#a90000] focus:ring-[#a90000]" />
                 <label htmlFor="isChild" className="text-sm text-gray-700">
@@ -268,25 +268,25 @@ export default function InschrijvenPage() {
 
               {/* Parent info */}
               {form.isChild && (
-                <div className="space-y-4 rounded-lg border border-gray-200 bg-gray-50 p-4">
+                <div className="space-y-4 rounded-none border border-gray-200 bg-gray-50 p-4">
                   <h3 className="text-sm font-semibold text-[#2a2a2a]">Gegevens ouder/voogd *</h3>
                   <div>
                     <label className="mb-1.5 block text-sm font-medium text-gray-700">Naam ouder/voogd</label>
                     <input type="text" value={form.parentName} onChange={e => update('parentName', e.target.value)}
-                      className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+                      className="w-full rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
                       placeholder="Volledige naam" />
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="mb-1.5 block text-sm font-medium text-gray-700">E-mail ouder/voogd</label>
                       <input type="email" value={form.parentEmail} onChange={e => update('parentEmail', e.target.value)}
-                        className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+                        className="w-full rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
                         placeholder="ouder@voorbeeld.nl" />
                     </div>
                     <div>
                       <label className="mb-1.5 block text-sm font-medium text-gray-700">Telefoon ouder/voogd</label>
                       <input type="tel" value={form.parentPhone} onChange={e => update('parentPhone', e.target.value)}
-                        className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+                        className="w-full rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
                         placeholder="06-12345678" />
                     </div>
                   </div>
@@ -297,18 +297,18 @@ export default function InschrijvenPage() {
               <div>
                 <label className="mb-1.5 block text-sm font-medium text-gray-700">Noodcontact (naam + telefoon)</label>
                 <input type="text" value={form.emergencyContact} onChange={e => update('emergencyContact', e.target.value)}
-                  className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+                  className="w-full rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
                   placeholder="Moeder: 06-12345678" />
               </div>
               <div>
                 <label className="mb-1.5 block text-sm font-medium text-gray-700">Medische notities (allergieën, aandoeningen, etc.)</label>
                 <textarea value={form.medicalNotes} onChange={e => update('medicalNotes', e.target.value)} rows={3}
-                  className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+                  className="w-full rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
                   placeholder="Geen bekende allergieën" />
               </div>
 
               <button type="button" onClick={() => { const err = validateStep1(); if (err) { setError(err); } else { setStep(2); setError(null); } }}
-                className="w-full rounded-md bg-[#a90000] px-4 py-3 text-sm font-medium text-white transition-all hover:bg-[#8c0000] shadow-sm">
+                className="w-full rounded-none bg-[#a90000] px-4 py-3 text-sm font-medium text-white transition-all hover:bg-[#8c0000] shadow-sm">
                 Volgende: Akkoorden & Kosten →
               </button>
             </div>
@@ -319,7 +319,7 @@ export default function InschrijvenPage() {
               <h2 className="text-lg font-semibold text-[#2a2a2a]">Akkoorden & Kosten</h2>
 
               {/* Kosten overzicht */}
-              <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
+              <div className="rounded-none border border-gray-200 bg-gray-50 p-4">
                 <h3 className="text-sm font-semibold text-[#2a2a2a] mb-3">Kostenoverzicht</h3>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
@@ -348,7 +348,7 @@ export default function InschrijvenPage() {
 
               {/* Akkoorden */}
               <div className="space-y-3">
-                <label className="flex items-start gap-3 rounded-lg border border-gray-200 p-3 cursor-pointer hover:bg-gray-50">
+                <label className="flex items-start gap-3 rounded-none border border-gray-200 p-3 cursor-pointer hover:bg-gray-50">
                   <input type="checkbox" checked={form.costAgreed} onChange={e => update('costAgreed', e.target.checked)}
                     className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[#a90000] focus:ring-[#a90000]" />
                   <span className="text-sm text-gray-700">
@@ -356,7 +356,7 @@ export default function InschrijvenPage() {
                   </span>
                 </label>
 
-                <label className="flex items-start gap-3 rounded-lg border border-gray-200 p-3 cursor-pointer hover:bg-gray-50">
+                <label className="flex items-start gap-3 rounded-none border border-gray-200 p-3 cursor-pointer hover:bg-gray-50">
                   <input type="checkbox" checked={form.privacyAgreed} onChange={e => update('privacyAgreed', e.target.checked)}
                     className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[#a90000] focus:ring-[#a90000]" />
                   <span className="text-sm text-gray-700">
@@ -364,7 +364,7 @@ export default function InschrijvenPage() {
                   </span>
                 </label>
 
-                <label className="flex items-start gap-3 rounded-lg border border-gray-200 p-3 cursor-pointer hover:bg-gray-50">
+                <label className="flex items-start gap-3 rounded-none border border-gray-200 p-3 cursor-pointer hover:bg-gray-50">
                   <input type="checkbox" checked={form.termsAgreed} onChange={e => update('termsAgreed', e.target.checked)}
                     className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[#a90000] focus:ring-[#a90000]" />
                   <span className="text-sm text-gray-700">
@@ -372,7 +372,7 @@ export default function InschrijvenPage() {
                   </span>
                 </label>
 
-                <label className="flex items-start gap-3 rounded-lg border border-gray-200 p-3 cursor-pointer hover:bg-gray-50">
+                <label className="flex items-start gap-3 rounded-none border border-gray-200 p-3 cursor-pointer hover:bg-gray-50">
                   <input type="checkbox" checked={form.codeOfConduct} onChange={e => update('codeOfConduct', e.target.checked)}
                     className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[#a90000] focus:ring-[#a90000]" />
                   <span className="text-sm text-gray-700">
@@ -383,7 +383,7 @@ export default function InschrijvenPage() {
                 <div className="border-t border-gray-200 pt-3">
                   <p className="text-sm font-medium text-[#2a2a2a] mb-2">Instellingen</p>
 
-                  <label className="flex items-start gap-3 rounded-lg border border-gray-200 p-3 cursor-pointer hover:bg-gray-50">
+                  <label className="flex items-start gap-3 rounded-none border border-gray-200 p-3 cursor-pointer hover:bg-gray-50">
                     <input type="checkbox" checked={form.portraitRights ?? true} onChange={e => update('portraitRights', e.target.checked)}
                       className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[#a90000] focus:ring-[#a90000]" />
                     <span className="text-sm text-gray-700">
@@ -391,7 +391,7 @@ export default function InschrijvenPage() {
                     </span>
                   </label>
 
-                  <label className="flex items-start gap-3 rounded-lg border border-gray-200 p-3 cursor-pointer hover:bg-gray-50">
+                  <label className="flex items-start gap-3 rounded-none border border-gray-200 p-3 cursor-pointer hover:bg-gray-50">
                     <input type="checkbox" checked={form.nameMention ?? true} onChange={e => update('nameMention', e.target.checked)}
                       className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[#a90000] focus:ring-[#a90000]" />
                     <span className="text-sm text-gray-700">
@@ -404,12 +404,12 @@ export default function InschrijvenPage() {
               {/* Buttons */}
               <div className="flex gap-3">
                 <button type="button" onClick={() => { setStep(1); setError(null); }}
-                  className="flex-1 rounded-md border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                  className="flex-1 rounded-none border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50">
                   ← Terug
                 </button>
                 <button type="button" onClick={() => { const err = validateStep2(); if (err) { setError(err); } else { handleSubmit(); } }}
                   disabled={submitting}
-                  className="flex-1 rounded-md bg-[#a90000] px-4 py-3 text-sm font-medium text-white transition-all hover:bg-[#8c0000] disabled:opacity-50 shadow-sm">
+                  className="flex-1 rounded-none bg-[#a90000] px-4 py-3 text-sm font-medium text-white transition-all hover:bg-[#8c0000] disabled:opacity-50 shadow-sm">
                   {submitting ? (
                     <span className="flex items-center justify-center gap-2">
                       <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">

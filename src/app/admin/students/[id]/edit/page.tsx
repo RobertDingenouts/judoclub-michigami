@@ -96,7 +96,7 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
   if (error && !student) return (
     <div className="p-8">
       <Link href="/admin/students" className="text-gray-400 hover:text-[#a90000] mb-4 inline-block">← Terug</Link>
-      <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-center">
+      <div className="rounded-none border border-red-200 bg-red-50 p-6 text-center">
         <p className="text-red-700">{error}</p>
       </div>
     </div>
@@ -172,15 +172,15 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
       </div>
 
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">{error}</div>
+        <div className="rounded-none border border-red-200 bg-red-50 p-4 text-sm text-red-700">{error}</div>
       )}
       {success && (
-        <div className="rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-700">
+        <div className="rounded-none border border-green-200 bg-green-50 p-4 text-sm text-green-700">
           ✓ Student succesvol bijgewerkt
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm space-y-6">
+      <form onSubmit={handleSubmit} className="rounded-none border border-gray-200 bg-white p-6 shadow-sm space-y-6">
         {/* Personal info */}
         <div>
           <h2 className="text-lg font-semibold text-[#2a2a2a] mb-4">Persoonlijke Gegevens</h2>
@@ -196,7 +196,7 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
               <select
                 name="currentBelt"
                 defaultValue={student.currentBelt || ''}
-                className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+                className="w-full rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
               >
                 <option value="">Geen band</option>
                 {BELTS.map(b => (
@@ -209,7 +209,7 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
               <select
                 name="role"
                 defaultValue={student.user?.role || 'MEMBER'}
-                className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+                className="w-full rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
               >
                 {ROLES.map(r => (
                   <option key={r.value} value={r.value}>{r.label}</option>
@@ -221,7 +221,7 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
               <select
                 name="location"
                 defaultValue={student.location || ''}
-                className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+                className="w-full rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
               >
                 <option value="">Geen locatie</option>
                 <option value="STeenbergen">Steenbergen</option>
@@ -239,7 +239,7 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
             {TRAINING_GROUPS.map(group => {
               const isSelected = (student.trainingGroups || []).includes(group.value)
               return (
-                <label key={group.value} className="flex items-center gap-3 rounded-lg border border-gray-200 p-3 cursor-pointer hover:bg-gray-50">
+                <label key={group.value} className="flex items-center gap-3 rounded-none border border-gray-200 p-3 cursor-pointer hover:bg-gray-50">
                   <input
                     type="checkbox"
                     name="trainingGroups"
@@ -263,7 +263,7 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
               <select
                 name="primaryGroup"
                 defaultValue={student.primaryGroup || ''}
-                className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+                className="w-full rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
               >
                 <option value="">Selecteer hoofdgroep...</option>
                 {TRAINING_GROUPS.filter(g => (student.trainingGroups || []).includes(g.value)).map(g => (
@@ -290,7 +290,7 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
             name="medicalNotes"
             defaultValue={student.medicalNotes || ''}
             rows={3}
-            className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+            className="w-full rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
             placeholder="Allergieën, aandoeningen, etc."
           />
         </div>
@@ -324,13 +324,13 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
           <button
             type="submit"
             disabled={saving}
-            className="inline-flex items-center gap-2 rounded-md bg-[#a90000] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#8c0000] disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-none bg-[#a90000] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#8c0000] disabled:opacity-50"
           >
             {saving ? 'Opslaan...' : 'Opslaan'}
           </button>
           <Link
             href={`/admin/students/${student.id}`}
-            className="inline-flex items-center gap-2 rounded-md border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+            className="inline-flex items-center gap-2 rounded-none border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
           >
             Annuleren
           </Link>
@@ -355,7 +355,7 @@ function FormField({ label, name, type = 'text', defaultValue = '', required = f
         defaultValue={defaultValue}
         required={required}
         placeholder={placeholder}
-        className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+        className="w-full rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
       />
     </div>
   )

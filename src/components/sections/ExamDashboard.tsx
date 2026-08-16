@@ -352,7 +352,7 @@ export function ExamDashboard() {
                   className="w-full p-3 sm:p-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
                 >
                 <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center text-lg sm:text-xl shadow-sm">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-none bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center text-lg sm:text-xl shadow-sm">
                     {cat.icon}
                   </div>
                   <div className="text-left">
@@ -367,7 +367,7 @@ export function ExamDashboard() {
                       +{newCount} nieuw
                     </span>
                   )}
-                  <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center text-lg font-bold ${isNew ? 'bg-gradient-to-br from-green-500 to-green-600 text-white' : 'bg-gradient-to-br from-[#a90000] to-[#8c0000] text-white'} shadow`}>
+                  <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-none flex items-center justify-center text-lg font-bold ${isNew ? 'bg-gradient-to-br from-green-500 to-green-600 text-white' : 'bg-gradient-to-br from-[#a90000] to-[#8c0000] text-white'} shadow`}>
                     {catId === 'ukemi-waza' ? 4 : displayCount}
                   </div>
                   {isExpanded ? (
@@ -386,14 +386,14 @@ export function ExamDashboard() {
                       const num = catId === 'ukemi-waza' ? (idx + 1) : (viewMode === 'new' ? (prev + idx + 1) : (idx + 1));
 
                       return (
-                        <div key={tech.id} className={`p-2 sm:p-3 rounded-lg border-l-4 shadow-sm hover:shadow-md transition-all ${tech.forbidden ? 'border-l-red-500 bg-red-50' : 'border-l-[#a90000] bg-white'}`}>
+                        <div key={tech.id} className={`p-2 sm:p-3 rounded-none border-l-4 shadow-sm hover:shadow-md transition-all ${tech.forbidden ? 'border-l-red-500 bg-red-50' : 'border-l-[#a90000] bg-white'}`}>
                           <div className="flex items-start gap-2">
                             <span className={`font-semibold text-sm flex-1 ${tech.forbidden ? 'text-red-500' : 'text-gray-800'}`}>
                               {num}. {tech.nameJa}
                             </span>
                             {tech.youtubeId && (
                               <AnimatedButton onClick={() => { setVideoModal({ youtubeId: tech.youtubeId!, nameJa: tech.nameJa, nameNl: tech.nameNl }); }} variants={subtleHover}>
-                                <div className="flex-shrink-0 w-7 h-7 rounded-full bg-[#a90000] hover:bg-[#8c0000] text-white flex items-center justify-center transition-colors shadow" title={`Video: ${tech.nameJa}`}>
+                                <div className="flex-shrink-0 w-7 h-7 rounded-none bg-[#a90000] hover:bg-[#8c0000] text-white flex items-center justify-center transition-colors shadow" title={`Video: ${tech.nameJa}`}>
                                   <Play className="w-3.5 h-3.5 ml-0.5" />
                                 </div>
                               </AnimatedButton>
@@ -422,20 +422,20 @@ export function ExamDashboard() {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-4 sm:p-5 text-white shadow-lg overflow-hidden relative">
+      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-none p-4 sm:p-5 text-white shadow-lg overflow-hidden relative">
         <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'40\' height=\'40\' viewBox=\'0 0 40 40\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.05\'%3E%3Cpath d=\'M20 0L40 20L20 40L0 20z\'/%3E%3C/g%3E%3C/svg%3E")' }}></div>
         <h1 className="text-lg sm:text-xl md:text-2xl font-bold relative z-10">Exameneisen</h1>
         <p className="text-white/80 mt-1 text-xs sm:text-sm relative z-10">Kies je bandniveau voor de exameneisen</p>
       </div>
 
       {/* Control Panel */}
-      <div className="bg-white rounded-xl shadow-lg p-4 sm:p-5 relative overflow-hidden border-t-4 border-gradient-to-r from-[#a90000] via-[#DC143C] to-[#FFD700]">
+      <div className="bg-white rounded-none shadow-lg p-4 sm:p-5 relative overflow-hidden border-t-4 border-gradient-to-r from-[#a90000] via-[#DC143C] to-[#FFD700]">
         <div className="space-y-4">
           {/* Belt Buttons */}
           <div>
             <label className="block text-sm font-semibold text-[#a90000] mb-2 uppercase tracking-wide">Band selecteren</label>
             {renderBeltButtons()}
-            <div className="mt-8 p-3 bg-gray-50 rounded-lg border-l-4 border-[#a90000]">
+            <div className="mt-8 p-3 bg-gray-50 rounded-none border-l-4 border-[#a90000]">
               <span className="text-sm text-gray-600">Geselecteerd: </span>
               <strong className="text-sm text-[#a90000]">{selectedBelt.name}</strong>
               {selectedBelt.kyu && <span className="text-sm text-gray-500 ml-1">({selectedBelt.kyu}e kyu)</span>}
@@ -445,7 +445,7 @@ export function ExamDashboard() {
           {/* View Mode Toggle */}
           <div>
             <label className="block text-sm font-semibold text-[#a90000] mb-2 uppercase tracking-wide">Weergave</label>
-            <div className="flex rounded-lg overflow-hidden border-2 border-[#a90000] bg-white">
+            <div className="flex rounded-none overflow-hidden border-2 border-[#a90000] bg-white">
               <button
                 onClick={() => setViewMode('all')}
                 className={`flex-1 py-2 px-3 text-sm font-semibold transition-all ${viewMode === 'all' ? 'bg-[#a90000] text-white' : 'text-gray-600 hover:bg-gray-50'}`}
@@ -467,7 +467,7 @@ export function ExamDashboard() {
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setShowDirectTransition(!showDirectTransition)}
-                className={`w-12 h-6 rounded-full transition-colors relative ${showDirectTransition ? 'bg-[#DC143C]' : 'bg-gray-300'}`}
+                className={`w-12 h-6 rounded-none transition-colors relative ${showDirectTransition ? 'bg-[#DC143C]' : 'bg-gray-300'}`}
               >
                 <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform shadow ${showDirectTransition ? 'left-7' : 'left-1'}`}></div>
               </button>
@@ -477,7 +477,7 @@ export function ExamDashboard() {
               <select
                 value={fromBeltId}
                 onChange={(e) => setFromBeltId(e.target.value)}
-                className="w-full mt-2 p-2 border-2 border-gray-300 rounded-lg text-sm focus:border-[#a90000] focus:outline-none"
+                className="w-full mt-2 p-2 border-2 border-gray-300 rounded-none text-sm focus:border-[#a90000] focus:outline-none"
               >
                 {BELT_LEVELS.filter(b => !b.isSlip).map(belt => (
                   <option key={belt.id} value={belt.id}>{belt.name}</option>
@@ -489,7 +489,7 @@ export function ExamDashboard() {
       </div>
 
       {/* Content Panel */}
-      <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+      <div className="bg-white rounded-none shadow-lg overflow-hidden">
         {/* Content Header */}
         <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] p-3 sm:p-4 flex justify-between items-center relative text-white">
           <h2 className="text-base sm:text-lg font-bold">
@@ -517,7 +517,7 @@ export function ExamDashboard() {
           <h3 className="text-sm font-semibold text-[#a90000] mb-3 uppercase tracking-wide">Extra eisen</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <AnimatedCard variants={subtleHover}>
-              <div className="flex items-center justify-between p-3 sm:p-4 bg-white rounded-xl shadow hover:shadow-lg transition-all">
+              <div className="flex items-center justify-between p-3 sm:p-4 bg-white rounded-none shadow hover:shadow-lg transition-all">
                 <div>
                   <div className="font-bold text-gray-800">Nage-komi</div>
                   <div className="text-xs text-gray-500 mt-0.5">Vrije worp naar keuze</div>
@@ -528,7 +528,7 @@ export function ExamDashboard() {
               </div>
             </AnimatedCard>
             <AnimatedCard variants={subtleHover}>
-              <div className="flex items-center justify-between p-3 sm:p-4 bg-white rounded-xl shadow hover:shadow-lg transition-all">
+              <div className="flex items-center justify-between p-3 sm:p-4 bg-white rounded-none shadow hover:shadow-lg transition-all">
                 <div>
                   <div className="font-bold text-gray-800">Kanteltechnieken</div>
                   <div className="text-xs text-gray-500 mt-0.5">Aantal kanteltechnieken</div>
@@ -545,7 +545,7 @@ export function ExamDashboard() {
       {/* Video Modal */}
       {videoModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4" onClick={() => setVideoModal(null)}>
-          <div className="relative w-full max-w-3xl bg-white rounded-2xl overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
+          <div className="relative w-full max-w-3xl bg-white rounded-none overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
             {/* Modal Header */}
             <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] p-4 flex items-center justify-between">
               <div>
@@ -554,7 +554,7 @@ export function ExamDashboard() {
               </div>
               <button
                 onClick={() => setVideoModal(null)}
-                className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
+                className="w-10 h-10 rounded-none bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
               >
                 <X className="w-5 h-5 text-white" />
               </button>

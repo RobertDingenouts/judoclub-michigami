@@ -64,7 +64,7 @@ export function ImageLightbox({
             alt={`Foto ${currentIndex + 1}`}
             fill
             sizes="(max-width: 1280px) 100vw, 1280px"
-            className="object-contain rounded-lg shadow-2xl"
+            className="object-contain rounded-none shadow-2xl"
           />
         </div>
         {images.length > 1 && (

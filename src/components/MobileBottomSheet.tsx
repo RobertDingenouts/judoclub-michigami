@@ -30,7 +30,7 @@ export function ContactBottomSheet({ trigger }: { trigger?: React.ReactNode }) {
           <div className="grid grid-cols-2 gap-3">
             <a
               href={`tel:${contactInfo.whatsapp}`}
-              className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-gradient-to-br from-[#fdf6f6] to-white border border-[#c00000]/10 active:scale-[0.97] transition-transform"
+              className="flex flex-col items-center gap-2 p-4 rounded-none bg-gradient-to-br from-[#fdf6f6] to-white border border-[#c00000]/10 active:scale-[0.97] transition-transform"
             >
               <Phone className="w-6 h-6" style={{ color: '#c00000' }} />
               <span className="text-xs font-semibold text-gray-700">Bellen</span>
@@ -39,7 +39,7 @@ export function ContactBottomSheet({ trigger }: { trigger?: React.ReactNode }) {
               href={`https://wa.me/31${contactInfo.whatsapp.slice(1)}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-[#25D366]/10 border border-[#25D366]/20 active:scale-[0.97] transition-transform"
+              className="flex flex-col items-center gap-2 p-4 rounded-none bg-[#25D366]/10 border border-[#25D366]/20 active:scale-[0.97] transition-transform"
             >
               <Send className="w-6 h-6 text-[#25D366]" />
               <span className="text-xs font-semibold text-gray-700">WhatsApp</span>
@@ -49,7 +49,7 @@ export function ContactBottomSheet({ trigger }: { trigger?: React.ReactNode }) {
           {/* Email */}
           <a
             href={`mailto:${contactInfo.email}`}
-            className="flex items-center gap-3 p-4 rounded-2xl bg-white border border-[#e8eaed] active:scale-[0.97] transition-transform"
+            className="flex items-center gap-3 p-4 rounded-none bg-white border border-[#e8eaed] active:scale-[0.97] transition-transform"
           >
             <Mail className="w-5 h-5 flex-shrink-0" style={{ color: '#c00000' }} />
             <div className="min-w-0">
@@ -59,7 +59,7 @@ export function ContactBottomSheet({ trigger }: { trigger?: React.ReactNode }) {
           </a>
 
           {/* Address */}
-          <div className="flex items-start gap-3 p-4 rounded-2xl bg-white border border-[#e8eaed]">
+          <div className="flex items-start gap-3 p-4 rounded-none bg-white border border-[#e8eaed]">
             <MapPin className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: '#c00000' }} />
             <div>
               <p className="text-sm font-semibold text-gray-800">{contactInfo.location.name}</p>
@@ -74,7 +74,7 @@ export function ContactBottomSheet({ trigger }: { trigger?: React.ReactNode }) {
               href={contactInfo.facebook}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#1877F2] text-white text-xs font-semibold active:scale-[0.97] transition-transform"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-none bg-[#1877F2] text-white text-xs font-semibold active:scale-[0.97] transition-transform"
             >
               Facebook
             </a>
@@ -82,7 +82,7 @@ export function ContactBottomSheet({ trigger }: { trigger?: React.ReactNode }) {
               href={contactInfo.instagram}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-[#f09433] via-[#dc2743] to-[#bc1888] text-white text-xs font-semibold active:scale-[0.97] transition-transform"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-none bg-gradient-to-r from-[#f09433] via-[#dc2743] to-[#bc1888] text-white text-xs font-semibold active:scale-[0.97] transition-transform"
             >
               Instagram
             </a>
@@ -90,14 +90,14 @@ export function ContactBottomSheet({ trigger }: { trigger?: React.ReactNode }) {
               href={contactInfo.youtube}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#FF0000] text-white text-xs font-semibold active:scale-[0.97] transition-transform"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-none bg-[#FF0000] text-white text-xs font-semibold active:scale-[0.97] transition-transform"
             >
               YouTube
             </a>
           </div>
 
           <DrawerClose asChild>
-            <button className="w-full py-3 rounded-xl bg-gray-100 text-gray-600 font-medium text-sm active:scale-[0.97] transition-transform">
+            <button className="w-full py-3 rounded-none bg-gray-100 text-gray-600 font-medium text-sm active:scale-[0.97] transition-transform">
               Sluiten
             </button>
           </DrawerClose>
@@ -120,7 +120,7 @@ export function LocationBottomSheet({ trigger }: { trigger?: React.ReactNode }) 
         </DrawerHeader>
         <div className="px-4 pb-6 space-y-4">
           {locationData.map((loc, idx) => (
-            <div key={idx} className="bg-white rounded-2xl border border-[#e8eaed] overflow-hidden">
+            <div key={idx} className="bg-white rounded-none border border-[#e8eaed] overflow-hidden">
               {/* Map preview */}
               <iframe
                 src={`https://maps.google.com/maps?q=${encodeURIComponent(loc.address + ' ' + loc.postalCode + ' ' + loc.city)}&output=embed`}
@@ -141,7 +141,7 @@ export function LocationBottomSheet({ trigger }: { trigger?: React.ReactNode }) 
                   </div>
                 </div>
                 {loc.isPrimary && (
-                  <span className="inline-flex items-center gap-1 mt-2 px-2 py-0.5 rounded-full bg-[#fdf6f6] text-[#a90000] text-[10px] font-semibold">
+                  <span className="inline-flex items-center gap-1 mt-2 px-2 py-0.5 rounded-none bg-[#fdf6f6] text-[#a90000] text-[10px] font-semibold">
                     Hoofdlocatie
                   </span>
                 )}
@@ -149,7 +149,7 @@ export function LocationBottomSheet({ trigger }: { trigger?: React.ReactNode }) 
                   href={loc.mapsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-3 inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#a90000] text-white text-xs font-semibold active:scale-[0.97] transition-transform w-full justify-center"
+                  className="mt-3 inline-flex items-center gap-1.5 px-3 py-2 rounded-none bg-[#a90000] text-white text-xs font-semibold active:scale-[0.97] transition-transform w-full justify-center"
                 >
                   <Navigation className="w-3.5 h-3.5" />
                   Open in Google Maps
@@ -159,7 +159,7 @@ export function LocationBottomSheet({ trigger }: { trigger?: React.ReactNode }) 
           ))}
 
           <DrawerClose asChild>
-            <button className="w-full py-3 rounded-xl bg-gray-100 text-gray-600 font-medium text-sm active:scale-[0.97] transition-transform">
+            <button className="w-full py-3 rounded-none bg-gray-100 text-gray-600 font-medium text-sm active:scale-[0.97] transition-transform">
               Sluiten
             </button>
           </DrawerClose>

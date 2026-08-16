@@ -17,7 +17,7 @@ export default async function DiplomaVerifyIndexPage({ searchParams }: { searchP
       <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8 w-full">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-full border-4 border-[#a90000]/20 bg-gradient-to-br from-[#fdf6f6] to-white flex items-center justify-center">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-none border-4 border-[#a90000]/20 bg-gradient-to-br from-[#fdf6f6] to-white flex items-center justify-center">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-8 h-8 text-[#a90000]">
               <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
@@ -30,20 +30,20 @@ export default async function DiplomaVerifyIndexPage({ searchParams }: { searchP
 
         {/* Error message */}
         {error === 'not_found' && (
-          <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6 text-center text-red-700" role="alert">
+          <div className="bg-red-50 border border-red-200 rounded-none p-4 mb-6 text-center text-red-700" role="alert">
             <p className="font-medium">Diploma niet gevonden</p>
             <p className="text-sm mt-1">De verificatiecode is ongeldig of het diploma bestaat niet.</p>
           </div>
         )}
         {error === 'invalid' && (
-          <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6 text-center text-red-700" role="alert">
+          <div className="bg-red-50 border border-red-200 rounded-none p-4 mb-6 text-center text-red-700" role="alert">
             <p className="font-medium">Ongeldige code</p>
             <p className="text-sm mt-1">De verificatiecode kon niet worden geverifieerd.</p>
           </div>
         )}
 
         {/* Form */}
-        <form action="/diploma/verifieren" method="GET" className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
+        <form action="/diploma/verifieren" method="GET" className="bg-white rounded-none shadow-sm border border-gray-100 p-6 space-y-6">
           <div>
             <label htmlFor="code" className="block text-sm font-medium text-gray-700 mb-2">
               Verificatiecode
@@ -57,7 +57,7 @@ export default async function DiplomaVerifyIndexPage({ searchParams }: { searchP
                 name="code"
                 type="text"
                 placeholder="Bijv. JP-A1B2-C3D4"
-                className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 text-sm font-mono text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#a90000] focus:border-transparent transition-all"
+                className="w-full pl-10 pr-4 py-3 rounded-none border border-gray-300 text-sm font-mono text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#a90000] focus:border-transparent transition-all"
                 autoComplete="off"
                 autoCapitalize="characters"
                 required
@@ -70,7 +70,7 @@ export default async function DiplomaVerifyIndexPage({ searchParams }: { searchP
 
           <button
             type="submit"
-            className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-[#a90000] px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-[#8c0000] focus:outline-none focus:ring-2 focus:ring-[#a90000]/50 focus:ring-offset-2"
+            className="w-full inline-flex items-center justify-center gap-2 rounded-none bg-[#a90000] px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-[#8c0000] focus:outline-none focus:ring-2 focus:ring-[#a90000]/50 focus:ring-offset-2"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-5 h-5">
               <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -118,7 +118,7 @@ export default async function DiplomaVerifyIndexPage({ searchParams }: { searchP
 
 function InfoCard({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-100 p-4 hover:border-[#a90000]/50 transition-colors">
+    <div className="bg-white rounded-none border border-gray-100 p-4 hover:border-[#a90000]/50 transition-colors">
       <div className="text-[#a90000] mb-2">{icon}</div>
       <h3 className="font-semibold text-sm text-gray-800">{title}</h3>
       <p className="text-xs text-gray-500 mt-1">{desc}</p>

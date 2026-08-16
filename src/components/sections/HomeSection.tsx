@@ -26,13 +26,13 @@ interface QuickLink {
 }
 
 /** Centered, sharp-cornered quick-link tile — the clean "Snel naar" grid */
-function QuickLinkTile({ link, onClick }: { link: QuickLink; onClick: (s: Section) => void }) {
+function QuickLinkTile({ link, onClick, index }: { link: QuickLink; onClick: (s: Section) => void; index: number }) {
   const t = toneStyle[link.tone];
   return (
-    <button onClick={() => onClick(link.key)} className="group block w-full text-center">
-      <div className={`relative overflow-hidden card-washi ${t.card} p-5 h-full min-h-[150px] flex flex-col items-center justify-center gap-2.5 transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.99]`}>
-        <span aria-hidden className="kanji-ghost -top-3 -right-1 text-7xl opacity-60">{link.kanji}</span>
-        <div className="relative w-11 h-11 flex items-center justify-center" style={{ backgroundColor: t.bg }}>
+    <button onClick={() => onClick(link.key)} className="group block w-full text-center animate-fadeUp" style={{ animationDelay: `${0.35 + index * 0.07}s` }}>
+      <div className={`relative overflow-hidden card-washi ${t.card} ink-wash p-5 h-full min-h-[150px] flex flex-col items-center justify-center gap-2.5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg active:scale-[0.99]`}>
+        <span aria-hidden className="kanji-ghost kanji-float -top-3 -right-1 text-7xl opacity-60" style={{ animationDelay: `${index * 0.5}s` }}>{link.kanji}</span>
+        <div className="relative w-11 h-11 flex items-center justify-center transition-transform duration-300 group-hover:scale-110" style={{ backgroundColor: t.bg }}>
           <span style={{ color: t.color }}>{link.icon}</span>
         </div>
         <span className="relative font-bold text-[#1c1915] leading-tight">{link.title}</span>
@@ -71,14 +71,14 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
 
       {/* Snel naar — clean, centered grid */}
       <section>
-        <div className="flex items-center justify-center gap-3 mb-4">
+        <div className="flex items-center justify-center gap-3 mb-4 animate-fadeUp">
           <span aria-hidden className="hidden sm:block text-vertical font-mincho text-2xl leading-none text-[#a90000]/20 select-none pointer-events-none">道</span>
           <h2 className="section-title text-xl font-bold">Snel naar</h2>
           <span aria-hidden className="hidden sm:block w-px h-6 bg-[#a90000]/20" />
         </div>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 items-stretch">
-          {quickLinks.map((link) => (
-            <QuickLinkTile key={link.key} link={link} onClick={onNavigate} />
+          {quickLinks.map((link, i) => (
+            <QuickLinkTile key={link.key} link={link} onClick={onNavigate} index={i} />
           ))}
           {isMobile && (
             <>
@@ -124,14 +124,14 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
       </section>
 
       {/* Nieuws */}
-      <section className="relative overflow-hidden card-washi group">
+      <section className="relative overflow-hidden card-washi group animate-fadeUp delay-500">
         <NewsSlider articles={latestNews} onNavigate={() => onNavigate('nieuws')} />
       </section>
 
       {/* Training Info */}
       <section className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-stretch">
-        <div className="relative overflow-hidden card-washi p-5 h-full min-h-[170px] flex flex-col">
-          <span aria-hidden className="kanji-ghost -top-2 -right-1 text-8xl opacity-60">水</span>
+        <div className="relative overflow-hidden card-washi p-5 h-full min-h-[170px] flex flex-col animate-fadeUp delay-300">
+          <span aria-hidden className="kanji-ghost kanji-float -top-2 -right-1 text-8xl opacity-60">水</span>
           <div className="relative flex items-start gap-4">
             <div className="w-14 h-14 flex items-center justify-center flex-shrink-0" style={{ backgroundColor: 'rgba(169,0,0,0.08)' }}>
               <Clock className="w-7 h-7" style={{ color: '#a90000' }} />
@@ -151,8 +151,8 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
           </div>
         </div>
 
-        <div className="relative overflow-hidden card-washi card-washi--ai p-5 h-full min-h-[170px] flex flex-col">
-          <span aria-hidden className="kanji-ghost -top-2 -right-1 text-8xl opacity-60">金</span>
+        <div className="relative overflow-hidden card-washi card-washi--ai p-5 h-full min-h-[170px] flex flex-col animate-fadeUp delay-400">
+          <span aria-hidden className="kanji-ghost kanji-float -top-2 -right-1 text-8xl opacity-60" style={{ animationDelay: '1s' }}>金</span>
           <div className="relative flex items-start gap-4">
             <div className="w-14 h-14 flex items-center justify-center flex-shrink-0" style={{ backgroundColor: 'rgba(39,70,110,0.08)' }}>
               <Clock className="w-7 h-7" style={{ color: '#27466e' }} />

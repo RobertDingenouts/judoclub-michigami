@@ -44,13 +44,13 @@ export function ProfileSection() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-6 text-white">
+        <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-none p-6 text-white">
           <div className="h-8 w-48 bg-white/20 rounded animate-pulse" />
           <div className="h-4 w-32 bg-white/10 rounded mt-2 animate-pulse" />
         </div>
         <div className="grid grid-cols-2 gap-4">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+            <div key={i} className="bg-white rounded-none p-4 shadow-sm border border-gray-100">
               <div className="h-3 w-16 bg-gray-200 rounded animate-pulse mb-2" />
               <div className="h-6 w-12 bg-gray-200 rounded animate-pulse" />
             </div>
@@ -63,11 +63,11 @@ export function ProfileSection() {
   if (!profile) {
     return (
       <div className="space-y-6">
-        <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-6 text-white">
+        <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-none p-6 text-white">
           <h1 className="text-2xl font-bold">Mijn Profiel</h1>
           <p className="text-white/80 mt-1">Je persoonlijke gegevens en statistieken</p>
         </div>
-        <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 text-center">
+        <div className="bg-yellow-50 border border-yellow-200 rounded-none p-4 text-center">
           <p className="text-yellow-800">Log in om je profiel te bekijken.</p>
         </div>
       </div>
@@ -92,13 +92,13 @@ export function ProfileSection() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-6 sm:p-8 text-white shadow-lg relative overflow-hidden">
+      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-none p-6 sm:p-8 text-white shadow-lg relative overflow-hidden">
         <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -translate-y-20 translate-x-20" />
         <div className="relative">
           <div className="flex items-center gap-4 mb-4">
             {/* Avatar */}
             <div
-              className="w-16 h-16 rounded-full flex items-center justify-center text-xl font-bold text-white border-3"
+              className="w-16 h-16 rounded-none flex items-center justify-center text-xl font-bold text-white border-3"
               style={{
                 backgroundColor: beltColor,
                 borderColor: isWhiteBelt ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.3)',
@@ -110,7 +110,7 @@ export function ProfileSection() {
               <h1 className="text-xl sm:text-2xl font-bold">{displayName}</h1>
               <p className="text-white/80 text-sm">{profile.email}</p>
               <div className="flex items-center gap-2 mt-1">
-                <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full">
+                <span className="text-xs bg-white/20 px-2 py-0.5 rounded-none">
                   {roleLabels[profile.role] || profile.role}
                 </span>
               </div>
@@ -122,7 +122,7 @@ export function ProfileSection() {
       {/* Stats Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
         {/* Belt */}
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+        <div className="bg-white rounded-none p-4 shadow-sm border border-gray-100">
           <div className="flex items-center gap-2 mb-2">
             <div
               className="w-4 h-4 rounded-full border"
@@ -137,7 +137,7 @@ export function ProfileSection() {
         </div>
 
         {/* Join date */}
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+        <div className="bg-white rounded-none p-4 shadow-sm border border-gray-100">
           <span className="text-xs text-gray-500">Lid sinds</span>
           <p className="text-lg font-bold text-gray-800">
             {joinDate ? new Date(joinDate).getFullYear() : '-'}
@@ -145,7 +145,7 @@ export function ProfileSection() {
         </div>
 
         {/* Role */}
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+        <div className="bg-white rounded-none p-4 shadow-sm border border-gray-100">
           <span className="text-xs text-gray-500">Rol</span>
           <p className="text-lg font-bold text-gray-800">
             {roleLabels[profile.role] || profile.role}
@@ -153,7 +153,7 @@ export function ProfileSection() {
         </div>
 
         {/* Edit link */}
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex items-center justify-center">
+        <div className="bg-white rounded-none p-4 shadow-sm border border-gray-100 flex items-center justify-center">
           <a
             href="/leden/profiel/bewerken"
             className="text-sm font-medium text-[#a90000] hover:underline"
@@ -165,7 +165,7 @@ export function ProfileSection() {
 
       {/* Personal Info */}
       {profile.member && (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="bg-white rounded-none shadow-sm border border-gray-100 overflow-hidden">
           <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
             <h2 className="text-sm font-semibold text-gray-700">Persoonlijke Gegevens</h2>
           </div>

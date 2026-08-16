@@ -52,7 +52,7 @@ export function MemberCard({
   ))
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white hover:shadow-md transition-shadow">
+    <div className="rounded-none border border-gray-200 bg-white hover:shadow-md transition-shadow">
       {/* Desktop: compact table row */}
       <div className="hidden sm:grid sm:grid-cols-12 gap-3 items-center px-4 py-2.5">
         {/* Naam + locatie */}

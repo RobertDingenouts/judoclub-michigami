@@ -108,7 +108,7 @@ export default function UploadDiplomaForm() {
   ]
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
+    <div className="rounded-none border border-gray-200 bg-white shadow-sm">
       <button
         onClick={() => setOpen(!open)}
         className="flex w-full items-center justify-between p-5 text-left transition-colors hover:bg-gray-50"
@@ -123,10 +123,10 @@ export default function UploadDiplomaForm() {
       {open && (
         <form onSubmit={handleSubmit} className="border-t border-gray-100 p-5 space-y-4">
           {error && (
-            <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</div>
+            <div className="rounded-none border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</div>
           )}
           {success && (
-            <div className="rounded-lg border border-green-200 bg-green-50 p-3 text-sm text-green-700">{success}</div>
+            <div className="rounded-none border border-green-200 bg-green-50 p-3 text-sm text-green-700">{success}</div>
           )}
 
           <div>
@@ -134,7 +134,7 @@ export default function UploadDiplomaForm() {
             <select
               value={formData.memberId}
               onChange={(e) => setFormData({ ...formData, memberId: e.target.value })}
-              className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none"
+              className="w-full rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none"
               required
             >
               <option value="">— Kies lid —</option>
@@ -150,7 +150,7 @@ export default function UploadDiplomaForm() {
               <select
                 value={formData.diplomaType}
                 onChange={(e) => setFormData({ ...formData, diplomaType: e.target.value })}
-                className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none"
+                className="w-full rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none"
               >
                 <option value="BELT_EXAM">Band Examen</option>
                 <option value="ACHIEVEMENT">Bijzonderheid</option>
@@ -163,7 +163,7 @@ export default function UploadDiplomaForm() {
               <select
                 value={formData.beltLevel}
                 onChange={(e) => setFormData({ ...formData, beltLevel: e.target.value })}
-                className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none"
+                className="w-full rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none"
               >
                 <option value="">— Geen band —</option>
                 {beltOptions.map((b) => (
@@ -180,7 +180,7 @@ export default function UploadDiplomaForm() {
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               placeholder="Bijv. Zwarte band 1e Dan - All Japan Judo Championships"
-              className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none"
+              className="w-full rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none"
               required
             />
           </div>
@@ -191,7 +191,7 @@ export default function UploadDiplomaForm() {
               type="date"
               value={formData.awardedAt}
               onChange={(e) => setFormData({ ...formData, awardedAt: e.target.value })}
-              className="w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none"
+              className="w-full rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none"
               required
             />
           </div>
@@ -202,7 +202,7 @@ export default function UploadDiplomaForm() {
               type="file"
               accept=".pdf,.jpg,.jpeg,.png"
               onChange={(e) => setFormData({ ...formData, file: e.target.files?.[0] || null })}
-              className="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-[#a90000] file:text-white file:text-sm file:font-medium hover:file:bg-[#8c0000]"
+              className="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-none file:border-0 file:bg-[#a90000] file:text-white file:text-sm file:font-medium hover:file:bg-[#8c0000]"
               required
             />
           </div>
@@ -211,7 +211,7 @@ export default function UploadDiplomaForm() {
             <button
               type="submit"
               disabled={loading}
-              className="rounded-md bg-[#a90000] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#8c0000] disabled:opacity-50"
+              className="rounded-none bg-[#a90000] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#8c0000] disabled:opacity-50"
             >
               {loading ? 'Uploaden...' : '📤 Diploma uploaden'}
             </button>

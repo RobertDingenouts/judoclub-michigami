@@ -109,16 +109,16 @@ export function ExamApprovalSection({ userId, userRole }: ExamApprovalSectionPro
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
+      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-none p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
         <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold">Examen Goedkeuren</h1>
         <p className="text-white/80 mt-1 text-xs sm:text-sm">Beoordeel en goedkeur judo examens</p>
-        <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-full mt-2 sm:mt-3" />
+        <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-none mt-2 sm:mt-3" />
       </div>
 
       {/* Message */}
       {message && (
         <div
-          className={`rounded-xl p-4 ${
+          className={`rounded-none p-4 ${
             message.type === 'success'
               ? 'bg-green-50 border border-green-200 text-green-800'
               : 'bg-red-50 border border-red-200 text-red-800'
@@ -137,7 +137,7 @@ export function ExamApprovalSection({ userId, userRole }: ExamApprovalSectionPro
 
       {/* No pending exams */}
       {!loading && exams.length === 0 && (
-        <div className="bg-gray-50 border border-gray-200 rounded-xl p-8 text-center space-y-3">
+        <div className="bg-gray-50 border border-gray-200 rounded-none p-8 text-center space-y-3">
           <div className="text-4xl">✅</div>
           <h3 className="font-bold text-gray-700">Geen examens om te beoordelen</h3>
           <p className="text-sm text-gray-500">
@@ -152,7 +152,7 @@ export function ExamApprovalSection({ userId, userRole }: ExamApprovalSectionPro
           {exams.map((exam) => (
             <div
               key={exam.id}
-              className={`bg-white rounded-xl shadow-md overflow-hidden border transition ${
+              className={`bg-white rounded-none shadow-md overflow-hidden border transition ${
                 selectedExam?.id === exam.id ? 'border-[#a90000] ring-2 ring-[#a90000]/20' : 'border-gray-100'
               }`}
             >
@@ -168,7 +168,7 @@ export function ExamApprovalSection({ userId, userRole }: ExamApprovalSectionPro
                     <p className="text-sm text-gray-500 mt-0.5">Examen: {exam.beltLevel}</p>
                   </div>
                   <span
-                    className={`px-3 py-1 rounded-full text-xs font-bold ${
+                    className={`px-3 py-1 rounded-none text-xs font-bold ${
                       exam.status === 'SCHEDULED'
                         ? 'bg-yellow-100 text-yellow-800'
                         : exam.status === 'COMPLETED_PASSED'
@@ -199,7 +199,7 @@ export function ExamApprovalSection({ userId, userRole }: ExamApprovalSectionPro
                     </div>
 
                     {exam.notes && (
-                      <div className="bg-gray-50 rounded-lg p-3 text-sm text-gray-600">
+                      <div className="bg-gray-50 rounded-none p-3 text-sm text-gray-600">
                         <span className="font-medium text-gray-700">Notities:</span> {exam.notes}
                       </div>
                     )}
@@ -213,7 +213,7 @@ export function ExamApprovalSection({ userId, userRole }: ExamApprovalSectionPro
                             handleApprove(exam.id)
                           }}
                           disabled={processingId === exam.id}
-                          className="flex-1 bg-green-600 hover:bg-green-700 text-white font-medium py-2 rounded-lg transition disabled:opacity-50 flex items-center justify-center gap-1"
+                          className="flex-1 bg-green-600 hover:bg-green-700 text-white font-medium py-2 rounded-none transition disabled:opacity-50 flex items-center justify-center gap-1"
                         >
                           {processingId === exam.id ? (
                             <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
@@ -227,7 +227,7 @@ export function ExamApprovalSection({ userId, userRole }: ExamApprovalSectionPro
                             handleFail(exam.id)
                           }}
                           disabled={processingId === exam.id}
-                          className="px-4 py-2 border border-red-300 text-red-600 font-medium rounded-lg hover:bg-red-50 transition disabled:opacity-50"
+                          className="px-4 py-2 border border-red-300 text-red-600 font-medium rounded-none hover:bg-red-50 transition disabled:opacity-50"
                         >
                           Afwijzen
                         </button>

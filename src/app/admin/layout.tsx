@@ -20,7 +20,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         {/* Header */}
         <div className="border-b border-gray-200 p-5">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#fdf6f6]">
+            <div className="flex h-9 w-9 items-center justify-center rounded-none bg-[#fdf6f6]">
               <img src="/logo-hd.png" alt="Michigami" className="h-8 w-8 object-contain" />
             </div>
             <div>
@@ -56,7 +56,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       {/* Mobile header */}
       <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between border-b border-gray-200 bg-white p-3 lg:hidden">
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#fdf6f6]">
+          <div className="flex h-8 w-8 items-center justify-center rounded-none bg-[#fdf6f6]">
             <img src="/logo-hd.png" alt="Michigami" className="h-7 w-7 object-contain" />
           </div>
           <span className="text-sm font-bold">Admin</span>
@@ -83,7 +83,7 @@ function AdminLink({ href, icon, label }: { href: string; icon: string; label: s
   return (
     <Link
       href={href}
-      className="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 hover:text-[#a90000]"
+      className="flex items-center gap-3 rounded-none px-3 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 hover:text-[#a90000]"
     >
       <span className="text-base">{icon}</span>
       {label}

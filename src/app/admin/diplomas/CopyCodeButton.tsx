@@ -15,7 +15,7 @@ export default function CopyButton({ code }: { code: string }) {
   return (
     <button
       onClick={handleCopy}
-      className="rounded-md border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:bg-gray-50"
+      className="rounded-none border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:bg-gray-50"
       title="Verificatiecode kopiëren"
     >
       {copied ? '✅ Gekopieerd' : '📋 Kopieer code'}

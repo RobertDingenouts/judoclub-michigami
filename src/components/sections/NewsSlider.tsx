@@ -174,14 +174,14 @@ export function NewsSlider({ articles, onNavigate }: { articles: NewsArticle[]; 
         <>
           <button
             onClick={goPrev}
-            className="hidden sm:flex absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 shadow-md items-center justify-center hover:bg-white transition-colors z-10 opacity-0 group-hover:opacity-100"
+            className="hidden sm:flex absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-none bg-white/90 shadow-md items-center justify-center hover:bg-white transition-colors z-10 opacity-0 group-hover:opacity-100"
             aria-label="Vorige nieuwsbericht"
           >
             <ChevronLeft className="w-4 h-4 text-[#8c0000]" />
           </button>
           <button
             onClick={goNext}
-            className="hidden sm:flex absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 shadow-md items-center justify-center hover:bg-white transition-colors z-10 opacity-0 group-hover:opacity-100"
+            className="hidden sm:flex absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-none bg-white/90 shadow-md items-center justify-center hover:bg-white transition-colors z-10 opacity-0 group-hover:opacity-100"
             aria-label="Volgende nieuwsbericht"
           >
             <ChevronRight className="w-4 h-4 text-[#8c0000]" />
@@ -197,7 +197,7 @@ export function NewsSlider({ articles, onNavigate }: { articles: NewsArticle[]; 
               <button
                 key={idx}
                 onClick={() => goTo(idx)}
-                className={`rounded-full transition-all duration-300 ${
+                className={`rounded-none transition-all duration-300 ${
                   idx === current
                     ? 'bg-[#c00000] w-5 h-2'
                     : 'bg-gray-300 hover:bg-gray-400 w-2 h-2'

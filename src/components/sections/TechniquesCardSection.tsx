@@ -9,7 +9,7 @@ export function TechniquesCardSection() {
     <div className="space-y-6">
       {/* Header */}
       <AnimatedCard>
-        <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
+        <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-none p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
           <svg
             viewBox="0 0 100 80"
             className="absolute top-0 right-0 w-20 sm:w-24 md:w-32 h-20 sm:h-24 md:h-32 text-white opacity-[0.06]"
@@ -22,7 +22,7 @@ export function TechniquesCardSection() {
           </svg>
           <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">Techniekenkaart</h1>
           <p className="text-white/80 mt-1 text-xs sm:text-sm">Downloadbare PDF's met judotechnieken en exameneisen</p>
-          <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-full mt-2 sm:mt-3" />
+          <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-none mt-2 sm:mt-3" />
         </div>
       </AnimatedCard>
 
@@ -30,7 +30,7 @@ export function TechniquesCardSection() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
         {techniquesCards.map((card, idx) => (
           <AnimatedCard key={idx}>
-            <div className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] overflow-hidden hover:shadow-md transition-shadow">
+            <div className="bg-white rounded-none shadow-sm border border-[#e8eaed] overflow-hidden hover:shadow-md transition-shadow">
               {/* Image */}
               {card.imageUrl && (
                 <div className="bg-[#fdf6f6] p-4 sm:p-6 flex items-center justify-center">
@@ -52,7 +52,7 @@ export function TechniquesCardSection() {
 
                 {/* Download Button */}
                 <AnimatedButton as="a" href={card.pdfUrl} download>
-                  <div className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-[#a90000] to-[#c00000] text-white text-sm font-semibold rounded-xl hover:from-[#8c0000] hover:to-[#a90000] transition-colors shadow-sm">
+                  <div className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-[#a90000] to-[#c00000] text-white text-sm font-semibold rounded-none hover:from-[#8c0000] hover:to-[#a90000] transition-colors shadow-sm">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>

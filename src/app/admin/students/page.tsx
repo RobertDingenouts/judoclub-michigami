@@ -75,7 +75,7 @@ export default async function StudentsPage({
   return (
     <div className="space-y-6">
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-center">
+        <div className="rounded-none border border-red-200 bg-red-50 p-6 text-center">
           <p className="text-red-700 font-medium">{error}</p>
           <p className="text-red-500 text-sm mt-2">Probeer later opnieuw of contacteer de admin.</p>
         </div>
@@ -89,17 +89,17 @@ export default async function StudentsPage({
         </div>
         <div className="flex gap-2">
           {!showTrashed && (
-            <Link href="/admin/students?trashed=true" className="inline-flex items-center gap-2 rounded-md border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50">
+            <Link href="/admin/students?trashed=true" className="inline-flex items-center gap-2 rounded-none border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50">
               🗑️ Prullenbak
             </Link>
           )}
           {showTrashed && (
-            <Link href="/admin/students" className="inline-flex items-center gap-2 rounded-md border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50">
+            <Link href="/admin/students" className="inline-flex items-center gap-2 rounded-none border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50">
               ← Terug naar studenten
             </Link>
           )}
           {!showTrashed && (
-            <Link href="/admin/students/new" className="inline-flex items-center gap-2 rounded-md bg-[#a90000] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#8c0000]">
+            <Link href="/admin/students/new" className="inline-flex items-center gap-2 rounded-none bg-[#a90000] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#8c0000]">
               <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
                 <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
               </svg>
@@ -121,13 +121,13 @@ export default async function StudentsPage({
               name="q"
               defaultValue={query}
               placeholder="Zoek op naam of e-mail..."
-              className="w-full rounded-md border border-gray-300 py-2.5 pl-10 pr-4 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+              className="w-full rounded-none border border-gray-300 py-2.5 pl-10 pr-4 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
             />
           </div>
           <select
             name="belt"
             defaultValue={beltFilter}
-            className="rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+            className="rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
           >
             <option value="">Alle banden</option>
             {belts.map((b: any) => b.currentBelt && (
@@ -137,7 +137,7 @@ export default async function StudentsPage({
           <select
             name="location"
             defaultValue={locationFilter}
-            className="rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+            className="rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
           >
             <option value="">Alle locaties</option>
             <option value="STeenbergen">Steenbergen</option>
@@ -149,11 +149,11 @@ export default async function StudentsPage({
       {/* Student list */}
       <div className="space-y-3">
         {students.length > 0 ? students.map((student: any) => (
-          <div key={student.id} className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm transition-colors hover:border-[#a90000]/30">
+          <div key={student.id} className="rounded-none border border-gray-200 bg-white p-5 shadow-sm transition-colors hover:border-[#a90000]/30">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-4">
                 {/* Avatar */}
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#a90000]/10 text-lg font-bold text-[#a90000]">
+                <div className="flex h-12 w-12 items-center justify-center rounded-none bg-[#a90000]/10 text-lg font-bold text-[#a90000]">
                   {student.firstName?.[0]}{student.lastName?.[0]}
                 </div>
 
@@ -208,9 +208,9 @@ export default async function StudentsPage({
                 {student.courseProgress.slice(0, 3).map((course: any, idx: number) => (
                   <div key={`${course.courseName}-${idx}`} className="flex items-center gap-3">
                     <span className="w-32 truncate text-xs text-gray-500">{course.courseName.replace('japanese_', '').replace('_', ' ')}</span>
-                    <div className="flex-1 rounded-full bg-gray-200">
+                    <div className="flex-1 rounded-none bg-gray-200">
                       <div
-                        className="h-2 rounded-full bg-[#a90000]"
+                        className="h-2 rounded-none bg-[#a90000]"
                         style={{ width: `${course.lessonsTotal > 0 ? (course.lessonsCompleted / course.lessonsTotal) * 100 : 0}%` }}
                       />
                     </div>
@@ -223,7 +223,7 @@ export default async function StudentsPage({
             )}
           </div>
         )) : (
-          <div className="rounded-lg border border-gray-200 bg-white p-12 text-center shadow-sm">
+          <div className="rounded-none border border-gray-200 bg-white p-12 text-center shadow-sm">
             <p className="text-lg font-medium text-gray-400">Geen studenten gevonden</p>
             {query && <p className="mt-1 text-sm text-gray-400">Probeer een andere zoekterm</p>}
           </div>

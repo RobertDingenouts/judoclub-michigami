@@ -12,7 +12,7 @@ function ImageGrid({ images, onImageClick }: { images: GalleryImage[]; onImageCl
         <button
           key={idx}
           onClick={() => onImageClick(images, idx)}
-          className="group relative h-48 sm:h-64 md:h-52 lg:h-48 overflow-hidden rounded-xl bg-[#f5f5f0] border border-[#e8eaed] hover:border-[#a90000] transition-all duration-200 hover:shadow-md"
+          className="group relative h-48 sm:h-64 md:h-52 lg:h-48 overflow-hidden rounded-none bg-[#f5f5f0] border border-[#e8eaed] hover:border-[#a90000] transition-all duration-200 hover:shadow-md"
         >
           <Image
             src={img.src}
@@ -86,7 +86,7 @@ function Lightbox({
             alt={current.caption}
             fill
             sizes="(max-width: 1280px) 100vw, 1280px"
-            className="object-contain rounded-lg shadow-2xl"
+            className="object-contain rounded-none shadow-2xl"
           />
         </div>
         <p className="text-white/80 mt-3 text-sm text-center">{current.caption}</p>
@@ -121,12 +121,12 @@ export function PhotoGallery() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
+      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-none p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
         <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">Foto&apos;s</h1>
         <p className="text-white/80 mt-1 text-xs sm:text-sm">
           Beelden van onze judoclub, toernooien en evenementen
         </p>
-        <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-full mt-2 sm:mt-3" />
+        <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-none mt-2 sm:mt-3" />
       </div>
 
       {/* Gallery Albums — jongste bovenaan */}
@@ -136,7 +136,7 @@ export function PhotoGallery() {
           const thumbnail = album.images[0];
 
           return (
-            <div key={album.id} className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] overflow-hidden">
+            <div key={album.id} className="bg-white rounded-none shadow-sm border border-[#e8eaed] overflow-hidden">
               {/* Album header — clickbaar om te openen/sluiten */}
               <button
                 onClick={() => toggleAlbum(album.id)}
@@ -144,7 +144,7 @@ export function PhotoGallery() {
               >
                 {/* Thumbnail */}
                 {thumbnail && (
-                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden flex-shrink-0 bg-[#f5f5f0] border border-[#e8eaed]">
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-none overflow-hidden flex-shrink-0 bg-[#f5f5f0] border border-[#e8eaed]">
                     <Image
                       src={thumbnail.src}
                       alt={album.title}
@@ -187,7 +187,7 @@ export function PhotoGallery() {
       </div>
 
       {/* Footer note */}
-      <div className="bg-[#fdf6f6] rounded-2xl p-4 sm:p-5 border border-[#e8eaed]">
+      <div className="bg-[#fdf6f6] rounded-none p-4 sm:p-5 border border-[#e8eaed]">
         <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
           Heb jij leuke foto&apos;s die je op onze site wilt zetten? Stuur dan een{' '}
           <a href="mailto:judoclub_michigami@hotmail.com" className="text-[#a90000] hover:text-[#8c0000] underline font-semibold">

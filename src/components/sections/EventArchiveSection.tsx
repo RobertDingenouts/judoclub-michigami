@@ -12,7 +12,7 @@ function AgendaItemCard({ item, year }: { item: AgendaItem; year: number }) {
 
   return (
     <div
-      className={`rounded-xl border p-4 sm:p-5 transition-all ${
+      className={`rounded-none border p-4 sm:p-5 transition-all ${
         isCanceled
           ? 'bg-gray-50 border-gray-200 opacity-70'
           : isPast
@@ -91,7 +91,7 @@ function AgendaItemCard({ item, year }: { item: AgendaItem; year: number }) {
               href={item.inschrijfUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#d90000] text-white text-xs font-semibold rounded-lg hover:bg-[#b20000] transition-colors"
+              className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#d90000] text-white text-xs font-semibold rounded-none hover:bg-[#b20000] transition-colors"
             >
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
@@ -107,7 +107,7 @@ function AgendaItemCard({ item, year }: { item: AgendaItem; year: number }) {
 
 function ArchiveEventCard({ event }: { event: ArchiveEvent }) {
   return (
-    <div className="bg-white rounded-xl border border-[#e8eaed] overflow-hidden hover:shadow-sm transition-shadow">
+    <div className="bg-white rounded-none border border-[#e8eaed] overflow-hidden hover:shadow-sm transition-shadow">
       <div className="aspect-video bg-gradient-to-br from-[#fdf6f6] to-[#f5f0f0] flex items-center justify-center p-6">
         <div className="text-center">
           <svg className="w-10 h-10 text-[#c00000]/30 mx-auto mb-2" fill="currentColor" viewBox="0 0 20 20">
@@ -149,7 +149,7 @@ export function EventArchiveSection() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-2xl p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
+      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-none p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
         <svg
           viewBox="0 0 100 80"
           className="absolute top-0 right-0 w-20 sm:w-24 md:w-32 h-20 sm:h-24 md:h-32 text-white opacity-[0.06]"
@@ -162,11 +162,11 @@ export function EventArchiveSection() {
         </svg>
         <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">Agenda & Evenementen</h1>
         <p className="text-white/80 mt-1 text-xs sm:text-sm">Activiteitenkalender en archief van evenementen</p>
-        <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-full mt-2 sm:mt-3" />
+        <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-none mt-2 sm:mt-3" />
       </div>
 
       {/* Main Tabs */}
-      <div className="bg-white rounded-2xl shadow-sm border border-[#e8eaed] overflow-hidden">
+      <div className="bg-white rounded-none shadow-sm border border-[#e8eaed] overflow-hidden">
         <div className="flex border-b border-[#e8eaed]">
           <button
             onClick={() => setActiveTab('agenda')}
@@ -200,7 +200,7 @@ export function EventArchiveSection() {
                   <button
                     key={y.year}
                     onClick={() => setActiveYear(y.year)}
-                    className={`px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
+                    className={`px-4 py-2 rounded-none text-sm font-semibold transition-colors ${
                       activeYear === y.year
                         ? 'bg-gradient-to-r from-[#a90000] to-[#c00000] text-white shadow-sm'
                         : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -229,14 +229,14 @@ export function EventArchiveSection() {
               <div className="flex flex-wrap gap-2">
                 <button
                   onClick={() => setActiveTab('archive')}
-                  className="px-4 py-2 rounded-xl text-sm font-semibold bg-gradient-to-r from-[#a90000] to-[#c00000] text-white shadow-sm"
+                  className="px-4 py-2 rounded-none text-sm font-semibold bg-gradient-to-r from-[#a90000] to-[#c00000] text-white shadow-sm"
                 >
                   Alle
                 </button>
                 {archiveYears.map((year) => (
                   <span
                     key={year}
-                    className="px-4 py-2 rounded-xl text-sm font-semibold bg-gray-100 text-gray-600"
+                    className="px-4 py-2 rounded-none text-sm font-semibold bg-gray-100 text-gray-600"
                   >
                     {year} ({groupedArchive[year]?.length || 0})
                   </span>
