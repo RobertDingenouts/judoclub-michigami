@@ -29,27 +29,36 @@ export function SidebarContent({ activeSection, onSelect }: { activeSection: Sec
     : navGroups;
 
   return (
-    <div className="flex flex-col h-full">
-      {/* Logo / Brand */}
-      <div className="p-4 border-b border-[#e8eaed] flex flex-col items-center">
-        <AnimatedCard variants={subtleHover}>
-          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#fdf6f6] to-white border-2 border-[#c00000]/15 flex items-center justify-center mb-2 shadow-sm ring-4 ring-white/40">
-            <Image src="/logo.png" alt="Judoclub Michigami" width={72} height={72} className="object-contain" />
-          </div>
-        </AnimatedCard>
-        <p className="text-[10px] text-gray-400">Opgericht in 1993</p>
+    <div className="flex flex-col h-full bg-washi">
+      {/* Logo / Brand — washi + hanko */}
+      <div className="p-4 border-b border-[#b08d3e]/25 flex flex-col items-center relative overflow-hidden">
+        {/* Faint seigaiha waves behind the logo */}
+        <div className="absolute inset-0 pattern-seigaiha opacity-[0.05] pointer-events-none" />
+        <div className="relative">
+          <AnimatedCard variants={subtleHover}>
+            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-white to-[#fbf9f4] border border-[#b08d3e]/40 flex items-center justify-center mb-2 shadow-sm ring-4 ring-white/50">
+              <Image src="/logo.png" alt="Judoclub Michigami" width={72} height={72} className="object-contain" />
+            </div>
+          </AnimatedCard>
+          {/* Hanko seal — 道上 (Michigami) */}
+          <span className="absolute -right-1 -bottom-1 hanko w-9 h-9 text-[13px] rotate-[-8deg]">
+            道
+          </span>
+        </div>
+        <p className="relative text-[10px] text-[#8a7f70] tracking-[0.2em] uppercase">Opgericht in 1993</p>
+        <p className="relative font-mincho text-[11px] text-[#a90000]/70 tracking-[0.35em] mt-0.5">道上</p>
       </div>
 
       {/* Search Bar */}
       <div className="px-3 py-2">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8a7f70]" />
           <input
             type="text"
             placeholder="Zoek..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 text-sm bg-[#f8f9fa] border border-[#e8eaed] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#c00000]/30 focus:border-[#a90000] placeholder:text-gray-400"
+            className="w-full pl-9 pr-3 py-2 text-sm bg-white/70 border border-[#b08d3e]/25 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#a90000]/30 focus:border-[#a90000] placeholder:text-[#8a7f70] focus-kin"
           />
         </div>
       </div>
@@ -63,14 +72,14 @@ export function SidebarContent({ activeSection, onSelect }: { activeSection: Sec
               {!searchQuery.trim() && (
                 <div className="flex items-center">
                   <AnimatedButton onClick={() => onSelect(groupHubMap[group.label] as Section)} variants={subtleHover}>
-                    <div className="flex-1 flex items-center gap-2 px-2 py-1.5 text-[11px] font-bold text-gray-500 uppercase tracking-wider hover:text-[#c00000] transition-colors">
+                    <div className="flex-1 flex items-center gap-2 px-2 py-1.5 text-[11px] font-bold text-[#8a7f70] uppercase tracking-wider hover:text-[#a90000] transition-colors">
                       <span className="text-base leading-none">{group.emoji}</span>
                       <span>{group.label}</span>
                     </div>
                   </AnimatedButton>
                   <button
                     onClick={() => toggleGroup(group.label)}
-                    className="px-1 py-1.5 hover:text-gray-600 transition-colors"
+                    className="px-1 py-1.5 hover:text-[#3d362d] transition-colors"
                   >
                     <ChevronRight
                       className={`w-3 h-3 transition-transform ${
@@ -100,13 +109,13 @@ export function SidebarContent({ activeSection, onSelect }: { activeSection: Sec
                           transition={{ duration: 0.2 }}
                           className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all ${
                             activeSection === item.key
-                              ? 'bg-gradient-to-r from-[#fdf6f6] to-white text-[#c00000] font-semibold shadow-sm ring-1 ring-[#c00000]/10'
-                              : 'text-gray-600 hover:bg-[#f8f9fa] hover:text-gray-800'
+                              ? 'bg-gradient-to-r from-[#fdf0f0] to-white text-[#a90000] font-semibold shadow-sm ring-1 ring-[#a90000]/15'
+                              : 'text-[#3d362d] hover:bg-[#a90000]/[0.04] hover:text-[#1c1915]'
                           }`}>
                         {item.icon}
                         <span className="truncate">{item.label}</span>
                         {activeSection === item.key && (
-                          <div className="w-1.5 h-4 rounded-full bg-gradient-to-b from-[#c00000] to-[#a90000] ml-auto flex-shrink-0" />
+                          <div className="w-1.5 h-4 rounded-full bg-gradient-to-b from-[#c00000] to-[#8c0000] ml-auto flex-shrink-0" />
                         )}
                       </motion.div>
                     </AnimatedButton>
@@ -116,10 +125,10 @@ export function SidebarContent({ activeSection, onSelect }: { activeSection: Sec
               )}
               </AnimatePresence>
 
-              {/* Separator */}
+              {/* Separator — gold hairline */}
               {!searchQuery.trim() && (
-                <div className="px-2 py-1">
-                  <div className="h-px bg-[#e8eaed]" />
+                <div className="px-2 py-1.5">
+                  <div className="h-px bg-gradient-to-r from-transparent via-[#b08d3e]/40 to-transparent" />
                 </div>
               )}
             </div>
@@ -133,25 +142,28 @@ export function SidebarContent({ activeSection, onSelect }: { activeSection: Sec
       </div>
 
       {/* Footer */}
-      <div className="p-3 border-t border-[#e8eaed]">
-        <div className="flex items-center gap-2 justify-center">
+      <div className="p-3 border-t border-[#b08d3e]/25 relative overflow-hidden">
+        <div className="absolute inset-0 pattern-asanoha opacity-[0.04] pointer-events-none" />
+        <div className="relative flex items-center gap-2 justify-center">
           <AnimatedButton as="a" href="https://www.facebook.com/judoclubmichigami" target="_blank" rel="noopener noreferrer" variants={subtleHover}>
-            <div className="p-1.5 rounded-md hover:bg-[#f8f9fa] text-gray-400 hover:text-[#c00000] transition-colors">
+            <div className="p-1.5 rounded-md hover:bg-[#a90000]/[0.06] text-[#8a7f70] hover:text-[#a90000] transition-colors">
               <Facebook className="w-4 h-4" />
             </div>
           </AnimatedButton>
           <AnimatedButton as="a" href="mailto:judoclub_michigami@hotmail.com" variants={subtleHover}>
-            <div className="p-1.5 rounded-md hover:bg-[#f8f9fa] text-gray-400 hover:text-[#c00000] transition-colors">
+            <div className="p-1.5 rounded-md hover:bg-[#a90000]/[0.06] text-[#8a7f70] hover:text-[#a90000] transition-colors">
               <Mail className="w-4 h-4" />
             </div>
           </AnimatedButton>
           <AnimatedButton as="a" href="https://www.youtube.com/channel/UC8tXSKppIMF6awS2cj7w50A" target="_blank" rel="noopener noreferrer" variants={subtleHover}>
-            <div className="p-1.5 rounded-md hover:bg-[#f8f9fa] text-gray-400 hover:text-[#c00000] transition-colors">
+            <div className="p-1.5 rounded-md hover:bg-[#a90000]/[0.06] text-[#8a7f70] hover:text-[#a90000] transition-colors">
               <Youtube className="w-4 h-4" />
             </div>
           </AnimatedButton>
         </div>
-        <p className="text-[10px] text-gray-400 text-center mt-1.5">Opgericht in 1993</p>
+        <p className="relative text-[10px] text-[#8a7f70] text-center mt-1.5 tracking-wide">
+          柔道 · Opgericht in 1993
+        </p>
       </div>
     </div>
   );

@@ -16,10 +16,11 @@ export function StickyCTA({ onNavigate }: { onNavigate?: (section: string) => vo
 
   return (
     <>
-      {/* Desktop: Fixed top-right button — green, prominent "Gratis Proefles" */}
-      <button onClick={() => setFormOpen(true)} className="hidden md:flex fixed top-4 right-4 z-50 items-center gap-2 bg-gradient-to-r from-[#27ae60] to-[#2ecc71] text-white px-6 py-3.5 rounded-full font-bold text-base shadow-lg hover:shadow-xl hover:scale-[1.03] active:scale-[0.98] transition-all duration-200 cursor-pointer">
+      {/* Desktop: Fixed top-right button — shu vermilion, gold hairline */}
+      <button onClick={() => setFormOpen(true)} className="hidden md:flex fixed top-4 right-4 z-50 items-center gap-2 bg-gradient-to-b from-[#c00000] to-[#8c0000] text-white pl-4 pr-5 py-3 font-bold text-base shadow-lg shadow-[#a90000]/30 hover:shadow-xl hover:scale-[1.03] active:scale-[0.98] transition-all duration-200 cursor-pointer rounded-lg border border-[#8c0000] ring-1 ring-[#d4a843]/40 ring-offset-2 ring-offset-transparent">
         <Calendar className="w-5 h-5" />
         Gratis Proefles
+        <span aria-hidden className="font-mincho text-[10px] text-[#d4a843] tracking-widest ml-0.5">体験</span>
       </button>
 
       {/* Mobile bottom bar replaced by MobileActionBar — hidden */}

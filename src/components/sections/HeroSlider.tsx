@@ -100,84 +100,119 @@ export function HeroSlider() {
         </div>
       ))}
 
-      {/* Dark gradient overlays for text legibility */}
-      <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/80 via-black/30 to-black/40" />
-      <div className="absolute inset-0 z-20 bg-gradient-to-r from-[#a90000]/30 to-transparent mix-blend-multiply" />
+      {/* Sumi ink gradient — deep, cinematic, warm at the base */}
+      <div className="absolute inset-0 z-20 bg-gradient-to-t from-[#14120e]/90 via-[#14120e]/35 to-[#14120e]/45" />
+      <div className="absolute inset-0 z-20 bg-gradient-to-r from-[#14120e]/60 via-transparent to-transparent" />
+      {/* Vermilion ember glow, bottom-left */}
+      <div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-[#a90000]/25 blur-3xl z-20" />
+
+      {/* Asanoha pattern whisper — top right */}
+      <div className="absolute top-0 right-0 w-1/3 h-full pattern-asanoha opacity-[0.05] z-20 pointer-events-none" />
+
+      {/* Gold hairline frame — inset, traditional */}
+      <div className="absolute inset-3 sm:inset-4 z-30 pointer-events-none border border-[#d4a843]/35 rounded-xl" />
+      <div className="absolute inset-3 sm:inset-4 z-30 pointer-events-none">
+        <span className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-[#d4a843]/80 rounded-tl-xl" />
+        <span className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-[#d4a843]/80 rounded-tr-xl" />
+        <span className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-[#d4a843]/80 rounded-bl-xl" />
+        <span className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-[#d4a843]/80 rounded-br-xl" />
+      </div>
+
+      {/* Vertical kanji — 柔道 (judo), right edge, classical */}
+      <div className="absolute right-6 sm:right-9 top-1/2 -translate-y-1/2 z-30 hidden sm:flex flex-col items-center gap-4 pointer-events-none">
+        <span className="text-vertical font-mincho text-3xl lg:text-4xl text-white/85 tracking-[0.5em] drop-shadow-lg">
+          柔道
+        </span>
+        <span className="w-px h-10 bg-gradient-to-b from-[#d4a843]/80 to-transparent" />
+        <span className="text-vertical text-[10px] lg:text-xs text-[#d4a843]/90 tracking-[0.4em] font-medium">
+          柔心剛意
+        </span>
+      </div>
 
       {/* Hero content */}
       <div className="absolute inset-0 z-30 flex flex-col justify-center px-5 sm:px-10 lg:px-14">
         <div className="max-w-2xl">
-          <div className="flex items-center gap-3 mb-4">
-            <Image
-              src="/logo-hd.png"
-              alt="Judoclub Michigami"
-              width={56}
-              height={56}
-              className="w-12 h-12 sm:w-14 sm:h-14 object-contain drop-shadow-lg"
-            />
-            <span className="text-white/80 text-sm sm:text-base font-medium tracking-wide uppercase">
-              Judoclub Michigami
+          {/* Brand row: hanko seal + name */}
+          <div className="flex items-center gap-3 mb-5">
+            <span className="hanko hanko--lg w-11 h-11 sm:w-12 sm:h-12 text-lg sm:text-xl rotate-[-4deg]">
+              道
             </span>
+            <div className="flex items-baseline gap-2.5">
+              <span className="text-white/90 text-sm sm:text-base font-medium tracking-[0.18em] uppercase">
+                Judoclub Michigami
+              </span>
+              <span className="text-[#d4a843] text-[10px] sm:text-xs font-mincho tracking-[0.3em]">
+                道上
+              </span>
+            </div>
           </div>
 
+          {/* Gold hairline above headline */}
+          <div className="divider-kin mb-4 max-w-[220px]" />
+
           <h1 className="font-display text-4xl sm:text-5xl lg:text-7xl font-bold text-white leading-[1.05] drop-shadow-xl">
-            Judo voor jong & oud
+            Judo voor jong &amp; oud
           </h1>
 
-          <p className="mt-3 sm:mt-4 text-base sm:text-lg lg:text-2xl text-white/90 font-light drop-shadow-md max-w-xl">
-            Van kleuters tot volwassenen — recreatief of competitief, in Steenbergen & Oud-Vossemeer.
+          <p className="mt-3 sm:mt-4 text-base sm:text-lg lg:text-2xl text-white/85 font-light drop-shadow-md max-w-xl">
+            Van kleuters tot volwassenen — recreatief of competitief, in Steenbergen &amp; Oud-Vossemeer.
           </p>
 
           <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3">
             <button
               onClick={openProeflesForm}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#a90000] px-6 py-3 text-base font-semibold text-white shadow-lg shadow-red-900/40 transition-all hover:bg-[#8c0000] hover:scale-[1.03] active:scale-95"
+              className="btn-shu inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-base font-semibold"
             >
               <PlayCircle className="w-5 h-5" />
               Gratis proefles
             </button>
             <a
               href="/inschrijven"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-white/15 backdrop-blur-md px-6 py-3 text-base font-semibold text-white ring-1 ring-white/40 transition-all hover:bg-white/25 hover:scale-[1.03] active:scale-95"
+              className="btn-outline-kin inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-base font-semibold"
             >
               Lid worden
               <ArrowRight className="w-5 h-5" />
             </a>
           </div>
+
+          {/* Est. line — mincho, gold */}
+          <p className="mt-6 text-[11px] sm:text-xs text-[#d4a843]/80 font-mincho tracking-[0.35em]">
+            OPGERICHT 1993 · 心技体
+          </p>
         </div>
       </div>
 
       {/* Navigation arrows */}
       <button
         onClick={prevSlide}
-        className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity z-40"
+        className="absolute left-5 sm:left-7 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity z-40 backdrop-blur-sm border border-white/15"
         aria-label="Vorige foto"
       >
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="sm:w-5 sm:h-5"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
       <button
         onClick={nextSlide}
-        className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity z-40"
+        className="absolute right-5 sm:right-7 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity z-40 backdrop-blur-sm border border-white/15"
         aria-label="Volgende foto"
       >
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="sm:w-5 sm:h-5"><path d="M9 18l6-6-6-6"/></svg>
       </button>
 
-      {/* Progress indicator (compact instead of many dots) */}
-      <div className="absolute bottom-4 right-4 sm:bottom-5 sm:right-6 flex items-center gap-2 z-40">
+      {/* Progress indicator — washi pill with gold counter */}
+      <div className="absolute bottom-6 right-6 sm:bottom-8 sm:right-9 flex items-center gap-2 z-40">
         <button
           onClick={prevSlide}
-          className="w-9 h-9 rounded-full bg-black/55 hover:bg-black/75 text-white flex items-center justify-center transition-colors backdrop-blur-sm"
+          className="w-9 h-9 rounded-full bg-black/55 hover:bg-black/75 text-white flex items-center justify-center transition-colors backdrop-blur-sm border border-white/15"
           aria-label="Vorige foto"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 18l-6-6 6-6"/></svg>
         </button>
-        <span className="text-white text-sm font-semibold tabular-nums bg-black/55 backdrop-blur-sm px-3 py-1.5 rounded-full min-w-[64px] text-center">
+        <span className="text-white text-sm font-semibold tabular-nums bg-black/55 backdrop-blur-sm px-3 py-1.5 rounded-full min-w-[64px] text-center border border-white/15">
           {current + 1} / {heroImages.length}
         </span>
         <button
           onClick={nextSlide}
-          className="w-9 h-9 rounded-full bg-black/55 hover:bg-black/75 text-white flex items-center justify-center transition-colors backdrop-blur-sm"
+          className="w-9 h-9 rounded-full bg-black/55 hover:bg-black/75 text-white flex items-center justify-center transition-colors backdrop-blur-sm border border-white/15"
           aria-label="Volgende foto"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 18l6-6-6-6"/></svg>

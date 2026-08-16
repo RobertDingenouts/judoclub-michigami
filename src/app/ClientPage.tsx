@@ -272,12 +272,12 @@ export default function MichigamiApp() {
   }, [ptrPulling, ptrProgress]);
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-[#f8f9fa] w-full overflow-x-hidden">
+    <div className="min-h-screen flex flex-col md:flex-row bg-washi w-full overflow-x-hidden">
       {/* Pull-to-refresh indicator */}
       <PullToRefreshIndicator isPulling={ptrPulling} isRefreshing={ptrRefreshing} progress={ptrProgress} />
 
-      {/* Desktop Sidebar — Glassmorphism */}
-      <aside className="hidden md:flex flex-col w-64 backdrop-blur-xl bg-white/80 border border-white/20 min-h-screen fixed left-0 top-0 z-40 shadow-lg shadow-black/5">
+      {/* Desktop Sidebar — washi paper */}
+      <aside className="hidden md:flex flex-col w-64 bg-washi border-r border-[#b08d3e]/25 min-h-screen fixed left-0 top-0 z-40 shadow-lg shadow-black/5">
         <SidebarContent activeSection={activeSection} onSelect={(s) => setActiveSection(s)} />
       </aside>
 
@@ -285,12 +285,12 @@ export default function MichigamiApp() {
       <div className="md:hidden fixed top-3 left-3 z-50">
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="p-2.5 rounded-xl bg-white/70 backdrop-blur-md shadow-lg border border-white/30 hover:shadow-xl transition-shadow"
+          className="p-2.5 rounded-xl bg-white/80 backdrop-blur-md shadow-lg border border-[#b08d3e]/30 hover:shadow-xl transition-shadow"
         >
           {sidebarOpen ? (
-            <svg className="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+            <svg className="w-5 h-5 text-[#1c1915]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
           ) : (
-            <svg className="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
+            <svg className="w-5 h-5 text-[#1c1915]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
           )}
         </button>
       </div>
@@ -311,7 +311,7 @@ export default function MichigamiApp() {
               animate={{ x: 0 }}
               exit={{ x: -300 }}
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              className="w-72 backdrop-blur-xl bg-white/80 border-r border-white/20 min-h-screen shadow-2xl max-w-[calc(100vw-1rem)]"
+              className="w-72 bg-washi border-r border-[#b08d3e]/25 min-h-screen shadow-2xl max-w-[calc(100vw-1rem)]"
               onClick={(e) => e.stopPropagation()}
             >
               <SidebarContent activeSection={activeSection} onSelect={(s) => { setActiveSection(s); setSidebarOpen(false); }} />

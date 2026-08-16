@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Inter, Rokkitt, Noto_Sans_JP, Oswald } from "next/font/google";
+import { Geist, Inter, Rokkitt, Noto_Sans_JP, Oswald, Shippori_Mincho } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { JsonLd } from "@/components/JsonLd";
@@ -33,6 +33,13 @@ const oswald = Oswald({
 const notoSansJp = Noto_Sans_JP({
   weight: ["400", "500", "700"],
   variable: "--font-noto-sans-jp",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const shipporiMincho = Shippori_Mincho({
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-shippori-mincho",
   subsets: ["latin"],
   display: "swap",
 });
@@ -107,7 +114,7 @@ export default function RootLayout({
   return (
     <html lang="nl" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${inter.variable} ${rokkitt.variable} ${oswald.variable} ${notoSansJp.variable} antialiased bg-background text-foreground`}
+        className={`${geistSans.variable} ${inter.variable} ${rokkitt.variable} ${oswald.variable} ${notoSansJp.variable} ${shipporiMincho.variable} antialiased text-foreground`}
       >
         <PWARegister />
         {children}

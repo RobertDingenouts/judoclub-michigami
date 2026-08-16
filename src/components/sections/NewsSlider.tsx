@@ -76,28 +76,26 @@ export function NewsSlider({ articles, onNavigate }: { articles: NewsArticle[]; 
 
   return (
     <div
-      className="relative overflow-hidden rounded-2xl shadow-sm border border-gray-100 backdrop-blur-xl bg-white/80 transition-all hover:shadow-lg hover:shadow-red-100/30 group"
+      className="relative overflow-hidden transition-all group"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-[#fdf6f6] via-white/40 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
-
       {/* Header bar */}
-      <div className="relative px-4 py-3 border-b border-gray-100/50 flex items-center justify-between">
-        <h3 className="font-bold text-gray-800 flex items-center gap-2">
-          <Sparkles className="w-4 h-4" style={{ color: '#c00000' }} /> Nieuws
+      <div className="px-4 py-3 border-b border-[#b08d3e]/20 flex items-center justify-between">
+        <h3 className="font-bold text-[#1c1915] flex items-center gap-2 section-title">
+          <Sparkles className="w-4 h-4" style={{ color: '#a90000' }} /> Nieuws
         </h3>
         {onNavigate && (
-          <button onClick={onNavigate} className="text-xs font-medium hover:underline" style={{ color: '#c00000' }}>
+          <button onClick={onNavigate} className="text-xs font-medium hover:underline" style={{ color: '#a90000' }}>
             Alles →
           </button>
         )}
       </div>
 
       {/* Slider viewport */}
-      <div className="relative p-4" style={{ minHeight: total > 1 ? 220 : undefined }}>
+      <div className="relative p-4" style={{ minHeight: total > 1 ? 150 : undefined }}>
         <AnimatePresence custom={direction}>
           <motion.div
             key={current}
