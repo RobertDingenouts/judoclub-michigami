@@ -73,7 +73,7 @@ export function HeroSlider() {
 
   return (
     <div
-      className="relative h-[440px] sm:h-[520px] lg:h-[600px] w-full overflow-hidden rounded-2xl group/slider shadow-xl shadow-black/10 touch-pan-y"
+      className="relative h-[440px] sm:h-[520px] lg:h-[600px] w-full overflow-hidden rounded-none group/slider shadow-xl shadow-black/10 touch-pan-y"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={handleTouchStart}
@@ -149,14 +149,14 @@ export function HeroSlider() {
           <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3">
             <button
               onClick={openProeflesForm}
-              className="btn-shu inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-base font-semibold"
+              className="btn-shu inline-flex items-center justify-center gap-2 rounded-none px-6 py-3 text-base font-semibold"
             >
               <PlayCircle className="w-5 h-5" />
               Gratis proefles
             </button>
             <a
               href="/inschrijven"
-              className="btn-outline-kin inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-base font-semibold"
+              className="btn-outline-kin inline-flex items-center justify-center gap-2 rounded-none px-6 py-3 text-base font-semibold"
             >
               Lid worden
               <ArrowRight className="w-5 h-5" />

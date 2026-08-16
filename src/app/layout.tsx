@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Inter, Rokkitt, Noto_Sans_JP, Oswald, Shippori_Mincho } from "next/font/google";
+import { Geist, Inter, Rokkitt, Noto_Sans_JP, Oswald, Shippori_Mincho, Fraunces, Karla } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { JsonLd } from "@/components/JsonLd";
@@ -40,6 +40,19 @@ const notoSansJp = Noto_Sans_JP({
 const shipporiMincho = Shippori_Mincho({
   weight: ["400", "500", "600", "700", "800"],
   variable: "--font-shippori-mincho",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const karla = Karla({
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-karla",
   subsets: ["latin"],
   display: "swap",
 });
@@ -114,7 +127,7 @@ export default function RootLayout({
   return (
     <html lang="nl" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${inter.variable} ${rokkitt.variable} ${oswald.variable} ${notoSansJp.variable} ${shipporiMincho.variable} antialiased text-foreground`}
+        className={`${geistSans.variable} ${inter.variable} ${rokkitt.variable} ${oswald.variable} ${notoSansJp.variable} ${shipporiMincho.variable} ${fraunces.variable} ${karla.variable} antialiased text-foreground`}
       >
         <PWARegister />
         {children}

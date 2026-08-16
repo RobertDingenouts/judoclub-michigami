@@ -70,9 +70,9 @@
   --text-5xl:  clamp(2.2rem, 1.8rem + 2vw,    3rem);
 
   /* Font families */
-  --font-heading: var(--font-rokkitt), Georgia, serif;
-  --font-display: var(--font-oswald), var(--font-rokkitt), Impact, sans-serif;
-  --font-body:    var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-heading: var(--font-fraunces), var(--font-rokkitt), Georgia, serif;
+  --font-display: var(--font-fraunces), var(--font-oswald), Georgia, serif;
+  --font-body:    var(--font-karla), var(--font-inter), system-ui, -apple-system, sans-serif;
   --font-jp: var(--font-shippori-mincho), var(--font-noto-sans-jp), sans-serif;
 
   /* Radius */

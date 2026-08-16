@@ -57,7 +57,7 @@ export function SidebarContent({ activeSection, onSelect }: { activeSection: Sec
             placeholder="Zoek..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 text-sm bg-white/70 border border-[#2a2a2a]/10 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#a90000]/30 focus:border-[#a90000] placeholder:text-[#8a7f70] focus-kin"
+            className="w-full pl-9 pr-3 py-2 text-sm bg-white/70 border border-[#2a2a2a]/10 rounded-none focus:outline-none focus:ring-1 focus:ring-[#a90000]/30 focus:border-[#a90000] placeholder:text-[#8a7f70] focus-kin"
           />
         </div>
       </div>
@@ -106,7 +106,7 @@ export function SidebarContent({ activeSection, onSelect }: { activeSection: Sec
                           initial={{ x: -10, opacity: 0 }}
                           animate={{ x: 0, opacity: 1 }}
                           transition={{ duration: 0.2 }}
-                          className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all ${
+                          className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-none text-sm transition-all ${
                             activeSection === item.key
                               ? 'bg-gradient-to-r from-[#fdf0f0] to-white text-[#a90000] font-semibold shadow-sm ring-1 ring-[#a90000]/15'
                               : 'text-[#3d362d] hover:bg-[#a90000]/[0.04] hover:text-[#1c1915]'
@@ -144,17 +144,17 @@ export function SidebarContent({ activeSection, onSelect }: { activeSection: Sec
       <div className="p-3 border-t border-[#2a2a2a]/10 relative overflow-hidden">
         <div className="relative flex items-center gap-2 justify-center">
           <AnimatedButton as="a" href="https://www.facebook.com/judoclubmichigami" target="_blank" rel="noopener noreferrer" variants={subtleHover}>
-            <div className="p-1.5 rounded-md hover:bg-[#a90000]/[0.06] text-[#8a7f70] hover:text-[#a90000] transition-colors">
+            <div className="p-1.5 rounded-none hover:bg-[#a90000]/[0.06] text-[#8a7f70] hover:text-[#a90000] transition-colors">
               <Facebook className="w-4 h-4" />
             </div>
           </AnimatedButton>
           <AnimatedButton as="a" href="mailto:judoclub_michigami@hotmail.com" variants={subtleHover}>
-            <div className="p-1.5 rounded-md hover:bg-[#a90000]/[0.06] text-[#8a7f70] hover:text-[#a90000] transition-colors">
+            <div className="p-1.5 rounded-none hover:bg-[#a90000]/[0.06] text-[#8a7f70] hover:text-[#a90000] transition-colors">
               <Mail className="w-4 h-4" />
             </div>
           </AnimatedButton>
           <AnimatedButton as="a" href="https://www.youtube.com/channel/UC8tXSKppIMF6awS2cj7w50A" target="_blank" rel="noopener noreferrer" variants={subtleHover}>
-            <div className="p-1.5 rounded-md hover:bg-[#a90000]/[0.06] text-[#8a7f70] hover:text-[#a90000] transition-colors">
+            <div className="p-1.5 rounded-none hover:bg-[#a90000]/[0.06] text-[#8a7f70] hover:text-[#a90000] transition-colors">
               <Youtube className="w-4 h-4" />
             </div>
           </AnimatedButton>

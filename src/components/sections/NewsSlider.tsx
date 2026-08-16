@@ -120,7 +120,7 @@ export function NewsSlider({ articles, onNavigate }: { articles: NewsArticle[]; 
                     const idx = allImageUrls.indexOf(article.imageUrl!);
                     if (idx >= 0) setLightboxIndex(idx);
                   }}
-                  className="group/thumb relative aspect-square w-28 flex-shrink-0 rounded-xl overflow-hidden shadow-sm cursor-pointer"
+                  className="group/thumb relative aspect-square w-28 flex-shrink-0 rounded-none overflow-hidden shadow-sm cursor-pointer"
                 >
                   {/* Blurred background layer */}
                   <div className="absolute inset-0">
