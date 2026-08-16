@@ -66,7 +66,7 @@ export function UserDropdown({ onSectionChange }: { onSectionChange?: (section: 
   if (loading) {
     return (
       <div className="flex items-center gap-2 w-full">
-        <div className="w-9 h-9 rounded-none bg-gray-200 animate-pulse flex-shrink-0" />
+        <div className="w-9 h-9 rounded-lg bg-gray-200 animate-pulse flex-shrink-0" />
         <div className="flex-1 min-w-0">
           <div className="h-3 w-20 bg-gray-200 animate-pulse rounded" />
           <div className="h-2 w-12 bg-gray-100 animate-pulse rounded mt-1" />
@@ -79,7 +79,7 @@ export function UserDropdown({ onSectionChange }: { onSectionChange?: (section: 
     return (
       <a
         href="/signin"
-        className="flex items-center justify-center gap-2 w-full px-3 py-2.5 rounded-none text-sm font-medium text-white transition-colors shadow-sm hover:opacity-90"
+        className="flex items-center justify-center gap-2 w-full px-3 py-2.5 rounded-lg text-sm font-medium text-white transition-colors shadow-sm hover:opacity-90"
         style={{ backgroundColor: '#a90000' }}
       >
         <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -114,7 +114,7 @@ export function UserDropdown({ onSectionChange }: { onSectionChange?: (section: 
       >
         {/* Avatar circle */}
         <div
-          className="relative flex items-center justify-center w-9 h-9 rounded-none text-xs font-bold text-white flex-shrink-0 shadow-sm border-2 overflow-hidden"
+          className="relative flex items-center justify-center w-9 h-9 rounded-lg text-xs font-bold text-white flex-shrink-0 shadow-sm border-2 overflow-hidden"
           style={{
             backgroundColor: user.imageUrl ? 'transparent' : beltColor,
             borderColor: user.imageUrl ? beltColor : (beltColor === '#ffffff' ? '#e0e0e0' : 'rgba(255,255,255,0.3)'),
@@ -156,14 +156,14 @@ export function UserDropdown({ onSectionChange }: { onSectionChange?: (section: 
 
       {/* Dropdown menu */}
       {open && (
-        <div className="absolute bottom-full left-0 right-0 mb-2 bg-white rounded-none shadow-xl border border-gray-100 overflow-hidden z-50 animate-in slide-in-from-bottom-2">
+        <div className="absolute bottom-full left-0 right-0 mb-2 bg-white rounded-lg shadow-xl border border-gray-100 overflow-hidden z-50 animate-in slide-in-from-bottom-2">
           <div className="p-2 border-b border-gray-100">
             <p className="text-sm font-semibold text-gray-800 px-2 py-1">{displayName}</p>
             <p className="text-xs text-gray-400 px-2 pb-1">{user.email}</p>
             {beltLabel && (
               <div className="flex items-center gap-1.5 px-2 py-1">
                 <div
-                  className="w-4 h-1 rounded-none"
+                  className="w-4 h-1 rounded-lg"
                   style={{ backgroundColor: beltColor }}
                 />
                 <span className="text-xs text-gray-500">{beltLabel}</span>
@@ -257,7 +257,7 @@ export function MobileUserAvatar({ onSectionChange }: { onSectionChange?: (secti
   return (
     <div className="relative group">
       <button
-        className="flex-shrink-0 w-9 h-9 rounded-none flex items-center justify-center text-[10px] font-bold text-white shadow-md border-2 overflow-hidden"
+        className="flex-shrink-0 w-9 h-9 rounded-lg flex items-center justify-center text-[10px] font-bold text-white shadow-md border-2 overflow-hidden"
         style={{
           backgroundColor: user.imageUrl ? 'transparent' : beltColor,
           borderColor: user.imageUrl ? beltColor : (beltColor === '#ffffff' ? '#ddd' : 'rgba(255,255,255,0.3)'),
@@ -276,7 +276,7 @@ export function MobileUserAvatar({ onSectionChange }: { onSectionChange?: (secti
       </button>
 
       {/* Tooltip-style dropdown on hover/focus — mobile friendly tap target */}
-      <div className="absolute bottom-full right-0 mb-2 w-48 bg-white rounded-none shadow-xl border border-gray-100 overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all z-50">
+      <div className="absolute bottom-full right-0 mb-2 w-48 bg-white rounded-lg shadow-xl border border-gray-100 overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all z-50">
         <div className="p-2 border-b border-gray-100 bg-[#fdf6f6]">
           <p className="text-xs font-semibold text-gray-800">{displayName}</p>
         </div>

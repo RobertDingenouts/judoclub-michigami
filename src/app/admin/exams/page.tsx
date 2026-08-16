@@ -43,7 +43,7 @@ export default async function ExamsPage({
           <h1 className="text-2xl font-bold text-[#2a2a2a]">Examens</h1>
           <p className="text-sm text-gray-500 mt-1">{totalExams} examens • {passRate}% slagingspercentage</p>
         </div>
-        <Link href="/admin/exams/new" className="inline-flex items-center gap-2 rounded-none bg-[#a90000] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#8c0000]">
+        <Link href="/admin/exams/new" className="inline-flex items-center gap-2 rounded-lg bg-[#a90000] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#8c0000]">
           <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
             <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
           </svg>
@@ -61,14 +61,14 @@ export default async function ExamsPage({
 
       {/* Filters */}
       <form className="flex flex-col gap-3 sm:flex-row">
-        <select name="status" defaultValue={statusFilter} className="rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none">
+        <select name="status" defaultValue={statusFilter} className="rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none">
           <option value="">Alle statussen</option>
           <option value="SCHEDULED">Gepland</option>
           <option value="COMPLETED_PASSED">Geslaagd</option>
           <option value="COMPLETED_FAILED">Niet geslaagd</option>
           <option value="CANCELLED">Geannuleerd</option>
         </select>
-        <select name="belt" defaultValue={beltFilter} className="rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none">
+        <select name="belt" defaultValue={beltFilter} className="rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none">
           <option value="">Alle banden</option>
           {['WIT', 'GEEL', 'ORANJE', 'GROEN', 'BLAUW', 'BRUIN', 'ZWART_1'].map(b => (
             <option key={b} value={b}>{BELT_LABELS_NL[b as BeltLevel]}</option>
@@ -81,7 +81,7 @@ export default async function ExamsPage({
         {exams.length > 0 ? exams.map((exam) => (
           <ExamCard key={exam.id} exam={exam} />
         )) : (
-          <div className="rounded-none border border-gray-200 bg-white p-12 text-center shadow-sm">
+          <div className="rounded-lg border border-gray-200 bg-white p-12 text-center shadow-sm">
             <p className="text-lg font-medium text-gray-400">Geen examens gevonden</p>
           </div>
         )}
@@ -93,7 +93,7 @@ export default async function ExamsPage({
 function StatCard({ title, value, accent }: { title: string; value: number; accent?: string }) {
   const colorMap = { green: 'text-green-700', red: 'text-red-700', yellow: 'text-yellow-700' }
   return (
-    <div className="rounded-none border border-gray-200 bg-white p-4 shadow-sm">
+    <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
       <p className="text-xs font-medium text-gray-500">{title}</p>
       <p className={`mt-1 text-2xl font-bold ${colorMap[accent!] || 'text-[#2a2a2a]'}`}>{value}</p>
     </div>
@@ -110,10 +110,10 @@ function ExamCard({ exam }: { exam: any }) {
   const config = statusConfig[exam.status]
 
   return (
-    <div className="rounded-none border border-gray-200 bg-white shadow-sm">
+    <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
       <div className="flex items-center justify-between p-5">
         <div className="flex items-center gap-4">
-          <div className={`flex h-10 w-10 items-center justify-center rounded-none ${config.bg} ${config.text}`}>
+          <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${config.bg} ${config.text}`}>
             {config.icon}
           </div>
           <div>
@@ -139,7 +139,7 @@ function ExamCard({ exam }: { exam: any }) {
               <p className="text-sm font-bold text-[#2a2a2a]">{exam.overallScore}/100</p>
             </div>
           )}
-          <span className={`inline-flex rounded-none px-2.5 py-1 text-xs font-medium ${config.bg} ${config.text}`}>
+          <span className={`inline-flex rounded-lg px-2.5 py-1 text-xs font-medium ${config.bg} ${config.text}`}>
             {config.label}
           </span>
           <Link href={`/admin/exams/${exam.id}`} className="text-xs text-[#a90000] hover:underline">
@@ -156,7 +156,7 @@ function ExamCard({ exam }: { exam: any }) {
             {exam.results.map((result: any) => (
               <span
                 key={result.id}
-                className={`inline-flex items-center gap-1 rounded-none px-2 py-0.5 text-xs ${
+                className={`inline-flex items-center gap-1 rounded-lg px-2 py-0.5 text-xs ${
                   result.passed ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                 }`}
               >

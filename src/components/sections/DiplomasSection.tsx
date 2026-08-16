@@ -116,11 +116,11 @@ export function DiplomasSection({ userId }: DiplomasSectionProps) {
   if (!currentUserId && !loading) {
     return (
       <div className="space-y-6">
-        <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-none p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
+        <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-lg p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
           <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold">Mijn Diplomas</h1>
           <p className="text-white/80 mt-1 text-xs sm:text-sm">Inloggen vereist om je diplomas te bekijken</p>
         </div>
-        <div className="bg-yellow-50 border border-yellow-200 rounded-none p-4 text-center">
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-center">
           <p className="text-yellow-800">Log in om je judo diplomas te bekijken en te downloaden.</p>
         </div>
       </div>
@@ -130,10 +130,10 @@ export function DiplomasSection({ userId }: DiplomasSectionProps) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-none p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
+      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-lg p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
         <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold">Mijn Diplomas</h1>
         <p className="text-white/80 mt-1 text-xs sm:text-sm">Je behaalde judo examens en certificaten</p>
-        <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-none mt-2 sm:mt-3" />
+        <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-lg mt-2 sm:mt-3" />
       </div>
 
       {/* Loading state */}
@@ -145,7 +145,7 @@ export function DiplomasSection({ userId }: DiplomasSectionProps) {
 
       {/* Empty state */}
       {!loading && diplomas.length === 0 && (
-        <div className="bg-gray-50 border border-gray-200 rounded-none p-8 text-center space-y-3">
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center space-y-3">
           <div className="text-4xl">🎓</div>
           <h3 className="font-bold text-gray-700">Nog geen diplomas</h3>
           <p className="text-sm text-gray-500">
@@ -165,7 +165,7 @@ export function DiplomasSection({ userId }: DiplomasSectionProps) {
             return (
               <div
                 key={diploma.id}
-                className={`bg-white rounded-none shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow ${
+                className={`bg-white rounded-lg shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow ${
                   isCourseJapanese ? 'ring-2 ring-yellow-200' : ''
                 }`}
               >
@@ -179,7 +179,7 @@ export function DiplomasSection({ userId }: DiplomasSectionProps) {
                   {/* Type badge */}
                   {isCourseJapanese && (
                     <div className="mb-2">
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-none text-xs font-bold bg-yellow-100 text-yellow-700">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-bold bg-yellow-100 text-yellow-700">
                         🎓 Cursus Japans
                       </span>
                     </div>
@@ -200,7 +200,7 @@ export function DiplomasSection({ userId }: DiplomasSectionProps) {
                     {/* Belt badge */}
                     {diploma.beltLevel && (
                       <div
-                        className={`w-10 h-10 rounded-none flex items-center justify-center text-xs font-bold ${
+                        className={`w-10 h-10 rounded-lg flex items-center justify-center text-xs font-bold ${
                           isWhiteBelt ? 'border border-gray-300 text-gray-600' : 'text-white'
                         }`}
                         style={{ backgroundColor: isWhiteBelt ? '#fff' : beltColor }}
@@ -218,7 +218,7 @@ export function DiplomasSection({ userId }: DiplomasSectionProps) {
                   )}
 
                   {/* Verification code */}
-                  <div className="bg-gray-50 rounded-none p-2 mb-3 flex items-center justify-between">
+                  <div className="bg-gray-50 rounded-lg p-2 mb-3 flex items-center justify-between">
                     <span className="text-xs text-gray-500">Verificatiecode:</span>
                     <code className="text-xs font-mono bg-white px-2 py-0.5 rounded border">
                       {diploma.verificationCode}
@@ -230,7 +230,7 @@ export function DiplomasSection({ userId }: DiplomasSectionProps) {
                     <button
                       onClick={() => handleDownload(diploma.id)}
                       disabled={downloadingId === diploma.id}
-                      className="flex-1 bg-[#a90000] hover:bg-[#8c0000] text-white text-sm font-medium py-2 rounded-none transition disabled:opacity-50 flex items-center justify-center gap-1"
+                      className="flex-1 bg-[#a90000] hover:bg-[#8c0000] text-white text-sm font-medium py-2 rounded-lg transition disabled:opacity-50 flex items-center justify-center gap-1"
                     >
                       {downloadingId === diploma.id ? (
                         <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
@@ -245,7 +245,7 @@ export function DiplomasSection({ userId }: DiplomasSectionProps) {
                     </button>
                     <button
                       onClick={() => handleShare(diploma)}
-                      className="px-3 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-none hover:bg-gray-50 transition flex items-center gap-1"
+                      className="px-3 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition flex items-center gap-1"
                     >
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />

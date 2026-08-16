@@ -11,7 +11,7 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="w-full flex items-center justify-center gap-2 rounded-none bg-[#a90000] px-4 py-3 text-sm font-medium text-white transition-all hover:bg-[#8c0000] disabled:opacity-50 shadow-sm"
+      className="w-full flex items-center justify-center gap-2 rounded-lg bg-[#a90000] px-4 py-3 text-sm font-medium text-white transition-all hover:bg-[#8c0000] disabled:opacity-50 shadow-sm"
     >
       {pending ? (
         <>
@@ -80,7 +80,7 @@ export default function LoginPage() {
         </Link>
       </div>
 
-      <div className="w-full max-w-md rounded-none border border-gray-200 bg-white p-8 shadow-lg">
+      <div className="w-full max-w-md rounded-lg border border-gray-200 bg-white p-8 shadow-lg">
         {/* Logo */}
         <div className="mb-8 text-center">
           <div className="mx-auto mb-4 h-16 w-16">
@@ -96,7 +96,7 @@ export default function LoginPage() {
 
         {/* Error message */}
         {error && (
-          <div className="mb-4 rounded-none bg-red-50 p-3 text-sm text-red-700 border border-red-200">
+          <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700 border border-red-200">
             {error}
           </div>
         )}
@@ -114,7 +114,7 @@ export default function LoginPage() {
               autoComplete="email"
               required
               defaultValue={email}
-              className="w-full rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
               placeholder="admin@judoclubmichigami.nl"
             />
           </div>
@@ -130,7 +130,7 @@ export default function LoginPage() {
               autoComplete="current-password"
               required
               defaultValue={password}
-              className="w-full rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
               placeholder="••••••••"
             />
           </div>

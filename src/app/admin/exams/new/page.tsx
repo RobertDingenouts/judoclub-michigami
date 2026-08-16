@@ -108,15 +108,15 @@ export default function NewExamPage() {
       </div>
 
       {error && (
-        <div className="rounded-none border border-red-200 bg-red-50 p-4 text-sm text-red-700">{error}</div>
+        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">{error}</div>
       )}
       {success && (
-        <div className="rounded-none border border-green-200 bg-green-50 p-4 text-sm text-green-700">
+        <div className="rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-700">
           ✓ Examen succesvol aangemaakt. Doorverwijzen...
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="rounded-none border border-gray-200 bg-white p-6 shadow-sm space-y-6">
+      <form onSubmit={handleSubmit} className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm space-y-6">
         {/* Student selection */}
         <div>
           <label className="mb-1.5 block text-sm font-medium text-gray-700">
@@ -125,7 +125,7 @@ export default function NewExamPage() {
           <select
             name="memberId"
             required
-            className="w-full rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
           >
             <option value="">Selecteer een student...</option>
             {students.map(s => (
@@ -145,7 +145,7 @@ export default function NewExamPage() {
             <select
               name="beltLevel"
               required
-              className="w-full rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
             >
               <option value="">Selecteer band...</option>
               {BELTS.map(b => (
@@ -159,7 +159,7 @@ export default function NewExamPage() {
             <input
               name="examDate"
               type="date"
-              className="w-full rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
             />
           </div>
 
@@ -169,7 +169,7 @@ export default function NewExamPage() {
               name="examiner"
               type="text"
               placeholder="Naam examiner"
-              className="w-full rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
             />
           </div>
         </div>
@@ -180,7 +180,7 @@ export default function NewExamPage() {
           <textarea
             name="notes"
             rows={3}
-            className="w-full rounded-none border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
             placeholder="Optionele notities..."
           />
         </div>
@@ -190,13 +190,13 @@ export default function NewExamPage() {
           <button
             type="submit"
             disabled={saving}
-            className="inline-flex items-center gap-2 rounded-none bg-[#a90000] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#8c0000] disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-lg bg-[#a90000] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#8c0000] disabled:opacity-50"
           >
             {saving ? 'Aanmaken...' : 'Examen Plannen'}
           </button>
           <Link
             href="/admin/exams"
-            className="inline-flex items-center gap-2 rounded-none border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+            className="inline-flex items-center gap-2 rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
           >
             Annuleren
           </Link>

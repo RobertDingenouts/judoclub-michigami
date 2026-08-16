@@ -50,7 +50,7 @@ export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
                 onClick={() => onSectionChange(item.id)}
                 layout
                 layoutId={`sidebar-${item.id}`}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-none text-sm font-medium transition-colors duration-200 ${
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors duration-200 ${
                   activeSection === item.id
                     ? 'bg-judo-red text-white shadow-md shadow-judo-red/20'
                     : 'text-foreground hover:bg-judo-red-bg hover:text-judo-red-text'

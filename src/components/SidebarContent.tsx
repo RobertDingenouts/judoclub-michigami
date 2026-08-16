@@ -35,7 +35,7 @@ export function SidebarContent({ activeSection, onSelect }: { activeSection: Sec
         {/* Faint seigaiha waves behind the logo */}
         <div className="relative">
           <AnimatedCard variants={subtleHover}>
-            <div className="w-24 h-24 rounded-none bg-gradient-to-br from-white to-[#fbf9f4] border border-[#2a2a2a]/15 flex items-center justify-center mb-2 shadow-sm ring-4 ring-white/50">
+            <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-white to-[#fbf9f4] border border-[#2a2a2a]/10 flex items-center justify-center mb-2 shadow-sm ring-2 ring-white/60">
               <Image src="/logo.png" alt="Judoclub Michigami" width={72} height={72} className="object-contain" />
             </div>
           </AnimatedCard>
@@ -57,7 +57,7 @@ export function SidebarContent({ activeSection, onSelect }: { activeSection: Sec
             placeholder="Zoek..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 text-sm bg-white/70 border border-[#2a2a2a]/10 rounded-none focus:outline-none focus:ring-1 focus:ring-[#a90000]/30 focus:border-[#a90000] placeholder:text-[#8a7f70] focus-kin"
+            className="w-full pl-9 pr-3 py-2 text-sm bg-white/70 border border-[#2a2a2a]/10 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#a90000]/30 focus:border-[#a90000] placeholder:text-[#8a7f70] focus-kin"
           />
         </div>
       </div>
@@ -106,7 +106,7 @@ export function SidebarContent({ activeSection, onSelect }: { activeSection: Sec
                           initial={{ x: -10, opacity: 0 }}
                           animate={{ x: 0, opacity: 1 }}
                           transition={{ duration: 0.2 }}
-                          className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-none text-sm transition-all ${
+                          className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all ${
                             activeSection === item.key
                               ? 'bg-gradient-to-r from-[#fdf0f0] to-white text-[#a90000] font-semibold shadow-sm ring-1 ring-[#a90000]/15'
                               : 'text-[#3d362d] hover:bg-[#a90000]/[0.04] hover:text-[#1c1915]'
@@ -114,7 +114,7 @@ export function SidebarContent({ activeSection, onSelect }: { activeSection: Sec
                         {item.icon}
                         <span className="truncate">{item.label}</span>
                         {activeSection === item.key && (
-                          <div className="w-1.5 h-4 rounded-none bg-gradient-to-b from-[#c00000] to-[#8c0000] ml-auto flex-shrink-0" />
+                          <div className="w-1.5 h-4 rounded-lg bg-gradient-to-b from-[#c00000] to-[#8c0000] ml-auto flex-shrink-0" />
                         )}
                       </motion.div>
                     </AnimatedButton>
@@ -144,17 +144,17 @@ export function SidebarContent({ activeSection, onSelect }: { activeSection: Sec
       <div className="p-3 border-t border-[#2a2a2a]/10 relative overflow-hidden">
         <div className="relative flex items-center gap-2 justify-center">
           <AnimatedButton as="a" href="https://www.facebook.com/judoclubmichigami" target="_blank" rel="noopener noreferrer" variants={subtleHover}>
-            <div className="p-1.5 rounded-none hover:bg-[#a90000]/[0.06] text-[#8a7f70] hover:text-[#a90000] transition-colors">
+            <div className="p-1.5 rounded-lg hover:bg-[#a90000]/[0.06] text-[#8a7f70] hover:text-[#a90000] transition-colors">
               <Facebook className="w-4 h-4" />
             </div>
           </AnimatedButton>
           <AnimatedButton as="a" href="mailto:judoclub_michigami@hotmail.com" variants={subtleHover}>
-            <div className="p-1.5 rounded-none hover:bg-[#a90000]/[0.06] text-[#8a7f70] hover:text-[#a90000] transition-colors">
+            <div className="p-1.5 rounded-lg hover:bg-[#a90000]/[0.06] text-[#8a7f70] hover:text-[#a90000] transition-colors">
               <Mail className="w-4 h-4" />
             </div>
           </AnimatedButton>
           <AnimatedButton as="a" href="https://www.youtube.com/channel/UC8tXSKppIMF6awS2cj7w50A" target="_blank" rel="noopener noreferrer" variants={subtleHover}>
-            <div className="p-1.5 rounded-none hover:bg-[#a90000]/[0.06] text-[#8a7f70] hover:text-[#a90000] transition-colors">
+            <div className="p-1.5 rounded-lg hover:bg-[#a90000]/[0.06] text-[#8a7f70] hover:text-[#a90000] transition-colors">
               <Youtube className="w-4 h-4" />
             </div>
           </AnimatedButton>

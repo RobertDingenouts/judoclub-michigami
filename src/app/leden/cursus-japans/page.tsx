@@ -94,7 +94,7 @@ export default async function CursusJapansPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-none p-4 sm:p-5 md:p-6 text-white shadow-lg relative overflow-hidden">
+      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-lg p-4 sm:p-5 md:p-6 text-white shadow-lg relative overflow-hidden">
         <div className="flex items-start justify-between">
           <div>
             <h1 className="text-xl sm:text-2xl font-bold">Cursus Japans</h1>
@@ -108,9 +108,9 @@ export default async function CursusJapansPage() {
           </div>
         </div>
         {/* Overall progress bar */}
-        <div className="mt-4 w-full h-3 bg-white/20 rounded-none overflow-hidden">
+        <div className="mt-4 w-full h-3 bg-white/20 rounded-lg overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-none transition-all duration-1000"
+            className="h-full bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-lg transition-all duration-1000"
             style={{ width: `${(passedCount / totalBelts) * 100}%` }}
           />
         </div>
@@ -127,7 +127,7 @@ export default async function CursusJapansPage() {
           return (
             <div
               key={belt}
-              className={`rounded-none border-2 overflow-hidden transition-all ${
+              className={`rounded-lg border-2 overflow-hidden transition-all ${
                 course?.isPassed
                   ? 'border-green-200 bg-green-50/50'
                   : course?.isUnlocked
@@ -139,7 +139,7 @@ export default async function CursusJapansPage() {
                 <div className="flex items-center gap-4">
                   {/* Belt color circle */}
                   <div
-                    className="w-14 h-14 rounded-none flex items-center justify-center text-lg font-bold shadow-inner flex-shrink-0 border-2"
+                    className="w-14 h-14 rounded-lg flex items-center justify-center text-lg font-bold shadow-inner flex-shrink-0 border-2"
                     style={{
                       backgroundColor: colors.bg,
                       color: colors.text,
@@ -162,17 +162,17 @@ export default async function CursusJapansPage() {
                         {colors.label} band
                       </h3>
                       {course?.isPassed && (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-none text-xs font-bold bg-green-100 text-green-700">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-bold bg-green-100 text-green-700">
                           ✓ Geslaagd
                         </span>
                       )}
                       {hasDiploma && (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-none text-xs font-bold bg-yellow-100 text-yellow-700">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-bold bg-yellow-100 text-yellow-700">
                           🎓 Diploma
                         </span>
                       )}
                       {!course?.isUnlocked && (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-none text-xs font-medium bg-gray-100 text-gray-500">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-500">
                           🔒 Vergrendeld
                         </span>
                       )}
@@ -187,9 +187,9 @@ export default async function CursusJapansPage() {
                     </p>
                     {/* Progress bar */}
                     {course && (
-                      <div className="mt-2 w-full h-2 rounded-none bg-gray-100 overflow-hidden">
+                      <div className="mt-2 w-full h-2 rounded-lg bg-gray-100 overflow-hidden">
                         <div
-                          className={`h-full rounded-none transition-all ${
+                          className={`h-full rounded-lg transition-all ${
                             course.isPassed ? 'bg-green-500' : 'bg-[#a90000]'
                           }`}
                           style={{
@@ -210,7 +210,7 @@ export default async function CursusJapansPage() {
                       href="/#cursus-japans"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-4 py-2 bg-[#a90000] hover:bg-[#8c0000] text-white text-sm font-semibold rounded-none transition-colors shadow-sm whitespace-nowrap inline-block"
+                      className="px-4 py-2 bg-[#a90000] hover:bg-[#8c0000] text-white text-sm font-semibold rounded-lg transition-colors shadow-sm whitespace-nowrap inline-block"
                     >
                       Start examen →
                     </a>
@@ -224,7 +224,7 @@ export default async function CursusJapansPage() {
 
       {/* Diplomas section */}
       {diplomas.length > 0 && (
-        <div className="rounded-none border border-gray-200 bg-white p-5 shadow-sm">
+        <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
           <h2 className="font-bold text-[#2a2a2a] text-lg mb-3 flex items-center gap-2">
             🎓 Jouw diploma&apos;s
           </h2>
@@ -235,10 +235,10 @@ export default async function CursusJapansPage() {
               return (
                 <div
                   key={diploma.id}
-                  className="flex items-center gap-3 p-3 rounded-none bg-gray-50 border border-gray-100"
+                  className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 border border-gray-100"
                 >
                   <div
-                    className="w-8 h-8 rounded-none flex items-center justify-center text-xs font-bold border"
+                    className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold border"
                     style={{
                       backgroundColor: colors?.bg || '#f0f0f0',
                       color: colors?.text || '#666',
@@ -271,7 +271,7 @@ export default async function CursusJapansPage() {
       )}
 
       {/* How it works */}
-      <div className="bg-[#fdf6f6] rounded-none p-4 border border-[#e8eaed]">
+      <div className="bg-[#fdf6f6] rounded-lg p-4 border border-[#e9e0cf]">
         <p className="text-sm text-gray-600 leading-relaxed">
           <strong>Hoe werkt het?</strong> — Ga naar de Cursus Japans sectie op de homepage,
           leer de termen met flashcards en doe het examen (min. 80% nodig).

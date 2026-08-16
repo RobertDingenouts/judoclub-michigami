@@ -4,7 +4,7 @@ import { videoData, youtubeChannel } from '@/data/videos';
 
 function VideoEmbed({ video }: { video: (typeof videoData)[number] }) {
   return (
-    <div className="group relative rounded-none overflow-hidden shadow-lg bg-black aspect-video">
+    <div className="group relative rounded-lg overflow-hidden shadow-lg bg-black aspect-video">
       <iframe
         src={`https://www.youtube.com/embed/${video.youtubeId}`}
         title={video.title}
@@ -26,7 +26,7 @@ export function VideoGallery() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-none p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
+      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-lg p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
         <svg
           viewBox="0 0 100 80"
           className="absolute top-0 right-0 w-20 sm:w-24 md:w-32 h-20 sm:h-24 md:h-32 text-white opacity-[0.06]"
@@ -41,11 +41,11 @@ export function VideoGallery() {
         <p className="text-white/80 mt-1 text-xs sm:text-sm">
           Beelden van onze judoclub en trainingen
         </p>
-        <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-none mt-2 sm:mt-3" />
+        <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-lg mt-2 sm:mt-3" />
       </div>
 
       {/* YouTube Channel Info */}
-      <div className="bg-white rounded-none shadow-sm border border-[#e8eaed] p-4 sm:p-6">
+      <div className="bg-white rounded-lg shadow-sm border border-[#e9e0cf] p-4 sm:p-6">
         <h2 className="text-lg sm:text-xl font-bold text-[#8c0000] mb-2">
           Ons YouTube-kanaal
         </h2>
@@ -60,7 +60,7 @@ export function VideoGallery() {
           href={youtubeChannel.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 bg-[#a90000] hover:bg-[#8c0000] text-white px-5 py-2.5 rounded-none font-semibold text-sm transition-colors"
+          className="inline-flex items-center gap-2 bg-[#a90000] hover:bg-[#8c0000] text-white px-5 py-2.5 rounded-lg font-semibold text-sm transition-colors"
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
             <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.041 0 12 0 12s0 3.959.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.959 24 12 24 12s0-3.959-.502-5.814zM9.549 15.568V8.432L15.816 12l-6.267 3.568z" />

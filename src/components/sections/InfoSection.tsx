@@ -58,7 +58,7 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
           <Card className="border-0 shadow-sm">
             <CardContent className="p-4 sm:p-6 space-y-4">
               <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-none bg-[#fdf6f6] flex items-center justify-center flex-shrink-0 mt-1">
+                <div className="w-10 h-10 rounded-lg bg-[#fdf6f6] flex items-center justify-center flex-shrink-0 mt-1">
                   <Calendar className="w-5 h-5 text-[#c00000]" />
                 </div>
                 <div className="space-y-4">
@@ -94,9 +94,9 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
               </p>
               <div className="space-y-3">
                 {clubInfo.leadership.current.map((person) => (
-                  <div key={person.name} className="p-4 rounded-none bg-[#fdf6f6] border border-[#fce0e0]">
+                  <div key={person.name} className="p-4 rounded-lg bg-[#fdf6f6] border border-[#fce0e0]">
                     <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 rounded-none bg-gradient-to-br from-[#a90000] to-[#c00000] text-white flex items-center justify-center flex-shrink-0 font-bold text-sm">
+                      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#a90000] to-[#c00000] text-white flex items-center justify-center flex-shrink-0 font-bold text-sm">
                         {person.name.split(' ').map(n => n[0]).join('')}
                       </div>
                       <div className="flex-1 min-w-0">
@@ -115,9 +115,9 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
               <h3 className="font-bold text-gray-800 flex items-center gap-2 section-title">
                 <Award className="w-5 h-5 text-[#c00000]" /> Oprichter & Erfenis
               </h3>
-              <div className="p-4 rounded-none bg-gradient-to-br from-[#fdf6f6] to-white border border-[#fce0e0]">
+              <div className="p-4 rounded-lg bg-gradient-to-br from-[#fdf6f6] to-white border border-[#fce0e0]">
                 <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-none bg-gradient-to-br from-[#8c0000] to-[#a90000] text-white flex items-center justify-center flex-shrink-0 font-bold text-sm">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#8c0000] to-[#a90000] text-white flex items-center justify-center flex-shrink-0 font-bold text-sm">
                     KV
                   </div>
                   <div className="flex-1 min-w-0">
@@ -161,7 +161,7 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
 
           {/* Foto grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="rounded-none overflow-hidden shadow-md border border-[#fce0e0]">
+            <div className="rounded-lg overflow-hidden shadow-md border border-[#fce0e0]">
               <img 
                 src="/hero/budodag-actie-1.jpg" 
                 alt="Budodag Michigami" 
@@ -171,7 +171,7 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
                 <p className="text-xs text-gray-600 text-center font-medium">🎉 Budodag activiteiten</p>
               </div>
             </div>
-            <div className="rounded-none overflow-hidden shadow-md border border-[#fce0e0]">
+            <div className="rounded-lg overflow-hidden shadow-md border border-[#fce0e0]">
               <img 
                 src="/hero/heerle-toernooi-1.jpg" 
                 alt="Toernooi Michigami" 
@@ -211,7 +211,7 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
                   {/* Dot on the line */}
                   <div className="absolute left-4 md:left-1/2 md:-translate-x-1/2 z-10">
                     <div
-                      className={`w-8 h-8 rounded-none flex items-center justify-center shadow-lg ${
+                      className={`w-8 h-8 rounded-lg flex items-center justify-center shadow-lg ${
                         event.isMilestone
                           ? 'bg-gradient-to-br from-[#a90000] to-[#c00000] text-white ring-4 ring-red-100'
                           : 'bg-white border-2 border-[#a90000] text-[#a90000]'
@@ -237,7 +237,7 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
                         <p className="text-sm text-gray-600 leading-relaxed">{event.description}</p>
 
                         {event.photoUrl && (
-                          <div className="mt-3 rounded-none overflow-hidden bg-gray-100">
+                          <div className="mt-3 rounded-lg overflow-hidden bg-gray-100">
                             <img
                               src={event.photoUrl}
                               alt={event.title}
@@ -259,7 +259,7 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
 
           <Card className="border-0 shadow-sm bg-gradient-to-br from-[#fdf6f6] to-white max-w-3xl mx-auto">
             <CardContent className="p-6 text-center space-y-3">
-              <div className="w-12 h-12 mx-auto rounded-none bg-gradient-to-br from-[#a90000] to-[#c00000] text-white flex items-center justify-center">
+              <div className="w-12 h-12 mx-auto rounded-lg bg-gradient-to-br from-[#a90000] to-[#c00000] text-white flex items-center justify-center">
                 <Swords className="w-6 h-6" />
               </div>
               <p className="text-sm text-gray-600 max-w-lg mx-auto">

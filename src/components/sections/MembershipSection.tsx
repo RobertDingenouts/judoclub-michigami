@@ -8,7 +8,7 @@ export function MembershipSection() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-none p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
+      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-lg p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
         <svg
           viewBox="0 0 100 80"
           className="absolute top-0 right-0 w-20 sm:w-24 md:w-32 h-20 sm:h-24 md:h-32 text-white opacity-[0.06]"
@@ -21,13 +21,13 @@ export function MembershipSection() {
         </svg>
         <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">{membershipInfo.title}</h1>
         <p className="text-white/80 mt-1 text-xs sm:text-sm">{membershipInfo.subtitle}</p>
-        <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-none mt-2 sm:mt-3" />
+        <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-lg mt-2 sm:mt-3" />
       </div>
 
       {/* Trial Lessons Banner */}
-      <div className="bg-white rounded-none shadow-sm border border-[#e8eaed] p-4 sm:p-6">
+      <div className="bg-white rounded-lg shadow-sm border border-[#e9e0cf] p-4 sm:p-6">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-none bg-gradient-to-br from-[#a90000] to-[#c00000] text-white flex items-center justify-center text-xl flex-shrink-0">
+          <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#a90000] to-[#c00000] text-white flex items-center justify-center text-xl flex-shrink-0">
             🎁
           </div>
           <div className="flex-1 min-w-0">
@@ -48,7 +48,7 @@ export function MembershipSection() {
         {membershipInfo.tiers.map((tier, idx) => (
           <div
             key={idx}
-            className="bg-white rounded-none shadow-sm border border-[#e8eaed] p-4 sm:p-5 hover:shadow-md transition-shadow"
+            className="bg-white rounded-lg shadow-sm border border-[#e9e0cf] p-4 sm:p-5 hover:shadow-md transition-shadow"
           >
             <div className="flex items-center gap-3 mb-3">
               <span className="text-2xl">{tier.icon}</span>
@@ -79,14 +79,14 @@ export function MembershipSection() {
       <div className="text-center space-y-3">
         <button
           onClick={() => openProeflesForm()}
-          className="inline-flex items-center gap-2 bg-gradient-to-r from-[#27ae60] to-[#2ecc71] text-white px-8 py-4 rounded-none font-bold text-base hover:from-[#219a52] hover:to-[#27ae60] transition-all shadow-lg hover:shadow-xl"
+          className="inline-flex items-center gap-2 bg-gradient-to-r from-[#27ae60] to-[#2ecc71] text-white px-8 py-4 rounded-lg font-bold text-base hover:from-[#219a52] hover:to-[#27ae60] transition-all shadow-lg hover:shadow-xl"
         >
           <Calendar className="w-5 h-5" /> Gratis Proefles
         </button>
         <div className="text-xs text-gray-500">of</div>
         <a
           href="/inschrijven"
-          className="inline-flex items-center gap-2 bg-gradient-to-r from-[#a90000] to-[#c00000] text-white px-6 py-3 rounded-none font-bold text-sm sm:text-base hover:from-[#8c0000] hover:to-[#a00000] transition-all shadow-md hover:shadow-lg"
+          className="inline-flex items-center gap-2 bg-gradient-to-r from-[#a90000] to-[#c00000] text-white px-6 py-3 rounded-lg font-bold text-sm sm:text-base hover:from-[#8c0000] hover:to-[#a00000] transition-all shadow-md hover:shadow-lg"
         >
           {membershipInfo.signupText}
           <svg

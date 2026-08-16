@@ -18,7 +18,7 @@ export function TechniquesSection() {
   return (
     <div className="space-y-4">
       <AnimatedCard>
-        <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-none p-4 sm:p-5 text-white shadow-lg overflow-hidden">
+        <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-lg p-4 sm:p-5 text-white shadow-lg overflow-hidden">
           <h1 className="text-lg sm:text-xl md:text-2xl font-bold">Technieken</h1>
           <p className="text-white/80 mt-1 text-xs sm:text-sm">Alle judotechnieken met video-uitleg</p>
         </div>
@@ -28,7 +28,7 @@ export function TechniquesSection() {
       <div className="flex gap-1.5 sm:gap-2 overflow-x-auto pb-2 flex-wrap" style={{ scrollbarWidth: 'thin', WebkitOverflowScrolling: 'touch' }}>
         {techniqueCategories.map((cat, idx) => (
           <AnimatedButton key={cat.key} onClick={() => { setActiveCategory(idx); setExpandedTech(null); }} variants={subtleHover}>
-            <div className={`flex-shrink-0 px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-none sm:rounded-none text-[11px] sm:text-sm font-medium transition-all whitespace-nowrap ${activeCategory === idx ? 'bg-[#a90000] text-white shadow-md' : 'bg-white text-gray-600 hover:bg-[#fdf6f6] border border-gray-200'}`}>
+            <div className={`flex-shrink-0 px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-lg text-[11px] sm:text-sm font-medium transition-all whitespace-nowrap ${activeCategory === idx ? 'bg-[#a90000] text-white shadow-md' : 'bg-white text-gray-600 hover:bg-[#fdf6f6] border border-gray-200'}`}>
               <span className="hidden sm:inline">{cat.label}</span>
               <span className="sm:hidden truncate max-w-[60px]">{cat.label.split(' ')[0]}</span>
             </div>
@@ -57,9 +57,9 @@ export function TechniquesSection() {
                   </button>
 
                   {expandedTech === tech.id && (
-                    <div className="px-3 sm:px-4 pb-3 sm:pb-4 space-y-2 border-t border-[#e8eaed] pt-3">
+                    <div className="px-3 sm:px-4 pb-3 sm:pb-4 space-y-2 border-t border-[#e9e0cf] pt-3">
                       {tech.youtubeId && (
-                        <div className="aspect-video rounded-none overflow-hidden bg-gray-100 border border-[#e8eaed]">
+                        <div className="aspect-video rounded-lg overflow-hidden bg-gray-100 border border-[#e9e0cf]">
                           <iframe src={`https://www.youtube.com/embed/${tech.youtubeId}`} title={tech.name} className="w-full h-full" allowFullScreen />
                         </div>
                       )}

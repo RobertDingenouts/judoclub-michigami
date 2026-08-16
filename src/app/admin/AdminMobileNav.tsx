@@ -25,7 +25,7 @@ export function AdminMobileNav() {
       {/* Hamburger button */}
       <button
         onClick={() => setOpen(true)}
-        className="rounded-none p-2 text-gray-600 hover:bg-gray-100"
+        className="rounded-lg p-2 text-gray-600 hover:bg-gray-100"
         aria-label="Menu openen"
       >
         <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -52,7 +52,7 @@ export function AdminMobileNav() {
               </div>
               <button
                 onClick={() => setOpen(false)}
-                className="rounded-none p-1.5 text-gray-400 hover:bg-gray-100"
+                className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100"
               >
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -67,7 +67,7 @@ export function AdminMobileNav() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setOpen(false)}
-                  className={`flex items-center gap-3 rounded-none px-3 py-2.5 text-sm font-medium transition-colors ${
+                  className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
                     pathname === link.href
                       ? 'bg-[#fdf6f6] text-[#a90000]'
                       : 'text-gray-700 hover:bg-gray-100'

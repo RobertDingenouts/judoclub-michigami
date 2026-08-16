@@ -73,7 +73,7 @@ export function HeroSlider() {
 
   return (
     <div
-      className="relative h-[440px] sm:h-[520px] lg:h-[600px] w-full overflow-hidden rounded-none group/slider shadow-xl shadow-black/10 touch-pan-y"
+      className="relative h-[440px] sm:h-[520px] lg:h-[600px] w-full overflow-hidden rounded-2xl group/slider shadow-xl shadow-black/10 touch-pan-y"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={handleTouchStart}
@@ -153,14 +153,14 @@ export function HeroSlider() {
           <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3">
             <button
               onClick={openProeflesForm}
-              className="btn-shu inline-flex items-center justify-center gap-2 rounded-none px-6 py-3 text-base font-semibold"
+              className="btn-shu inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-base font-semibold"
             >
               <PlayCircle className="w-5 h-5" />
               Gratis proefles
             </button>
             <a
               href="/inschrijven"
-              className="btn-outline-kin inline-flex items-center justify-center gap-2 rounded-none px-6 py-3 text-base font-semibold"
+              className="btn-outline-kin inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-base font-semibold"
             >
               Lid worden
               <ArrowRight className="w-5 h-5" />
@@ -177,14 +177,14 @@ export function HeroSlider() {
       {/* Navigation arrows */}
       <button
         onClick={prevSlide}
-        className="absolute left-5 sm:left-7 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-none bg-black/40 hover:bg-black/60 text-white flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity z-40 backdrop-blur-sm border border-white/15"
+        className="absolute left-5 sm:left-7 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity duration-500 z-40 backdrop-blur-sm border border-white/15"
         aria-label="Vorige foto"
       >
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="sm:w-5 sm:h-5"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
       <button
         onClick={nextSlide}
-        className="absolute right-5 sm:right-7 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-none bg-black/40 hover:bg-black/60 text-white flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity z-40 backdrop-blur-sm border border-white/15"
+        className="absolute right-5 sm:right-7 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity duration-500 z-40 backdrop-blur-sm border border-white/15"
         aria-label="Volgende foto"
       >
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="sm:w-5 sm:h-5"><path d="M9 18l6-6-6-6"/></svg>
@@ -194,17 +194,17 @@ export function HeroSlider() {
       <div className="absolute bottom-6 right-6 sm:bottom-8 sm:right-9 flex items-center gap-2 z-40">
         <button
           onClick={prevSlide}
-          className="w-9 h-9 rounded-none bg-black/55 hover:bg-black/75 text-white flex items-center justify-center transition-colors backdrop-blur-sm border border-white/15"
+          className="w-9 h-9 rounded-full bg-black/55 hover:bg-black/75 text-white flex items-center justify-center transition-colors duration-300 backdrop-blur-sm border border-white/15"
           aria-label="Vorige foto"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 18l-6-6 6-6"/></svg>
         </button>
-        <span className="text-white text-sm font-semibold tabular-nums bg-black/55 backdrop-blur-sm px-3 py-1.5 rounded-none min-w-[64px] text-center border border-white/15">
+        <span className="text-white text-sm font-semibold tabular-nums bg-black/55 backdrop-blur-sm px-3 py-1.5 rounded-full min-w-[64px] text-center border border-white/15">
           {current + 1} / {heroImages.length}
         </span>
         <button
           onClick={nextSlide}
-          className="w-9 h-9 rounded-none bg-black/55 hover:bg-black/75 text-white flex items-center justify-center transition-colors backdrop-blur-sm border border-white/15"
+          className="w-9 h-9 rounded-full bg-black/55 hover:bg-black/75 text-white flex items-center justify-center transition-colors duration-300 backdrop-blur-sm border border-white/15"
           aria-label="Volgende foto"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 18l6-6-6-6"/></svg>

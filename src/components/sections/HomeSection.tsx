@@ -30,9 +30,9 @@ function QuickLinkTile({ link, onClick, index }: { link: QuickLink; onClick: (s:
   const t = toneStyle[link.tone];
   return (
     <button onClick={() => onClick(link.key)} className="group block w-full text-center animate-fadeUp" style={{ animationDelay: `${0.35 + index * 0.07}s` }}>
-      <div className={`relative overflow-hidden card-washi ${t.card} ink-wash p-5 h-full min-h-[150px] flex flex-col items-center justify-center gap-2.5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg active:scale-[0.99]`}>
+      <div className={`relative overflow-hidden card-washi ${t.card} ink-wash p-5 h-full min-h-[150px] flex flex-col items-center justify-center gap-2.5 transition-all duration-500 hover:-translate-y-0.5`}>
         <span aria-hidden className="kanji-ghost kanji-float -top-3 -right-1 text-7xl opacity-60" style={{ animationDelay: `${index * 0.5}s` }}>{link.kanji}</span>
-        <div className="relative w-11 h-11 flex items-center justify-center transition-transform duration-300 group-hover:scale-110" style={{ backgroundColor: t.bg }}>
+        <div className="relative w-12 h-12 rounded-full flex items-center justify-center transition-transform duration-500 group-hover:scale-105" style={{ backgroundColor: t.bg }}>
           <span style={{ color: t.color }}>{link.icon}</span>
         </div>
         <span className="relative font-bold text-[#1c1915] leading-tight">{link.title}</span>
@@ -84,9 +84,9 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
             <>
               <ProeflesBottomSheet trigger={
                 <div className="w-full block text-center">
-                  <div className="relative overflow-hidden card-washi p-5 h-full min-h-[150px] flex flex-col items-center justify-center gap-2.5 transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.99]">
+                  <div className="relative overflow-hidden card-washi p-5 h-full min-h-[150px] flex flex-col items-center justify-center gap-2.5 transition-all duration-500 hover:-translate-y-0.5">
                     <span aria-hidden className="kanji-ghost -top-3 -right-1 text-7xl opacity-60">試</span>
-                    <div className="relative w-11 h-11 flex items-center justify-center" style={{ backgroundColor: 'rgba(39,174,96,0.10)' }}>
+                    <div className="relative w-11 h-11 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(39,174,96,0.10)' }}>
                       <Users className="w-6 h-6 text-[#27ae60]" />
                     </div>
                     <span className="relative font-bold text-sm text-[#27ae60]">Gratis Proefles</span>
@@ -96,9 +96,9 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
               } />
               <ContactBottomSheet trigger={
                 <div className="w-full block text-center">
-                  <div className="relative overflow-hidden card-washi p-5 h-full min-h-[150px] flex flex-col items-center justify-center gap-2.5 transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.99]">
+                  <div className="relative overflow-hidden card-washi p-5 h-full min-h-[150px] flex flex-col items-center justify-center gap-2.5 transition-all duration-500 hover:-translate-y-0.5">
                     <span aria-hidden className="kanji-ghost -top-3 -right-1 text-7xl opacity-60">連</span>
-                    <div className="relative w-11 h-11 flex items-center justify-center" style={{ backgroundColor: 'rgba(169,0,0,0.08)' }}>
+                    <div className="relative w-11 h-11 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(169,0,0,0.08)' }}>
                       <Mail className="w-6 h-6" style={{ color: '#a90000' }} />
                     </div>
                     <span className="relative font-bold text-sm" style={{ color: '#a90000' }}>Contact</span>
@@ -108,9 +108,9 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
               } />
               <LocationBottomSheet trigger={
                 <div className="w-full block text-center">
-                  <div className="relative overflow-hidden card-washi p-5 h-full min-h-[150px] flex flex-col items-center justify-center gap-2.5 transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.99]">
+                  <div className="relative overflow-hidden card-washi p-5 h-full min-h-[150px] flex flex-col items-center justify-center gap-2.5 transition-all duration-500 hover:-translate-y-0.5">
                     <span aria-hidden className="kanji-ghost -top-3 -right-1 text-7xl opacity-60">地</span>
-                    <div className="relative w-11 h-11 flex items-center justify-center" style={{ backgroundColor: 'rgba(39,70,110,0.10)' }}>
+                    <div className="relative w-11 h-11 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(39,70,110,0.10)' }}>
                       <MapPin className="w-6 h-6" style={{ color: '#27466e' }} />
                     </div>
                     <span className="relative font-bold text-sm" style={{ color: '#27466e' }}>Locaties</span>
@@ -133,7 +133,7 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
         <div className="relative overflow-hidden card-washi p-5 h-full min-h-[170px] flex flex-col animate-fadeUp delay-300">
           <span aria-hidden className="kanji-ghost kanji-float -top-2 -right-1 text-8xl opacity-60">水</span>
           <div className="relative flex items-start gap-4">
-            <div className="w-14 h-14 flex items-center justify-center flex-shrink-0" style={{ backgroundColor: 'rgba(169,0,0,0.08)' }}>
+            <div className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: 'rgba(169,0,0,0.08)' }}>
               <Clock className="w-7 h-7" style={{ color: '#a90000' }} />
             </div>
             <div className="flex-1">
@@ -154,7 +154,7 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
         <div className="relative overflow-hidden card-washi card-washi--ai p-5 h-full min-h-[170px] flex flex-col animate-fadeUp delay-400">
           <span aria-hidden className="kanji-ghost kanji-float -top-2 -right-1 text-8xl opacity-60" style={{ animationDelay: '1s' }}>金</span>
           <div className="relative flex items-start gap-4">
-            <div className="w-14 h-14 flex items-center justify-center flex-shrink-0" style={{ backgroundColor: 'rgba(39,70,110,0.08)' }}>
+            <div className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: 'rgba(39,70,110,0.08)' }}>
               <Clock className="w-7 h-7" style={{ color: '#27466e' }} />
             </div>
             <div className="flex-1">

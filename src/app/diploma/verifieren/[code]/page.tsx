@@ -57,7 +57,7 @@ export default async function DiplomaVerifyPage({ params }: DiplomaVerifyPagePro
             </svg>
             Terug naar website
           </Link>
-          <div className="w-16 h-16 mx-auto mb-4 rounded-none border-4 border-[#a90000]/20 bg-gradient-to-br from-[#fdf6f6] to-white flex items-center justify-center">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-lg border-4 border-[#a90000]/20 bg-gradient-to-br from-[#fdf6f6] to-white flex items-center justify-center">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-8 h-8 text-[#a90000]">
               <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
@@ -67,8 +67,8 @@ export default async function DiplomaVerifyPage({ params }: DiplomaVerifyPagePro
         </div>
 
         {/* Verification status */}
-        <div className="bg-green-50 border border-green-200 rounded-none p-6 mb-8 text-center">
-          <div className="inline-flex items-center gap-2 bg-green-100 text-green-800 px-4 py-2 rounded-none text-sm font-semibold mb-3">
+        <div className="bg-green-50 border border-green-200 rounded-lg p-6 mb-8 text-center">
+          <div className="inline-flex items-center gap-2 bg-green-100 text-green-800 px-4 py-2 rounded-lg text-sm font-semibold mb-3">
             ✓ Diploma is geldig en geverifieerd
           </div>
           <p className="text-sm text-green-700">
@@ -77,11 +77,11 @@ export default async function DiplomaVerifyPage({ params }: DiplomaVerifyPagePro
         </div>
 
         {/* Diploma Card */}
-        <div className="bg-white rounded-none shadow-sm border border-gray-100 overflow-hidden">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
           <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] p-6 text-white">
             <h2 className="text-xl sm:text-2xl font-bold">JUDOCLUB MICHIGAMI STEENBERGEN</h2>
             <p className="text-white/80 mt-1 text-sm">Certificaat van Behaalde Judo Examen</p>
-            <div className="w-20 h-1 bg-white/30 rounded-none mt-4 mx-auto" />
+            <div className="w-20 h-1 bg-white/30 rounded-lg mt-4 mx-auto" />
           </div>
 
           <div className="p-6 space-y-6">
@@ -95,7 +95,7 @@ export default async function DiplomaVerifyPage({ params }: DiplomaVerifyPagePro
             </div>
 
             {/* Belt achieved */}
-            <div className="bg-[#fdf6f6] rounded-none p-4 text-center border border-[#a90000]/20">
+            <div className="bg-[#fdf6f6] rounded-lg p-4 text-center border border-[#a90000]/20">
               <p className="text-xs text-gray-500 uppercase tracking-wider">Behaalde graad</p>
               <p className="text-2xl sm:text-3xl font-bold text-[#a90000] mt-1">{beltLabel}</p>
             </div>
@@ -124,7 +124,7 @@ export default async function DiplomaVerifyPage({ params }: DiplomaVerifyPagePro
             <div className="border-t border-gray-100 pt-6">
               <p className="text-xs text-gray-500 text-center mb-2">Verificatiecode</p>
               <div className="text-center">
-                <code className="font-mono text-lg font-bold text-[#a90000] tracking-wider bg-[#fdf6f6] px-4 py-2 rounded-none border border-[#a90000]/20 inline-block">
+                <code className="font-mono text-lg font-bold text-[#a90000] tracking-wider bg-[#fdf6f6] px-4 py-2 rounded-lg border border-[#a90000]/20 inline-block">
                   {diploma.verificationCode}
                 </code>
               </div>
@@ -154,7 +154,7 @@ function beltLabel(belt: string | null): string {
 
 function DetailItem({ label, value }: { label: string; value: string }) {
   return (
-    <div className="bg-gray-50 rounded-none p-3">
+    <div className="bg-gray-50 rounded-lg p-3">
       <p className="text-xs text-gray-500">{label}</p>
       <p className="text-sm font-medium text-gray-800">{value}</p>
     </div>

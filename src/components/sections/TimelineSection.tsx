@@ -38,7 +38,7 @@ function TimelineItem({ event, index }: { event: TimelineEvent; index: number })
           initial={{ scale: 0 }}
           animate={isInView ? { scale: 1 } : {}}
           transition={{ delay: index * 0.1 + 0.2, type: 'spring', stiffness: 300 }}
-          className={`w-8 h-8 rounded-none flex items-center justify-center shadow-lg ${
+          className={`w-8 h-8 rounded-lg flex items-center justify-center shadow-lg ${
             event.isMilestone
               ? 'bg-gradient-to-br from-[#a90000] to-[#c00000] text-white ring-4 ring-red-100'
               : 'bg-white border-2 border-[#a90000] text-[#a90000]'
@@ -69,7 +69,7 @@ function TimelineItem({ event, index }: { event: TimelineEvent; index: number })
               <p className="text-sm text-gray-600 leading-relaxed">{event.description}</p>
 
               {event.photoUrl && (
-                <div className="mt-3 rounded-none overflow-hidden bg-gray-100">
+                <div className="mt-3 rounded-lg overflow-hidden bg-gray-100">
                   <img
                     src={event.photoUrl}
                     alt={event.title}
@@ -138,7 +138,7 @@ export function TimelineSection({ onNavigate }: { onNavigate?: (s: Section) => v
       >
         <Card className="border-0 shadow-sm bg-gradient-to-br from-[#fdf6f6] to-white">
           <CardContent className="p-6 text-center space-y-3">
-            <div className="w-12 h-12 mx-auto rounded-none bg-gradient-to-br from-[#a90000] to-[#c00000] text-white flex items-center justify-center">
+            <div className="w-12 h-12 mx-auto rounded-lg bg-gradient-to-br from-[#a90000] to-[#c00000] text-white flex items-center justify-center">
               <Swords className="w-6 h-6" />
             </div>
             <p className="text-sm text-gray-600 max-w-lg mx-auto">

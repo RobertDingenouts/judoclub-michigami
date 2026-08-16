@@ -14,14 +14,14 @@ export function StudentActions({ studentId, firstName, lastName, showTrashed }: 
     <div className="flex gap-2">
       <Link
         href={`/admin/students/${studentId}`}
-        className="rounded-none border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:bg-gray-50"
+        className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:bg-gray-50"
       >
         Bekijken
       </Link>
       {!showTrashed && (
         <Link
           href={`/admin/students/${studentId}/edit`}
-          className="rounded-none bg-[#a90000]/10 px-3 py-1.5 text-xs font-medium text-[#a90000] transition-colors hover:bg-[#a90000]/20"
+          className="rounded-lg bg-[#a90000]/10 px-3 py-1.5 text-xs font-medium text-[#a90000] transition-colors hover:bg-[#a90000]/20"
         >
           Bewerken
         </Link>
@@ -37,7 +37,7 @@ export function StudentActions({ studentId, firstName, lastName, showTrashed }: 
               })
               window.location.reload()
             }}
-            className="rounded-none bg-green-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-green-700"
+            className="rounded-lg bg-green-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-green-700"
           >
             Herstel
           </button>
@@ -47,7 +47,7 @@ export function StudentActions({ studentId, firstName, lastName, showTrashed }: 
               await fetch(`/api/admin/students/${studentId}?permanent=true`, { method: 'DELETE' })
               window.location.reload()
             }}
-            className="rounded-none bg-red-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-red-700"
+            className="rounded-lg bg-red-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-red-700"
           >
             Definitief
           </button>
@@ -63,7 +63,7 @@ export function StudentActions({ studentId, firstName, lastName, showTrashed }: 
             })
             window.location.reload()
           }}
-          className="rounded-none border border-red-200 px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-50"
+          className="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-50"
         >
           Verwijderen
         </button>

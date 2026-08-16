@@ -48,13 +48,13 @@ function InfoTooltip({ weegtijden }: { weegtijden: Weegtijd[] }) {
       onMouseLeave={() => setHovered(false)}
     >
       <button
-        className="w-[22px] h-[22px] rounded-none bg-[#a90000] text-white text-[11px] font-bold flex items-center justify-center cursor-pointer hover:bg-[#8c0000] hover:scale-110 transition-all border-none"
+        className="w-[22px] h-[22px] rounded-lg bg-[#a90000] text-white text-[11px] font-bold flex items-center justify-center cursor-pointer hover:bg-[#8c0000] hover:scale-110 transition-all border-none"
         aria-label="Weegtijden"
       >
         i
       </button>
       {hovered && (
-        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-white border-2 border-[#a90000] rounded-none px-4 py-3 min-w-[240px] shadow-lg z-50 text-sm">
+        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-white border-2 border-[#a90000] rounded-lg px-4 py-3 min-w-[240px] shadow-lg z-50 text-sm">
           <h4 className="m-0 mb-2 text-[#a90000] text-sm font-bold">⏰ Weegtijden</h4>
           <ul className="list-none p-0 m-0">
             {weegtijden.map((wt, i) => (
@@ -131,14 +131,14 @@ export function AgendaSection() {
       `}</style>
       <div className="space-y-4">
       {/* Header — gradient branding zoals oude agenda */}
-      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-none p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
+      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-lg p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
         <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">Judoclub Michigami</h1>
         <p className="text-white/80 mt-1 text-xs sm:text-sm">Activiteitenkalender <span className="font-bold text-[#fce0e0]">2026</span></p>
-        <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-none mt-2 sm:mt-3" />
+        <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-lg mt-2 sm:mt-3" />
       </div>
 
       {/* Desktop Table */}
-      <div className="hidden md:block bg-white rounded-none shadow-sm overflow-hidden border border-[#e8eaed]">
+      <div className="hidden md:block bg-white rounded-lg shadow-sm overflow-hidden border border-[#e9e0cf]">
         <table className="w-full border-collapse">
           <thead>
             <tr className="bg-[#fdf6f6]">
@@ -159,7 +159,7 @@ export function AgendaSection() {
               const weegtijden = (item as AgendaItemWithWeegtijden).weegtijden;
 
               return (
-                <tr key={idx} ref={isFirstFuture ? desktopFirstFutureRef : null} className={`border-b border-[#e8eaed] last:border-b-0 transition-colors hover:bg-[#fff2f2] ${item.cancelled ? 'cancelled-event' : isPast ? 'past-event' : ''} ${item.special ? 'special-event-row' : ''}`} style={item.special ? { animation: 'special-pulse 3s ease-in-out infinite' } : undefined} onClick={item.special ? triggerConfetti : undefined}>
+                <tr key={idx} ref={isFirstFuture ? desktopFirstFutureRef : null} className={`border-b border-[#e9e0cf] last:border-b-0 transition-colors hover:bg-[#fff2f2] ${item.cancelled ? 'cancelled-event' : isPast ? 'past-event' : ''} ${item.special ? 'special-event-row' : ''}`} style={item.special ? { animation: 'special-pulse 3s ease-in-out infinite' } : undefined} onClick={item.special ? triggerConfetti : undefined}>
                   <td className={`px-5 py-4 font-semibold whitespace-nowrap ${item.cancelled ? 'text-[#c00000] line-through opacity-60' : isPast ? 'text-gray-400 font-medium' : 'text-[#8c0000]'}`}>{item.displayDate}</td>
                   <td className="px-3 py-4 text-center">{item.special ? <span className="text-lg">⭐</span> : getEmojiIcon(item.emoji)}</td>
                   <td className="px-5 py-4">
@@ -184,7 +184,7 @@ export function AgendaSection() {
                   <td className="px-5 py-4 text-sm">
                     <span className={isPast ? 'text-gray-400' : 'text-gray-600'}>{item.time}</span>
                     {item.inschrijfUrl && !item.cancelled && !isPast && (
-                      <a href={item.inschrijfUrl} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1.5 bg-[#d90000] text-white px-4 py-2 rounded-none text-xs font-semibold hover:bg-[#b20000] transition-colors shadow-sm">
+                      <a href={item.inschrijfUrl} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1.5 bg-[#d90000] text-white px-4 py-2 rounded-lg text-xs font-semibold hover:bg-[#b20000] transition-colors shadow-sm">
                         <ArrowRight className="w-3.5 h-3.5" /> {item.inschrijfTekst || 'Inschrijven'}
                       </a>
                     )}
@@ -206,10 +206,10 @@ export function AgendaSection() {
           const weegtijden = (item as AgendaItemWithWeegtijden).weegtijden;
 
           return (
-            <div key={idx} ref={isFirstFuture ? mobileFirstFutureRef : null} className={`relative bg-white rounded-none border shadow-sm overflow-hidden transition-all active:scale-[0.98] ${item.cancelled ? 'border-red-200/60 opacity-55 bg-red-50/30' : isPast ? 'border-gray-200/60 opacity-50' : item.special ? 'special-card' : 'border-[#e8e0e0] shadow-[0_2px_12px_rgba(80,0,0,0.06)]'}`} onClick={item.special ? triggerConfetti : undefined}>
+            <div key={idx} ref={isFirstFuture ? mobileFirstFutureRef : null} className={`relative bg-white rounded-lg border shadow-sm overflow-hidden transition-all active:scale-[0.98] ${item.cancelled ? 'border-red-200/60 opacity-55 bg-red-50/30' : isPast ? 'border-gray-200/60 opacity-50' : item.special ? 'special-card' : 'border-[#e8e0e0] shadow-[0_2px_12px_rgba(80,0,0,0.06)]'}`} onClick={item.special ? triggerConfetti : undefined}>
               {/* Next event badge */}
               {isFirstFuture && (
-                <span className="absolute top-0 right-0 bg-gradient-to-r from-[#d90000] to-[#a90000] text-white text-[10px] font-bold px-2.5 py-1 rounded-none tracking-wide">VOLGENDE</span>
+                <span className="absolute top-0 right-0 bg-gradient-to-r from-[#d90000] to-[#a90000] text-white text-[10px] font-bold px-2.5 py-1 rounded-lg tracking-wide">VOLGENDE</span>
               )}
               {/* Date header */}
               <div className={`px-4 py-3 flex items-center gap-2.5 border-b-2 ${item.cancelled ? 'bg-gradient-to-r from-red-50 to-red-50/30 border-red-100' : isPast ? 'bg-gradient-to-r from-gray-50 to-gray-50/30 border-gray-100' : item.special ? 'bg-gradient-to-r from-yellow-50 to-yellow-50/50 border-yellow-200' : 'bg-gradient-to-r from-[#fdf6f6] to-white border-[#e8d0d0]'}`}>
@@ -231,7 +231,7 @@ export function AgendaSection() {
                 </div>
                 {/* Details */}
                 {item.details && (
-                  <div className="bg-[#fdfafa] rounded-none px-3 py-2.5">
+                  <div className="bg-[#fdfafa] rounded-lg px-3 py-2.5">
                     <p className="text-[10px] font-bold text-[#a90000] uppercase tracking-wider mb-0.5">Details</p>
                     <p className={`text-xs leading-relaxed ${isPast ? 'text-gray-400' : 'text-gray-600'}`}>{item.details}</p>
                     {weegtijden && (
@@ -276,7 +276,7 @@ export function AgendaSection() {
                 )}
                 {/* Inschrijf button */}
                 {item.inschrijfUrl && !item.cancelled && !isPast && (
-                  <a href={item.inschrijfUrl} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#d90000] to-[#b20000] text-white px-4 py-3 rounded-none text-sm font-bold hover:from-[#b20000] hover:to-[#8c0000] transition-all shadow-md active:scale-[0.97] w-full">
+                  <a href={item.inschrijfUrl} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#d90000] to-[#b20000] text-white px-4 py-3 rounded-lg text-sm font-bold hover:from-[#b20000] hover:to-[#8c0000] transition-all shadow-md active:scale-[0.97] w-full">
                     <ArrowRight className="w-4 h-4" /> {item.inschrijfTekst || 'Inschrijven'}
                   </a>
                 )}

@@ -69,13 +69,13 @@ export default async function LedenDashboard() {
       </div>
 
       {/* Quick actions */}
-      <div className="rounded-none border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
         <h2 className="mb-4 text-lg font-semibold text-[#2a2a2a]">Snelle Acties</h2>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <QuickAction href="/leden/voortgang" icon="📈" title="Mijn Voortgang" desc="Examens en banden" />
           <QuickAction href="/leden/diploma's" icon="🏆" title="Mijn Diploma's" desc="Bekijk en download" />
           <QuickAction href="/leden/cursus-japans" icon="🇯🇵" title="Cursus Japans" desc="Leer + quiz" />
-          <a href="/#agenda" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 rounded-none border border-gray-200 p-4 transition-colors hover:border-[#a90000] hover:bg-[#fdf6f6]">
+          <a href="/#agenda" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 rounded-lg border border-gray-200 p-4 transition-colors hover:border-[#a90000] hover:bg-[#fdf6f6]">
             <span className="text-xl">📅</span>
             <div>
               <p className="text-sm font-medium text-[#2a2a2a]">Trainingstijden</p>
@@ -87,7 +87,7 @@ export default async function LedenDashboard() {
 
       {/* Course progress */}
       {courseProgress.length > 0 && (
-        <div className="rounded-none border border-gray-200 bg-white p-6 shadow-sm">
+        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-lg font-semibold text-[#2a2a2a]">Cursus Japans Voortgang</h2>
             <Link href="/leden/cursus-japans" className="text-sm text-[#a90000] hover:underline">
@@ -96,9 +96,9 @@ export default async function LedenDashboard() {
           </div>
           <div className="space-y-3">
             {courseProgress.slice(0, 3).map((cp) => (
-              <div key={cp.id} className="flex items-center justify-between rounded-none border border-gray-100 p-4">
+              <div key={cp.id} className="flex items-center justify-between rounded-lg border border-gray-100 p-4">
                 <div className="flex items-center gap-3">
-                  <div className={`flex h-10 w-10 items-center justify-center rounded-none text-lg ${
+                  <div className={`flex h-10 w-10 items-center justify-center rounded-lg text-lg ${
                     cp.isPassed ? 'bg-green-100 text-green-700' :
                     cp.isUnlocked ? 'bg-blue-100 text-blue-700' :
                     'bg-gray-100 text-gray-400'
@@ -115,7 +115,7 @@ export default async function LedenDashboard() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className={`inline-flex rounded-none px-2.5 py-0.5 text-xs font-medium ${
+                  <span className={`inline-flex rounded-lg px-2.5 py-0.5 text-xs font-medium ${
                     cp.isPassed ? 'bg-green-100 text-green-800' :
                     cp.isUnlocked ? 'bg-blue-100 text-blue-800' :
                     'bg-gray-100 text-gray-500'
@@ -136,7 +136,7 @@ function StatCard({ title, value, icon, href, subtitle }: {
   title: string; value: string | number; icon: string; href: string; subtitle: string
 }) {
   return (
-    <Link href={href} className="group rounded-none border border-gray-200 bg-white p-5 shadow-sm transition-colors hover:border-[#a90000]">
+    <Link href={href} className="group rounded-lg border border-gray-200 bg-white p-5 shadow-sm transition-colors hover:border-[#a90000]">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm font-medium text-gray-500">{title}</p>
@@ -151,7 +151,7 @@ function StatCard({ title, value, icon, href, subtitle }: {
 
 function QuickAction({ href, icon, title, desc }: { href: string; icon: string; title: string; desc: string }) {
   return (
-    <Link href={href} className="flex items-center gap-3 rounded-none border border-gray-200 p-4 transition-colors hover:border-[#a90000] hover:bg-[#fdf6f6]">
+    <Link href={href} className="flex items-center gap-3 rounded-lg border border-gray-200 p-4 transition-colors hover:border-[#a90000] hover:bg-[#fdf6f6]">
       <span className="text-xl">{icon}</span>
       <div>
         <p className="text-sm font-medium text-[#2a2a2a]">{title}</p>

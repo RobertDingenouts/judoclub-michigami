@@ -12,7 +12,7 @@ export function GoogleMapEmbed({ center, name, address }: MapProps) {
   const src = `https://maps.google.com/maps?q=${query}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
 
   return (
-    <div className="w-full h-56 sm:h-72 md:h-80 rounded-none overflow-hidden">
+    <div className="w-full h-56 sm:h-72 md:h-80 rounded-lg overflow-hidden">
       <iframe
         width="100%"
         height="100%"

@@ -75,8 +75,9 @@
   --font-body:    var(--font-karla), var(--font-inter), system-ui, -apple-system, sans-serif;
   --font-jp: var(--font-shippori-mincho), var(--font-noto-sans-jp), sans-serif;
 
-  /* Radius */
-  --radius: 0.75rem;
+  /* Radius — soft, consistent, cohesive (Zen 2.0) */
+  --radius: 0.75rem;        /* 12px — base soft radius */
+  --radius-2xl: 1.25rem;    /* 20px — large surfaces (hero, main cards) */
 }
 
 /* ============================================
@@ -116,10 +117,11 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-sm: 0.5rem;    /* 8px  — tiny chips */
+  --radius-md: 0.75rem;   /* 12px — buttons, inputs */
+  --radius-lg: 1rem;      /* 16px — cards, tiles */
+  --radius-xl: 1.25rem;   /* 20px — large surfaces */
+  --radius-2xl: 1.5rem;   /* 24px — hero, panels */
 }
 
 /* ============================================
@@ -253,40 +255,18 @@
     text-transform: none;
   }
 
-  /* Section title with red accent rule — reusable across all sections */
-  .section-title {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-family: var(--font-heading);
-    font-weight: 700;
-    color: #1f2937; /* gray-800 */
-    position: relative;
-    padding-left: 0.75rem;
-  }
-  .section-title::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 4px;
-    height: 1.1em;
-    border-radius: 0;
-    background: linear-gradient(180deg, #c00000, #a90000);
-    flex-shrink: 0;
-  }
-
-  /* Card elevation helper */
+  /* Card elevation helper — frameless, soft */
   .card-elevated {
-    background: rgba(255, 255, 255, 0.82);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.06), 0 4px 16px -2px rgb(169 0 0 / 0.05);
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(28, 25, 21, 0.06);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 1px 2px rgba(28, 25, 21, 0.03), 0 8px 24px -12px rgba(28, 25, 21, 0.10);
+    transition: box-shadow 0.4s cubic-bezier(0.22, 0.61, 0.36, 1), border-color 0.4s;
   }
   .card-elevated:hover {
-    box-shadow: 0 4px 12px -2px rgb(0 0 0 / 0.10), 0 12px 32px -4px rgb(169 0 0 / 0.12);
+    border-color: rgba(28, 25, 21, 0.12);
+    box-shadow: 0 2px 4px rgba(28, 25, 21, 0.04), 0 16px 40px -14px rgba(28, 25, 21, 0.16);
   }
 
   /* Safe area padding for mobile bottom nav */
@@ -382,40 +362,42 @@
       repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(28, 25, 21, 0.018) 3px, rgba(28, 25, 21, 0.018) 4px);
   }
 
-  /* Washi card — warm paper surface with sumi hairline */
+  /* Washi card — warm paper surface, frameless (soft shadow + hairline only) */
   .card-washi {
     background:
-      linear-gradient(160deg, rgba(255, 255, 255, 0.75), rgba(251, 249, 244, 0.55)),
-      var(--washi-100);
-    border: 1px solid rgba(28, 25, 21, 0.10);
+      linear-gradient(160deg, rgba(255, 255, 255, 0.85), rgba(251, 249, 244, 0.6)),
+      var(--washi-50);
+    border: 1px solid rgba(28, 25, 21, 0.06);
+    border-radius: var(--radius-lg);
     box-shadow:
-      0 1px 2px rgba(28, 25, 21, 0.04),
-      0 6px 20px -8px rgba(28, 25, 21, 0.08);
-    transition: box-shadow 0.35s ease, transform 0.35s ease, border-color 0.35s ease;
+      0 1px 2px rgba(28, 25, 21, 0.03),
+      0 8px 24px -12px rgba(28, 25, 21, 0.10);
+    transition: box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1), transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.4s ease;
   }
   .card-washi:hover {
-    border-color: rgba(28, 25, 21, 0.22);
+    border-color: rgba(28, 25, 21, 0.12);
     box-shadow:
-      0 2px 4px rgba(28, 25, 21, 0.05),
-      0 14px 34px -10px rgba(169, 0, 0, 0.14);
+      0 2px 4px rgba(28, 25, 21, 0.04),
+      0 16px 40px -14px rgba(28, 25, 21, 0.16);
+    transform: translateY(-2px);
   }
   .card-washi--shu {
-    border-color: rgba(169, 0, 0, 0.22);
+    border-color: rgba(169, 0, 0, 0.10);
   }
   .card-washi--shu:hover {
-    border-color: rgba(169, 0, 0, 0.45);
+    border-color: rgba(169, 0, 0, 0.28);
     box-shadow:
-      0 2px 4px rgba(28, 25, 21, 0.05),
-      0 14px 34px -10px rgba(169, 0, 0, 0.18);
+      0 2px 4px rgba(28, 25, 21, 0.04),
+      0 16px 40px -14px rgba(169, 0, 0, 0.18);
   }
   .card-washi--ai {
-    border-color: rgba(39, 70, 110, 0.22);
+    border-color: rgba(39, 70, 110, 0.10);
   }
   .card-washi--ai:hover {
-    border-color: rgba(39, 70, 110, 0.45);
+    border-color: rgba(39, 70, 110, 0.28);
     box-shadow:
-      0 2px 4px rgba(28, 25, 21, 0.05),
-      0 14px 34px -10px rgba(39, 70, 110, 0.16);
+      0 2px 4px rgba(28, 25, 21, 0.04),
+      0 16px 40px -14px rgba(39, 70, 110, 0.16);
   }
 
   /* Hanko — red seal stamp (brand mark) */
@@ -428,7 +410,7 @@
     font-family: var(--font-jp);
     font-weight: 700;
     line-height: 1;
-    border-radius: 4px;
+    border-radius: 0.5rem;
     box-shadow: 0 1px 3px rgba(169, 0, 0, 0.35), inset 0 0 0 1.5px rgba(255, 255, 255, 0.85), inset 0 0 0 3px var(--shu-600);
     position: relative;
   }
@@ -436,12 +418,12 @@
     content: "";
     position: absolute;
     inset: 0;
-    border-radius: 4px;
+    border-radius: 0.5rem;
     background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.18), transparent 60%);
     pointer-events: none;
   }
   .hanko--lg {
-    border-radius: 6px;
+    border-radius: 0.625rem;
     box-shadow: 0 2px 6px rgba(169, 0, 0, 0.4), inset 0 0 0 2px rgba(255, 255, 255, 0.9), inset 0 0 0 5px var(--shu-600);
   }
 
@@ -497,7 +479,7 @@
     transform: translateY(-50%);
     width: 4px;
     height: 1.1em;
-    border-radius: 0;
+    border-radius: 9999px;
     background: linear-gradient(180deg, var(--shu-500), var(--shu-700));
     flex-shrink: 0;
   }
@@ -543,22 +525,22 @@
 
   /* Ken Burns — slow cinematic drift on hero slides */
   @keyframes heroZoom {
-    0%   { transform: scale(1.02) translate(0, 0); }
-    50%  { transform: scale(1.09) translate(-1.2%, -0.8%); }
-    100% { transform: scale(1.02) translate(0, 0); }
+    0%   { transform: scale(1.01) translate(0, 0); }
+    50%  { transform: scale(1.05) translate(-0.8%, -0.5%); }
+    100% { transform: scale(1.01) translate(0, 0); }
   }
   .animate-heroZoom {
-    animation: heroZoom 14s ease-in-out infinite;
+    animation: heroZoom 18s ease-in-out infinite;
     will-change: transform;
   }
 
   /* Fade-up reveal — staggered entrance for home sections */
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(18px); }
+    from { opacity: 0; transform: translateY(12px); }
     to   { opacity: 1; transform: translateY(0); }
   }
   .animate-fadeUp {
-    animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: fadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
   .delay-100 { animation-delay: 0.1s; }
   .delay-200 { animation-delay: 0.2s; }
@@ -593,9 +575,9 @@
     content: "";
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse 120% 80% at 50% 100%, rgba(28, 25, 21, 0.06), transparent 70%);
+    background: radial-gradient(ellipse 120% 80% at 50% 100%, rgba(28, 25, 21, 0.045), transparent 70%);
     opacity: 0;
-    transition: opacity 0.5s ease;
+    transition: opacity 0.6s ease;
     pointer-events: none;
   }
   .ink-wash:hover::after {
@@ -605,10 +587,10 @@
   /* Kanji ghost drift — very slow vertical float */
   @keyframes kanjiFloat {
     0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-6px); }
+    50%      { transform: translateY(-4px); }
   }
   .kanji-float {
-    animation: kanjiFloat 8s ease-in-out infinite;
+    animation: kanjiFloat 10s ease-in-out infinite;
   }
 
   /* Hairline draw — accent line grows in from left */
@@ -623,12 +605,12 @@
 
   /* Hanko stamp — thumps in with a slight rotation */
   @keyframes hankoStamp {
-    0%   { opacity: 0; transform: scale(1.6) rotate(-10deg); }
-    60%  { opacity: 1; transform: scale(0.94) rotate(-3deg); }
+    0%   { opacity: 0; transform: scale(1.25) rotate(-6deg); }
+    70%  { opacity: 1; transform: scale(0.97) rotate(-4deg); }
     100% { opacity: 1; transform: scale(1) rotate(-4deg); }
   }
   .animate-hankoStamp {
-    animation: hankoStamp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s both;
+    animation: hankoStamp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
   }
 
   /* Respect reduced motion */

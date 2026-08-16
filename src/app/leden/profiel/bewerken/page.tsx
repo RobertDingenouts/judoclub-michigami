@@ -304,13 +304,13 @@ export default function ProfileEditPage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-none p-6 text-white">
+        <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-lg p-6 text-white">
           <div className="h-8 w-48 bg-white/20 rounded animate-pulse" />
           <div className="h-4 w-32 bg-white/10 rounded mt-2 animate-pulse" />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {[1, 2].map((i) => (
-            <div key={i} className="bg-white rounded-none p-6 shadow-sm border border-gray-100 animate-pulse space-y-4">
+            <div key={i} className="bg-white rounded-lg p-6 shadow-sm border border-gray-100 animate-pulse space-y-4">
               <div className="h-4 w-24 bg-gray-200 rounded" />
               <div className="h-10 bg-gray-200 rounded" />
               <div className="h-10 bg-gray-200 rounded" />
@@ -336,7 +336,7 @@ export default function ProfileEditPage() {
       </div>
 
       {/* Tabs */}
-      <div className="bg-white rounded-none border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-lg border border-gray-100 overflow-hidden">
         <div className="border-b border-gray-100">
           <nav className="flex -mb-px" aria-label="Profiel tabs">
             <button
@@ -374,25 +374,25 @@ export default function ProfileEditPage() {
 
         <div className="p-6">
           {error && (
-            <div className="mb-6 rounded-none border border-red-200 bg-red-50 p-4 text-sm text-red-700 flex items-center gap-2">
+            <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700 flex items-center gap-2">
               {error}
             </div>
           )}
           {success && (
-            <div className="mb-6 rounded-none border border-green-200 bg-green-50 p-4 text-sm text-green-700 flex items-center gap-2">
+            <div className="mb-6 rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-700 flex items-center gap-2">
               {success}
             </div>
           )}
 
           {/* E-mailverificatie status */}
           {form && !form.emailVerified && !form.pendingEmail && (
-            <div className="mb-6 rounded-none border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800 flex items-center gap-2">
+            <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800 flex items-center gap-2">
               <span>⚠️</span>
               <span>Je e-mailadres is nog niet bevestigd. Controleer je inbox voor de bevestigingsmail (of vraag een nieuwe aan via uitloggen en opnieuw registreren).</span>
             </div>
           )}
           {form && form.pendingEmail && (
-            <div className="mb-6 rounded-none border border-blue-200 bg-blue-50 p-4 text-sm text-blue-800 flex items-center gap-2">
+            <div className="mb-6 rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-800 flex items-center gap-2">
               <span>📧</span>
               <span>
                 Er wacht een bevestiging op <strong>{form.pendingEmail}</strong>. Je oude adres blijft actief tot je de mail hebt bevestigd.
@@ -404,7 +404,7 @@ export default function ProfileEditPage() {
             <form onSubmit={handleProfileSubmit} className="space-y-6">
               {/* Avatar */}
               <div className="flex items-center gap-4">
-                <div className="w-20 h-20 rounded-none border-3 border-[#a90000]/20 overflow-hidden bg-gray-100 flex items-center justify-center flex-shrink-0">
+                <div className="w-20 h-20 rounded-lg border-3 border-[#a90000]/20 overflow-hidden bg-gray-100 flex items-center justify-center flex-shrink-0">
                   {avatarPreview ? (
                     <img src={avatarPreview} alt="Avatar" className="w-full h-full object-cover" />
                   ) : (
@@ -412,7 +412,7 @@ export default function ProfileEditPage() {
                   )}
                 </div>
                 <div>
-                  <label htmlFor="avatar" className="inline-flex items-center gap-2 rounded-none bg-gray-100 px-4 py-2.5 text-sm font-medium text-gray-700 cursor-pointer hover:bg-gray-200 transition-colors">
+                  <label htmlFor="avatar" className="inline-flex items-center gap-2 rounded-lg bg-gray-100 px-4 py-2.5 text-sm font-medium text-gray-700 cursor-pointer hover:bg-gray-200 transition-colors">
                     <Camera className="w-4 h-4" />
                     {compressing ? 'Verwerken...' : 'Foto kiezen'}
                   </label>
@@ -518,7 +518,7 @@ export default function ProfileEditPage() {
 
               {/* Location (read-only) */}
               <h2 className="text-lg font-semibold text-[#2a2a2a]">Trainingslocatie</h2>
-              <div className="rounded-none border border-gray-200 bg-gray-50 px-4 py-3">
+              <div className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium text-gray-700">Locatie</span>
                   <span className="text-sm text-gray-600">
@@ -550,7 +550,7 @@ export default function ProfileEditPage() {
                 value={form?.medicalNotes || ''}
                 onChange={(e) => handleFormChange('medicalNotes', e.target.value)}
                 rows={3}
-                className="w-full rounded-none border border-gray-300 px-4 py-3 text-sm focus:border-[#a90000] focus:outline-none focus:ring-2 focus:ring-[#a90000]/30"
+                className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm focus:border-[#a90000] focus:outline-none focus:ring-2 focus:ring-[#a90000]/30"
                 placeholder="Allergieën, aandoeningen, medicijnen, etc. (alleen zichtbaar voor beheerders en instructeurs)"
               />
 
@@ -563,7 +563,7 @@ export default function ProfileEditPage() {
                 value={form?.remarks || ''}
                 onChange={(e) => handleFormChange('remarks', e.target.value)}
                 rows={3}
-                className="w-full rounded-none border border-gray-300 px-4 py-3 text-sm focus:border-[#a90000] focus:outline-none focus:ring-2 focus:ring-[#a90000]/30"
+                className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm focus:border-[#a90000] focus:outline-none focus:ring-2 focus:ring-[#a90000]/30"
                 placeholder="Opmerkingen voor de club (optioneel)"
               />
 
@@ -572,7 +572,7 @@ export default function ProfileEditPage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="inline-flex items-center gap-2 rounded-none bg-[#a90000] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#8c0000] disabled:opacity-50"
+                  className="inline-flex items-center gap-2 rounded-lg bg-[#a90000] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#8c0000] disabled:opacity-50"
                 >
                   {saving ? 'Opslaan...' : 'Wijzigingen opslaan'}
                 </button>
@@ -601,7 +601,7 @@ export default function ProfileEditPage() {
                     type={showCurrentPassword ? 'text' : 'password'}
                     value={currentPassword}
                     onChange={(e) => setCurrentPassword(e.target.value)}
-                    className="w-full rounded-none border border-gray-300 px-4 py-3 pr-12 text-sm focus:border-[#a90000] focus:outline-none focus:ring-2 focus:ring-[#a90000]/30"
+                    className="w-full rounded-lg border border-gray-300 px-4 py-3 pr-12 text-sm focus:border-[#a90000] focus:outline-none focus:ring-2 focus:ring-[#a90000]/30"
                     placeholder="Voer huidig wachtwoord in"
                     required
                   />
@@ -630,7 +630,7 @@ export default function ProfileEditPage() {
                     type={showNewPassword ? 'text' : 'password'}
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    className="w-full rounded-none border border-gray-300 px-4 py-3 pr-12 text-sm focus:border-[#a90000] focus:outline-none focus:ring-2 focus:ring-[#a90000]/30"
+                    className="w-full rounded-lg border border-gray-300 px-4 py-3 pr-12 text-sm focus:border-[#a90000] focus:outline-none focus:ring-2 focus:ring-[#a90000]/30"
                     placeholder="Minimaal 8 tekens"
                     required
                     minLength={8}
@@ -661,7 +661,7 @@ export default function ProfileEditPage() {
                     type={showConfirmPassword ? 'text' : 'password'}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="w-full rounded-none border border-gray-300 px-4 py-3 pr-12 text-sm focus:border-[#a90000] focus:outline-none focus:ring-2 focus:ring-[#a90000]/30"
+                    className="w-full rounded-lg border border-gray-300 px-4 py-3 pr-12 text-sm focus:border-[#a90000] focus:outline-none focus:ring-2 focus:ring-[#a90000]/30"
                     placeholder="Herhaal nieuw wachtwoord"
                     required
                   />
@@ -684,13 +684,13 @@ export default function ProfileEditPage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="inline-flex items-center gap-2 rounded-none bg-[#a90000] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#8c0000] disabled:opacity-50"
+                  className="inline-flex items-center gap-2 rounded-lg bg-[#a90000] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#8c0000] disabled:opacity-50"
                 >
                   {saving ? 'Wachtwoord wijzigen...' : 'Wachtwoord wijzigen'}
                 </button>
               </div>
 
-              <div className="bg-blue-50 border border-blue-200 rounded-none p-4">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <p className="text-sm text-blue-800 flex items-center gap-1">
                   <Shield className="w-4 h-4" />
                   Tip: Gebruik een wachtwoordmanager voor sterke, unieke wachtwoorden.
@@ -707,7 +707,7 @@ export default function ProfileEditPage() {
               </p>
 
               {/* Portretrecht */}
-              <div className="rounded-none border border-gray-200 p-4 space-y-3">
+              <div className="rounded-lg border border-gray-200 p-4 space-y-3">
                 <h3 className="font-medium text-[#2a2a2a]">Portretrecht — Foto's & Video's</h3>
                 <p className="text-sm text-gray-600">
                   Mag de judoclub foto's en video's van je maken tijdens evenementen en trainingen en deze gebruiken voor promotiedoeleinden op social media en onze website?
@@ -742,7 +742,7 @@ export default function ProfileEditPage() {
               </div>
 
               {/* Naam vermelden */}
-              <div className="rounded-none border border-gray-200 p-4 space-y-3">
+              <div className="rounded-lg border border-gray-200 p-4 space-y-3">
                 <h3 className="font-medium text-[#2a2a2a]">Naam Vermelden</h3>
                 <p className="text-sm text-gray-600">
                   Mag de judoclub je naam vermelden in nieuwsberichten op social media en onze website?
@@ -779,7 +779,7 @@ export default function ProfileEditPage() {
               <hr className="border-gray-100" />
 
               {/* Privacyverklaring */}
-              <div className="rounded-none border border-gray-200 p-4 space-y-3">
+              <div className="rounded-lg border border-gray-200 p-4 space-y-3">
                 <h3 className="font-medium text-[#2a2a2a]">Privacyverklaring</h3>
                 <p className="text-sm text-gray-600">
                   Ga je akkoord met het gebruik van je persoonsgegevens zoals beschreven in de privacyverklaring?
@@ -807,7 +807,7 @@ export default function ProfileEditPage() {
               </div>
 
               {/* Algemene Voorwaarden */}
-              <div className="rounded-none border border-gray-200 p-4 space-y-3">
+              <div className="rounded-lg border border-gray-200 p-4 space-y-3">
                 <h3 className="font-medium text-[#2a2a2a]">Algemene Voorwaarden</h3>
                 <p className="text-sm text-gray-600">
                   Ga je akkoord met de algemene voorwaarden van Judoclub Michigami?
@@ -835,7 +835,7 @@ export default function ProfileEditPage() {
               </div>
 
               {/* Gedragscode */}
-              <div className="rounded-none border border-gray-200 p-4 space-y-3">
+              <div className="rounded-lg border border-gray-200 p-4 space-y-3">
                 <h3 className="font-medium text-[#2a2a2a]">Gedragscode</h3>
                 <p className="text-sm text-gray-600">
                   Ga je akkoord met de gedragscode van Judoclub Michigami?
@@ -872,7 +872,7 @@ export default function ProfileEditPage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="inline-flex items-center gap-2 rounded-none bg-[#a90000] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#8c0000] disabled:opacity-50"
+                  className="inline-flex items-center gap-2 rounded-lg bg-[#a90000] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#8c0000] disabled:opacity-50"
                 >
                   {saving ? 'Opslaan...' : 'Akkoorden opslaan'}
                 </button>
@@ -901,7 +901,7 @@ function FormField({ label, name, type = 'text', value = '', required = false, o
         onChange={onChange}
         required={required}
         placeholder={placeholder}
-        className="w-full rounded-none border border-gray-300 px-4 py-3 text-sm focus:border-[#a90000] focus:outline-none focus:ring-2 focus:ring-[#a90000]/30 transition-colors"
+        className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm focus:border-[#a90000] focus:outline-none focus:ring-2 focus:ring-[#a90000]/30 transition-colors"
       />
     </div>
   )
@@ -929,7 +929,7 @@ function PasswordStrength({ password }: { password: string }) {
         {checks.map((_, i) => (
           <div
             key={i}
-            className={`flex-1 rounded-none transition-colors ${
+            className={`flex-1 rounded-lg transition-colors ${
               i < strength ? colors[i] : 'bg-gray-200'
             }`}
           />

@@ -9,7 +9,7 @@ export function BeltKnotsSection() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-none p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
+      <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-lg p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
         <svg
           viewBox="0 0 100 80"
           className="absolute top-0 right-0 w-20 sm:w-24 md:w-32 h-20 sm:h-24 md:h-32 text-white opacity-[0.06]"
@@ -22,12 +22,12 @@ export function BeltKnotsSection() {
         </svg>
         <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">Band Knopen</h1>
         <p className="text-white/80 mt-1 text-xs sm:text-sm">Leer je judo-band netjes knopen</p>
-        <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-none mt-2 sm:mt-3" />
+        <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-lg mt-2 sm:mt-3" />
       </div>
 
       {/* Video Tabs */}
-      <div className="bg-white rounded-none shadow-sm border border-[#e8eaed] overflow-hidden">
-        <div className="flex border-b border-[#e8eaed]">
+      <div className="bg-white rounded-lg shadow-sm border border-[#e9e0cf] overflow-hidden">
+        <div className="flex border-b border-[#e9e0cf]">
           {beltKnotVideos.map((video, idx) => (
             <button
               key={idx}
@@ -45,7 +45,7 @@ export function BeltKnotsSection() {
 
         <div className="p-4 sm:p-6">
           {/* Video Embed */}
-          <div className="aspect-video rounded-none overflow-hidden bg-black mb-4 sm:mb-6">
+          <div className="aspect-video rounded-lg overflow-hidden bg-black mb-4 sm:mb-6">
             <iframe
               width="100%"
               height="100%"

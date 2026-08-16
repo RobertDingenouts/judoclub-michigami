@@ -100,7 +100,7 @@ function StepIndicator({ currentStep, totalSteps }: { currentStep: number; total
           <div key={i} className="flex items-center gap-1 sm:gap-2">
             <div className="flex flex-col items-center gap-1">
               <div
-                className={`w-7 h-7 sm:w-8 sm:h-8 rounded-none flex items-center justify-center text-xs font-bold transition-all duration-300 ${
+                className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center text-xs font-bold transition-all duration-300 ${
                   i + 1 < currentStep
                     ? 'bg-green-500 text-white'
                     : i + 1 === currentStep
@@ -121,7 +121,7 @@ function StepIndicator({ currentStep, totalSteps }: { currentStep: number; total
               </span>
             </div>
             {i < totalSteps - 1 && (
-              <div className={`w-3 sm:w-6 h-0.5 rounded-none transition-all duration-300 ${
+              <div className={`w-3 sm:w-6 h-0.5 rounded-lg transition-all duration-300 ${
                 i + 1 < currentStep ? 'bg-green-500' : 'bg-gray-200'
               }`} />
             )}
@@ -147,7 +147,7 @@ function Step1_JudokaInfo({ data, onChange }: { data: FormData; onChange: (field
             value={data.judokaName}
             onChange={(e) => onChange('judokaName', e.target.value)}
             placeholder="Voornaam en achternaam"
-            className="w-full pl-10 pr-4 py-2.5 rounded-none border border-[#e8eaed] focus:ring-2 focus:ring-[#a90000]/30 focus:border-[#a90000] outline-none transition-all text-sm"
+            className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-[#e9e0cf] focus:ring-2 focus:ring-[#a90000]/30 focus:border-[#a90000] outline-none transition-all text-sm"
           />
         </div>
       </div>
@@ -161,7 +161,7 @@ function Step1_JudokaInfo({ data, onChange }: { data: FormData; onChange: (field
           value={data.judokaAge}
           onChange={(e) => onChange('judokaAge', e.target.value)}
           placeholder="Bijv. 8"
-          className="w-full px-4 py-2.5 rounded-none border border-[#e8eaed] focus:ring-2 focus:ring-[#a90000]/30 focus:border-[#a90000] outline-none transition-all text-sm"
+          className="w-full px-4 py-2.5 rounded-lg border border-[#e9e0cf] focus:ring-2 focus:ring-[#a90000]/30 focus:border-[#a90000] outline-none transition-all text-sm"
         />
       </div>
     </div>
@@ -177,9 +177,9 @@ function Step2_GroupSelection({ age }: { age: string }) {
       <h3 className="font-bold text-[#8c0000] text-base sm:text-lg text-center">Jouw groep</h3>
 
       {parseInt(age) >= 4 ? (
-        <div className="bg-gradient-to-br from-[#fdf6f6] to-white rounded-none p-4 sm:p-5 border border-[#a90000]/10">
+        <div className="bg-gradient-to-br from-[#fdf6f6] to-white rounded-lg p-4 sm:p-5 border border-[#a90000]/10">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-none bg-gradient-to-br from-green-500 to-green-600 text-white flex items-center justify-center">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gradient-to-br from-green-500 to-green-600 text-white flex items-center justify-center">
               <Check className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
             <div>
@@ -208,7 +208,7 @@ function Step2_GroupSelection({ age }: { age: string }) {
           </p>
         </div>
       ) : (
-        <div className="bg-[#fff2f2] rounded-none p-4 sm:p-5 text-center border border-[#a90000]/10">
+        <div className="bg-[#fff2f2] rounded-lg p-4 sm:p-5 text-center border border-[#a90000]/10">
           <p className="text-sm text-gray-700">
             Geef de leeftijd van de judoka in om automatisch de juiste groep te zien.
           </p>
@@ -248,14 +248,14 @@ function Step3_PreferredDay({ data, onChange }: { data: FormData; onChange: (fie
             <button
               key={day.key}
               onClick={() => onChange('preferredDay', day.key)}
-              className={`relative rounded-none p-4 sm:p-5 text-left transition-all border-2 ${
+              className={`relative rounded-lg p-4 sm:p-5 text-left transition-all border-2 ${
                 isSelected
                   ? 'border-[#a90000] bg-gradient-to-br from-[#fdf6f6] to-white shadow-md'
-                  : 'border-[#e8eaed] bg-white hover:border-[#a90000]/40'
+                  : 'border-[#e9e0cf] bg-white hover:border-[#a90000]/40'
               }`}
             >
               {isSelected && (
-                <div className="absolute top-2 right-2 w-5 h-5 sm:w-6 sm:h-6 rounded-none bg-green-500 text-white flex items-center justify-center">
+                <div className="absolute top-2 right-2 w-5 h-5 sm:w-6 sm:h-6 rounded-lg bg-green-500 text-white flex items-center justify-center">
                   <Check className="w-3 h-3 sm:w-4 sm:h-4" />
                 </div>
               )}
@@ -280,7 +280,7 @@ function Step4_Confirmation({ data, onChange, onSubmit }: { data: FormData; onCh
       <h3 className="font-bold text-[#8c0000] text-base sm:text-lg text-center">Bijna klaar! Controleer je gegevens</h3>
 
       {/* Summary Card */}
-      <div className="bg-gradient-to-br from-[#fdf6f6] to-white rounded-none p-4 sm:p-5 border border-[#a90000]/10 space-y-2">
+      <div className="bg-gradient-to-br from-[#fdf6f6] to-white rounded-lg p-4 sm:p-5 border border-[#a90000]/10 space-y-2">
         <div className="flex items-center gap-2 text-sm">
           <User className="w-4 h-4 text-[#a90000] flex-shrink-0" />
           <span className="font-medium text-gray-700">{data.judokaName}</span>
@@ -313,7 +313,7 @@ function Step4_Confirmation({ data, onChange, onSubmit }: { data: FormData; onCh
             value={data.parentName}
             onChange={(e) => onChange('parentName', e.target.value)}
             placeholder="Uw volledige naam"
-            className="w-full px-4 py-2.5 rounded-none border border-[#e8eaed] focus:ring-2 focus:ring-[#a90000]/30 focus:border-[#a90000] outline-none transition-all text-sm"
+            className="w-full px-4 py-2.5 rounded-lg border border-[#e9e0cf] focus:ring-2 focus:ring-[#a90000]/30 focus:border-[#a90000] outline-none transition-all text-sm"
           />
         </div>
 
@@ -324,7 +324,7 @@ function Step4_Confirmation({ data, onChange, onSubmit }: { data: FormData; onCh
             value={data.parentPhone}
             onChange={(e) => onChange('parentPhone', e.target.value)}
             placeholder="Bijv. 0612345678"
-            className="w-full px-4 py-2.5 rounded-none border border-[#e8eaed] focus:ring-2 focus:ring-[#a90000]/30 focus:border-[#a90000] outline-none transition-all text-sm"
+            className="w-full px-4 py-2.5 rounded-lg border border-[#e9e0cf] focus:ring-2 focus:ring-[#a90000]/30 focus:border-[#a90000] outline-none transition-all text-sm"
           />
         </div>
 
@@ -335,7 +335,7 @@ function Step4_Confirmation({ data, onChange, onSubmit }: { data: FormData; onCh
             value={data.parentEmail}
             onChange={(e) => onChange('parentEmail', e.target.value)}
             placeholder="uw@email.nl"
-            className="w-full px-4 py-2.5 rounded-none border border-[#e8eaed] focus:ring-2 focus:ring-[#a90000]/30 focus:border-[#a90000] outline-none transition-all text-sm"
+            className="w-full px-4 py-2.5 rounded-lg border border-[#e9e0cf] focus:ring-2 focus:ring-[#a90000]/30 focus:border-[#a90000] outline-none transition-all text-sm"
           />
         </div>
       </div>
@@ -344,7 +344,7 @@ function Step4_Confirmation({ data, onChange, onSubmit }: { data: FormData; onCh
       <div className="space-y-3 pt-2">
         <button
           onClick={onSubmit}
-          className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#a90000] to-[#c00000] text-white px-6 py-3 rounded-none font-bold text-sm sm:text-base hover:from-[#8c0000] hover:to-[#a00000] transition-all shadow-md hover:shadow-lg"
+          className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#a90000] to-[#c00000] text-white px-6 py-3 rounded-lg font-bold text-sm sm:text-base hover:from-[#8c0000] hover:to-[#a00000] transition-all shadow-md hover:shadow-lg"
         >
           <Mail className="w-4 h-4" />
           Verstuur via email
@@ -356,7 +356,7 @@ function Step4_Confirmation({ data, onChange, onSubmit }: { data: FormData; onCh
           href={getWhatsAppLink(data, groupInfo)}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 w-full bg-[#25D366] hover:bg-[#128C7E] text-white px-6 py-3 rounded-none font-bold text-sm sm:text-base transition-all shadow-md hover:shadow-lg"
+          className="flex items-center justify-center gap-2 w-full bg-[#25D366] hover:bg-[#128C7E] text-white px-6 py-3 rounded-lg font-bold text-sm sm:text-base transition-all shadow-md hover:shadow-lg"
         >
           <Phone className="w-4 h-4" />
           Verstuur via WhatsApp
@@ -412,13 +412,13 @@ export function TrialLessonForm({ onClose }: { onClose?: () => void }) {
   };
 
   return (
-    <div className="bg-white rounded-none shadow-lg border border-[#e8eaed] overflow-hidden max-w-lg mx-auto">
+    <div className="bg-white rounded-lg shadow-lg border border-[#e9e0cf] overflow-hidden max-w-lg mx-auto">
       {/* Header */}
       <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] p-4 sm:p-5 text-white relative overflow-hidden">
         {onClose && (
           <button
             onClick={onClose}
-            className="absolute top-3 right-3 w-8 h-8 rounded-none bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
+            className="absolute top-3 right-3 w-8 h-8 rounded-lg bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -448,7 +448,7 @@ export function TrialLessonForm({ onClose }: { onClose?: () => void }) {
           {step > 1 && (
             <button
               onClick={handlePrev}
-              className="flex items-center gap-1 px-4 py-2.5 rounded-none border border-[#e8eaed] text-gray-600 hover:bg-gray-50 transition-all text-sm"
+              className="flex items-center gap-1 px-4 py-2.5 rounded-lg border border-[#e9e0cf] text-gray-600 hover:bg-gray-50 transition-all text-sm"
             >
               <ChevronLeft className="w-4 h-4" />
               Vorige
@@ -457,7 +457,7 @@ export function TrialLessonForm({ onClose }: { onClose?: () => void }) {
           <button
             onClick={handleNext}
             disabled={!canProceed}
-            className={`flex items-center gap-1 flex-1 justify-center px-4 py-2.5 rounded-none font-medium text-sm transition-all ${
+            className={`flex items-center gap-1 flex-1 justify-center px-4 py-2.5 rounded-lg font-medium text-sm transition-all ${
               canProceed
                 ? 'bg-gradient-to-r from-[#a90000] to-[#c00000] text-white hover:from-[#8c0000] hover:to-[#a00000] shadow-md'
                 : 'bg-gray-100 text-gray-400 cursor-not-allowed'

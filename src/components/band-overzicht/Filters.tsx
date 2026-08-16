@@ -41,14 +41,14 @@ export function Filters() {
         placeholder="Zoeken op naam..."
         value={currentQ}
         onChange={(e) => updateParam('q', e.target.value)}
-        className="w-full rounded-none border border-gray-300 px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none sm:w-64"
+        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none sm:w-64"
       />
 
       {/* Location filter */}
       <select
         value={currentLocation}
         onChange={(e) => updateParam('location', e.target.value === 'ALL' ? '' : e.target.value)}
-        className="rounded-none border border-gray-300 px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none"
+        className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none"
       >
         <option value="ALL">Alle locaties</option>
         <option value="STeenbergen">Steenbergen</option>
@@ -59,7 +59,7 @@ export function Filters() {
       <select
         value={currentGroup}
         onChange={(e) => updateParam('group', e.target.value === 'ALL' ? '' : e.target.value)}
-        className="rounded-none border border-gray-300 px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none"
+        className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none"
       >
         <option value="ALL">Alle groepen</option>
         {ALL_GROUPS.map((g) => (
@@ -71,7 +71,7 @@ export function Filters() {
       <select
         value={currentBelt}
         onChange={(e) => updateParam('belt', e.target.value)}
-        className="rounded-none border border-gray-300 px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none"
+        className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none"
       >
         <option value="">Alle graden</option>
         {ALL_BELTS.map((b) => (

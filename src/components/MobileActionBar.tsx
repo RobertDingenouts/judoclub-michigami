@@ -61,7 +61,7 @@ export function MobileActionBar({ activeSection, onSectionChange, onProeflesClic
                 onSectionChange(item.id as SectionId);
               }
             }}
-            className={`flex-shrink-0 inline-flex items-center gap-1 h-9 px-3 rounded-none shadow-lg border text-xs font-medium active:scale-[0.99] transition-all ${
+            className={`flex-shrink-0 inline-flex items-center gap-1 h-9 px-3 rounded-lg shadow-lg border text-xs font-medium active:scale-[0.99] transition-all ${
               item.isProefles
                 ? 'bg-gradient-to-r from-[#27ae60] to-[#2ecc71] text-white border-transparent'
                 : activeSection === item.id
@@ -77,7 +77,7 @@ export function MobileActionBar({ activeSection, onSectionChange, onProeflesClic
         {/* More pill — opens bottom sheet */}
         <Drawer direction="bottom" open={moreOpen} onOpenChange={setMoreOpen}>
           <DrawerTrigger asChild>
-            <button className="flex-shrink-0 inline-flex items-center gap-1 h-9 px-3 rounded-none bg-white/80 backdrop-blur-md shadow-lg border border-gray-200/60 text-xs font-medium text-foreground active:scale-[0.99] transition-transform">
+            <button className="flex-shrink-0 inline-flex items-center gap-1 h-9 px-3 rounded-lg bg-white/80 backdrop-blur-md shadow-lg border border-gray-200/60 text-xs font-medium text-foreground active:scale-[0.99] transition-transform">
               <span className="text-sm">⋯</span>
               <span>Meer</span>
             </button>
@@ -96,7 +96,7 @@ export function MobileActionBar({ activeSection, onSectionChange, onProeflesClic
                     href={link.url!}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full flex items-center gap-3 px-4 py-3 rounded-none text-sm font-medium text-foreground hover:bg-judo-red-bg transition-all active:scale-[0.99]"
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-foreground hover:bg-judo-red-bg transition-all active:scale-[0.99]"
                   >
                     <span>{link.emoji}</span>
                     <span>{link.label}</span>
@@ -105,7 +105,7 @@ export function MobileActionBar({ activeSection, onSectionChange, onProeflesClic
                   <button
                     key={link.id}
                     onClick={() => { onSectionChange(link.id as SectionId); setMoreOpen(false); }}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-none text-sm font-medium transition-all active:scale-[0.99] ${
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all active:scale-[0.99] ${
                       activeSection === link.id
                         ? 'bg-[#fff2f2] text-foreground border border-judo-red'
                         : 'text-foreground hover:bg-judo-red-bg'

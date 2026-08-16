@@ -285,7 +285,7 @@ export default function MichigamiApp() {
       <div className="md:hidden fixed top-3 left-3 z-50">
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="p-2.5 rounded-none bg-white/80 backdrop-blur-md shadow-lg border border-[#2a2a2a]/15 hover:shadow-xl transition-shadow"
+          className="p-2.5 rounded-lg bg-white/80 backdrop-blur-md shadow-lg border border-[#2a2a2a]/15 hover:shadow-xl transition-shadow"
         >
           {sidebarOpen ? (
             <svg className="w-5 h-5 text-[#1c1915]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
@@ -332,10 +332,10 @@ export default function MichigamiApp() {
           <AnimatePresence mode="wait">
             <motion.div
               key={activeSection}
-              initial={{ opacity: 0, y: 24, filter: 'blur(6px)' }}
+              initial={{ opacity: 0, y: 14, filter: 'blur(3px)' }}
               animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-              exit={{ opacity: 0, y: -16, filter: 'blur(4px)' }}
-              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+              exit={{ opacity: 0, y: -10, filter: 'blur(2px)' }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
               className="p-2 sm:p-4 md:p-8 max-w-[100vw] mx-auto w-full pb-[8rem] sm:pb-0"
             >
             {activeSection === 'home' && <HomeSection onNavigate={setActiveSection} />}

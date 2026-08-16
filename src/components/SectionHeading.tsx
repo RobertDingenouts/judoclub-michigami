@@ -20,7 +20,7 @@ export function SectionHeading({ icon, title, subtitle, kanji, action, className
     <div className={`relative flex items-start justify-between gap-3 mb-4 ${className}`}>
       <div className="flex items-start gap-2.5 min-w-0">
         {icon && (
-          <span className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-none bg-[#c00000]/10 text-[#c00000] ring-1 ring-[#c00000]/10">
+          <span className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-[#c00000]/10 text-[#c00000] ring-1 ring-[#c00000]/10">
             {icon}
           </span>
         )}
