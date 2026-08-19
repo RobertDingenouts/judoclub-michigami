@@ -6,20 +6,13 @@ export const dynamic = 'force-dynamic'
 
 // One-time migration: create/update MembershipApplication table
 // Run via: fetch('/api/admin/migrate/inschrijvingen-schema', {method:'POST'}).then(r=>r.json()).then(console.log)
-// One-time token (removed after use on 2026-08-19) — allows running the
-// migration via curl without an admin session.
-const ONE_TIME_TOKEN = 'f16f063b376f30f2af82e5a774737e88c63c7f735f259278'
-
+// Migratie is uitgevoerd op 2026-08-19 (production). Alleen admin-sessie.
 export async function POST(request: NextRequest) {
-  const authHeader = request.headers.get('authorization')
-  const tokenOk = authHeader === 'Bearer ' + ONE_TIME_TOKEN
-  let admin = tokenOk
-  if (!admin) {
-    try {
-      admin = await isAdmin()
-    } catch {
-      admin = false
-    }
+  let admin = false
+  try {
+    admin = await isAdmin()
+  } catch {
+    admin = false
   }
   if (!admin) {
     return NextResponse.json({ error: 'Not authorized' }, { status: 403 })
