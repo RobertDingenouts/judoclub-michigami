@@ -5,18 +5,31 @@
  * meelopet. De muziek blijft door bij sectiewissel (engine zit in
  * MusicPlayerContext, nooit onmount).
  *
- * Versleepbaar: sleep via de grip of de kop. Positie wordt onthouden
- * (localStorage) zodat het terugkomt waar je het liet liggen.
+ * Drie standen:
+ *  - full: volledige player (seek, prev/next, mute, naar Club Muziek)
+ *  - bar:  slanke balk met titel + play/pauze + voortgangslintje
+ *  - dot:  klein rond bolletje (48px) met albumcover + play/pauze
+ *
+ * Verslepen: via de grip in de kop (of het hele bolletje). Dragging is 1:1
+ * (pointer events + touch-action: none), dus de pagina eronder beweegt
+ * nooit mee en pull-to-refresh kan niet meer getriggerd worden.
+ * Positie én stand worden onthouden (localStorage).
  */
 
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, ListMusic,
+  Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, ListMusic, Minus,
 } from 'lucide-react';
 import { useMusicPlayer } from '@/context/MusicPlayerContext';
 
-const POS_KEY = 'michigami-miniplayer-pos';
-const COLLAPSED_KEY = 'michigami-miniplayer-collapsed';
+const POS_KEY = 'michigami-miniplayer-pos-v2';
+const MODE_KEY = 'michigami-miniplayer-mode-v2';
+
+type Mode = 'full' | 'bar' | 'dot';
+
+interface Pos { x: number; y: number; }
+
+const DOT = 48;
 
 function formatTime(sec: number): string {
   if (!isFinite(sec) || sec < 0) return '0:00';
@@ -25,114 +38,236 @@ function formatTime(sec: number): string {
   return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
-interface Pos { x: number; y: number; }
+function isMobileWidth(): boolean {
+  return typeof window !== 'undefined' && window.innerWidth < 768;
+}
 
 function clampPos(x: number, y: number, w: number, h: number): Pos {
+  const buf = isMobileWidth() ? 60 : 8; // 60 = ruimte voor mobiele onderbalk
   const maxX = Math.max(4, window.innerWidth - w - 4);
-  const maxY = Math.max(4, window.innerHeight - h - 56); // 56 = bottom nav buffer
+  const maxY = Math.max(4, window.innerHeight - h - buf);
   return {
     x: Math.min(Math.max(4, x), maxX),
     y: Math.min(Math.max(4, y), maxY),
   };
 }
 
+function GripIcon() {
+  return (
+    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <circle cx="5" cy="6" r="1.6" /><circle cx="12" cy="6" r="1.6" /><circle cx="19" cy="6" r="1.6" />
+      <circle cx="5" cy="12" r="1.6" /><circle cx="12" cy="12" r="1.6" /><circle cx="19" cy="12" r="1.6" />
+      <circle cx="5" cy="18" r="1.6" /><circle cx="12" cy="18" r="1.6" /><circle cx="19" cy="18" r="1.6" />
+    </svg>
+  );
+}
+
 export function MiniPlayer({ onOpenMusic }: { onOpenMusic: () => void }) {
   const mp = useMusicPlayer();
-  const [pos, setPos] = useState<Pos>({ x: 16, y: 16 });
-  const [collapsed, setCollapsed] = useState(false);
+  const [ready, setReady] = useState(false);
+  const [mode, setMode] = useState<Mode>('bar');
+  const [pos, setPos] = useState<Pos>({ x: 12, y: 12 });
   const [dragging, setDragging] = useState(false);
-  const dragOffset = useRef({ dx: 0, dy: 0 });
+
   const wrapRef = useRef<HTMLDivElement | null>(null);
+  const posRef = useRef<Pos>(pos);
+  const dragRef = useRef<{ id: number; dx: number; dy: number; sx: number; sy: number; moved: boolean } | null>(null);
+  const suppressClickRef = useRef(false);
 
-  const W = 300;
-  const H = collapsed ? 52 : 92;
+  const savePos = (p: Pos) => {
+    try { localStorage.setItem(POS_KEY, JSON.stringify(p)); } catch { /* ignore */ }
+  };
 
-  // Initiale positie laden (localStorage) + op window-resize in beeld houden.
+  // Initiale positie + stand laden (localStorage) of fatsoenlijke defaults:
+  // mobiel → slanke balk rechtsonder (niet over de content), desktop →
+  // volledige player rechtsboven.
   useEffect(() => {
+    let m: Mode | null = null;
+    let p: Pos | null = null;
     try {
-      const raw = localStorage.getItem(POS_KEY);
-      if (raw) {
-        const p = JSON.parse(raw) as Pos;
-        if (typeof p.x === 'number' && typeof p.y === 'number') setPos(p);
+      const rawM = localStorage.getItem(MODE_KEY);
+      if (rawM === 'full' || rawM === 'bar' || rawM === 'dot') m = rawM;
+      const rawP = localStorage.getItem(POS_KEY);
+      if (rawP) {
+        const q = JSON.parse(rawP);
+        if (typeof q?.x === 'number' && typeof q?.y === 'number') p = q;
       }
-      setCollapsed(localStorage.getItem(COLLAPSED_KEY) === '1');
     } catch { /* ignore */ }
+
+    const mobile = isMobileWidth();
+    const md: Mode = m ?? (mobile ? 'bar' : 'full');
+    const w = md === 'dot' ? DOT : Math.min(mobile ? 272 : 300, window.innerWidth - 16);
+    const h = md === 'dot' ? DOT : md === 'bar' ? 46 : 104;
+    const dp = clampPos(
+      p?.x ?? (mobile ? window.innerWidth - w - 12 : window.innerWidth - w - 16),
+      p?.y ?? (mobile ? window.innerHeight - 60 - h - 12 : 16),
+      w, h,
+    );
+    posRef.current = dp;
+    setPos(dp);
+    setMode(md);
+    setReady(true);
   }, []);
 
+  // Stand wisselen (dot ↔ bar ↔ full) en daarna in beeld houden.
+  const applyMode = (m: Mode) => {
+    setMode(m);
+    try { localStorage.setItem(MODE_KEY, m); } catch { /* ignore */ }
+    requestAnimationFrame(() => {
+      const el = wrapRef.current;
+      if (!el) return;
+      const c = clampPos(posRef.current.x, posRef.current.y, el.offsetWidth, el.offsetHeight);
+      posRef.current = c;
+      setPos(c);
+      savePos(c);
+    });
+  };
+
+  // Na een drag stuurt de browser (via pointer-capture) een click terug
+  // op het drag-surface zelf — die mag géén actie uitvoeren (geen
+  // per-ongeluk play/mode-wissel). Alleen de dot heeft een onClick op
+  // het surface; die checkt de flag. Na 500 ms roost de flag af, dus
+  // de volgende échte klik is weer gewoon.
   useEffect(() => {
-    if (dragging) return;
     const onResize = () => {
-      setPos(p => clampPos(p.x, p.y, W, H));
+      if (dragRef.current) return;
+      const el = wrapRef.current;
+      if (!el) return;
+      const c = clampPos(posRef.current.x, posRef.current.y, el.offsetWidth, el.offsetHeight);
+      posRef.current = c;
+      setPos(c);
+      savePos(c);
     };
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
-  }, [dragging, H]);
+  }, []);
 
-  // Persen/onthouden van positie.
-  useEffect(() => {
-    if (dragging) return;
-    try {
-      localStorage.setItem(POS_KEY, JSON.stringify(pos));
-    } catch { /* ignore */ }
-  }, [pos, dragging]);
-
-  // Verslepen via pointer events (muis + touch).
-  const onDragStart = (e: React.PointerEvent) => {
+  // ============ Verslepen (1:1, pagina blijft stilstaan) ============
+  // touch-action: none op de handle zorgt ervoor dat de browser de touch
+  // NIET overneemt voor scrollen/pull-to-refresh — wij krijgen alle moves.
+  const onDragDown = (e: React.PointerEvent) => {
+    if ((e.target as HTMLElement).closest('button')) return;
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
     const el = wrapRef.current;
     if (!el) return;
-    const rect = el.getBoundingClientRect();
-    dragOffset.current = { dx: e.clientX - rect.left, dy: e.clientY - rect.top };
-    setDragging(true);
-    (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
+    const r = el.getBoundingClientRect();
+    dragRef.current = {
+      id: e.pointerId,
+      dx: e.clientX - r.left,
+      dy: e.clientY - r.top,
+      sx: e.clientX,
+      sy: e.clientY,
+      moved: false,
+    };
+    e.currentTarget.setPointerCapture?.(e.pointerId);
   };
 
   const onDragMove = (e: React.PointerEvent) => {
-    if (!dragging) return;
-    const x = e.clientX - dragOffset.current.dx;
-    const y = e.clientY - dragOffset.current.dy;
-    setPos(clampPos(x, y, W, H));
+    const d = dragRef.current;
+    if (!d || d.id !== e.pointerId) return;
+    const el = wrapRef.current;
+    if (!el) return;
+    if (!d.moved) {
+      if (Math.hypot(e.clientX - d.sx, e.clientY - d.sy) <= 4) return;
+      d.moved = true;
+      setDragging(true);
+    }
+    const c = clampPos(e.clientX - d.dx, e.clientY - d.dy, el.offsetWidth, el.offsetHeight);
+    posRef.current = c;
+    setPos(c);
   };
 
-  const onDragEnd = () => setDragging(false);
+  const onDragEnd = (e: React.PointerEvent) => {
+    const d = dragRef.current;
+    if (!d || d.id !== e.pointerId) return;
+    dragRef.current = null;
+    if (d.moved) {
+      suppressClickRef.current = true;
+      window.setTimeout(() => { suppressClickRef.current = false; }, 500);
+      setDragging(false);
+      savePos(posRef.current);
+    }
+  };
 
-  const pct = mp.duration > 0 ? (mp.current / mp.duration) * 100 : 0;
+  const dragProps = {
+    onPointerDown: onDragDown,
+    onPointerMove: onDragMove,
+    onPointerUp: onDragEnd,
+    onPointerCancel: onDragEnd,
+  };
 
   // Toon het widget pas als er muziek is (autostart of handmatig).
-  if (!mp.album || !mp.currentTrack) return null;
+  if (!ready || !mp.album || !mp.currentTrack) return null;
 
-  return (
-    <div
-      ref={wrapRef}
-      className="fixed z-[70] w-[300px] max-w-[calc(100vw-8px)] select-none"
-      style={{ left: pos.x, top: pos.y, touchAction: dragging ? 'none' : 'auto' }}
-      onPointerMove={onDragMove}
-      onPointerUp={onDragEnd}
-      onPointerCancel={onDragEnd}
-      role="region"
-      aria-label="Muziekspeler"
-    >
-      <div
-        className="rounded-xl border border-white/15 shadow-2xl shadow-black/40 backdrop-blur-xl overflow-hidden"
-        style={{
-          background: `linear-gradient(135deg, ${mp.album.accent}f5, ${mp.album.accent}d9)`,
-          transition: dragging ? 'none' : 'width .2s ease',
-        }}
-      >
-        {/* Kop / drag-grip — hier sleep je het speler-icoon mee */}
+  const pct = mp.duration > 0 ? (mp.current / mp.duration) * 100 : 0;
+  const gradient = `linear-gradient(135deg, ${mp.album.accent}f5, ${mp.album.accent}d9)`;
+  const cardTransition = dragging ? 'none' : 'box-shadow .2s ease';
+
+  // ---- Dot: klein rond bolletje ----
+  if (mode === 'dot') {
+    return (
+      <div ref={wrapRef} className="fixed z-[70] select-none" style={{ left: pos.x, top: pos.y }}>
         <div
-          className="flex items-center gap-2 px-3 py-2 cursor-grab active:cursor-grabbing"
-          onPointerDown={onDragStart}
+          {...dragProps}
+          className="relative w-12 h-12 rounded-full overflow-hidden border border-white/40 shadow-2xl shadow-black/50 cursor-grab active:cursor-grabbing"
+          style={{ touchAction: 'none', transition: cardTransition, background: gradient }}
+          onClick={e => {
+            // Klik op de play-knop is een eigen actie (stopPropagation
+            // van de knop zelf); hier alleen de ring-klik → bar.
+            if ((e.target as HTMLElement).closest('button')) return;
+            // Post-drag synthetic click onderdrukken (en flag resetten,
+            // zodat de volgend échte tap direct werkt).
+            if (suppressClickRef.current) {
+              suppressClickRef.current = false;
+              e.preventDefault();
+              e.stopPropagation();
+              return;
+            }
+            applyMode('bar');
+          }}
+          role="button"
+          aria-label="Muziekspeler openen"
         >
-          <span className="text-white/70 shrink-0" aria-hidden>
-            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
-              <circle cx="5" cy="6" r="1.6" /><circle cx="12" cy="6" r="1.6" /><circle cx="19" cy="6" r="1.6" />
-              <circle cx="5" cy="12" r="1.6" /><circle cx="12" cy="12" r="1.6" /><circle cx="19" cy="12" r="1.6" />
-              <circle cx="5" cy="18" r="1.6" /><circle cx="12" cy="18" r="1.6" /><circle cx="19" cy="18" r="1.6" />
-            </svg>
-          </span>
           <img
             src={mp.album.cover}
             alt=""
+            draggable={false}
+            className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+          />
+          <button
+            onClick={(e) => { e.stopPropagation(); mp.togglePlay(); }}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-black/55 backdrop-blur-sm text-white flex items-center justify-center"
+            aria-label={mp.playing ? 'Pauzeer' : 'Speel af'}
+          >
+            {mp.playing ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 ml-0.5" />}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const isBar = mode === 'bar';
+  return (
+    <div ref={wrapRef} className="fixed z-[70] select-none" style={{ left: pos.x, top: pos.y }}>
+      <div
+        className={`overflow-hidden rounded-xl border border-white/15 shadow-2xl shadow-black/40 backdrop-blur-xl max-w-full ${
+          isBar ? 'w-[min(272px,calc(100vw-16px))]' : 'w-[min(300px,calc(100vw-16px))]'
+        }`}
+        style={{ background: gradient, transition: cardTransition }}
+        role="region"
+        aria-label="Muziekspeler"
+      >
+        {/* Kop / drag-handle — hier sleep je (al behalve de knoppen) */}
+        <div
+          {...dragProps}
+          className="flex items-center gap-2 px-2.5 py-2 cursor-grab active:cursor-grabbing"
+          style={{ touchAction: 'none' }}
+        >
+          <span className="text-white/70 shrink-0 pointer-events-none"><GripIcon /></span>
+          <img
+            src={mp.album.cover}
+            alt=""
+            draggable={false}
             className="w-7 h-7 rounded-md object-cover shadow shrink-0 pointer-events-none"
           />
           <div className="flex-1 min-w-0 pointer-events-none">
@@ -143,51 +278,81 @@ export function MiniPlayer({ onOpenMusic }: { onOpenMusic: () => void }) {
               {mp.album.name} · Robas
             </div>
           </div>
-          {/* Krimp/uitvouw */}
-          <button
-            onClick={() => {
-              const next = !collapsed;
-              setCollapsed(next);
-              try { localStorage.setItem(COLLAPSED_KEY, next ? '1' : '0'); } catch { /* ignore */ }
-            }}
-            className="p-1.5 rounded-md text-white/70 hover:text-white hover:bg-white/15 transition-colors shrink-0"
-            aria-label={collapsed ? 'Speler uitvouwen' : 'Speler krimpen'}
-          >
-            {collapsed ? (
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
-              </svg>
-            ) : (
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-              </svg>
-            )}
-          </button>
+          {isBar ? (
+            <>
+              <button
+                onClick={mp.togglePlay}
+                className="w-8 h-8 rounded-full bg-white text-[#1c1915] flex items-center justify-center shadow hover:scale-105 active:scale-95 transition-transform shrink-0"
+                aria-label={mp.playing ? 'Pauzeer' : 'Speel af'}
+              >
+                {mp.playing ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 ml-0.5" />}
+              </button>
+              <button
+                onClick={() => applyMode('full')}
+                className="p-1.5 rounded-md text-white/70 hover:text-white hover:bg-white/15 transition-colors shrink-0"
+                aria-label="Speler uitvouwen"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                </svg>
+              </button>
+              <button
+                onClick={() => applyMode('dot')}
+                className="p-1.5 rounded-md text-white/70 hover:text-white hover:bg-white/15 transition-colors shrink-0"
+                aria-label="Speler naar bolletje verkleinen"
+              >
+                <Minus className="w-3.5 h-3.5" />
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={() => applyMode('bar')}
+                className="p-1.5 rounded-md text-white/70 hover:text-white hover:bg-white/15 transition-colors shrink-0"
+                aria-label="Speler krimpen"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <button
+                onClick={() => applyMode('dot')}
+                className="p-1.5 rounded-md text-white/70 hover:text-white hover:bg-white/15 transition-colors shrink-0"
+                aria-label="Speler naar bolletje verkleinen"
+              >
+                <Minus className="w-3.5 h-3.5" />
+              </button>
+            </>
+          )}
         </div>
 
-        {/* Uitgevouwen: voortgang + transport */}
-        {!collapsed && (
-          <div className="px-3 pb-3">
-            {/* Seek-bar */}
+        {isBar ? (
+          /* Bar: slank — alleen een voortgangslintje onderin */
+          <div className="relative h-1 bg-white/15">
             <div
-              className="relative h-1 bg-white/20 rounded-full cursor-pointer group"
+              className="absolute inset-y-0 left-0 bg-white/70"
+              style={{ width: `${pct}%` }}
+            />
+          </div>
+        ) : (
+          /* Full: seek + transport + volume + naar Club Muziek */
+          <div className="px-3 pb-3">
+            <div
+              className="relative h-1 bg-white/20 rounded-full cursor-pointer"
               onClick={e => {
                 const rect = e.currentTarget.getBoundingClientRect();
-                const frac = (e.clientX - rect.left) / rect.width;
-                mp.seek(frac * mp.duration);
+                mp.seek(((e.clientX - rect.left) / rect.width) * mp.duration);
               }}
             >
               <div
-                className="absolute inset-y-0 left-0 bg-white/70 rounded-full transition-[width] duration-100"
+                className="absolute inset-y-0 left-0 bg-white/70 rounded-full"
                 style={{ width: `${pct}%` }}
               />
             </div>
-
             <div className="flex items-center justify-between mt-2">
               <span className="text-[10px] tabular-nums text-white/60">
                 {formatTime(mp.current)} / {formatTime(mp.duration)}
               </span>
-
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => mp.skip(-1)}
@@ -211,7 +376,6 @@ export function MiniPlayer({ onOpenMusic }: { onOpenMusic: () => void }) {
                   <SkipForward className="w-4 h-4" />
                 </button>
               </div>
-
               <div className="flex items-center gap-0.5">
                 <button
                   onClick={mp.toggleMute}
