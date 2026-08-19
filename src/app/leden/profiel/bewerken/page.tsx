@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Camera, Shield, Eye, EyeOff } from 'lucide-react'
@@ -56,10 +56,38 @@ export default function ProfileEditPage() {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false)
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [resending, setResending] = useState(false)
+  const [resendMsg, setResendMsg] = useState<string | null>(null)
 
   useEffect(() => {
     fetchProfile()
   }, [])
+
+  const resendStartedRef = useRef(false)
+
+  const handleResendVerification = async (emailOverride?: string, force = false) => {
+    const targetEmail = (emailOverride || form?.email || '').trim().toLowerCase()
+    if (!targetEmail) return
+    if (!force && resendStartedRef.current) return
+    resendStartedRef.current = true
+    setResending(true)
+    setResendMsg(null)
+    try {
+      const res = await fetch('/api/auth/resend-verification', { method: 'POST' })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Fout bij versturen bevestigingsmail')
+      setResendMsg(data.message || 'Bevestigingsmail verzonden!')
+      // Throttle: niet opnieuw auto-versturen binnen 6 uur (handmatige
+      // verzending kan altijd via de knop).
+      try {
+        localStorage.setItem('michigami-verify-resent-' + targetEmail, String(Date.now()))
+      } catch { /* privacy-mode: negeer */ }
+    } catch (err: any) {
+      setResendMsg(err.message || 'Fout bij versturen bevestigingsmail')
+    } finally {
+      setResending(false)
+    }
+  }
 
   async function fetchProfile() {
     try {
@@ -100,6 +128,19 @@ export default function ProfileEditPage() {
         setForm(profileData)
         if (p.imageUrl) {
           setAvatarPreview(p.imageUrl)
+        }
+        // Auto-resend verificatielink voor legacy accounts (aangemaakt vóór
+        // de e-mailverificatie-logica): die ontvingen nooit een bevestigingsmail.
+        // Max. één keer per 6 uur (throttle in localStorage).
+        if (!p.emailVerified && !p.pendingEmail && p.email) {
+          const key = 'michigami-verify-resent-' + p.email.toLowerCase()
+          let last = 0
+          try {
+            last = Number(localStorage.getItem(key) || 0)
+          } catch { /* privacy-mode */ }
+          if (Date.now() - last > 6 * 60 * 60 * 1000) {
+            handleResendVerification(p.email)
+          }
         }
       }
     } catch {
@@ -386,9 +427,22 @@ export default function ProfileEditPage() {
 
           {/* E-mailverificatie status */}
           {form && !form.emailVerified && !form.pendingEmail && (
-            <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800 flex items-center gap-2">
-              <span>⚠️</span>
-              <span>Je e-mailadres is nog niet bevestigd. Controleer je inbox voor de bevestigingsmail (of vraag een nieuwe aan via uitloggen en opnieuw registreren).</span>
+            <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800 space-y-3">
+              <div className="flex items-start gap-2">
+                <span>⚠️</span>
+                <span>Je e-mailadres <strong>{form.email || '(nog niet ingevuld)'}</strong> is nog niet bevestigd. Controleer je inbox (en je spammap) voor de bevestigingsmail.</span>
+              </div>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleResendVerification(undefined, true)}
+                  disabled={resending || !form.email}
+                  className="inline-flex items-center gap-2 rounded-lg bg-[#a90000] px-4 py-2 text-xs font-medium text-white transition-colors hover:bg-[#8c0000] disabled:opacity-50"
+                >
+                  {resending ? 'Versturen...' : '📧 Nieuwe bevestigingsmail versturen'}
+                </button>
+                {resendMsg && <span className="text-xs">{resendMsg}</span>}
+              </div>
             </div>
           )}
           {form && form.pendingEmail && (

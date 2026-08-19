@@ -66,6 +66,20 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [student, setStudent] = useState<StudentData | null>(null)
+  // Inloggegevens van zojuist nieuw aangemaakt account (uit de "nieuw" flow)
+  const [newAccount, setNewAccount] = useState<{ tempPassword: string; email: string | null; mailSent: boolean } | null>(null)
+
+  useEffect(() => {
+    // Eenmalig ophalen: tijdelijk wachtwoord van net aangemaakt account
+    const raw = sessionStorage.getItem('newStudentResult')
+    if (raw) {
+      sessionStorage.removeItem('newStudentResult')
+      try {
+        const r = JSON.parse(raw)
+        if (r.tempPassword) setNewAccount({ tempPassword: r.tempPassword, email: r.email, mailSent: r.mailSent })
+      } catch { /* negeer */ }
+    }
+  }, [])
 
   useEffect(() => {
     params.then((p) => setResolvedParams(p))
@@ -173,6 +187,24 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
 
       {error && (
         <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">{error}</div>
+      )}
+      {newAccount && (
+        <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-900 space-y-2">
+          <div className="flex items-start justify-between gap-3">
+            <p className="font-semibold">Account aangemaakt — tijdelijk inloggegevens</p>
+            <button onClick={() => setNewAccount(null)} className="text-blue-500 hover:text-blue-800 font-bold px-1" aria-label="Sluiten">×</button>
+          </div>
+          <p>
+            E-mail: <strong>{newAccount.email}</strong> · Tijdelijk wachtwoord:{' '}
+            <code className="rounded bg-white px-1.5 py-0.5 font-mono">{newAccount.tempPassword}</code>
+          </p>
+          <p className="text-xs text-blue-700">
+            {newAccount.mailSent
+              ? 'De inloggegevens + bevestigingslink zijn per e-mail verzonden.'
+              : 'De e-mail kon niet worden verstuurd — geef het tijdelijke wachtwoord handmatig door.'}{' '}
+            Het lid kan het wachtwoord wijzigen in "Profiel en instellingen".
+          </p>
+        </div>
       )}
       {success && (
         <div className="rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-700">

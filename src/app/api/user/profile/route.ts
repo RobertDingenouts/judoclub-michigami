@@ -56,15 +56,18 @@ export async function PATCH(request: Request) {
     const importantChanges: string[] = []
     let emailChangePending = false
 
+    // Normaliseer e-mail (trim + lowercase) zodat casewijziging niet per
+    // ongeluk een "wijziging + verificatie" triggert.
+    const normalizedEmail = email ? String(email).trim().toLowerCase() : email
+
     // If email is being changed: veilig proces.
     // Oude adres blijft login tot het nieuwe bevestigd is.
-    if (email && email !== (user.email || '')) {
-      const normalized = email.trim().toLowerCase()
-      if (normalized === user.email?.toLowerCase()) {
-        // geen echte wijziging
+    if (normalizedEmail && normalizedEmail !== (user.email?.toLowerCase() || '')) {
+      if (normalizedEmail === user.email?.toLowerCase()) {
+        // geen echte wijziging (kan na normalisatie niet meer, maar defensief)
       } else {
         const existing = await db.user.findFirst({
-          where: { email: normalized, NOT: { id: user.id } },
+          where: { email: normalizedEmail, NOT: { id: user.id } },
         })
         if (existing) {
           return NextResponse.json({ error: 'Dit e-mailadres is al in gebruik' }, { status: 400 })
@@ -77,7 +80,7 @@ export async function PATCH(request: Request) {
         await db.user.update({
           where: { id: user.id },
           data: {
-            pendingEmail: normalized,
+            pendingEmail: normalizedEmail,
             emailVerifyToken: token,
             emailVerifyExpires: expires,
           },
@@ -85,8 +88,8 @@ export async function PATCH(request: Request) {
 
         // Bevestigingsmail naar NIEUW adres
         try {
-          const tpl = buildEmailChangeConfirmEmail(user.name || 'lid', normalized, token)
-          await sendEmail({ to: normalized, subject: tpl.subject, html: tpl.html })
+          const tpl = buildEmailChangeConfirmEmail(user.name || 'lid', normalizedEmail, token)
+          await sendEmail({ to: normalizedEmail, subject: tpl.subject, html: tpl.html })
         } catch (mailErr) {
           console.error('Verificatiemail nieuw adres mislukt:', mailErr)
           // Niet blokkeren: gebruiker kan later opnieuw bevestigen
@@ -95,14 +98,14 @@ export async function PATCH(request: Request) {
         // Beveiligingsmelding naar OUD adres
         if (user.email) {
           try {
-            const notice = buildEmailChangeNoticeEmail(user.name || 'lid', normalized)
+            const notice = buildEmailChangeNoticeEmail(user.name || 'lid', normalizedEmail)
             await sendEmail({ to: user.email, subject: notice.subject, html: notice.html })
           } catch (mailErr) {
             console.error('Beveiligingsmelding oud adres mislukt:', mailErr)
           }
         }
 
-        importantChanges.push(`E-mail wijziging aangevraagd: ${user.email || '(geen)'} → ${normalized} (wacht op bevestiging)`)
+        importantChanges.push(`E-mail wijziging aangevraagd: ${user.email || '(geen)'} → ${normalizedEmail} (wacht op bevestiging)`)
         emailChangePending = true
 
         // email NOOIT direct overschrijven — pas na bevestiging via verify-email
@@ -125,7 +128,7 @@ export async function PATCH(request: Request) {
     const memberData: any = {}
     if (firstName !== undefined) memberData.firstName = firstName
     if (lastName !== undefined) memberData.lastName = lastName
-    if (email !== undefined) memberData.email = email
+    if (normalizedEmail !== undefined) memberData.email = normalizedEmail
     if (phone !== undefined) memberData.phone = phone
     if (phone2 !== undefined) memberData.phone2 = phone2
     if (dateOfBirth !== undefined) memberData.dateOfBirth = dateOfBirth ? new Date(dateOfBirth) : null

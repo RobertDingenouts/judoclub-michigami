@@ -1,5 +1,5 @@
 /* PWA Service Worker — Judoclub Michigami */
-const CACHE_NAME = "michigami-v16-20260819";
+const CACHE_NAME = "michigami-v17-20260819";
 
 // Assets to pre-cache on install (critical for offline)
 const PRECACHE_URLS = [
@@ -33,6 +33,13 @@ self.addEventListener("activate", (event) => {
 // Fetch: Network First for pages, Cache First for static assets
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
+
+  // API routes: NEVER cache — they carry per-user session data
+  // (profieldata, login-status). Caching these would show stale data
+  // after a save.
+  if (url.pathname.startsWith("/api/")) {
+    return; // passthrough: browser handles the request normally
+  }
 
   // Static assets: Cache First
   if (

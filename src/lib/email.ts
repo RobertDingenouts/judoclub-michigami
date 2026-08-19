@@ -168,3 +168,27 @@ export function buildAdminWelcomeEmail(name: string, email: string, tempPassword
   `
   return { subject: `Welkom bij ${APP_NAME}`, html: baseTemplate(content) }
 }
+
+/**
+ * Gecombineerde welkomstmail voor nieuw aangemaakte accounts: tijdelijk
+ * wachtwoord + e-mailverificatielink in één mail. Gebruikt door beide
+ * admin-flows (inschrijving goedkeuren + lid toevoegen) zodat de nieuwe
+ * lid meteen inlogt én zijn e-mail bevestigt.
+ */
+export function buildAccountWelcomeEmail(name: string, email: string, tempPassword: string, verifyToken: string): { subject: string; html: string } {
+  const url = `${BASE_URL}/api/auth/verify-email?token=${encodeURIComponent(verifyToken)}`
+  const content = `
+    <p>Beste ${name},</p>
+    <p>Welkom bij ${APP_NAME}! Er is een account voor je aangemaakt. Je kunt inloggen met:</p>
+    <p style="background:#f5f5f0;padding:12px 16px;border-radius:8px;">
+      <strong>E-mail:</strong> ${email}<br/>
+      <strong>Tijdelijk wachtwoord:</strong> ${tempPassword}
+    </p>
+    <p>Voordat je profiel volledig werkt, bevestig je e-mailadres:</p>
+    <p style="text-align:center;margin:28px 0;">
+      <a href="${url}" style="background:#a90000;color:#fff;text-decoration:none;padding:12px 28px;border-radius:8px;font-weight:bold;display:inline-block;">Bevestig mijn e-mailadres</a>
+    </p>
+    <p style="color:#888;font-size:13px;">Deze link is 24 uur geldig. Klik daarna in op "Inloggen" met het tijdelijk wachtwoord en stel direct je eigen wachtwoord in.</p>
+  `
+  return { subject: `Welkom bij ${APP_NAME} — inloggegevens & e-mail bevestigen`, html: baseTemplate(content) }
+}

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { requireAdmin, hashPassword } from '@/lib/auth'
+import { requireAdmin, hashPassword, generateToken } from '@/lib/auth'
+import { sendEmail, buildAccountWelcomeEmail } from '@/lib/email'
 
 export const dynamic = 'force-dynamic'
 
@@ -36,11 +37,12 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       // Generate temp password
       const tempPassword = `${application.firstName.substring(0, 3).toLowerCase()}${application.lastName.substring(0, 3).toLowerCase()}${new Date().getFullYear()}`
       const passwordHash = await hashPassword(tempPassword)
+      const memberEmail = application.email.toLowerCase().trim()
 
       // Create User + Member
       const user = await db.user.create({
         data: {
-          email: application.email.toLowerCase().trim(),
+          email: memberEmail,
           name: `${application.firstName} ${application.lastName}`.trim(),
           passwordHash,
           role: 'MEMBER',
@@ -70,6 +72,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
           privacyAgreedAt: application.privacyAgreedAt ?? new Date(),
           termsAgreed: application.termsAgreed,
           termsAgreedAt: application.termsAgreedAt ?? new Date(),
+          codeOfConduct: application.codeOfConduct,
           remarks: adminNotes ? `Goedgekeurd: ${adminNotes}` : null,
           emergencyContactName: application.emergencyContact || null,
           emergencyContactPhone: null,
@@ -91,11 +94,31 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 
       console.log(`[INSCHRIJVING] Goedgekeurd: ${application.firstName} ${application.lastName} (${application.email}) — temp pw: ${tempPassword}`)
 
+      // Welkomstmail: tijdelijk wachtwoord + e-mailverificatielink in één.
+      // Best-effort: goedkeuring slaagt ook als de mail niet doorkomt,
+      // het lid kan via "opnieuw versturen" in het profiel nog een link krijgen.
+      let mailSent = false
+      try {
+        const verifyToken = generateToken()
+        await db.user.update({
+          where: { id: user.id },
+          data: { emailVerifyToken: verifyToken, emailVerifyExpires: new Date(Date.now() + 24 * 60 * 60 * 1000) },
+        })
+        const tpl = buildAccountWelcomeEmail(`${application.firstName} ${application.lastName}`.trim(), memberEmail, tempPassword, verifyToken)
+        await sendEmail({ to: memberEmail, subject: tpl.subject, html: tpl.html })
+        mailSent = true
+      } catch (mailErr) {
+        console.error('[INSCHRIJVING] Welkomstmail mislukt:', mailErr)
+      }
+
       return NextResponse.json({
         success: true,
-        message: 'Inschrijving goedgekeurd — account aangemaakt',
+        message: mailSent
+          ? 'Inschrijving goedgekeurd — account aangemaakt en inloggegevens verzonden'
+          : 'Inschrijving goedgekeurd — account aangemaakt, maar het versturen van de e-mail is mislukt (handmatig doorgeven)',
         tempPassword,
         email: application.email,
+        mailSent,
       })
     } else {
       // REJECT

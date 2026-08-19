@@ -53,6 +53,13 @@ export default function NewStudentPage() {
         setError(data.error || 'Fout bij aanmaken student')
         return
       }
+      // Bewaar inloggegevens zodat ze direct na redirect zichtbaar blijven
+      sessionStorage.setItem('newStudentResult', JSON.stringify({
+        tempPassword: data.tempPassword || null,
+        mailSent: !!data.mailSent,
+        email: data.member?.email || null,
+        message: data.message || '',
+      }))
       router.push(`/admin/students/${data.member.id}`)
     } catch {
       setError('Fout bij aanmaken student')

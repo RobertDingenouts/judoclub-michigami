@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { isAdmin } from '@/lib/auth'
+import { isAdmin, hashPassword, generateToken } from '@/lib/auth'
+import { sendEmail, buildAccountWelcomeEmail } from '@/lib/email'
 import type { BeltLevel } from '@prisma/client'
 import { Role } from '@prisma/client'
 
@@ -49,12 +50,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Naam is verplicht' }, { status: 400 })
     }
 
+    const normalizedEmail = email?.trim() ? email.trim().toLowerCase() : null
+    const hasEmail = !!normalizedEmail
+
+    let tempPassword: string | null = null
+    let mailSent = false
     let userId: string = ''
 
     // Check if email already exists (only if email provided)
-    if (email && email.trim()) {
+    if (hasEmail) {
       const existingUser = await db.user.findUnique({
-        where: { email: email.trim().toLowerCase() },
+        where: { email: normalizedEmail },
       })
 
       if (existingUser) {
@@ -62,12 +68,20 @@ export async function POST(request: Request) {
       }
     }
 
-    // Always create User record (required for Member relation) — email can be null
+    // Create User record (required for Member relation).
+    // Met e-mail = direct inlogbaar account: tijdelijk wachtwoord + welkomstmail.
+    let passwordHash: string | null = null
+    if (hasEmail) {
+      tempPassword = `${firstName.substring(0, 3).toLowerCase()}${lastName.substring(0, 3).toLowerCase()}${new Date().getFullYear()}!`
+      passwordHash = await hashPassword(tempPassword)
+    }
+
     const user = await db.user.create({
       data: {
-        email: email && email.trim() ? email.trim().toLowerCase() : null,
+        email: normalizedEmail,
         name: `${firstName} ${lastName}`,
         role: Role.MEMBER,
+        passwordHash,
       },
     })
     userId = user.id
@@ -88,11 +102,35 @@ export async function POST(request: Request) {
       },
     })
 
+    // Welkomstmail: tijdelijk wachtwoord + e-mailverificatielink in één.
+    // Best-effort: toevoegen slaagt ook als de mail niet doorkomt, het tijdelijke
+    // wachtwoord wordt hier in de UI weergegeven.
+    if (hasEmail && tempPassword) {
+      try {
+        const verifyToken = generateToken()
+        await db.user.update({
+          where: { id: user.id },
+          data: { emailVerifyToken: verifyToken, emailVerifyExpires: new Date(Date.now() + 24 * 60 * 60 * 1000) },
+        })
+        const tpl = buildAccountWelcomeEmail(`${firstName} ${lastName}`.trim(), normalizedEmail, tempPassword, verifyToken)
+        await sendEmail({ to: normalizedEmail, subject: tpl.subject, html: tpl.html })
+        mailSent = true
+      } catch (mailErr) {
+        console.error('[ADMIN/STUDENTS] Welkomstmail mislukt:', mailErr)
+      }
+    }
+
     return NextResponse.json({
       success: true,
       member: { ...member, userId },
       hasAccount: !!userId,
-      message: userId ? 'Student toegevoegd met account' : 'Student toegevoegd zonder account (geen e-mail ingevuld)',
+      tempPassword,
+      mailSent,
+      message: hasEmail
+        ? (mailSent
+            ? 'Student toegevoegd — account aangemaakt en inloggegevens verstuurd'
+            : 'Student toegevoegd — account aangemaakt, e-mail kon niet versturen (gebruik het tijdelijke wachtwoord hieronder)')
+        : 'Student toegevoegd zonder account (geen e-mail ingevuld)',
     })
   } catch (error) {
     console.error('Create student error:', error)

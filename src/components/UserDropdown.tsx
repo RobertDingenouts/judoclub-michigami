@@ -86,7 +86,7 @@ export function UserDropdown({ onSectionChange }: { onSectionChange?: (section: 
           <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3 3 0 11-6 0 3 3 0 016 0z" />
           <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12a9 9 0 0118 0" />
         </svg>
-        Inloggen / Registreren
+        Inloggen
       </a>
     );
   }

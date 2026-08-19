@@ -207,8 +207,12 @@ export default function SignInPage() {
 
         <p className="mt-6 text-center text-sm text-gray-500">
           Nog geen account?{' '}
+          <Link href="/inschrijven" className="font-medium text-[#a90000] hover:text-[#8c0000]">
+            Word lid
+          </Link>
+          {' '}·{' '}
           <Link href="/signup" className="font-medium text-[#a90000] hover:text-[#8c0000]">
-            Registreren
+            Hoe werkt het?
           </Link>
         </p>
       </div>
