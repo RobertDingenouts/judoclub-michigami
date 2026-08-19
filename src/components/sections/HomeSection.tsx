@@ -1,6 +1,6 @@
 'use client';
 
-import { Calendar, Sparkles, Swords, Target, Users, Clock, BookOpen, Mail, MapPin } from 'lucide-react';
+import { Calendar, Sparkles, Swords, Target, Users, Clock, BookOpen, Mail, MapPin, Music2 } from 'lucide-react';
 import { HeroSlider } from './HeroSlider';
 import { NewsSlider } from './NewsSlider';
 import { agendaItems } from '@/data/agenda';
@@ -62,6 +62,7 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
     { key: 'lestijden', kanji: '時', title: 'Lestijden', subtitle: 'Wo & Vr', icon: <Clock className="w-6 h-6" />, tone: 'ai' },
     { key: 'cursusjapans', kanji: '語', title: 'Cursus Japans', subtitle: 'Leer + quiz', icon: <BookOpen className="w-6 h-6" />, tone: 'ai' },
     { key: 'leden', kanji: '入', title: 'Lid worden', subtitle: 'Meld je aan', icon: <Users className="w-6 h-6" />, tone: 'shu' },
+    { key: 'muziek', kanji: '音', title: 'Muziek', subtitle: 'Robas albums', icon: <Music2 className="w-6 h-6" />, tone: 'shu' },
     { key: 'contact', kanji: '連', title: 'Contact', subtitle: 'Stel een vraag', icon: <Mail className="w-6 h-6" />, tone: 'shu' },
   ];
 

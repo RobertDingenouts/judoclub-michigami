@@ -29,6 +29,8 @@ import { DiplomasSection } from '@/components/sections/DiplomasSection';
 import { ProfileSection } from '@/components/sections/ProfileSection';
 import { ExamApprovalSection } from '@/components/sections/ExamApprovalSection';
 import { MusicSection } from '@/components/sections/MusicSection';
+import { MiniPlayer } from '@/components/MiniPlayer';
+import { MusicPlayerProvider } from '@/context/MusicPlayerContext';
 import { PullToRefreshIndicator } from '@/components/PullToRefreshIndicator';
 import { StickyCTA } from '@/components/StickyCTA';
 import { TrialLessonForm } from '@/components/sections/TrialLessonForm';
@@ -298,6 +300,7 @@ export default function MichigamiApp() {
   }, [ptrPulling, ptrProgress]);
 
   return (
+    <MusicPlayerProvider>
     <div className="min-h-screen flex flex-col md:flex-row bg-washi w-full overflow-x-hidden">
       {/* Pull-to-refresh indicator */}
       <PullToRefreshIndicator isPulling={ptrPulling} isRefreshing={ptrRefreshing} progress={ptrProgress} />
@@ -416,6 +419,10 @@ export default function MichigamiApp() {
           </div>
         </DrawerContent>
       </Drawer>
+
+      {/* Versleepbare mini-speler — loopt over alle secties mee */}
+      <MiniPlayer onOpenMusic={() => setActiveSection('muziek')} />
     </div>
+    </MusicPlayerProvider>
   );
 }
