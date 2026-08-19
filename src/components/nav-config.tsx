@@ -5,7 +5,7 @@ import {
   Play, Eye, EyeOff, CheckCircle2, XCircle, Award, Trophy, Ban,
   Flame, Star, Users, Mail, Facebook, Youtube, ArrowRight,
   BookOpen, Shield, CircleDot, Sparkles, Video, Camera, Filter,
-  Plus, List, Layers, Search
+  Plus, List, Layers, Search, Music
 } from 'lucide-react';
 
 // Backward compatibility alias - defined first to allow circular reference
@@ -34,6 +34,7 @@ export type SectionId =
   | 'timeline'
   | 'diplomas'
   | 'profiel'
+  | 'muziek'
   | 'examen-goedkeuren';
 
 export type Section = SectionId;
@@ -83,6 +84,7 @@ export const navGroups: NavGroup[] = [
       { key: 'nieuws', label: 'Nieuws', icon: <Sparkles className="w-4 h-4" /> },
       { key: 'foto-galerij', label: "Foto's", icon: <Camera className="w-4 h-4" /> },
       { key: 'video-galerij', label: "Video's", icon: <Video className="w-4 h-4" /> },
+      { key: 'muziek', label: 'Club Muziek', icon: <Music className="w-4 h-4" /> },
     ],
   },
 ];
@@ -129,5 +131,6 @@ export const sectionLabels: Record<Section, string> = {
   timeline: 'Geschiedenis',
   diplomas: 'Mijn Diplomas',
   profiel: 'Mijn Profiel',
+  muziek: 'Club Muziek',
   'examen-goedkeuren': 'Examen Goedkeuren',
 };

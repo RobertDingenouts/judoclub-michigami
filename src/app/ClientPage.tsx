@@ -28,6 +28,7 @@ import { TimelineSection } from '@/components/sections/TimelineSection';
 import { DiplomasSection } from '@/components/sections/DiplomasSection';
 import { ProfileSection } from '@/components/sections/ProfileSection';
 import { ExamApprovalSection } from '@/components/sections/ExamApprovalSection';
+import { MusicSection } from '@/components/sections/MusicSection';
 import { PullToRefreshIndicator } from '@/components/PullToRefreshIndicator';
 import { StickyCTA } from '@/components/StickyCTA';
 import { TrialLessonForm } from '@/components/sections/TrialLessonForm';
@@ -141,6 +142,10 @@ const sectionMeta: Record<Section, { title: string; description: string }> = {
     title: 'Mijn Profiel | Judoclub Michigami',
     description: 'Je persoonlijke profiel, gegevens, band en statistieken bij Judoclub Michigami.',
   },
+  'muziek': {
+    title: 'Club Muziek | Judoclub Michigami',
+    description: 'Speciaal voor Judoclub Michigami gemaakte muziek: Japanese Music, Judoclub Michigami en Summer Vibes albums.',
+  },
   'examen-goedkeuren': {
     title: 'Examen Goedkeuren | Judoclub Michigami',
     description: 'Beoordeel en goedkeur judo examens. Alleen toegankelijk voor instructeurs.',
@@ -183,8 +188,24 @@ function updateMetaTags(section: Section) {
   updateOrSetMeta('og:url', `https://judoclubmichigami.nl/#${section}`);
 }
 
+// Valid section keys for hash deep-links (e.g. /#muziek)
+const VALID_SECTIONS = new Set(Object.keys(sectionMeta));
+
 export default function MichigamiApp() {
+  // Start at 'home' to match the server render (hydration-safe).
   const [activeSection, setActiveSection] = useState<Section>('home');
+
+  // Honor ?section= or #hash on initial load so deep-links (e.g. /#muziek) work.
+  // Done in a post-hydration effect to avoid a client/server hydration mismatch.
+  useEffect(() => {
+    const fromHash = window.location.hash.replace(/^#\//, '').replace(/^#/, '');
+    if (VALID_SECTIONS.has(fromHash)) {
+      setActiveSection(fromHash as Section);
+    } else {
+      const param = new URLSearchParams(window.location.search).get('section');
+      if (param && VALID_SECTIONS.has(param)) setActiveSection(param as Section);
+    }
+  }, []);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [proeflesOpen, setProeflesOpen] = useState(false);
 
@@ -204,6 +225,11 @@ export default function MichigamiApp() {
   // Update document title + meta tags when section changes (SPA SEO)
   useEffect(() => {
     updateMetaTags(activeSection);
+    // Keep the URL hash in sync so the section is shareable/deep-linkable
+    const hash = activeSection === 'home' ? '' : activeSection;
+    if (window.location.hash.slice(1) !== hash) {
+      window.history.replaceState(null, '', hash ? `#${hash}` : window.location.pathname);
+    }
   }, [activeSection]);
 
   // Scroll-to-top on section change — ref-based approach for reliability
@@ -363,6 +389,7 @@ export default function MichigamiApp() {
             {activeSection === 'diplomas' && <DiplomasSection />}
             {activeSection === 'profiel' && <ProfileSection />}
             {activeSection === 'examen-goedkeuren' && <ExamApprovalSection />}
+            {activeSection === 'muziek' && <MusicSection />}
             </motion.div>
           </AnimatePresence>
           </div>
