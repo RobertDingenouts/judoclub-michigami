@@ -1,11 +1,10 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, Fragment } from 'react';
 import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, ScrollText, Award } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { clubInfo } from '@/data/club-info';
 import { storyChapters } from '@/data/story-chapters';
 import {
   SumiLandscape, SakuraPetals, InkBleeds, WatermarkKanji, VoxelGrid,
@@ -34,6 +33,39 @@ function InkReveal({ children, className = '', as: Tag = 'div', delay = 0 }: {
   );
 }
 
+/* --- Letter voor letter "geschreven" (logica uit "Een sprookje van 10 jaar")
+   Woorden blijven bij elkaar (inline-block), elke letter fade-in met een
+   oplopende delay. Pas als het blok in beeld scrolt start het schrijven —
+   layout blijft stabiel, letters bestaan al (alleen de opacity verandert). */
+function InkType({ text, className = '', as: Tag = 'p', speed = 30, delay = 0 }: {
+  text: string; className?: string; as?: 'p' | 'div' | 'span'; speed?: number; delay?: number;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: '-80px' });
+  const words = text.split(' ');
+  const baseMs = delay * 1000;
+  let letterIndex = 0;
+  return (
+    <Tag ref={ref as never} className={cn('ink-type', className, inView && 'ink-type-run')}>
+      {words.map((word, wi) => (
+        <Fragment key={wi}>
+          <span className="ink-word">
+            {Array.from(word).map((ch, ci) => {
+              const d = baseMs + letterIndex++ * speed;
+              return (
+                <span key={ci} className="ink-letter" style={{ animationDelay: `${d}ms` }}>
+                  {ch}
+                </span>
+              );
+            })}
+          </span>
+          {wi < words.length - 1 ? ' ' : null}
+        </Fragment>
+      ))}
+    </Tag>
+  );
+}
+
 export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void }) {
   const [signupOpen, setSignupOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -45,16 +77,16 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
   const prologY = useTransform(scrollYProgress, [0, 1], ['0%', '38%']);
 
   const masters = [
-    { name: 'Robin Hack', dan: '三', danLabel: '3e Dan', role: 'Hoofdtrainer' },
-    { name: 'Pascal Hack', dan: '三', danLabel: '3e Dan', role: 'Co-trainer' },
-    { name: 'Robert Dingenouts', dan: '三', danLabel: '3e Dan', role: 'Trainer & penningmeester' },
-    { name: 'Wendy Jansen', dan: '一', danLabel: '1e Dan', role: 'Trainer' },
+    { name: 'Robin Hack', dan: '三', danLabel: '3e Dan', role: 'Trainer & penningmeester' },
+    { name: 'Pascal Hack', dan: '三', danLabel: '3e Dan', role: 'Trainer & voorzitter' },
+    { name: 'Robert Dingenouts', dan: '三', danLabel: '3e Dan', role: 'Trainer & secretaris' },
+    { name: 'Wendy Jansen', dan: '一', danLabel: '1e Dan', role: 'Trainer & EHBO\u2019er' },
   ];
 
   const principles = [
     {
       kanji: '力',
-      name: 'Seiryoku Zen\'yō',
+      name: 'Seiryoku Zen\u2019yō',
       sub: 'Macht — zuinig besteed',
       body: 'Kracht is een middelpunt, geen doel. Judo leert je je kracht zo in te zetten dat er het minste nodig is voor het beste resultaat.',
     },
@@ -100,15 +132,12 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
               <span className={SHU}>bloeit judo hier</span>
             </h1>
           </InkReveal>
-          <InkReveal delay={0.4} as="p" className={cn(
+          <InkType delay={0.4} text={
+            'Michigami groeide uit tot een van de grootste judoclubs van de regio — een bloeiende club die altijd doorging, door de gouden jaren en de stillere tijden. Meer dan dertig jaar later bloeit het judo hier nog steeds. Dit is het verhaal van een pad dat hier nooit gestopt heeft.'
+          } as="p" className={cn(
             'mx-auto mt-7 max-w-xl font-serif text-lg leading-relaxed sm:text-xl',
             INK_SOFT,
-          )}>
-            Bij het afscheid van de CJJF was Michigami de grootste club van de
-            regio — en nu, meer dan dertig jaar later, bloeit het judo hier
-            nog steeds. Dit is het verhaal van een pad dat hier nooit
-            gestopt heeft.
-          </InkReveal>
+          )} />
 
           <div className={cn('mx-auto mt-10 grid max-w-lg grid-cols-3 divide-x', 'divide-[var(--sumi-500)]/25')}>
             {[
@@ -160,30 +189,31 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
         </div>
       </div>
 
-      {/* ===================== EERBETUIG AAN OPRICHTER ===================== */}
+      {/* ===================== TWEEN OERBETUIGINGEN ======================== */}
       <div className="relative mt-24">
-        <div className="mx-auto max-w-3xl px-5 sm:px-8">
-          <div className="ink-card ink-write ink-write-run relative overflow-hidden rounded-xl p-7 sm:p-10">
-            <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
-              <div className="relative shrink-0">
-                <div className="flex h-24 w-24 items-center justify-center rounded-lg border border-[var(--shu-600)]/40 bg-[var(--shu-600)]/5">
-                  <span className={cn('font-jp text-5xl', SHU)}>八</span>
-                </div>
-                <span className="animate-hankoStamp absolute -right-2 -bottom-2 flex h-9 w-9 rotate-[-8deg] items-center justify-center rounded-sm bg-[var(--shu-600)] font-jp text-xs text-[var(--washi-50)] shadow-lg">
-                  段
-                </span>
-              </div>
-              <div className="min-w-0">
-                <div className={cn('text-xs uppercase tracking-[0.3em]', KIN)}>Eerbewijs aan de oprichter</div>
-                <h3 className={cn('mt-2 font-display text-3xl', INK)}>Koos van Wezel</h3>
-                <div className={cn('mt-1 font-display text-lg', SHU)}>八段 · 8e Dan</div>
-                <p className={cn('mt-4 font-serif leading-relaxed', INK_SOFT)}>
-                  «Zelfs de zwakste kan vallen — maar alleen een ware judoka
-                  kan weer opstaan.» Hij bracht de zachte weg van Haku Michigami
-                  naar het westen, en liet er een club na die zijn naam draagt.
-                </p>
-              </div>
-            </div>
+        <div className="mx-auto max-w-4xl px-5 sm:px-8">
+          <InkReveal className="text-center">
+            <h2 className={cn('ink-title font-display text-3xl sm:text-4xl', INK)}>Twee eerbetuigingen</h2>
+            <p className={cn('mx-auto mt-2 max-w-lg text-sm', INK_SOFT)}>
+              De meester die de zachte weg naar het westen bracht — en de man die hier zijn wortels sloeg.
+            </p>
+          </InkReveal>
+          <div className="mt-10 grid gap-6 lg:grid-cols-2">
+            <TributeCard
+              kanji="道"
+              label="Eerbewijs aan de meester"
+              title="Haku Michigami"
+              sub="1912–2002 · de zachte weg naar het westen"
+              body="Hij bracht judo naar het westen: dertien jaar in Nederland, technisch adviseur van de bond en vormgever van grootse judoka’s — waaronder Anton Geesink. Zijn traditie is de ziel die hier in Steenbergen haar naam draagt."
+            />
+            <TributeCard
+              kanji="八"
+              stamp="段"
+              label="Eerbewijs aan de oprichter"
+              title="Koos van Wezel"
+              sub="八段 · 8e Dan"
+              body="Meester in grondwerk, internationaal gerenommeerd scheidsrechter en hoofdscheidsrechter bij de CJJF. Hij groeide veel judoka’s groot en nam ze mee naar legio nationale en internationale toernooien — streng als het nodig was, maar vooral met de zachte hand."
+            />
           </div>
         </div>
       </div>
@@ -194,7 +224,7 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
           <InkReveal className="text-center">
             <h2 className={cn('ink-title font-display text-3xl sm:text-4xl', INK)}>De Meesters</h2>
             <p className={cn('mx-auto mt-2 max-w-lg text-sm', INK_SOFT)}>
-              De mannen en vrouw die het pad nu verder dragen — samen met de geest van Koos.
+              De mannen en de vrouw die het pad nu verder dragen — samen met de geest van Koos.
             </p>
           </InkReveal>
           <div className="mt-10 grid gap-4 sm:grid-cols-2">
@@ -211,11 +241,8 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
           <InkReveal className="text-center">
             <WatermarkKanji char="道" className="-inset-x-16 -top-10" size={260} tone="light" />
             <h2 className={cn('ink-title relative font-display text-3xl sm:text-4xl', INK)}>De Zachte Weg</h2>
-            <p className={cn('relative mx-auto mt-3 max-w-xl font-serif leading-relaxed', INK_SOFT)}>
-              <span className="font-jp text-lg text-[var(--shu-600)]">柔</span> (ju) — de zachte kracht ·
-              <span className="font-jp text-lg text-[var(--shu-600)]"> 道</span> (dō) — de weg.
-              Judo is meer dan vallen en opstaan: het is een filosofie van bescheidenheid,
-              oprecht contact en het beste uit jezelf én je tegenstander halen.
+            <p className="relative mx-auto mt-3 max-w-xl font-serif leading-relaxed">
+              <InkType text="柔 (ju) — de zachte kracht · 道 (dō) — de weg. Judo is meer dan vallen en opstaan: het is een filosofie van bescheidenheid, oprecht contact en het beste uit jezelf én je tegenstander halen." className={cn('font-serif text-base leading-relaxed', INK_SOFT)} />
             </p>
           </InkReveal>
           <div className="mt-10 grid gap-4 sm:grid-cols-2">
@@ -252,10 +279,10 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
               Het verhaal gaat <span className={SHU}>verder</span>
             </h2>
           </InkReveal>
-          <InkReveal delay={0.2} as="p" className={cn('mx-auto mt-6 max-w-lg font-serif text-lg leading-relaxed', INK_SOFT)}>
-            De volgende hoofdstukken worden hier geschreven, op de matten in Steenbergen
-            en Oud-Vossemeer. Wil je erbij horen?
-          </InkReveal>
+          <InkType text="De volgende hoofdstukken worden hier geschreven, op de matten in Steenbergen en Oud-Vossemeer. Wil je erbij horen?" as="p" className={cn(
+            'mx-auto mt-6 max-w-lg font-serif text-lg leading-relaxed',
+            INK_SOFT,
+          )} />
           <InkReveal delay={0.35} className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Button onClick={() => onNavigate?.('leden')}
               className="bg-[var(--shu-600)] px-7 py-3 text-[var(--washi-50)] hover:bg-[var(--shu-700)]">
@@ -327,11 +354,40 @@ function Chapter({ index, data }: { index: number; data: (typeof storyChapters)[
           <h3 className={cn('ink-title mt-1 font-display text-2xl sm:text-3xl', INK)}>{data.title}</h3>
           <div className="mt-3 space-y-3">
             {data.paragraphs.map((p, i) => (
-              <InkReveal key={i} delay={0.1 + i * 0.14} as="p" className={cn('font-serif leading-relaxed', INK_SOFT)}>
-                {p}
-              </InkReveal>
+              <InkType key={i} text={p} as="p" className={cn('font-serif leading-relaxed', INK_SOFT)} />
             ))}
           </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* --- Eerbewijz-kaart ------------------------------------------------------ */
+function TributeCard({ kanji, stamp, label, title, sub, body }: {
+  kanji: string; stamp?: string; label: string; title: string; sub: string; body: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: '-100px' });
+  return (
+    <div ref={ref}
+      className={cn('ink-card ink-write relative overflow-hidden rounded-xl p-7 sm:p-8', inView && 'ink-write-run')}>
+      <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
+        <div className="relative shrink-0">
+          <div className="flex h-20 w-20 items-center justify-center rounded-lg border border-[var(--shu-600)]/40 bg-[var(--shu-600)]/5">
+            <span className={cn('font-jp text-4xl', SHU)}>{kanji}</span>
+          </div>
+          {stamp && (
+            <span className="animate-hankoStamp absolute -right-2 -bottom-2 flex h-9 w-9 rotate-[-8deg] items-center justify-center rounded-sm bg-[var(--shu-600)] font-jp text-xs text-[var(--washi-50)] shadow-lg">
+              {stamp}
+            </span>
+          )}
+        </div>
+        <div className="min-w-0">
+          <div className={cn('text-xs uppercase tracking-[0.3em]', KIN)}>{label}</div>
+          <h3 className={cn('mt-2 font-display text-2xl', INK)}>{title}</h3>
+          <div className={cn('mt-1 font-display text-base', SHU)}>{sub}</div>
+          <InkType text={body} as="p" className={cn('mt-4 font-serif leading-relaxed', INK_SOFT)} />
         </div>
       </div>
     </div>

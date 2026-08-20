@@ -825,7 +825,34 @@
     mask-size: 260% 100%;
     -webkit-mask-repeat: no-repeat;
     mask-repeat: no-repeat;
-    animation: inkWrite 4.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    /* mask startpositie = "volledig onzichtbaar": met een animationDelay zou het
+       blok anders EERST zichtbaar worden (default mask 0%), daarna verdwijnen
+       (animatie springt naar 135%) en pas daarna tevoorschijn komen. De
+       expliciete startpositie + fill-mode 'both' houden het onzichtbaar tot de
+       kwastveeg daadwerkelijk begint. */
+    -webkit-mask-position: 135% 0;
+    mask-position: 135% 0;
+    animation: inkWrite 4.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  }
+
+  /* Letter voor letter "geschreven" — logica uit "Een sprookje van 10 jaar":
+     woorden blijven bij elkaar (inline-block wrapper), elke letter fade-in met
+     een oplopende animationDelay. Container krijgt .ink-type-run zodra het
+     blok in beeld scrolt; layout is stabiel omdat de letters altijd bestaan
+     (alleen de opacity verandert). */
+  @keyframes letterInk {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  .ink-type .ink-letter {
+    opacity: 0;
+    display: inline-block;
+  }
+  .ink-type-run .ink-letter {
+    animation: letterInk 0.5s ease-out forwards;
+  }
+  .ink-type .ink-word {
+    display: inline-block;
   }
 
   /* Grote inkt-titels bloeien uit de vlek */
@@ -919,6 +946,7 @@
       opacity: 1;
     }
     .ink-write { opacity: 1; }
+    .ink-type .ink-letter { animation: none !important; opacity: 1; }
   }
 
   /* Focus ring — gold */

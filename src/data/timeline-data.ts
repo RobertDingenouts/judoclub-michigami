@@ -61,7 +61,7 @@ export const timelineEvents: TimelineEvent[] = [
   {
     year: "Jaren '90",
     title: 'Gouden jaren Michigami',
-    description: 'De gouden tijd van de club: donderdag twee traininggroepen, vrijdag drie groepen. Les in Nieuw-Vossemeer en Scherpenisse. Elk jaar toernooien in Londen en Parijs. Pony Park Slagharen met les van Anton Geesink zelf. Gezamenlijke zaterdagochtend-training met Bergen op Zoom.',
+    description: 'De gouden tijd van de club: donderdag twee trainingsgroepen, vrijdag drie groepen. Les in Nieuw-Vossemeer en Scherpenisse. Elk jaar toernooien in Londen en Parijs. Pony Park Slagharen met les van Anton Geesink zelf. Gezamenlijke zaterdagochtend-training met Bergen op Zoom.',
     icon: 'star',
   },
   {
