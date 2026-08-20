@@ -58,7 +58,7 @@ export function JsonLd() {
     sameAs: [
       "https://www.facebook.com/judoclubmichigami",
       "https://www.instagram.com/judoclub_michigami/",
-      "https://www.youtube.com/@judoclubmichigami",
+      "https://www.youtube.com/@JudoMichigami",
     ],
     contactPoint: {
       "@type": "ContactPoint",

@@ -83,7 +83,7 @@ export const videoData: VideoItem[] = [
 ];
 
 export const youtubeChannel = {
-  url: "https://www.youtube.com/@judoclubmichigami",
+  url: "https://www.youtube.com/@JudoMichigami",
   oldUrl: "https://www.youtube.com/user/JudoMichigami",
   title: "Judoclub Michigami YouTube-kanaal",
   subscribeText: "Gratis abonneren op ons YouTube-kanaal",
