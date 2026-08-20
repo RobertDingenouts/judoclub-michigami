@@ -536,5 +536,5 @@ export const newsArchive: NewsYear[] = [
 export const socialLinks = {
   facebook: "https://www.facebook.com/judoclubmichigami",
   instagram: "https://www.instagram.com/judoclub_michigami/",
-  youtube: "https://www.youtube.com/@judoclubmichigami",
+  youtube: "https://www.youtube.com/@JudoMichigami",
 };

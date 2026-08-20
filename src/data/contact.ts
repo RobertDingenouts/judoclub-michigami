@@ -4,7 +4,7 @@ export const contactInfo = {
   email: "judoclub_michigami@hotmail.com",
   facebook: "https://www.facebook.com/judoclubmichigami",
   instagram: "https://www.instagram.com/judoclub_michigami/",
-  youtube: "https://www.youtube.com/@judoclubmichigami",
+  youtube: "https://www.youtube.com/@JudoMichigami",
   jotformUrl: "https://form.jotform.com/252603880994366",
   location: {
     name: "Sportcentrum De Knotwilg",

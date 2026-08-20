@@ -8,7 +8,7 @@ export const clubInfo = {
   foundedLocation: "Steenbergen",
   email: "judoclub_michigami@hotmail.com",
   facebook: "https://www.facebook.com/judoclubmichigami",
-  youtube: "https://www.youtube.com/@judoclubmichigami",
+  youtube: "https://www.youtube.com/@JudoMichigami",
   locations: [
     {
       name: "Sportcentrum De Knotwilg",
