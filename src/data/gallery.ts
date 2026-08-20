@@ -1,6 +1,15 @@
 export interface GalleryImage {
   src: string;
   caption: string;
+  /** Hoogere-resolutie versie (bijv. _orig.jpg) — wordt gebruikt in de lightbox. */
+  fullSrc?: string;
+}
+
+/** Afgeleide hoogere-resolutie src: x.jpg → x_orig.jpg (als die bestaat). */
+export function fullResSrc(src: string): string {
+  const m = src.match(/^(.*?)(\.\w+)$/);
+  if (!m) return src;
+  return `${m[1]}_orig${m[2]}`;
 }
 
 export interface GalleryAlbum {

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { galleryData, type GalleryImage } from '@/data/gallery';
+import { galleryData, type GalleryImage, fullResSrc } from '@/data/gallery';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
 function ImageGrid({ images, onImageClick }: { images: GalleryImage[]; onImageClick: (images: GalleryImage[], index: number) => void }) {
@@ -42,7 +42,17 @@ function Lightbox({
   onClose: () => void;
 }) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  const [errorSrc, setErrorSrc] = useState<string | null>(null);
   const current = images[currentIndex];
+
+  // Hoogere-resolutie versie voor de lightbox (x.jpg → x_orig.jpg).
+  // Fallback op thumb als de _orig per ongeluk ontbreekt.
+  const lightboxSrc = errorSrc ?? (current.fullSrc ?? fullResSrc(current.src));
+
+  const changeIndex = (delta: number) => {
+    setCurrentIndex((i) => (i + delta + images.length) % images.length);
+    setErrorSrc(null);
+  };
 
   return (
     <div
@@ -60,7 +70,7 @@ function Lightbox({
       </button>
 
       <button
-        onClick={(e) => { e.stopPropagation(); setCurrentIndex((currentIndex - 1 + images.length) % images.length); }}
+        onClick={(e) => { e.stopPropagation(); changeIndex(-1); }}
         className="absolute left-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white p-2"
         aria-label="Vorige"
       >
@@ -70,7 +80,7 @@ function Lightbox({
       </button>
 
       <button
-        onClick={(e) => { e.stopPropagation(); setCurrentIndex((currentIndex + 1) % images.length); }}
+        onClick={(e) => { e.stopPropagation(); changeIndex(1); }}
         className="absolute right-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white p-2"
         aria-label="Volgende"
       >
@@ -82,11 +92,15 @@ function Lightbox({
       <div className="max-w-4xl max-h-[80vh] flex flex-col items-center min-h-0" onClick={(e) => e.stopPropagation()}>
         <div className="relative w-full max-w-3xl flex-1 min-h-0 max-h-[70vh] flex items-center justify-center">
           <Image
-            src={current.src}
+            key={lightboxSrc}
+            src={lightboxSrc}
             alt={current.caption}
             fill
             sizes="(max-width: 1280px) 100vw, 1280px"
             className="object-contain rounded-lg shadow-2xl"
+            onError={() => {
+              if (errorSrc !== current.src) setErrorSrc(current.src);
+            }}
           />
         </div>
         <p className="text-white/80 mt-3 text-sm text-center">{current.caption}</p>
