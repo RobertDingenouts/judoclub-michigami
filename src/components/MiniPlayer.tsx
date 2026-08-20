@@ -146,7 +146,13 @@ export function MiniPlayer({ onOpenMusic }: { onOpenMusic: () => void }) {
   // touch-action: none op de handle zorgt ervoor dat de browser de touch
   // NIET overneemt voor scrollen/pull-to-refresh — wij krijgen alle moves.
   const onDragDown = (e: React.PointerEvent) => {
-    if ((e.target as HTMLElement).closest('button')) return;
+    // Dot: het HELE bolletje is vattebaar — ook door de play-knop heen. De
+    // play-knop stopt zelf zijn pointerdown (stopPropagation) zodat een tap
+    // daar clean naar de knop gaat (play/pauze); de rest van het bolletje
+    // start een drag. Tap-vs-drag onderscheidt de moved-threshold in
+    // onDragMove. Bar/full: knoppen breken de drag af (afgezonderde functies,
+    // en de kop is daar al breed genoeg om te vatten).
+    if (mode !== 'dot' && (e.target as HTMLElement).closest('button')) return;
     if (e.pointerType === 'mouse' && e.button !== 0) return;
     const el = wrapRef.current;
     if (!el) return;
@@ -235,6 +241,7 @@ export function MiniPlayer({ onOpenMusic }: { onOpenMusic: () => void }) {
             className="absolute inset-0 w-full h-full object-cover pointer-events-none"
           />
           <button
+            onPointerDown={(e) => e.stopPropagation()}
             onClick={(e) => { e.stopPropagation(); mp.togglePlay(); }}
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-black/55 backdrop-blur-sm text-white flex items-center justify-center"
             aria-label={mp.playing ? 'Pauzeer' : 'Speel af'}

@@ -107,7 +107,7 @@ export function TimelineSection({ onNavigate }: { onNavigate?: (s: Section) => v
   const headerInView = useInView(headerRef, { once: true, margin: '-100px' });
 
   return (
-    <div className="ink-paper zen-fullbleed zen-scroll relative min-h-screen overflow-hidden">
+    <div className="ink-paper-dark zen-fullbleed zen-scroll relative min-h-screen overflow-hidden">
       <InkBleeds className="opacity-70" />
       <SakuraPetals count={14} className="opacity-90" />
 

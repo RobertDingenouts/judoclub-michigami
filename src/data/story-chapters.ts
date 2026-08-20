@@ -29,8 +29,8 @@ export const storyChapters: StoryChapter[] = [
     title: 'De gouden jaren',
     era: 'jaren ’90 — begin 2000',
     paragraphs: [
-      'De jaren negentig en het begin van de jaren tweeduizend waren de bloeiperiode. De dojo was een bruisende plek waar judo als een tweede taal werd gesproken: twee traininggroepen op donderdag, drie op vrijdag. Koos gaf ook les in Nieuw-Vossemeer en Scherpenisse, en de club kreeg een breed fundament in de hele regio.',
-      'De wedstrijdgroep reisde elk jaar naar grote toernooien in Londen en Parijs, en Koos zelf was gerespecteerd scheidsrechter op prestigieuze evenementen — het CSIT, de Dalfsen Dutch Open Championships, het Millennium Toernooi. Zijn toewijding werd bekroond met de zeldzame 8e dan. Elk jaar was de uitstap naar Pony Park Slagharen een hoogtepunt, waar judoka’s sparren mochten met topfiguren zoals Anton Geesink zelf. De CJJF beleefde in deze tijd haar hoogtepunt — de regio stond bol van judo.',
+      'De jaren negentig en het begin van de jaren tweeduizend waren de bloeiperiode. De dojo was een bruisende plek waar judo als een tweede taal werd gesproken: twee traininggroepen op donderdag, drie op vrijdag. Koos gaf ook les in Nieuw-Vossemeer en Scherpenisse, en de club kreeg een breed fundament in de hele regio. Toen de CJJF haar hoogtepunt beleefde, was Michigami de grootste club van de regio.',
+      'De wedstrijdgroep reisde elk jaar naar grote toernooien in Londen en Parijs, en Koos zelf was gerespecteerd scheidsrechter op prestigieuze evenementen — het CSIT, de Dalfsen Dutch Open Championships, het Millennium Toernooi. Zijn toewijding werd bekroond met de zeldzame 8e dan. Elk jaar was de uitstap naar Pony Park Slagharen een hoogtepunt, waar judoka’s sparren mochten met topfiguren zoals Anton Geesink zelf. In die tijd stond de regio bol van judo — en Michigami was het hart ervan.',
     ],
   },
   {
