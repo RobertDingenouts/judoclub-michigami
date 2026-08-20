@@ -63,20 +63,20 @@ function TimelineItem({ event, index }: { event: TimelineEvent; index: number })
           >
             {/* Jaar — groot, in mincho-stijl */}
             <div className="flex items-baseline gap-3 mb-3">
-              <span className={`font-heading leading-none ${event.isMilestone ? 'text-3xl sm:text-4xl text-[var(--shu-600)]' : 'text-2xl sm:text-3xl text-[var(--washi-100)]'}`}>
+              <span className={`font-heading leading-none ${event.isMilestone ? 'text-3xl sm:text-4xl text-[var(--shu-700)]' : 'text-2xl sm:text-3xl text-[var(--sumi-900)]'}`}>
                 {event.year}
               </span>
               {event.isMilestone && (
-                <span className="text-[10px] uppercase tracking-[0.3em] text-[var(--kin-600)]">
+                <span className="text-[10px] uppercase tracking-[0.3em] text-[var(--kin-700)]">
                   mijlpaal
                 </span>
               )}
             </div>
 
-            <h3 className="font-heading text-base sm:text-lg text-[var(--washi-100)] leading-snug">
+            <h3 className="font-heading text-base sm:text-lg text-[var(--sumi-900)] leading-snug">
               {event.title}
             </h3>
-            <p className="text-sm text-[var(--washi-200)] leading-[1.75] mt-2">{event.description}</p>
+            <p className="text-sm text-[var(--sumi-700)] leading-[1.75] mt-2">{event.description}</p>
 
             {/* Rode onderstreep bij milestones */}
             {event.isMilestone && (
@@ -107,8 +107,8 @@ export function TimelineSection({ onNavigate }: { onNavigate?: (s: Section) => v
   const headerInView = useInView(headerRef, { once: true, margin: '-100px' });
 
   return (
-    <div className="ink-paper-dark zen-fullbleed zen-scroll relative min-h-screen overflow-hidden">
-      <InkBleeds className="opacity-70" />
+    <div className="ink-paper zen-fullbleed zen-scroll relative min-h-screen overflow-hidden">
+      <InkBleeds tone="light" className="opacity-60" />
       <SakuraPetals count={14} className="opacity-90" />
 
       <div className="relative z-10 max-w-4xl mx-auto px-5 sm:px-10 py-10 sm:py-16">
@@ -120,15 +120,15 @@ export function TimelineSection({ onNavigate }: { onNavigate?: (s: Section) => v
           transition={{ duration: 0.9, ease: EASE }}
           className="relative text-center"
         >
-          <SumiLandscape className="opacity-75 h-[280px] top-[-80px]" />
-          <p className="relative text-[10px] sm:text-xs uppercase tracking-[0.5em] text-[var(--kin-600)]">
+          <SumiLandscape tone="light" className="opacity-80 h-[280px] top-[-80px]" />
+          <p className="relative text-[10px] sm:text-xs uppercase tracking-[0.5em] text-[var(--kin-700)]">
             1882 — heden
           </p>
-          <h1 className="relative ink-title font-heading text-3xl sm:text-5xl text-[var(--washi-100)] mt-3">
-            De tijdlijn <span className="text-[var(--shu-600)]">van het pad</span>
+          <h1 className="relative ink-title font-heading text-3xl sm:text-5xl text-[var(--sumi-900)] mt-3">
+            De tijdlijn <span className="text-[var(--shu-700)]">van het pad</span>
           </h1>
           <div className="relative h-px w-40 mx-auto mt-5 bg-gradient-to-r from-transparent via-[var(--kin-500)]/70 to-transparent brush-stroke" />
-          <p className="relative max-w-xl mx-auto mt-5 text-sm sm:text-[15px] leading-[1.8] text-[var(--washi-200)]">
+          <p className="relative max-w-xl mx-auto mt-5 text-sm sm:text-[15px] leading-[1.8] text-[var(--sumi-700)]">
             Van de Kodokan in Tokio tot de matten in Steenbergen — elke stap op dit pad
             stond niet alleen.
           </p>
@@ -137,7 +137,7 @@ export function TimelineSection({ onNavigate }: { onNavigate?: (s: Section) => v
         {/* Tijdlijn */}
         <div ref={spineRef} className="relative mt-12 sm:mt-16">
           {/* Basisruglijn */}
-          <div className="absolute left-4 md:left-1/2 md:-translate-x-px top-0 bottom-0 w-px bg-[var(--washi-200)]/25" />
+          <div className="absolute left-4 md:left-1/2 md:-translate-x-px top-0 bottom-0 w-px bg-[var(--sumi-800)]/25" />
           {/* Rood-gouden vulling die meeloopt */}
           <motion.div
             style={{ height: spineHeight }}
@@ -160,8 +160,8 @@ export function TimelineSection({ onNavigate }: { onNavigate?: (s: Section) => v
           <div className="ink-card relative overflow-hidden rounded-xl px-5 py-8 sm:px-10">
             <SakuraPetals count={6} />
             <p className="relative font-jp text-4xl text-[var(--shu-600)] kanji-float select-none">道</p>
-            <p className="relative max-w-lg mx-auto mt-4 text-sm sm:text-[15px] leading-[1.8] text-[var(--washi-200)]">
-              <span className="font-semibold text-[var(--washi-100)]">Judoclub Michigami</span> —
+            <p className="relative max-w-lg mx-auto mt-4 text-sm sm:text-[15px] leading-[1.8] text-[var(--sumi-700)]">
+              <span className="font-semibold text-[var(--sumi-900)]">Judoclub Michigami</span> —
               meer dan 30 jaar de zachte weg, in Steenbergen en Oud-Vossemeer.
               Respect, discipline en passie.
             </p>
@@ -169,7 +169,7 @@ export function TimelineSection({ onNavigate }: { onNavigate?: (s: Section) => v
               <Button
                 onClick={() => onNavigate('info')}
                 variant="outline"
-                className="relative mt-6 border-[var(--washi-200)]/40 text-[var(--washi-100)] hover:bg-[var(--washi-50)]/10 gap-2"
+                className="relative mt-6 border-[var(--sumi-700)]/40 text-[var(--sumi-800)] hover:bg-[var(--sumi-900)]/5 gap-2"
               >
                 <ArrowLeft className="w-4 h-4" /> Terug naar Over Ons
               </Button>
