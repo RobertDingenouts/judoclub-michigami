@@ -613,6 +613,80 @@
     animation: hankoStamp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
   }
 
+  /* Gold shimmer sweep — for gilded text & lines */
+  @keyframes goldSweep {
+    0%   { background-position: -180% 0; }
+    100% { background-position: 180% 0; }
+  }
+  .text-gilded {
+    background: linear-gradient(100deg,
+      var(--kin-400) 0%, var(--kin-300) 18%, #f4e2a6 32%,
+      var(--kin-400) 48%, var(--kin-500) 66%, var(--kin-400) 100%);
+    background-size: 220% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: goldSweep 7s linear infinite;
+  }
+  .line-gilded {
+    background: linear-gradient(100deg,
+      transparent 0%, var(--kin-500) 22%, #f4e2a6 50%, var(--kin-500) 78%, transparent 100%);
+    background-size: 220% 100%;
+    animation: goldSweep 6s linear infinite;
+  }
+
+  /* Ink reveal — a section rises out of darkness like ink blooming in water */
+  @keyframes inkRise {
+    0%   { opacity: 0; transform: translateY(42px) scale(0.985); filter: blur(10px); }
+    60%  { filter: blur(0); }
+    100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+  }
+  .animate-inkRise {
+    animation: inkRise 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  /* Slow drifting mist — two soft radial layers moving opposite */
+  @keyframes mistDrift {
+    0%   { transform: translate3d(-4%, 2%, 0) scale(1.05); }
+    50%  { transform: translate3d(3%, -2%, 0) scale(1.12); }
+    100% { transform: translate3d(-4%, 2%, 0) scale(1.05); }
+  }
+  .animate-mist {
+    animation: mistDrift 26s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  /* Candle flicker — subtle warm light pulse (founder's memory) */
+  @keyframes flicker {
+    0%, 100% { opacity: 0.55; }
+    42%      { opacity: 0.78; }
+    58%      { opacity: 0.66; }
+    72%      { opacity: 0.9; }
+  }
+  .animate-flicker {
+    animation: flicker 5s ease-in-out infinite;
+  }
+
+  /* Timeline spine — grows downward as you scroll (JS-driven height) */
+  .timeline-spine-fill {
+    transition: height 0.25s linear;
+  }
+
+  /* Quiet grain — paper texture overlay for dark sections */
+  .zen-grain {
+    position: relative;
+    isolation: isolate;
+  }
+  .zen-grain::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.5;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  }
+
   /* Respect reduced motion */
   @media (prefers-reduced-motion: reduce) {
     .animate-heroZoom,
@@ -620,7 +694,12 @@
     .enso-draw,
     .kanji-float,
     .animate-lineGrow,
-    .animate-hankoStamp {
+    .animate-hankoStamp,
+    .text-gilded,
+    .line-gilded,
+    .animate-inkRise,
+    .animate-mist,
+    .animate-flicker {
       animation: none !important;
     }
   }

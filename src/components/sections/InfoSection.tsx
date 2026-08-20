@@ -1,314 +1,622 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Calendar, Users, Award, ChevronLeft, ChevronRight, Swords, MapPin, Star, Trophy } from 'lucide-react';
+import { ChevronLeft, ChevronRight, MapPin, ArrowRight } from 'lucide-react';
 import { type Section } from '@/components/nav-config';
 import { clubInfo } from '@/data/club-info';
-import { timelineEvents, type TimelineEvent } from '@/data/timeline-data';
 import { openProeflesForm } from '@/lib/form-events';
 import { SignupConfirmationModal } from '@/components/SignupConfirmationModal';
 
-export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void }) {
-  const [signupOpen, setSignupOpen] = useState(false);
-  const [tabValue, setTabValue] = useState('history');
-  const tabOrder = ['history', 'leiding', 'judo', 'timeline'];
-  
-  // Timeline item component (inline - same as TimelineSection but without outer wrapper)
-  const iconMap: Record<string, React.ReactNode> = {
-    judo: <Swords className="w-5 h-5" />,
-    club: <Users className="w-5 h-5" />,
-    person: <Star className="w-5 h-5" />,
-    award: <Award className="w-5 h-5" />,
-    location: <MapPin className="w-5 h-5" />,
-    star: <Trophy className="w-5 h-5" />,
+/* ============================================================================
+   OVER ONS — "De Zachte Weg"
+   Een mysterieuze, verhalende reis door de geschiedenis van Judoclub Michigami.
+   After-dark dojo-esthetiek: sumi-duister, washi-licht, shu-rood en kin-goud.
+   ==========================================================================*/
+
+const EASE = [0.22, 1, 0.36, 1] as const;
+
+/* --------------------------------- helpers -------------------------------- */
+
+/** Verhaal-hoofdstuk voor de geschiedenis. */
+interface Chapter {
+  kanji: string;
+  reading: string;
+  number: string;
+  title: string;
+  paragraphs: string[];
+}
+
+/** De rijke geschiedenis-tekst van club-info, opgesplitst in hoofdstukken. */
+function buildChapters(): Chapter[] {
+  const raw = clubInfo.history;
+  const blocks = raw.split(/\n\n/);
+  const chapters: Chapter[] = [];
+
+  const kanjiSet: [string, string][] = [
+    ['根', 'ne — wortel'],
+    ['光', 'kō — licht'],
+    ['継', 'kei — overerving'],
+    ['合', 'gō — vereniging'],
+    ['今', 'ima — nu'],
+  ];
+
+  let current: Chapter | null = null;
+  const numberFor = (i: number) => {
+    const nums = ['一', '二', '三', '四', '五'];
+    return nums[i] ?? String(i + 1);
   };
 
-  const navigateTab = (direction: 'prev' | 'next') => {
-    const idx = tabOrder.indexOf(tabValue);
-    const newIdx = direction === 'next' 
-      ? (idx + 1) % tabOrder.length 
-      : (idx - 1 + tabOrder.length) % tabOrder.length;
-    setTabValue(tabOrder[newIdx]);
-  };
+  for (const block of blocks) {
+    const header = block.match(/^##\s+(.+)$/);
+    if (header) {
+      if (current) chapters.push(current);
+      const [kanji, reading] = kanjiSet[chapters.length] ?? ['道', 'dō — weg'];
+      current = {
+        kanji,
+        reading,
+        number: numberFor(chapters.length),
+        title: header[1].trim(),
+        paragraphs: [],
+      };
+    } else if (current) {
+      current.paragraphs.push(block.trim());
+    }
+  }
+  if (current) chapters.push(current);
+
+  // De intro-paragraaf (voor het eerste ##) hangt los — hang hem aan een
+  // opening-chapter zodat het verhaal soepel begint.
+  const intro = blocks[0];
+  const firstHeaderIdx = blocks.findIndex((b) => b.startsWith('##'));
+  if (firstHeaderIdx === 1 && intro.trim()) {
+    chapters[0].paragraphs.unshift(intro.trim());
+  }
+  return chapters;
+}
+
+const CHAPTERS = buildChapters();
+
+/* ------------------------------- enso teken ------------------------------- */
+
+function Enso({ size = 64, className = '' }: { size?: number; className?: string }) {
   return (
-    <div className="space-y-6">
-      {/* Hero */}
-      <Card className="overflow-hidden border-0 shadow-sm sm:shadow-lg">
-        <div className="relative bg-gradient-to-br from-[#a90000] via-[#8c0000] to-[#7a0000] text-white p-4 sm:p-6 md:p-10 overflow-hidden">
-          <div className="relative z-10">
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{clubInfo.fullName}</h1>
-            <p className="text-white/80 mt-2 text-sm sm:text-base">{clubInfo.tagline}</p>
+    <svg width={size} height={size} viewBox="0 0 100 100" className={className} aria-hidden>
+      <circle
+        cx="50" cy="50" r="42"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="6"
+        strokeLinecap="round"
+        className="enso-draw"
+        transform="rotate(-90 50 50)"
+      />
+    </svg>
+  );
+}
+
+/* ---------------------------- mist-achtergrond ---------------------------- */
+
+function Mist() {
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden>
+      <div
+        className="animate-mist absolute -top-1/3 -left-1/4 w-[70%] h-[90%] rounded-full"
+        style={{
+          background: 'radial-gradient(ellipse at center, rgba(176,141,62,0.10), transparent 65%)',
+        }}
+      />
+      <div
+        className="animate-mist absolute -bottom-1/3 -right-1/4 w-[70%] h-[90%] rounded-full"
+        style={{
+          background: 'radial-gradient(ellipse at center, rgba(169,0,0,0.10), transparent 65%)',
+          animationDelay: '-13s',
+          animationDuration: '34s',
+        }}
+      />
+    </div>
+  );
+}
+
+/* --------------------------- scroll-reveal wrapper ------------------------- */
+
+function Reveal({
+  children,
+  delay = 0,
+  className = '',
+  as: Tag = 'div',
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+  as?: 'div' | 'section' | 'article' | 'p';
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: '-80px' });
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 36, filter: 'blur(8px)' }}
+      animate={inView ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
+      transition={{ duration: 0.9, delay, ease: EASE }}
+      className={className}
+    >
+      <Tag>{children}</Tag>
+    </motion.div>
+  );
+}
+
+/* ------------------------------ hoofdstuk blok ---------------------------- */
+
+function ChapterBlock({ chapter, index }: { chapter: Chapter; index: number }) {
+  return (
+    <Reveal delay={0.05}>
+      <article className="relative pl-8 sm:pl-14">
+        {/* Gouden ruglijn */}
+        <div className="absolute left-0 sm:left-4 top-2 bottom-2 w-px bg-gradient-to-b from-[var(--kin-500)] via-[rgba(176,141,62,0.35)] to-transparent" />
+
+        {/* Kanji + nummer */}
+        <div className="flex items-baseline gap-4 mb-4">
+          <span className="font-mincho text-5xl sm:text-6xl text-[var(--kin-400)] leading-none kanji-float select-none">
+            {chapter.kanji}
+          </span>
+          <div className="min-w-0">
+            <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] text-[var(--kin-300)]/80">
+              Hoofdstuk {chapter.number} · {chapter.reading}
+            </p>
+            <h3 className="font-heading text-xl sm:text-2xl md:text-3xl text-[var(--washi-50)] mt-1 leading-tight">
+              {chapter.title}
+            </h3>
           </div>
         </div>
-      </Card>
 
-      {/* Tabs */}
-      <Tabs value={tabValue} onValueChange={setTabValue} className="w-full">
-        <TabsList className="grid w-full grid-cols-4 bg-[#f5f5f0]">
-          <TabsTrigger value="history" className="text-xs sm:text-sm">Geschiedenis</TabsTrigger>
-          <TabsTrigger value="leiding" className="text-xs sm:text-sm">Leiding</TabsTrigger>
-          <TabsTrigger value="judo" className="text-xs sm:text-sm">Wat is Judo?</TabsTrigger>
-          <TabsTrigger value="timeline" className="text-xs sm:text-sm">Tijdlijn</TabsTrigger>
-        </TabsList>
+        <div className="space-y-4">
+          {chapter.paragraphs.map((p, i) => (
+            <p
+              key={i}
+              className="text-[15px] sm:text-base leading-[1.8] text-[#cfc8bb]
+                         first-of-type:font-mincho first-of-type:text-lg first-of-type:leading-[1.9]
+                         first-of-type:text-[var(--washi-100)] first-of-type:drop-shadow-[0_1px_12px_rgba(0,0,0,0.5)]"
+            >
+              {p}
+            </p>
+          ))}
+        </div>
 
-    <TabsContent value="history" className="space-y-4 mt-4">
-          <Card className="border-0 shadow-sm">
-            <CardContent className="p-4 sm:p-6 space-y-4">
-              <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-lg bg-[#fdf6f6] flex items-center justify-center flex-shrink-0 mt-1">
-                  <Calendar className="w-5 h-5 text-[#c00000]" />
-                </div>
-                <div className="space-y-4">
-                  <h3 className="font-bold text-gray-800 mb-2 section-title">Onze geschiedenis</h3>
-                  {clubInfo.history.split('\n\n').map((paragraph, i) => {
-                    const headerMatch = paragraph.match(/^##\s+(.+)$/);
-                    if (headerMatch) {
-                      return (
-                        <h4 key={i} className="font-bold text-base text-gray-800 mt-6 mb-2 first:mt-0">{headerMatch[1]}</h4>
-                      );
-                    }
-                    return (
-                      <p key={i} className="text-sm text-gray-600 leading-relaxed">{paragraph}</p>
-                    );
-                  })}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+        {/* Scheidings-enss voor alle behalve laatste */}
+        {index < CHAPTERS.length - 1 && (
+          <div className="mt-12 flex items-center gap-3 text-[var(--kin-500)]/60">
+            <div className="h-px flex-1 line-gilded opacity-40" />
+            <span className="font-mincho text-lg">❖</span>
+            <div className="h-px flex-1 line-gilded opacity-40" />
+          </div>
+        )}
+      </article>
+    </Reveal>
+  );
+}
 
-        {/* ==================== LEIDING TAB ==================== */}
-        <TabsContent value="leiding" className="space-y-4 mt-4">
-          <Card className="border-0 shadow-sm">
-            <CardContent className="p-4 sm:p-6 space-y-4">
-              <h3 className="font-bold text-gray-800 flex items-center gap-2 section-title">
-                <Users className="w-5 h-5 text-[#c00000]" /> Huidige leiding
-              </h3>
-              <p className="text-sm text-gray-600 leading-relaxed">
-                Sinds 2021 zorgt een nieuwe generatie voor de toekomst van Judoclub Michigami. 
-                Drie vrienden die al bijna vanaf de oprichting samen judo oefenen, regionale en internationale wedstrijden doen, 
-                en alle drie de zwarte band (3e dan) hebben behaald.
-              </p>
-              <div className="space-y-3">
-                {clubInfo.leadership.current.map((person) => (
-                  <div key={person.name} className="p-4 rounded-lg bg-[#fdf6f6] border border-[#fce0e0]">
-                    <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#a90000] to-[#c00000] text-white flex items-center justify-center flex-shrink-0 font-bold text-sm">
-                        {person.name.split(' ').map(n => n[0]).join('')}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-semibold text-gray-800">{person.name}</h4>
-                        <p className="text-xs font-medium text-[#c00000] mt-0.5">{person.dan} • {person.role}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+/* ------------------------------- oprichter -------------------------------- */
 
-          <Card className="border-0 shadow-sm">
-            <CardContent className="p-4 sm:p-6 space-y-3">
-              <h3 className="font-bold text-gray-800 flex items-center gap-2 section-title">
-                <Award className="w-5 h-5 text-[#c00000]" /> Oprichter & Erfenis
-              </h3>
-              <div className="p-4 rounded-lg bg-gradient-to-br from-[#fdf6f6] to-white border border-[#fce0e0]">
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#8c0000] to-[#a90000] text-white flex items-center justify-center flex-shrink-0 font-bold text-sm">
-                    KV
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-semibold text-gray-800">{clubInfo.leadership.founder.name}</h4>
-                    <p className="text-xs font-medium text-[#c00000] mt-0.5">{clubInfo.leadership.founder.dan} • {clubInfo.leadership.founder.role}</p>
-                    <p className="text-sm text-gray-600 mt-2 leading-relaxed">{clubInfo.leadership.founder.description}</p>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+function FounderMemorial() {
+  return (
+    <Reveal>
+      <section
+        className="relative overflow-hidden rounded-xl border border-[rgba(176,141,62,0.25)]
+                   bg-gradient-to-b from-[#191512] to-[#100e0b] px-5 py-8 sm:px-10 sm:py-12"
+      >
+        <Mist />
+        {/* Kaarsgloed */}
+        <div
+          className="animate-flicker absolute left-1/2 top-0 -translate-x-1/2 w-[130%] h-64 pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse at 50% 0%, rgba(244,226,166,0.14), transparent 70%)',
+          }}
+          aria-hidden
+        />
+        <div className="relative z-10 text-center">
+          <p className="text-[10px] sm:text-xs uppercase tracking-[0.4em] text-[var(--kin-300)]">
+            De oprichter · 1947 – 2021
+          </p>
 
-        {/* ==================== WAT IS JUDO TAB ==================== */}
-        <TabsContent value="judo" className="space-y-4 mt-4">
-          <Card className="border-0 shadow-sm">
-            <CardContent className="p-4 sm:p-6 space-y-4">
-              <h3 className="font-bold text-gray-800 text-lg section-title">Wat is judo?</h3>
-              {clubInfo.whatIsJudo.split('\n\n').map((paragraph, i) => {
-                if (paragraph.startsWith('## ')) {
-                  return <h4 key={i} className="font-bold text-base text-[#c00000] mt-6 mb-2 first:mt-0">{paragraph.replace('## ', '')}</h4>;
-                }
-                // Parse markdown: bold (**text**) and italic (*text*)
-                const parts = paragraph.split(/(\*\*.*?\*\*|\*.*?\*)/g);
-                return (
-                  <p key={i} className="text-sm text-gray-600 leading-relaxed">
-                    {parts.map((part, j) => {
-                      if (part.startsWith('**') && part.endsWith('**')) {
-                        return <strong key={j} className="text-gray-800">{part.slice(2, -2)}</strong>;
-                      }
-                      if (part.startsWith('*') && part.endsWith('*')) {
-                        return <em key={j}>{part.slice(1, -1)}</em>;
-                      }
-                      return part;
-                    })}
-                  </p>
-                );
-              })}
-            </CardContent>
-          </Card>
-
-          {/* Foto grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="rounded-lg overflow-hidden shadow-md border border-[#fce0e0]">
-              <img 
-                src="/hero/budodag-actie-1.jpg" 
-                alt="Budodag Michigami" 
-                className="w-full h-48 object-cover hover:scale-105 transition-transform duration-300"
-              />
-              <div className="bg-[#fdf6f6] p-3">
-                <p className="text-xs text-gray-600 text-center font-medium">🎉 Budodag activiteiten</p>
-              </div>
-            </div>
-            <div className="rounded-lg overflow-hidden shadow-md border border-[#fce0e0]">
-              <img 
-                src="/hero/heerle-toernooi-1.jpg" 
-                alt="Toernooi Michigami" 
-                className="w-full h-48 object-cover hover:scale-105 transition-transform duration-300"
-              />
-              <div className="bg-[#fdf6f6] p-3">
-                <p className="text-xs text-gray-600 text-center font-medium">🏆 Toernooien</p>
-              </div>
-            </div>
+          {/* Hanko-stempel */}
+          <div className="animate-hankoStamp mt-6 mx-auto w-20 h-20 rounded-md bg-[var(--shu-600)] flex items-center justify-center shadow-[0_8px_30px_rgba(169,0,0,0.45)] ring-1 ring-[rgba(255,255,255,0.15)] rotate-0">
+            <span className="font-mincho text-white text-3xl font-bold select-none">光</span>
           </div>
 
-          <Card className="border-0 shadow-sm">
-            <CardContent className="p-4 sm:p-6 space-y-3">
-              <h3 className="font-bold text-gray-800">Voor wie is judo geschikt?</h3>
-              <p className="text-sm text-gray-600 leading-relaxed">{clubInfo.philosophy}</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
+          <h3 className="font-heading text-2xl sm:text-4xl text-[var(--washi-50)] mt-6">
+            Koos van Wezel
+          </h3>
+          <p className="text-gilded font-mincho text-lg sm:text-xl mt-1">八段 · 8e Dan</p>
 
-        {/* ==================== TIJDLIJN TAB ==================== */}
-        <TabsContent value="timeline" className="space-y-4 mt-4">
-          <div className="relative pl-10 md:pl-0 max-w-3xl mx-auto">
-            {/* Vertical line */}
-            <div className="absolute left-4 md:left-1/2 md:-translate-x-px top-0 bottom-0 w-0.5 bg-gradient-to-b from-[#a90000] via-[#c00000] to-[#a90000] opacity-30" />
+          <p className="max-w-2xl mx-auto mt-5 text-sm sm:text-[15px] leading-[1.9] text-[#cfc8bb]">
+            {clubInfo.leadership.founder.description}
+          </p>
 
-            {/* Timeline items */}
-            {timelineEvents.map((event, index) => {
-              const isLeft = index % 2 === 0;
-              const icon = iconMap[event.icon || 'club'] || <Users className="w-4 h-4" />;
-              return (
-                <div
-                  key={event.year + index}
-                  className={`relative flex items-center w-full mb-8 ${
-                    isLeft ? 'md:flex-row' : 'md:flex-row-reverse'
-                  }`}
-                >
-                  {/* Dot on the line */}
-                  <div className="absolute left-4 md:left-1/2 md:-translate-x-1/2 z-10">
-                    <div
-                      className={`w-8 h-8 rounded-lg flex items-center justify-center shadow-lg ${
-                        event.isMilestone
-                          ? 'bg-gradient-to-br from-[#a90000] to-[#c00000] text-white ring-4 ring-red-100'
-                          : 'bg-white border-2 border-[#a90000] text-[#a90000]'
-                      }`}
-                    >
-                      {icon}
-                    </div>
-                  </div>
+          <p className="max-w-xl mx-auto mt-4 font-mincho text-[var(--kin-300)] text-base leading-relaxed italic">
+            «Judo is niet bedoeld om in gevechten of op het veld te worden toegepast,
+            <br className="hidden sm:block" /> maar om het menselijk karakter te volkomen te vormen.»
+          </p>
+          <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--sumi-400)] mt-3">
+            Jigoro Kano — het pad waarop Koos zijn levenswerk bouwde
+          </p>
+        </div>
+      </section>
+    </Reveal>
+  );
+}
 
-                  {/* Card content */}
-                  <div className={`ml-12 md:ml-0 md:w-[calc(50%-2rem)] ${isLeft ? 'md:pr-8' : 'md:pl-8'}`}>
-                    <Card className={`border-0 shadow-sm hover:shadow-md transition-shadow overflow-hidden ${
-                      event.isMilestone ? 'ring-2 ring-red-100' : ''
-                    }`}>
-                      {/* Year badge */}
-                      <div className="bg-gradient-to-r from-[#a90000] to-[#c00000] text-white px-4 py-2 flex items-center gap-2">
-                        {event.isMilestone && <Trophy className="w-4 h-4" />}
-                        <span className="font-bold text-lg">{event.year}</span>
-                      </div>
+/* -------------------------------- meesters -------------------------------- */
 
-                      <CardContent className="p-4 space-y-2">
-                        <h3 className="font-bold text-gray-800 text-base leading-tight">{event.title}</h3>
-                        <p className="text-sm text-gray-600 leading-relaxed">{event.description}</p>
-
-                        {event.photoUrl && (
-                          <div className="mt-3 rounded-lg overflow-hidden bg-gray-100">
-                            <img
-                              src={event.photoUrl}
-                              alt={event.title}
-                              loading="lazy"
-                              className="w-full h-auto max-h-48 object-cover"
-                            />
-                          </div>
-                        )}
-                      </CardContent>
-                    </Card>
-                  </div>
-
-                  {/* Spacer for the other side */}
-                  <div className="hidden md:block md:w-[calc(50%-2rem)]" />
-                </div>
-              );
-            })}
+function Masters() {
+  const people = clubInfo.leadership.current;
+  const danKanji: Record<string, string> = {
+    '3e Dan': '三',
+    '1e Dan': '一',
+  };
+  return (
+    <section className="relative">
+      <Reveal>
+        <div className="flex items-end justify-between gap-4 mb-6">
+          <div>
+            <p className="text-[10px] sm:text-xs uppercase tracking-[0.4em] text-[var(--kin-300)]">
+              De huidige meesters
+            </p>
+            <h3 className="font-heading text-2xl sm:text-3xl text-[var(--washi-50)] mt-1">
+              Vieren die één pad bewandelen
+            </h3>
           </div>
+          <div className="hidden sm:block text-[var(--kin-500)]/50">
+            <Enso size={56} />
+          </div>
+        </div>
+      </Reveal>
 
-          <Card className="border-0 shadow-sm bg-gradient-to-br from-[#fdf6f6] to-white max-w-3xl mx-auto">
-            <CardContent className="p-6 text-center space-y-3">
-              <div className="w-12 h-12 mx-auto rounded-lg bg-gradient-to-br from-[#a90000] to-[#c00000] text-white flex items-center justify-center">
-                <Swords className="w-6 h-6" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {people.map((person, i) => (
+          <Reveal key={person.name} delay={i * 0.08}>
+            <article className="group relative h-full overflow-hidden rounded-lg border border-[rgba(255,255,255,0.08)] bg-[#16130f] p-5 sm:p-6 transition-colors duration-500 hover:border-[rgba(176,141,62,0.4)]">
+              {/* Ink-wash hover */}
+              <div className="ink-wash absolute inset-0" aria-hidden />
+              {/* Hanko-seal rechtsboven */}
+              <div className="absolute right-4 top-4 w-11 h-11 rounded bg-[var(--shu-600)]/90 flex items-center justify-center ring-1 ring-[rgba(255,255,255,0.12)] group-hover:animate-hankoStamp">
+                <span className="font-mincho text-white text-xl font-bold">
+                  {danKanji[person.dan] ?? '道'}
+                </span>
               </div>
-              <p className="text-sm text-gray-600 max-w-lg mx-auto">
-                <span className="font-semibold text-[#c00000]">Judoclub Michigami</span> — meer dan 30 jaar judo in Steenbergen en omgeving.{' '}
-                Respect, discipline en passie voor de zachte weg.
-              </p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
 
-      {/* Previous / Next Navigation — within Info tabs */}
-      <div className="flex items-center justify-between gap-4">
-        <Button
-          onClick={() => navigateTab('prev')}
-          variant="outline"
-          className="border-[#c00000] text-[#c00000] hover:bg-[#fdf6f6] gap-2 text-sm flex-1"
-        >
-          <ChevronLeft className="w-4 h-4" /> Vorige
-        </Button>
-        <Button
-          onClick={() => navigateTab('next')}
-          variant="outline"
-          className="border-[#c00000] text-[#c00000] hover:bg-[#fdf6f6] gap-2 text-sm flex-1"
-        >
-          Volgende <ChevronRight className="w-4 h-4" />
-        </Button>
+              <div className="relative z-10 pr-14">
+                <p className="text-[10px] uppercase tracking-[0.28em] text-[var(--kin-300)]">
+                  {person.dan}
+                </p>
+                <h4 className="font-heading text-lg sm:text-xl text-[var(--washi-50)] mt-1">
+                  {person.name}
+                </h4>
+                <p className="text-xs text-[var(--shu-400)] font-medium mt-0.5 tracking-wide">
+                  {person.role}
+                </p>
+                <p className="text-sm text-[#b9b1a3] leading-relaxed mt-3">
+                  {person.description}
+                </p>
+              </div>
+              {/* Gouden onderstreep die groeit bij hover */}
+              <div className="absolute bottom-0 left-0 h-0.5 w-full origin-left scale-x-0 bg-gradient-to-r from-[var(--kin-500)] to-[var(--shu-500)] transition-transform duration-700 group-hover:scale-x-100" />
+            </article>
+          </Reveal>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------ wat is judo ------------------------------- */
+
+function JudoPrinciples() {
+  return (
+    <section className="relative">
+      <Reveal>
+        <p className="text-[10px] sm:text-xs uppercase tracking-[0.4em] text-[var(--kin-300)]">
+          De kunst · 柔道
+        </p>
+        <h3 className="font-heading text-2xl sm:text-3xl text-[var(--washi-50)] mt-1">
+          De Zachte Weg
+        </h3>
+        <div className="h-px w-24 line-gilded mt-4" />
+      </Reveal>
+
+      <Reveal delay={0.1}>
+        <p className="mt-6 max-w-3xl text-[15px] sm:text-base leading-[1.9] text-[#cfc8bb]">
+          <span className="font-mincho text-2xl text-[var(--kin-400)] mr-2">柔</span>
+          <em className="text-[var(--washi-100)]">ju</em> — zacht — en{' '}
+          <span className="font-mincho text-2xl text-[var(--kin-400)] mx-2">道</span>
+          <em className="text-[var(--washi-100)]">dō</em> — de weg. Judo is geen strijd tegen
+          je tegenstander, maar het gebruik van diens kracht, als water dat de steen omvloeit
+          zonder te breken.
+        </p>
+      </Reveal>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
+        {[
+          {
+            kanji: '精力善用',
+            romaji: 'Seiryoku Zenyō',
+            nl: 'Maximale efficiëntie met minimale inspanning',
+            text: 'Niet harder duwen dan je tegenstander — slimmer. Open de deur, trap er niet tegenaan.',
+          },
+          {
+            kanji: '相互協力',
+            romaji: 'Jita Kyōei',
+            nl: 'Wederzijds welzijn en voordeel',
+            text: 'Je traint met je partner, niet tegen je partner. Samen worden jullie allebei sterker.',
+          },
+        ].map((p, i) => (
+          <Reveal key={p.romaji} delay={i * 0.1}>
+            <article className="group h-full rounded-lg border border-[rgba(255,255,255,0.08)] bg-[#16130f] p-5 sm:p-6 transition-colors duration-500 hover:border-[rgba(176,141,62,0.4)]">
+              <div className="font-mincho text-2xl sm:text-3xl text-[var(--kin-400)] leading-none">
+                {p.kanji}
+              </div>
+              <p className="text-xs uppercase tracking-[0.25em] text-[var(--shu-400)] mt-3">{p.romaji}</p>
+              <h4 className="font-heading text-lg text-[var(--washi-50)] mt-1">{p.nl}</h4>
+              <p className="text-sm text-[#b9b1a3] leading-relaxed mt-2">{p.text}</p>
+            </article>
+          </Reveal>
+        ))}
       </div>
 
-      {/* Contact CTA */}
-      <Card className="border-0 shadow-sm bg-gradient-to-br from-[#fdf6f6] to-white">
-        <CardContent className="p-4 sm:p-6 text-center space-y-3">
-          <h3 className="font-bold text-gray-800">Interesse in judo?</h3>
-          <p className="text-sm text-gray-600 max-w-lg mx-auto">
-            Kom gerust eens kijken op een training - je bent van harte welkom!
-            Als het je bevalt, kun je direct starten met <span className="font-semibold text-[#c00000]">{clubInfo.costs.proeflessen}</span>.
-          </p>
-          <div className="flex flex-wrap justify-center gap-2 pt-2">
-            <Button onClick={() => openProeflesForm()} className="bg-[#27ae60] hover:bg-[#219a52] text-white text-base px-8 font-bold shadow-md" style={{ fontSize: '1rem' }}>
-              Gratis Proefles
-            </Button>
-            <Button variant="outline" onClick={() => setSignupOpen(true)} className="text-sm border-[#c00000] text-[#c00000] hover:bg-[#fdf6f6]">
-              Inschrijven
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      <Reveal delay={0.1}>
+        <p className="mt-8 max-w-3xl text-sm sm:text-[15px] leading-[1.8] text-[#a39a8c]">
+          {clubInfo.philosophy}
+        </p>
+      </Reveal>
+    </section>
+  );
+}
 
-      {/* Signup Confirmation Modal */}
+/* --------------------------------- locaties ------------------------------- */
+
+function TwoDojos() {
+  const locs = clubInfo.locations;
+  return (
+    <Reveal>
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {locs.map((loc, i) => (
+          <article
+            key={loc.name}
+            className={`group relative overflow-hidden rounded-lg border p-5 sm:p-6 transition-colors duration-500
+              ${i === 0
+                ? 'border-[rgba(176,141,62,0.35)] bg-gradient-to-br from-[#1c1712] to-[#141110]'
+                : 'border-[rgba(255,255,255,0.08)] bg-[#16130f] hover:border-[rgba(176,141,62,0.35)]'}`}
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div className="w-10 h-10 rounded-full border border-[var(--kin-500)]/40 bg-[var(--kin-500)]/10 flex items-center justify-center text-[var(--kin-400)]">
+                <MapPin className="w-5 h-5" />
+              </div>
+              {loc.isPrimary && (
+                <span className="text-[10px] uppercase tracking-[0.25em] text-[var(--kin-300)] border border-[var(--kin-500)]/30 rounded-full px-3 py-1">
+                  Hoofddojo
+                </span>
+              )}
+            </div>
+            <h4 className="font-heading text-lg sm:text-xl text-[var(--washi-50)] mt-4">{loc.name}</h4>
+            <p className="text-sm text-[#b9b1a3] mt-1">{loc.address}</p>
+            <a
+              href={loc.mapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--kin-300)] mt-4 group-hover:text-[var(--kin-400)] transition-colors"
+            >
+              Route zien <ArrowRight className="w-3.5 h-3.5" />
+            </a>
+          </article>
+        ))}
+      </section>
+    </Reveal>
+  );
+}
+
+/* ================================= COMPONENT ============================== */
+
+export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void }) {
+  const [signupOpen, setSignupOpen] = useState(false);
+
+  // Scroll-progress voor de proloog-parallax
+  const prologueRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: prologueRef,
+    offset: ['start start', 'end start'],
+  });
+  const heroScale = useTransform(scrollYProgress, [0, 1], [1, 1.12]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.85], [1, 0]);
+
+  return (
+    <div className="-m-2 -mb-[8rem] sm:-m-4 sm:mb-0 md:-m-8 zen-grain relative bg-[#100e0c]">
+      {/* ============================== PROLOOG ============================= */}
+      <div ref={prologueRef} className="relative">
+        <motion.div
+          style={{ scale: heroScale }}
+          className="relative overflow-hidden"
+        >
+          <Mist />
+          <motion.div style={{ opacity: heroOpacity }} className="relative z-10 px-5 py-14 sm:px-10 sm:py-20 md:py-24 text-center">
+            {/* Enso die zich tekent */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.7 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1.2, ease: EASE }}
+              className="text-[var(--kin-400)] mx-auto w-fit"
+            >
+              <Enso size={88} />
+            </motion.div>
+
+            <motion.p
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, delay: 0.4, ease: EASE }}
+              className="mt-6 text-[10px] sm:text-xs uppercase tracking-[0.5em] text-[var(--kin-300)]"
+            >
+              Over Ons · Est. 1993
+            </motion.p>
+
+            <motion.h1
+              initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              transition={{ duration: 1.1, delay: 0.55, ease: EASE }}
+              className="font-heading text-3xl sm:text-5xl md:text-6xl text-[var(--washi-50)] mt-4 leading-[1.05]"
+            >
+              Er was een tijd
+              <br />
+              <span className="text-gilded">dat judo hier ademde</span>
+            </motion.h1>
+
+            <motion.div
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ duration: 1, delay: 0.9, ease: EASE }}
+              className="h-px w-40 mx-auto mt-6 line-gilded origin-center"
+            />
+
+            <motion.p
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, delay: 1, ease: EASE }}
+              className="max-w-xl mx-auto mt-6 text-sm sm:text-[15px] leading-[1.9] text-[#cfc8bb]"
+            >
+              Drie decennia lang was de dojo in Steenbergen een plek waar de zachte weg
+              niet alleen werd geleerd, maar geleefd — van de eerste knoop van een kind
+              tot het zwart van een meester. Dit is het verhaal van Judoclub Michigami.
+            </motion.p>
+
+            {/* Stats strip */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, delay: 1.2, ease: EASE }}
+              className="mt-10 grid grid-cols-3 max-w-lg mx-auto divide-x divide-[rgba(176,141,62,0.25)]"
+            >
+              {[
+                { n: '1993', l: 'opgericht' },
+                { n: '2', l: 'locaties' },
+                { n: '8e', l: 'dan van de oprichter' },
+              ].map((s) => (
+                <div key={s.l} className="px-3">
+                  <p className="font-heading text-2xl sm:text-3xl text-[var(--kin-400)]">{s.n}</p>
+                  <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-[var(--sumi-400)] mt-1">
+                    {s.l}
+                  </p>
+                </div>
+              ))}
+            </motion.div>
+
+            <motion.button
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, delay: 1.35, ease: EASE }}
+              onClick={() => onNavigate?.('timeline')}
+              className="mt-8 inline-flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-[var(--kin-300)] hover:text-[var(--kin-400)] transition-colors border-b border-[var(--kin-500)]/40 pb-1"
+            >
+              Bekijk de volledige tijdlijn <ArrowRight className="w-3.5 h-3.5" />
+            </motion.button>
+          </motion.div>
+        </motion.div>
+      </div>
+
+      {/* =========================== GESCHIEDENIS =========================== */}
+      <div className="zen-grain relative -mt-1 rounded-t-none bg-gradient-to-b from-transparent to-[#100e0c]">
+        <div className="zen-grain relative bg-[#100e0c] rounded-b-xl px-5 py-12 sm:px-10 sm:py-16 space-y-14 sm:space-y-16">
+          <Reveal>
+            <div>
+              <p className="text-[10px] sm:text-xs uppercase tracking-[0.4em] text-[var(--kin-300)]">
+                Het verhaal
+              </p>
+              <h2 className="font-heading text-2xl sm:text-4xl text-[var(--washi-50)] mt-2">
+                Vijf hoofdstukken, één pad
+              </h2>
+            </div>
+          </Reveal>
+
+          <div className="max-w-3xl">
+            {CHAPTERS.map((ch, i) => (
+              <div key={ch.title} className={i > 0 ? 'mt-14' : ''}>
+                <ChapterBlock chapter={ch} index={i} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ============================= EERBETOOM ============================ */}
+      <div className="bg-[#100e0c] px-5 sm:px-10 pb-12 sm:pb-16">
+        <FounderMemorial />
+
+        {/* Meesters */}
+        <div className="mt-14">
+          <Masters />
+        </div>
+      </div>
+
+      {/* ============================== JUDO KUNST =========================== */}
+      <div className="bg-[#100e0c] px-5 sm:px-10 pb-12 sm:pb-16">
+        <JudoPrinciples />
+      </div>
+
+      {/* =============================== EPILOOG ============================= */}
+      <div className="bg-[#100e0c] px-5 sm:px-10 pb-12 sm:pb-16">
+        <TwoDojos />
+
+        <Reveal delay={0.1}>
+          <section className="zen-grain relative mt-10 overflow-hidden rounded-xl border border-[rgba(176,141,62,0.3)] bg-gradient-to-br from-[#1c1712] to-[#12100d] px-5 py-10 sm:px-10 text-center">
+            <Mist />
+            <div className="relative z-10">
+              <p className="font-mincho text-3xl text-[var(--kin-400)] kanji-float select-none">柔</p>
+              <h3 className="font-heading text-2xl sm:text-3xl text-[var(--washi-50)] mt-4">
+                Het verhaal gaat verder
+              </h3>
+              <p className="max-w-lg mx-auto mt-3 text-sm sm:text-[15px] leading-relaxed text-[#cfc8bb]">
+                De volgende hoofdstukken worden hier geschreven, op de matten in Steenbergen en
+                Oud-Vossemeer. Kom ze meeschrijven — met {clubInfo.costs.proeflessen} als begin.
+              </p>
+              <div className="flex flex-wrap justify-center gap-3 mt-6">
+                <Button
+                  onClick={() => openProeflesForm()}
+                  className="bg-[var(--shu-600)] hover:bg-[var(--shu-700)] text-white font-semibold tracking-wide px-8 h-11"
+                >
+                  Gratis proefles
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setSignupOpen(true)}
+                  className="border-[var(--kin-500)]/50 text-[var(--kin-300)] hover:bg-[var(--kin-500)]/10 hover:text-[var(--kin-400)] font-medium tracking-wide h-11"
+                >
+                  Inschrijven
+                </Button>
+              </div>
+            </div>
+          </section>
+        </Reveal>
+      </div>
+
+      {/* Prev/Next */}
+      <div className="bg-[#100e0c] px-5 sm:px-10 pb-8">
+        <div className="flex items-center justify-between gap-4 border-t border-[rgba(255,255,255,0.08)] pt-6">
+          <Button
+            onClick={() => onNavigate?.('agenda')}
+            variant="outline"
+            className="border-[rgba(176,141,62,0.4)] text-[var(--kin-300)] hover:bg-[var(--kin-500)]/10 hover:text-[var(--kin-400)] gap-2 text-sm flex-1"
+          >
+            <ChevronLeft className="w-4 h-4" /> Agenda
+          </Button>
+          <Button
+            onClick={() => onNavigate?.('leden')}
+            variant="outline"
+            className="border-[rgba(176,141,62,0.4)] text-[var(--kin-300)] hover:bg-[var(--kin-500)]/10 hover:text-[var(--kin-400)] gap-2 text-sm flex-1"
+          >
+            Lid worden <ChevronRight className="w-4 h-4" />
+          </Button>
+        </div>
+      </div>
+
+      {/* Signup Modal */}
       <SignupConfirmationModal open={signupOpen} onClose={() => setSignupOpen(false)} signupUrl="/inschrijven" />
     </div>
   );
