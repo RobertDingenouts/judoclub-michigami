@@ -387,7 +387,7 @@ export default function MichigamiApp() {
           );
         })()}
         <div ref={scrollAreaRef} className="h-[calc(100vh-3.5rem)] sm:h-[calc(100vh-3.5rem)] md:h-screen w-full">
-        <ScrollArea className="w-full h-full">
+        <ScrollArea className="w-full h-full zen-scroll">
           <div
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}

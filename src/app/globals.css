@@ -687,6 +687,177 @@
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
   }
 
+  /* ===================== INK OP OUD PAPIER =============================== */
+  /* Donkerrode "after-dark dojo" basis: heel donker club-rood + washi-lucht.
+     De inkt (sumi) wordt hier lichter gehouden zodat bergen/torii leesbaar
+     blijven op de donkere clubkleur. */
+  .zen-bg {
+    background:
+      radial-gradient(1000px 480px at 84% -10%, rgba(169, 0, 0, 0.16), transparent 60%),
+      radial-gradient(760px 420px at 6% 108%, rgba(94, 64, 32, 0.06), transparent 60%),
+      radial-gradient(ellipse at center, transparent 55%, rgba(10, 5, 5, 0.55) 100%),
+      linear-gradient(160deg, #171012 0%, #140d0f 45%, #0f090b 100%);
+  }
+  .ink-paper {
+    background:
+      radial-gradient(1000px 480px at 84% -10%, rgba(169, 0, 0, 0.16), transparent 60%),
+      radial-gradient(760px 420px at 6% 108%, rgba(94, 64, 32, 0.06), transparent 60%),
+      radial-gradient(430px 260px at 70% 40%, rgba(120, 84, 40, 0.05), transparent 70%),
+      radial-gradient(ellipse at center, transparent 52%, rgba(10, 5, 5, 0.6) 100%),
+      linear-gradient(160deg, #181013 0%, #150e11 45%, #100a0c 100%);
+  }
+  .zen-card,
+  .ink-card {
+    background: linear-gradient(180deg, rgba(24, 15, 14, 0.9), rgba(18, 11, 11, 0.94));
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 14px 34px -24px rgba(0, 0, 0, 0.7);
+  }
+
+  /* Rode accenttekst op donker: zachte gloed voor contrast */
+  .shu-glow {
+    text-shadow: 0 0 22px rgba(212, 58, 58, 0.45), 0 1px 2px rgba(0, 0, 0, 0.6);
+  }
+  .kin-glow {
+    text-shadow: 0 0 20px rgba(212, 168, 67, 0.35);
+  }
+
+  /* ===================== ZEN FULL-BLEED =============================== */
+  /* De ink-paper sectie vult de volledige content-breedte (geen washi-spleet
+     rechts). Compenseert de parent-padding (p-2/sm:p-4/md:p-8) door de width
+     te laten groeien én negatieve margins te gebruiken. Een expliciete
+     'w-full' (100%) zou hier alleen 1080px geven en rechts een spleet laten. */
+  .zen-fullbleed {
+    width: calc(100% + 16px);
+    max-width: none;
+    margin: -8px;
+    margin-bottom: -8rem;      /* mobiel: parent pb-[8rem] (tabbar-clearance) */
+  }
+  @media (min-width: 40rem) {  /* sm: parent p-4 (16px) + sm:pb-0 */
+    .zen-fullbleed { width: calc(100% + 32px); margin: -16px; margin-bottom: 0; }
+  }
+  @media (min-width: 48rem) {  /* md: parent p-8 (32px) */
+    .zen-fullbleed { width: calc(100% + 64px); margin: -32px; margin-bottom: 0; }
+  }
+
+  /* Sakura-bloesemval — heel rustig */
+  @keyframes petalFall {
+    0%   { transform: translate3d(0, -8vh, 0) rotate(0deg); opacity: 0; }
+    8%   { opacity: var(--petal-o, 0.5); }
+    50%  { transform: translate3d(var(--sway, 30px), 45vh, 0) rotate(200deg); }
+    100% { transform: translate3d(calc(var(--sway, 30px) * -0.6), 108vh, 0) rotate(430deg); opacity: 0; }
+  }
+  .petal {
+    position: absolute;
+    top: 0;
+    animation: petalFall linear infinite;
+    will-change: transform;
+    pointer-events: none;
+  }
+
+  /* Rivier-stroming (sumi-e middellijn) */
+  @keyframes riverFlow {
+    to { stroke-dashoffset: -220; }
+  }
+  .river-flow {
+    animation: riverFlow 26s linear infinite;
+  }
+
+  /* Bomenkruin wiegt bijna onzichtbaar */
+  @keyframes canopySway {
+    0%, 100% { transform: rotate(-1.2deg); }
+    50%      { transform: rotate(1.4deg); }
+  }
+  .canopy {
+    transform-origin: center bottom;
+    transform-box: fill-box;
+    animation: canopySway 9s ease-in-out infinite;
+  }
+  .canopy-slow { animation-duration: 13s; }
+  .canopy-slower { animation-duration: 17s; }
+
+  /* Maan-glow — heel rustig ademend licht */
+  @keyframes moonGlow {
+    0%, 100% { opacity: 0.85; transform: scale(1); }
+    50%      { opacity: 1;    transform: scale(1.04); }
+  }
+  .moon-glow {
+    transform-origin: center;
+    transform-box: fill-box;
+    animation: moonGlow 14s ease-in-out infinite;
+  }
+
+  /* Inkt die zich "schrijft" (kwastveeg van links naar rechts) */
+  @keyframes inkWrite {
+    from { -webkit-mask-position: 135% 0; mask-position: 135% 0; }
+    to   { -webkit-mask-position: 0% 0;   mask-position: 0% 0;   }
+  }
+  .ink-write {
+    opacity: 0;
+  }
+  .ink-write-run {
+    opacity: 1;
+    -webkit-mask-image: linear-gradient(90deg, #000 40%, rgba(0,0,0,0.4) 52%, transparent 62%);
+    mask-image: linear-gradient(90deg, #000 40%, rgba(0,0,0,0.4) 52%, transparent 62%);
+    -webkit-mask-size: 260% 100%;
+    mask-size: 260% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    animation: inkWrite 1.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  /* Grote inkt-titels bloeien uit de vlek */
+  @keyframes inkBloom {
+    0%   { opacity: 0; filter: blur(7px); transform: scale(1.015); }
+    55%  { opacity: 1; }
+    100% { opacity: 1; filter: blur(0); transform: scale(1); }
+  }
+  .ink-title {
+    animation: inkBloom 1.15s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    text-shadow: 0 0 0.6px currentColor;
+  }
+
+  /* Kwaststreek groeit als de kwast trekt */
+  @keyframes brushDraw {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+  }
+  .brush-stroke {
+    transform-origin: left center;
+    animation: brushDraw 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  /* Inkt-vlekjes (sumi-e) die uitdampen */
+  @keyframes inkBleed {
+    0%   { opacity: 0; transform: scale(0.6); }
+    40%  { opacity: var(--ink-o, 0.10); }
+    100% { opacity: var(--ink-o, 0.10); transform: scale(1); }
+  }
+  .ink-bleed {
+    animation: inkBleed 2.4s ease-out forwards;
+    transform-origin: center;
+  }
+
+  /* Scrollbar op papier — inkt-zwart in plaats van washi-wit */
+  /* Inkt-zwarte scrollbar op de donkere secties (washi-licht was een witte balk
+   aan de rechterkant). Both the native webkit scrollbar AND the Radix
+   scroll-area thumb get a dark, theme-consistent treatment. */
+  .zen-scroll ::-webkit-scrollbar { width: 10px; }
+  .zen-scroll ::-webkit-scrollbar-track { background: transparent; }
+  .zen-scroll ::-webkit-scrollbar-thumb {
+    background: rgba(120, 30, 30, 0.45);
+    border: 3px solid transparent;
+    border-radius: 8px;
+    background-clip: padding-box;
+  }
+  .zen-scroll ::-webkit-scrollbar-thumb:hover {
+    background: rgba(212, 58, 58, 0.6);
+    border: 3px solid transparent;
+    border-radius: 8px;
+    background-clip: padding-box;
+  }
+  .zen-scroll [data-slot='scroll-area-viewport'] { scrollbar-width: thin; scrollbar-color: rgba(120,30,30,0.5) transparent; }
+  .zen-scroll [data-slot='scroll-area-thumb'] { background: rgba(120, 30, 30, 0.45); border-radius: 8px; }
+
   /* Respect reduced motion */
   @media (prefers-reduced-motion: reduce) {
     .animate-heroZoom,
@@ -699,9 +870,18 @@
     .line-gilded,
     .animate-inkRise,
     .animate-mist,
-    .animate-flicker {
+    .animate-flicker,
+    .petal,
+    .river-flow,
+    .canopy,
+    .moon-glow,
+    .ink-title,
+    .brush-stroke,
+    .ink-bleed {
       animation: none !important;
+      opacity: 1;
     }
+    .ink-write { opacity: 1; }
   }
 
   /* Focus ring — gold */
@@ -727,4 +907,16 @@
   ::-webkit-scrollbar-thumb:hover {
     background: var(--sumi-500);
   }
+}
+
+/* ===================== SCROLLBAR OVERRIDE (unlayered) =================== */
+/* Unlayered CSS wint over Tailwind utility-layers — de Radix-thumb
+   gebruikte bg-border (washi-100) wat op donkere secties een witte
+   balk aan de rechterkant gaf. */
+.zen-scroll [data-slot="scroll-area-thumb"] {
+  background-color: rgba(120, 30, 30, 0.55) !important;
+  border-radius: 8px;
+}
+.zen-scroll [data-slot="scroll-area-scrollbar"] {
+  background-color: transparent !important;
 }

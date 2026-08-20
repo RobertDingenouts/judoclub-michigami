@@ -119,7 +119,7 @@ export const timelineEvents: TimelineEvent[] = [
   {
     year: '2026',
     title: 'OVJV overname & 50-jarig jubileum',
-    description: 'Michigami neemt OVJV (Oud-Vosseemerse Judo Vereniging) over in een overgangsjaar. OVJV viert haar 50-jarig jubileum met een toernooi in oktober. Vanaf 2027: twee locaties, één club.',
+    description: 'Michigami neemt OVJV (Oud-Vossemeerse Judo Vereniging) over in een overgangsjaar. OVJV viert haar 50-jarig jubileum met een toernooi in oktober. Vanaf 2027: twee locaties, één club.',
     icon: 'location',
     isMilestone: true,
   },

@@ -29,7 +29,7 @@ type Mode = 'full' | 'bar' | 'dot';
 
 interface Pos { x: number; y: number; }
 
-const DOT = 48;
+const DOT = 56;
 
 function formatTime(sec: number): string {
   if (!isFinite(sec) || sec < 0) return '0:00';
@@ -209,7 +209,7 @@ export function MiniPlayer({ onOpenMusic }: { onOpenMusic: () => void }) {
       <div ref={wrapRef} className="fixed z-[70] select-none" style={{ left: pos.x, top: pos.y }}>
         <div
           {...dragProps}
-          className="relative w-12 h-12 rounded-full overflow-hidden border border-white/40 shadow-2xl shadow-black/50 cursor-grab active:cursor-grabbing"
+          className="relative w-14 h-14 rounded-full overflow-hidden border border-white/40 shadow-2xl shadow-black/50 cursor-grab active:cursor-grabbing active:scale-95 transition-transform duration-150 hover:ring-2 hover:ring-white/25"
           style={{ touchAction: 'none', transition: cardTransition, background: gradient }}
           onClick={e => {
             // Klik op de play-knop is een eigen actie (stopPropagation
@@ -236,7 +236,7 @@ export function MiniPlayer({ onOpenMusic }: { onOpenMusic: () => void }) {
           />
           <button
             onClick={(e) => { e.stopPropagation(); mp.togglePlay(); }}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-black/55 backdrop-blur-sm text-white flex items-center justify-center"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-black/55 backdrop-blur-sm text-white flex items-center justify-center"
             aria-label={mp.playing ? 'Pauzeer' : 'Speel af'}
           >
             {mp.playing ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 ml-0.5" />}
