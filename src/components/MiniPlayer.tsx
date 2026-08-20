@@ -42,10 +42,14 @@ function isMobileWidth(): boolean {
   return typeof window !== 'undefined' && window.innerWidth < 768;
 }
 
-function clampPos(x: number, y: number, w: number, h: number): Pos {
+function clampPos(x: number, y: number, w: number, h: number, dotHitbox = false): Pos {
   const buf = isMobileWidth() ? 60 : 8; // 60 = ruimte voor mobiele onderbalk
-  const maxX = Math.max(4, window.innerWidth - w - 4);
-  const maxY = Math.max(4, window.innerHeight - h - buf);
+  // Dot: de hitbox is 88px maar het zichtbare bolletje is 56px (16px marge
+  // rondom). Clamp op 56 zodat het BOLLETJE nooit buiten beeld hangt; de
+  // onzichtbare marge mag de rand een beetje overlappen.
+  const margin = dotHitbox ? 16 : 0;
+  const maxX = Math.max(4, window.innerWidth - w - 4 - margin);
+  const maxY = Math.max(4, window.innerHeight - h - buf - margin);
   return {
     x: Math.min(Math.max(4, x), maxX),
     y: Math.min(Math.max(4, y), maxY),
@@ -71,8 +75,14 @@ export function MiniPlayer({ onOpenMusic }: { onOpenMusic: () => void }) {
 
   const wrapRef = useRef<HTMLDivElement | null>(null);
   const posRef = useRef<Pos>(pos);
+  const modeRef = useRef<Mode>(mode);
+  useEffect(() => { modeRef.current = mode; }, [mode]);
   const dragRef = useRef<{ id: number; dx: number; dy: number; sx: number; sy: number; moved: boolean } | null>(null);
   const suppressClickRef = useRef(false);
+  // Dot: onthoud of de pointerdown op de play-knop begon. Na pointer-capture
+  // kan de browser de (synthetic) click op het 88px-veld richten i.p.v. de
+  // knop — dan leest dit vlaggetje af of de tap play/pauze was of het bolletje.
+  const tapWasButtonRef = useRef(false);
 
   const savePos = (p: Pos) => {
     try { localStorage.setItem(POS_KEY, JSON.stringify(p)); } catch { /* ignore */ }
@@ -116,7 +126,7 @@ export function MiniPlayer({ onOpenMusic }: { onOpenMusic: () => void }) {
     requestAnimationFrame(() => {
       const el = wrapRef.current;
       if (!el) return;
-      const c = clampPos(posRef.current.x, posRef.current.y, el.offsetWidth, el.offsetHeight);
+      const c = clampPos(posRef.current.x, posRef.current.y, el.offsetWidth, el.offsetHeight, m === 'dot');
       posRef.current = c;
       setPos(c);
       savePos(c);
@@ -133,7 +143,7 @@ export function MiniPlayer({ onOpenMusic }: { onOpenMusic: () => void }) {
       if (dragRef.current) return;
       const el = wrapRef.current;
       if (!el) return;
-      const c = clampPos(posRef.current.x, posRef.current.y, el.offsetWidth, el.offsetHeight);
+      const c = clampPos(posRef.current.x, posRef.current.y, el.offsetWidth, el.offsetHeight, modeRef.current === 'dot');
       posRef.current = c;
       setPos(c);
       savePos(c);
@@ -146,17 +156,17 @@ export function MiniPlayer({ onOpenMusic }: { onOpenMusic: () => void }) {
   // touch-action: none op de handle zorgt ervoor dat de browser de touch
   // NIET overneemt voor scrollen/pull-to-refresh — wij krijgen alle moves.
   const onDragDown = (e: React.PointerEvent) => {
-    // Dot: het HELE bolletje is vattebaar — ook door de play-knop heen. De
-    // play-knop stopt zelf zijn pointerdown (stopPropagation) zodat een tap
-    // daar clean naar de knop gaat (play/pauze); de rest van het bolletje
-    // start een drag. Tap-vs-drag onderscheidt de moved-threshold in
-    // onDragMove. Bar/full: knoppen breken de drag af (afgezonderde functies,
+    // Dot: het HELE 88px-veld is vattebaar — ook over de play-knop heen. De
+    // play-knop laat pointer events doorgaan: een tap (zonder beweging) =
+    // play/pauze (zie tapWasButtonRef in onClick), een beweging = de dot
+    // meeslepen. Bar/full: knoppen breken de drag af (afgezonderde functies,
     // en de kop is daar al breed genoeg om te vatten).
     if (mode !== 'dot' && (e.target as HTMLElement).closest('button')) return;
     if (e.pointerType === 'mouse' && e.button !== 0) return;
     const el = wrapRef.current;
     if (!el) return;
     const r = el.getBoundingClientRect();
+    tapWasButtonRef.current = mode === 'dot' && !!(e.target as HTMLElement).closest('button');
     dragRef.current = {
       id: e.pointerId,
       dx: e.clientX - r.left,
@@ -178,7 +188,7 @@ export function MiniPlayer({ onOpenMusic }: { onOpenMusic: () => void }) {
       d.moved = true;
       setDragging(true);
     }
-    const c = clampPos(e.clientX - d.dx, e.clientY - d.dy, el.offsetWidth, el.offsetHeight);
+    const c = clampPos(e.clientX - d.dx, e.clientY - d.dy, el.offsetWidth, el.offsetHeight, mode === 'dot');
     posRef.current = c;
     setPos(c);
   };
@@ -210,44 +220,65 @@ export function MiniPlayer({ onOpenMusic }: { onOpenMusic: () => void }) {
   const cardTransition = dragging ? 'none' : 'box-shadow .2s ease';
 
   // ---- Dot: klein rond bolletje ----
+  // De ZICHTBARE dot is 56px, maar de vattsurface voor verslepen is een groter
+  // onzichtbaar 88px-veld eromheen. Een echte vinger (40-50px breed) dekt
+  // anders vrijwel alleen de smalle ~16px-ring om de centrale play-knop heen —
+  // onmogelijk om betrouwbaar te vatten. Met de 88px-hitzone is het hele
+  // bolletje (plus onzichtbare marge) te vatten; alleen de kleine centrale
+  // play-knop is uitzondering (tap = play/pauze).
   if (mode === 'dot') {
     return (
       <div ref={wrapRef} className="fixed z-[70] select-none" style={{ left: pos.x, top: pos.y }}>
         <div
           {...dragProps}
-          className="relative w-14 h-14 rounded-full overflow-hidden border border-white/40 shadow-2xl shadow-black/50 cursor-grab active:cursor-grabbing active:scale-95 transition-transform duration-150 hover:ring-2 hover:ring-white/25"
-          style={{ touchAction: 'none', transition: cardTransition, background: gradient }}
+          className="relative w-[88px] h-[88px] flex items-center justify-center cursor-grab active:cursor-grabbing"
+          style={{ touchAction: 'none' }}
           onClick={e => {
-            // Klik op de play-knop is een eigen actie (stopPropagation
-            // van de knop zelf); hier alleen de ring-klik → bar.
-            if ((e.target as HTMLElement).closest('button')) return;
-            // Post-drag synthetic click onderdrukken (en flag resetten,
-            // zodat de volgend échte tap direct werkt).
+            // 1) Post-drag click onderdrukken (pointer-capture stuurt een
+            //    synthetic click terug na een versleep). Reset de button-flag.
             if (suppressClickRef.current) {
               suppressClickRef.current = false;
+              tapWasButtonRef.current = false;
               e.preventDefault();
               e.stopPropagation();
               return;
             }
+            // 2) Tap op de play-knop → play/pauze. (Pointer-capture stuurt de
+            //    click naar dit veld i.p.v. de knop; tapWasButtonRef onthoudt
+            //    dat de pointerdown op de knop begon.)
+            if (tapWasButtonRef.current) {
+              tapWasButtonRef.current = false;
+              mp.togglePlay();
+              return;
+            }
+            // 3) Tap op ring/marge → bar uitklappen.
             applyMode('bar');
           }}
           role="button"
           aria-label="Muziekspeler openen"
         >
-          <img
-            src={mp.album.cover}
-            alt=""
-            draggable={false}
-            className="absolute inset-0 w-full h-full object-cover pointer-events-none"
-          />
-          <button
-            onPointerDown={(e) => e.stopPropagation()}
-            onClick={(e) => { e.stopPropagation(); mp.togglePlay(); }}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-black/55 backdrop-blur-sm text-white flex items-center justify-center"
-            aria-label={mp.playing ? 'Pauzeer' : 'Speel af'}
+          <div
+            className="relative w-14 h-14 rounded-full overflow-hidden border border-white/40 shadow-2xl shadow-black/50 cursor-grab active:cursor-grabbing active:scale-95 transition-transform duration-150 hover:ring-2 hover:ring-white/25"
+            style={{ background: gradient }}
           >
-            {mp.playing ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 ml-0.5" />}
-          </button>
+            <img
+              src={mp.album.cover}
+              alt=""
+              draggable={false}
+              className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+            />
+            <button
+              onPointerDown={() => {/* laat de pointer events doorbubbelen naar het 88px-veld:
+                tap (geen beweging) = play/pauze, vinger bewegen = dot meeslepen.
+                touch-action:none op het veld voorkomt dat de browser scrollt. */}}
+              onClick={(e) => { e.stopPropagation(); mp.togglePlay(); }}
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-black/55 backdrop-blur-sm text-white flex items-center justify-center"
+              style={{ touchAction: 'none' }}
+              aria-label={mp.playing ? 'Pauzeer' : 'Speel af'}
+            >
+              {mp.playing ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 ml-0.5" />}
+            </button>
+          </div>
         </div>
       </div>
     );
