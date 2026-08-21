@@ -4,7 +4,7 @@ import { useRef, useState, Fragment } from 'react';
 import Image from 'next/image';
 import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, ScrollText, Award, X } from 'lucide-react';
+import { ChevronRight, ScrollText, Award, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { storyChapters } from '@/data/story-chapters';
 import {
@@ -327,15 +327,8 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
             </div>
           )}
 
-          <div className={cn('mt-14 flex items-center justify-center gap-4 text-sm', INK_FAINT)}>
-            <Button onClick={() => onNavigate?.('agenda')} variant="ghost" className="text-[var(--sumi-500)] hover:text-[var(--sumi-900)]">
-              <ChevronLeft className="mr-1 h-4 w-4" /> Agenda
-            </Button>
-            <span className="h-px w-8 bg-[var(--sumi-500)]/40" />
-            <Button onClick={() => onNavigate?.('leden')} variant="ghost" className="text-[var(--sumi-500)] hover:text-[var(--sumi-900)]">
-              Lid worden <ChevronRight className="ml-1 h-4 w-4" />
-            </Button>
-          </div>
+          {/* Pagina-pager staat onderaan de sectie (SectionPager) — oude
+              '‹ Agenda / Lid worden ›'-knoppen zijn vervangen door die. */}
         </div>
       </div>
     </div>
