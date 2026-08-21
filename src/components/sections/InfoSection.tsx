@@ -219,10 +219,10 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
             <TributeCard
               kanji="絆"
               stamp="段"
-              label="Eerbewijs aan het erelid"
+              label="Eerbewijs aan een vast gezicht"
               title="Franco Hack"
               sub="1966–2026 · 4e Dan"
-              body="Vader van Robin en Pascal, schoonzoon van Koos. Hij droeg de vlam van de club door het vuur — en nam in 2026 de titel erelid mee."
+              body="Vader van Robin en Pascal, schoonzoon van Koos. Hij droeg de vlam van de club door het vuur — een judoka voor het leven."
               photoUrl="/images/minuut-stilte-franco.jpg"
               photoCaption="1 april 2026 · minuut stilte voor Franco, De Vossenkuil Oud-Vossemeer"
             />

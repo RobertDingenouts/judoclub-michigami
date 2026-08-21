@@ -18,7 +18,7 @@ export const timelineEvents: TimelineEvent[] = [
     isMilestone: true,
   },
   {
-    year: '1920s',
+    year: "Jaren '20",
     title: 'Kawaishi brengt Judo naar Europa',
     description: 'Mikinosuke Kawaishi (1899–1969), een Japanse judomeester, vestigt zich in Parijs en revolutioneert judo in Europa. Hij introduceert het gekleurde bandensysteem (wit → geel → oranje → groen → blauw → bruin → zwart) dat wereldwijd wordt gebruikt. Hij was mede-oprichter van de Franse Judo Federatie met Moshe Feldenkrais en creëerde de Kawaishi Cup — het eerste internationale judotoernooi tussen landen.',
     icon: 'star',
@@ -126,8 +126,8 @@ export const timelineEvents: TimelineEvent[] = [
   },
   {
     year: '2026',
-    title: 'Franco Hack tot erelid benoemd (1966–2026)',
-    description: 'Op 28 maart overlijdt Franco Hack — vierde dan, vader van Robin en Pascal, schoonzoon van Koos — op amper 59 jaar. Hij trainde velen mee naar hun zwarte band (samen kata’s oefenen, als uke), was een fijn sparpartner vooral in het ne-waza, zat met Jolanda achter de jurytafel bij legio toernooien en was coach bij internationale uitstapjes zoals het CSIT in Grenoble. Op 1 april houdt de club in Steenbergen en Oud-Vossemeer een minuut stilte voor hem — rond de mat gezeten, samen. De club benoemt hem tot erelid.',
+    title: 'Minuut stilte voor Franco Hack (1966–2026)',
+    description: 'Op 28 maart overlijdt Franco Hack — vierde dan, vader van Robin en Pascal, schoonzoon van Koos — op amper 59 jaar. Hij trainde velen mee naar hun zwarte band, oefende samen kata’s en fungeerde bij het dangraadexamen als uke voor verschillende judoka’s. Was een fijn sparpartner, vooral in het ne-waza, zat met Jolanda achter de jurytafel bij legio toernooien en was coach bij internationale uitstapjes zoals het CSIT in Grenoble. Op 1 april houdt de club in Steenbergen en Oud-Vossemeer een minuut stilte voor hem — rond de mat gezeten, samen.',
     icon: 'person',
     isMilestone: true,
     photoUrl: '/images/minuut-stilte-franco.jpg',
