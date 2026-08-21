@@ -59,6 +59,7 @@ export const storyChapters: StoryChapter[] = [
     title: 'De vlam blijft branden',
     era: '2021 — 2024',
     paragraphs: [
+      'De coronacrisis (2020–2021) was de genadeslag. De ledenkring was al geleidelijk kleiner geworden — voorheen hooguit heel langzaam, maar in de tweede helft van de jaren ’10 van de 21e eeuw vooral. De trainingen stonden maandenlang stil, en toen de mat weer open was, waren velen omgevallen en nooit meer teruggekomen. De club moest hard werken om op te bouwen — en doet dat tot op de dag van vandaag.',
       'In december 2021 overleed Koos van Wezel. De dojo hield adem, maar de geest hield stand: Robin, Pascal en Robert namen de volledige leiding over.',
       'Robin en Pascal gaven les in Oud-Vossemeer, een locatie die later vast bij de club zou horen. In 2024 groeide de dojo in Steenbergen uit met vernieuwde matten van 120 m² — vast opgeslagen, klaar voor de club en de verenigingen die de zaal delen.',
     ],

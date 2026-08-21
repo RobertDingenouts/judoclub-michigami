@@ -106,6 +106,13 @@ export const timelineEvents: TimelineEvent[] = [
     isMilestone: true,
   },
   {
+    year: "Jaren '10",
+    title: 'Geleidelijke afname & de coronacrisis',
+    description: 'De ledenkring wordt geleidelijk kleiner — eerst heel langzaam, maar vooral in de tweede helft van de jaren ’10 van de 21e eeuw. De coronacrisis (2020–2021) is de genadeslag: de trainingen staan maandenlang stil, en toen de mat weer open is, zijn velen omgevallen en nooit meer teruggekomen. De club moet daarna hard werken om op te bouwen.',
+    icon: 'club',
+    isMilestone: true,
+  },
+  {
     year: '2021',
     title: 'Volledige overname na Koos\' overlijden',
     description: 'Na het overlijden van Koos van Wezel in december 2021 nemen Robin, Pascal en Robert de club volledig over. Zij gaven al jaren samen met Koos les en zorgen ervoor dat de Michigami-geest levend blijft.',

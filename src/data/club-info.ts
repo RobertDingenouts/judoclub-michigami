@@ -177,7 +177,7 @@ Een jaarlijks hoogtepunt was de uitstap naar Pony Park Slagharen, waar clubleden
 
 ## Nieuwe Tijd (2005 — heden)
 
-Tussen 2005 en 2010 veranderde het judolandschap in de regio aanzienlijk: er kwamen minder regionale clubs en toernooien, en de invloed van de CJJF nam af. Judoclub Michigami wist echter op koers te blijven door zich voortdurend te ontwikkelen. Kata werd een integraal onderdeel van de trainingen, eigen technieken werden zorgvuldig gedocumenteerd, en de club bleef groeien.
+Tussen 2005 en 2010 veranderde het judolandschap in de regio aanzienlijk: er kwamen minder regionale clubs en toernooien, en de invloed van de CJJF nam af. Judoclub Michigami wist op koers te blijven door zich voortdurend te ontwikkelen. Kata werd een integraal onderdeel van de trainingen en eigen technieken werden zorgvuldig gedocumenteerd. De ledenkring werd in die tijd nog hooguit heel langzaam kleiner — pas in de tweede helft van de jaren ’10 van de 21e eeuw werd de afname duidelijker. De coronacrisis (2020–2021) was dan de genadeslag: de trainingen stonden maandenlang stil en toen de mat weer open was, waren velen omgevallen en nooit meer teruggekomen. Sindsdien werkt de club hard aan het opnieuw opbouwen.
 
 Rond 2010 brak een nieuwe fase aan. Robin Hack, Pascal Hack en Robert Dingenouts, die al bijna vanaf de oprichting bij de club waren, begonnen naast hun eigen training ook les te geven onder begeleiding van Koos. Hun toewijding werd beloond toen ze op 5 juni 2010 alle drie slaagden voor hun 1e Dan zwarte band, gevolgd door hun 2e Dan op 7 juni 2014 en hun 3e Dan op 4 juni 2016.
 
