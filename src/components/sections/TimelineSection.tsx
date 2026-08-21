@@ -3,10 +3,9 @@
 import { useRef, useState } from 'react';
 import Image from 'next/image';
 import { motion, useInView, useScroll, useTransform } from 'framer-motion';
-import { Button } from '@/components/ui/button';
 import { timelineEvents, type TimelineEvent } from '@/data/timeline-data';
 import { SakuraPetals, SumiLandscape, InkBleeds } from '@/components/sections/ZenScenery';
-import { Trophy, Award, MapPin, Star, Users, Swords, ArrowLeft, X } from 'lucide-react';
+import { Trophy, Award, MapPin, Star, Users, Swords, X } from 'lucide-react';
 import { type Section } from '@/components/nav-config';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -152,6 +151,7 @@ function TimelineItem({ event, index }: { event: TimelineEvent; index: number })
 
 /* ================================= COMPONENT =============================== */
 export function TimelineSection({ onNavigate }: { onNavigate?: (s: Section) => void }) {
+  void onNavigate; // gereserveerd voor latere navigatie
   const spineRef = useRef<HTMLDivElement>(null);
 
   // De ruglijn trekt zich mee met het scrollen
@@ -223,15 +223,6 @@ export function TimelineSection({ onNavigate }: { onNavigate?: (s: Section) => v
               meer dan 30 jaar de zachte weg, in Steenbergen en Oud-Vossemeer.
               Respect, discipline en passie.
             </p>
-            {onNavigate && (
-              <Button
-                onClick={() => onNavigate('info')}
-                variant="outline"
-                className="relative mt-6 border-[var(--sumi-700)]/40 text-[var(--sumi-800)] hover:bg-[var(--sumi-900)]/5 gap-2"
-              >
-                <ArrowLeft className="w-4 h-4" /> Terug naar Over Ons
-              </Button>
-            )}
           </div>
         </motion.div>
       </div>

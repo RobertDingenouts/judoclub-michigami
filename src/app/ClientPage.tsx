@@ -34,7 +34,8 @@ import { MusicPlayerProvider } from '@/context/MusicPlayerContext';
 import { PullToRefreshIndicator } from '@/components/PullToRefreshIndicator';
 import { StickyCTA } from '@/components/StickyCTA';
 import { TrialLessonForm } from '@/components/sections/TrialLessonForm';
-import { navGroups, mobileNavItems, groupHubMap, allNavItems, type Section } from '@/components/nav-config';
+import { navGroups, mobileNavItems, groupHubMap, allNavItems, clubPageSequence, type Section } from '@/components/nav-config';
+import { SectionPager } from '@/components/SectionPager';
 import {
   Drawer,
   DrawerContent,
@@ -428,6 +429,9 @@ export default function MichigamiApp() {
             {activeSection === 'profiel' && <ProfileSection />}
             {activeSection === 'examen-goedkeuren' && <ExamApprovalSection />}
             {activeSection === 'muziek' && <MusicSection />}
+            {clubPageSequence.includes(activeSection) && (
+              <SectionPager current={activeSection} onNavigate={setActiveSection} />
+            )}
             </motion.div>
           </AnimatePresence>
           </div>

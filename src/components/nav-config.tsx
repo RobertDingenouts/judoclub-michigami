@@ -5,7 +5,7 @@ import {
   Play, Eye, EyeOff, CheckCircle2, XCircle, Award, Trophy, Ban,
   Flame, Star, Users, Mail, Facebook, Youtube, ArrowRight,
   BookOpen, Shield, CircleDot, Sparkles, Video, Camera, Filter,
-  Plus, List, Layers, Search, Music
+  Plus, List, Layers, Search, Music, History
 } from 'lucide-react';
 
 // Backward compatibility alias - defined first to allow circular reference
@@ -59,6 +59,7 @@ export const navGroups: NavGroup[] = [
       { key: 'home', label: 'Home', icon: <Home className="w-4 h-4" /> },
       { key: 'agenda', label: 'Agenda', icon: <Calendar className="w-4 h-4" /> },
       { key: 'info', label: 'Over Ons', icon: <Info className="w-4 h-4" /> },
+      { key: 'timeline', label: 'Tijdlijn', icon: <History className="w-4 h-4" /> },
       { key: 'leden', label: 'Lid Worden', icon: <Users className="w-4 h-4" /> },
       { key: 'lestijden', label: 'Lestijden', icon: <Clock className="w-4 h-4" /> },
       { key: 'locatie', label: 'Locatie', icon: <MapPin className="w-4 h-4" /> },
@@ -90,6 +91,25 @@ export const navGroups: NavGroup[] = [
 ];
 
 export const allNavItems: NavItem[] = navGroups.flatMap(g => g.items);
+
+/**
+ * Volgorde van de club-pagina's — wordt gebruikt door de pagina-pager
+ * ("Terug naar …" / "Verder naar …" onderaan elke club-pagina).
+ * Afgeleid van navGroups zodat de volgorde meebeweegt als het menu verandert.
+ */
+export const clubPageSequence: Section[] = navGroups
+  .find(g => g.label === 'Club')?.items.map(i => i.key) ?? [];
+
+export const getClubPageNeighbors = (current: Section): { prev?: { key: Section; label: string }; next?: { key: Section; label: string } } => {
+  const idx = clubPageSequence.indexOf(current);
+  if (idx === -1) return {};
+  const prevItem = navGroups.find(g => g.label === 'Club')?.items[idx - 1];
+  const nextItem = navGroups.find(g => g.label === 'Club')?.items[idx + 1];
+  return {
+    prev: prevItem ? { key: prevItem.key, label: prevItem.label } : undefined,
+    next: nextItem ? { key: nextItem.key, label: nextItem.label } : undefined,
+  };
+};
 
 export const mobileNavItems: NavItem[] = [
   { key: 'home', label: 'Home', icon: <Home className="w-5 h-5" /> },
