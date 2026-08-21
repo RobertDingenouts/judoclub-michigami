@@ -4,6 +4,7 @@ export interface TimelineEvent {
   description: string;
   icon?: 'judo' | 'club' | 'person' | 'award' | 'location' | 'star';
   photoUrl?: string;
+  photoCaption?: string;
   isMilestone?: boolean;
 }
 
@@ -54,14 +55,14 @@ export const timelineEvents: TimelineEvent[] = [
   {
     year: '1993',
     title: 'Oprichting Judoclub Michigami',
-    description: 'Voortbouwend op zijn ervaringen als trainer, richt Koos van Wezel Judoclub Michigami op in Steenbergen. De naam is een eerbetoon aan zijn leraar Haku Michigami — ook meester van Anton Geesink. Training start in Sportcentrum De Knotwilg.',
+    description: 'Voortbouwend op zijn ervaringen als trainer, richten Koos van Wezel, zijn zoon Erwin van Wezel en Marinus Smout Judoclub Michigami op — officieel gevestigd te Nieuw-Vossemeer, met de dojo in Sportcentrum De Knotwilg in Steenbergen. De naam is een eerbetoon aan leraar Haku Michigami — ook meester van Anton Geesink.',
     icon: 'club',
     isMilestone: true,
   },
   {
     year: "Jaren '90",
     title: 'Gouden jaren Michigami',
-    description: 'De gouden tijd van de club: donderdag twee trainingsgroepen, vrijdag drie groepen. Les in Nieuw-Vossemeer en Scherpenisse. Elk jaar toernooien in Londen en Parijs. Pony Park Slagharen met les van Anton Geesink zelf. Gezamenlijke zaterdagochtend-training met Bergen op Zoom.',
+    description: 'De gouden tijd van de club: donderdag twee trainingsgroepen, vrijdag drie groepen. Les in Nieuw-Vossemeer en Scherpenisse. Elk jaar toernooien in Londen en Parijs. Pony Park Slagharen met les van Anton Geesink zelf. Een echte familieclub: zoon Erwin is zelf actief en geeft weleens les, Els steunt de club altijd en dochter Jolanda is een vaste waarde. Jolanda trouwt met Franco Hack; samen kregen zij drie zoons, waaronder de tweeling Robin en Pascal — de twee kleine judoka’s die later het bestuur en de trainers van Michigami worden.',
     icon: 'star',
   },
   {
@@ -115,6 +116,15 @@ export const timelineEvents: TimelineEvent[] = [
     title: 'Wendy Jansen behaalt 1e Dan',
     description: 'Na een lange tijd ertussenuit te zijn geweest met bruine band, keert Wendy terug en behaalt ze in 2024 haar 1e Dan zwarte band. Ze geeft nu les in zowel Oud-Vossemeer als Steenbergen en is verantwoordelijk voor EHBO.',
     icon: 'award',
+  },
+  {
+    year: '2026',
+    title: 'Franco Hack tot erelid benoemd (1966–2026)',
+    description: 'Op 28 maart overlijdt Franco Hack — vierde dan, vader van Robin en Pascal, schoonzoon van Koos — op amper 59 jaar. Hij trainde velen mee naar hun zwarte band (samen kata’s oefenen, als uke), was een fijn sparpartner vooral in het ne-waza, zat met Jolanda achter de jurytafel bij legio toernooien en was coach bij internationale uitstapjes zoals het CSIT in Grenoble. Op 1 april houdt de club in Steenbergen en Oud-Vossemeer een minuut stilte voor hem — rond de mat gezeten, samen. De club benoemt hem tot erelid.',
+    icon: 'person',
+    isMilestone: true,
+    photoUrl: '/images/minuut-stilte-franco.jpg',
+    photoCaption: '1 april 2026 · minuut stilte voor Franco Hack, De Vossenkuil Oud-Vossemeer',
   },
   {
     year: '2026',

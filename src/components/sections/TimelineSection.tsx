@@ -1,11 +1,12 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
+import Image from 'next/image';
 import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { timelineEvents, type TimelineEvent } from '@/data/timeline-data';
 import { SakuraPetals, SumiLandscape, InkBleeds } from '@/components/sections/ZenScenery';
-import { Trophy, Award, MapPin, Star, Users, Swords, ArrowLeft } from 'lucide-react';
+import { Trophy, Award, MapPin, Star, Users, Swords, ArrowLeft, X } from 'lucide-react';
 import { type Section } from '@/components/nav-config';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -22,6 +23,7 @@ const iconMap: Record<string, React.ReactNode> = {
 /* --------------------------- tijdlijn-item -------------------------------- */
 function TimelineItem({ event, index }: { event: TimelineEvent; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
+  const [photoOpen, setPhotoOpen] = useState(false);
   const inView = useInView(ref, { once: true, margin: '-120px' });
   const isLeft = index % 2 === 0;
 
@@ -77,6 +79,62 @@ function TimelineItem({ event, index }: { event: TimelineEvent; index: number })
               {event.title}
             </h3>
             <p className="text-sm text-[var(--sumi-700)] leading-[1.75] mt-2">{event.description}</p>
+
+            {/* Foto van het moment — klikbaar voor lightbox */}
+            {event.photoUrl && (
+              <figure className="mt-4">
+                <button
+                  type="button"
+                  onClick={() => setPhotoOpen(true)}
+                  className="group relative block w-full overflow-hidden rounded-lg border border-[var(--sumi-700)]/20 shadow-[0_10px_30px_-18px_rgba(42,33,28,0.7)]"
+                  aria-label={event.photoCaption ? `Grootbeeld: ${event.photoCaption}` : 'Grootbeeld openen'}
+                >
+                  <div className="relative w-full aspect-square">
+                    <Image
+                      src={event.photoUrl}
+                      alt={event.photoCaption || event.title}
+                      fill
+                      sizes="(max-width: 640px) 100vw, 420px"
+                      className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                    />
+                  </div>
+                </button>
+                {event.photoCaption && (
+                  <figcaption className="mt-2 text-center text-xs text-[var(--sumi-500)]">{event.photoCaption}</figcaption>
+                )}
+                {photoOpen && (
+                  <div
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm"
+                    onClick={() => setPhotoOpen(false)}
+                    role="dialog"
+                    aria-modal="true"
+                  >
+                    <button
+                      type="button"
+                      className="absolute right-4 top-4 rounded-full p-2 text-white/80 hover:text-white"
+                      onClick={() => setPhotoOpen(false)}
+                      aria-label="Sluiten"
+                    >
+                      <X className="h-7 w-7" />
+                    </button>
+                    <div className="flex max-h-full max-w-3xl flex-col items-center" onClick={(e) => e.stopPropagation()}>
+                      <div className="relative w-full max-w-xl">
+                        <Image
+                          src={event.photoUrl}
+                          alt={event.photoCaption || event.title}
+                          fill
+                          sizes="(max-width: 1024px) 100vw, 1024px"
+                          className="object-contain rounded-lg shadow-2xl"
+                        />
+                      </div>
+                      {event.photoCaption && (
+                        <p className="mt-3 max-w-xl text-center text-sm text-white/70">{event.photoCaption}</p>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </figure>
+            )}
 
             {/* Rode onderstreep bij milestones */}
             {event.isMilestone && (
