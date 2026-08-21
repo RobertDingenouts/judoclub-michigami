@@ -194,9 +194,10 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
       <div className="relative mt-24">
         <div className="mx-auto max-w-4xl px-5 sm:px-8">
           <InkReveal className="text-center">
-            <h2 className={cn('ink-title font-display text-3xl sm:text-4xl', INK)}>Twee eerbetuigingen</h2>
+            <h2 className={cn('ink-title font-display text-3xl sm:text-4xl', INK)}>Eerbetuigingen</h2>
             <p className={cn('mx-auto mt-2 max-w-lg text-sm', INK_SOFT)}>
-              De meester die de zachte weg naar het westen bracht — en de man die hier zijn wortels sloeg.
+              De meester die de zachte weg naar het westen bracht — en de mensen die hier hun
+              wortels sloegen.
             </p>
           </InkReveal>
           <div className="mt-10 grid gap-6 lg:grid-cols-2">
@@ -214,6 +215,16 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
               title="Koos van Wezel"
               sub="八段 · 8e Dan"
               body="Meester in grondwerk, internationaal gerenommeerd scheidsrechter en hoofdscheidsrechter bij de CJJF. Hij groeide veel judoka’s groot en nam ze mee naar legio nationale en internationale toernooien — streng als het nodig was, maar vooral met de zachte hand."
+            />
+            <TributeCard
+              kanji="絆"
+              stamp="段"
+              label="Eerbewijs aan het erelid"
+              title="Franco Hack"
+              sub="1966–2026 · 4e Dan"
+              body="Vader van Robin en Pascal, schoonzoon van Koos. Hij droeg de vlam van de club door het vuur — en nam in 2026 de titel erelid mee."
+              photoUrl="/images/minuut-stilte-franco.jpg"
+              photoCaption="1 april 2026 · minuut stilte voor Franco, De Vossenkuil Oud-Vossemeer"
             />
           </div>
         </div>
@@ -233,9 +244,6 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
               <MasterCard key={i} index={i} name={m.name} dan={m.dan} danLabel={m.danLabel} role={m.role} />
             ))}
           </div>
-
-          {/* Herdenking — Franco Hack, erelid */}
-          <FrancoRemembrance />
         </div>
       </div>
 
@@ -368,10 +376,12 @@ function Chapter({ index, data }: { index: number; data: (typeof storyChapters)[
 }
 
 /* --- Eerbewijz-kaart ------------------------------------------------------ */
-function TributeCard({ kanji, stamp, label, title, sub, body }: {
+function TributeCard({ kanji, stamp, label, title, sub, body, photoUrl, photoCaption }: {
   kanji: string; stamp?: string; label: string; title: string; sub: string; body: string;
+  photoUrl?: string; photoCaption?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const [photoOpen, setPhotoOpen] = useState(false);
   const inView = useInView(ref, { once: true, margin: '-100px' });
   return (
     <div ref={ref}
@@ -394,6 +404,61 @@ function TributeCard({ kanji, stamp, label, title, sub, body }: {
           <InkType text={body} as="p" className={cn('mt-4 font-serif leading-relaxed', INK_SOFT)} />
         </div>
       </div>
+
+      {photoUrl && (
+        <figure className="mt-6">
+          <button
+            type="button"
+            onClick={() => setPhotoOpen(true)}
+            className="group relative block w-full overflow-hidden rounded-lg border border-[var(--sumi-700)]/20 shadow-[0_10px_30px_-18px_rgba(42,33,28,0.7)]"
+            aria-label={photoCaption ? `Grootbeeld: ${photoCaption}` : 'Grootbeeld'}
+          >
+            <div className="relative w-full aspect-[16/6]">
+              <Image
+                src={photoUrl}
+                alt={photoCaption ?? title}
+                fill
+                sizes="(max-width: 640px) 100vw, 900px"
+                className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+              />
+            </div>
+          </button>
+          {photoCaption && (
+            <figcaption className="mt-2 text-center text-xs text-[var(--sumi-500)]">{photoCaption}</figcaption>
+          )}
+          {photoOpen && (
+            <div
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm"
+              onClick={() => setPhotoOpen(false)}
+              role="dialog"
+              aria-modal="true"
+            >
+              <button
+                type="button"
+                className="absolute right-4 top-4 rounded-full p-2 text-white/80 hover:text-white"
+                onClick={() => setPhotoOpen(false)}
+                aria-label="Sluiten"
+              >
+                <X className="h-7 w-7" />
+              </button>
+              <div className="flex max-h-full max-w-3xl flex-col items-center" onClick={(e) => e.stopPropagation()}>
+                <div className="relative w-full max-w-xl aspect-[16/10]">
+                  <Image
+                    src={photoUrl}
+                    alt={photoCaption ?? title}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 1024px"
+                    className="object-contain rounded-lg shadow-2xl"
+                  />
+                </div>
+                {photoCaption && (
+                  <p className="mt-3 max-w-xl text-center text-sm text-white/70">{photoCaption}</p>
+                )}
+              </div>
+            </div>
+          )}
+        </figure>
+      )}
     </div>
   );
 }
@@ -418,81 +483,3 @@ function MasterCard({ index, name, dan, danLabel, role }: {
   );
 }
 
-/* --- Herdenking Franco Hack (erelid) ------------------------------------- */
-function FrancoRemembrance() {
-  const ref = useRef<HTMLDivElement>(null);
-  const [photoOpen, setPhotoOpen] = useState(false);
-  const inView = useInView(ref, { once: true, margin: '-100px' });
-  const caption = '1 april 2026 — minuut stilte voor Franco, De Vossenkuil Oud-Vossemeer';
-  return (
-    <div ref={ref} className={cn('ink-card ink-write relative mt-10 overflow-hidden rounded-xl border border-[var(--sumi-700)]/25 p-7 sm:p-8', inView && 'ink-write-run')}>
-      <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
-          <div className="relative shrink-0">
-            <div className="flex h-20 w-20 items-center justify-center rounded-lg border border-[var(--sumi-700)]/30 bg-[var(--sumi-900)]/5">
-              <span className={cn('font-jp text-4xl', INK)}>絆</span>
-            </div>
-            <span className="absolute -right-2 -bottom-2 flex h-9 w-9 rotate-[-8deg] items-center justify-center rounded-sm bg-[var(--sumi-800)] font-jp text-xs text-[var(--washi-50)] shadow-lg">
-              四段
-            </span>
-          </div>
-          <div className="min-w-0 flex-1">
-            <div className={cn('text-xs uppercase tracking-[0.3em]', KIN)}>Erherdenking · Erelid</div>
-            <h3 className={cn('mt-2 font-display text-2xl', INK)}>Franco Hack</h3>
-            <div className={cn('mt-1 font-display text-base', SHU)}>1966 – 2026 · 4e Dan · erelid van de club</div>
-            <InkType text="Vader van Robin en Pascal, schoonzoon van Koos. Vierde dan en een vast gezicht bij Michigami: hij trainde velen mee naar hun zwarte band — samen kata’s oefenen, zelf als uke — en was een fijne sparpartner, vooral in het ne-waza. Met Jolanda zat hij achter de jurytafel bij legio toernooien, en als coach was hij erbij toen Robert, Robin en Pascal internationaal in actie kwamen, zoals op het CSIT in Grenoble. Op 28 maart 2026 overleed Franco op amper 59 jaar." as="p" className={cn('mt-4 font-serif leading-relaxed', INK_SOFT)} />
-            <InkType text="Op 1 april 2026 hield de club in Steenbergen en in Oud-Vossemeer een minuut stilte voor hem — rond de mat gezeten, samen. De club benoemde Franco tot erelid." as="p" className={cn('mt-3 font-serif leading-relaxed', INK_SOFT)} />
-
-            {/* Foto van de minuut stilte */}
-            <figure className="mt-6">
-              <button
-                type="button"
-                onClick={() => setPhotoOpen(true)}
-                className="group relative block w-full overflow-hidden rounded-lg border border-[var(--sumi-700)]/20 shadow-[0_10px_30px_-18px_rgba(42,33,28,0.7)]"
-                aria-label={`Grootbeeld: ${caption}`}
-              >
-                <div className="relative w-full aspect-square sm:aspect-[16/10]">
-                  <Image
-                    src="/images/minuut-stilte-franco.jpg"
-                    alt={caption}
-                    fill
-                    sizes="(max-width: 640px) 100vw, 640px"
-                    className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-                  />
-                </div>
-              </button>
-              <figcaption className="mt-2 text-center text-xs text-[var(--sumi-500)]">{caption}</figcaption>
-              {photoOpen && (
-                <div
-                  className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm"
-                  onClick={() => setPhotoOpen(false)}
-                  role="dialog"
-                  aria-modal="true"
-                >
-                  <button
-                    type="button"
-                    className="absolute right-4 top-4 rounded-full p-2 text-white/80 hover:text-white"
-                    onClick={() => setPhotoOpen(false)}
-                    aria-label="Sluiten"
-                  >
-                    <X className="h-7 w-7" />
-                  </button>
-                  <div className="flex max-h-full max-w-3xl flex-col items-center" onClick={(e) => e.stopPropagation()}>
-                    <div className="relative w-full max-w-xl">
-                      <Image
-                        src="/images/minuut-stilte-franco.jpg"
-                        alt={caption}
-                        fill
-                        sizes="(max-width: 1024px) 100vw, 1024px"
-                        className="object-contain rounded-lg shadow-2xl"
-                      />
-                    </div>
-                    <p className="mt-3 max-w-xl text-center text-sm text-white/70">{caption}</p>
-                  </div>
-                </div>
-              )}
-            </figure>
-          </div>
-      </div>
-    </div>
-  );
-}
