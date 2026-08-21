@@ -10,6 +10,9 @@ export interface StoryChapter {
   title: string;
   era: string;
   paragraphs: string[];
+  photoUrl?: string;
+  photoCaption?: string;
+  photoAspect?: string;
 }
 
 export const storyChapters: StoryChapter[] = [
@@ -33,6 +36,9 @@ export const storyChapters: StoryChapter[] = [
       'De vereniging leefde ook buiten de mat. Koos’ zoon Erwin was in die jaren zelf actief en gaf weleens les, zijn vrouw Els steunde de club altijd, en dochter Jolanda was een vaste waarde. Jolanda trouwde met Franco Hack — samen kregen zij drie zoons, waaronder de tweeling Robin en Pascal. Beide jongens stonden al als kind op de mat, en zouden later het bestuursorgaan en trainers van Michigami worden.',
       'De wedstrijdgroep reisde elk jaar naar grote toernooien in Londen en Parijs. Elk jaar was de uitstap naar Pony Park Slagharen een hoogtepunt, waar judoka’s sparren mochten met topfiguren zoals Anton Geesink zelf. In die tijd stond de regio bol van judo — en Michigami was een van de motoren ervan.',
     ],
+    photoUrl: '/uploads/2/0/5/8/20583900/2133725_orig.jpg',
+    photoCaption: 'Jaarlijks trainingskamp in Slagharen — met Anton Geesink op de foto',
+    photoAspect: 'aspect-[4/3]',
   },
   {
     kanji: '継',
@@ -43,6 +49,9 @@ export const storyChapters: StoryChapter[] = [
       'Tussen 2005 en 2010 veranderde het judolandschap: regionale clubs en toernooien verdwenen. Michigami hield vol en bleef doorgaan, door zich voort te durven te ontwikkelen: kata werd integraal onderdeel van de training, eigen technieken zorgvuldig gedocumenteerd.',
       'Rond 2010 brak een nieuwe fase aan. Robin Hack, Pascal Hack en Robert Dingenouts — al bijna vanaf de oprichting bij de club — begonnen naast hun eigen training ook les te geven, onder begeleiding van Koos. Op 5 juni 2010 slaagden ze allen voor de 1e Dan, in 2014 voor de 2e Dan en in 2016 voor de 3e Dan. Ook Wendy Jansen, die al bij Koos begon in Tholen in 1988, was een vaste waarde in de club — zij zou haar zwarte band in 2024 halen.',
     ],
+    photoUrl: '/uploads/2/0/5/8/20583900/59265_orig.jpg',
+    photoCaption: 'Na het behalen van de 2e Dan — v.l.n.r. Robert, Pascal, Koos en Robin',
+    photoAspect: 'aspect-[4/3]',
   },
   {
     kanji: '合',

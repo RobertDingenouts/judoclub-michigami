@@ -7,6 +7,7 @@ import { timelineEvents, type TimelineEvent } from '@/data/timeline-data';
 import { SakuraPetals, SumiLandscape, InkBleeds } from '@/components/sections/ZenScenery';
 import { Trophy, Award, MapPin, Star, Users, Swords, X } from 'lucide-react';
 import { type Section } from '@/components/nav-config';
+import { cn } from '@/lib/utils';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -88,7 +89,7 @@ function TimelineItem({ event, index }: { event: TimelineEvent; index: number })
                   className="group relative block w-full overflow-hidden rounded-lg border border-[var(--sumi-700)]/20 shadow-[0_10px_30px_-18px_rgba(42,33,28,0.7)]"
                   aria-label={event.photoCaption ? `Grootbeeld: ${event.photoCaption}` : 'Grootbeeld openen'}
                 >
-                  <div className="relative w-full aspect-square">
+                  <div className={cn('relative w-full', event.photoAspect ?? 'aspect-square')}>
                     <Image
                       src={event.photoUrl}
                       alt={event.photoCaption || event.title}

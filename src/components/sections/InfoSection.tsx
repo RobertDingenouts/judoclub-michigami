@@ -338,6 +338,7 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
 /* --- Een hoofdstuk aan de ruglijn ---------------------------------------- */
 function Chapter({ index, data }: { index: number; data: (typeof storyChapters)[number] }) {
   const ref = useRef<HTMLDivElement>(null);
+  const [photoOpen, setPhotoOpen] = useState(false);
   const inView = useInView(ref, { once: true, margin: '-120px' });
   return (
     <div ref={ref} className="relative pl-10 sm:pl-14">
@@ -362,6 +363,62 @@ function Chapter({ index, data }: { index: number; data: (typeof storyChapters)[
               <InkType key={i} text={p} as="p" className={cn('font-serif leading-relaxed', INK_SOFT)} />
             ))}
           </div>
+
+          {/* Foto van het hoofdstuk — klikbaar voor grootbeeld */}
+          {data.photoUrl && (
+            <figure className="mt-5">
+              <button
+                type="button"
+                onClick={() => setPhotoOpen(true)}
+                className="group relative block w-full overflow-hidden rounded-lg border border-[var(--sumi-700)]/20 shadow-[0_10px_30px_-18px_rgba(42,33,28,0.7)]"
+                aria-label={data.photoCaption ? `Grootbeeld: ${data.photoCaption}` : 'Grootbeeld openen'}
+              >
+                <div className={cn('relative w-full', data.photoAspect ?? 'aspect-[16/10]')}>
+                  <Image
+                    src={data.photoUrl}
+                    alt={data.photoCaption ?? data.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 700px"
+                    className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                  />
+                </div>
+              </button>
+              {data.photoCaption && (
+                <figcaption className="mt-2 text-center text-xs text-[var(--sumi-500)]">{data.photoCaption}</figcaption>
+              )}
+              {photoOpen && (
+                <div
+                  className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm"
+                  onClick={() => setPhotoOpen(false)}
+                  role="dialog"
+                  aria-modal="true"
+                >
+                  <button
+                    type="button"
+                    className="absolute right-4 top-4 rounded-full p-2 text-white/80 hover:text-white"
+                    onClick={() => setPhotoOpen(false)}
+                    aria-label="Sluiten"
+                  >
+                    <X className="h-7 w-7" />
+                  </button>
+                  <div className="flex max-h-full max-w-3xl flex-col items-center" onClick={(e) => e.stopPropagation()}>
+                    <div className="relative w-full max-w-2xl aspect-[16/11]">
+                      <Image
+                        src={data.photoUrl}
+                        alt={data.photoCaption ?? data.title}
+                        fill
+                        sizes="(max-width: 1024px) 100vw, 1024px"
+                        className="object-contain rounded-lg shadow-2xl"
+                      />
+                    </div>
+                    {data.photoCaption && (
+                      <p className="mt-3 max-w-xl text-center text-sm text-white/70">{data.photoCaption}</p>
+                    )}
+                  </div>
+                </div>
+              )}
+            </figure>
+          )}
         </div>
       </div>
     </div>

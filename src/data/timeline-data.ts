@@ -5,6 +5,7 @@ export interface TimelineEvent {
   icon?: 'judo' | 'club' | 'person' | 'award' | 'location' | 'star';
   photoUrl?: string;
   photoCaption?: string;
+  photoAspect?: string;
   isMilestone?: boolean;
 }
 
@@ -64,6 +65,9 @@ export const timelineEvents: TimelineEvent[] = [
     title: 'Gouden jaren Michigami',
     description: 'De gouden tijd van de club: donderdag twee trainingsgroepen, vrijdag drie groepen. Les in Nieuw-Vossemeer en Scherpenisse. Elk jaar toernooien in Londen en Parijs. Pony Park Slagharen met les van Anton Geesink zelf. Een echte familieclub: zoon Erwin is zelf actief en geeft weleens les, Els steunt de club altijd en dochter Jolanda is een vaste waarde. Jolanda trouwt met Franco Hack; samen kregen zij drie zoons, waaronder de tweeling Robin en Pascal — de twee kleine judoka’s die later het bestuur en de trainers van Michigami worden.',
     icon: 'star',
+    photoUrl: '/uploads/2/0/5/8/20583900/2133725_orig.jpg',
+    photoCaption: 'Jaarlijks trainingskamp in Slagharen — met Anton Geesink op de foto',
+    photoAspect: 'aspect-[4/3]',
   },
   {
     year: '2010',
@@ -78,6 +82,9 @@ export const timelineEvents: TimelineEvent[] = [
     description: 'Op 7 juni 2014 behalen Robin Hack, Pascal Hack en Robert Dingenouts gezamenlijk hun 2e Dan zwarte band. Een mooie mijlpaal in hun lange judo-reis.',
     icon: 'award',
     isMilestone: true,
+    photoUrl: '/uploads/2/0/5/8/20583900/59265_orig.jpg',
+    photoCaption: 'Na het behalen van de 2e Dan — v.l.n.r. Robert, Pascal, Koos en Robin',
+    photoAspect: 'aspect-[4/3]',
   },
   {
     year: '2015',
