@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import Image from 'next/image';
 
 export function ImageLightbox({
@@ -14,7 +15,7 @@ export function ImageLightbox({
 }) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
 
-  return (
+  const overlay = (
     <div
       className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
       onClick={onClose}
@@ -57,13 +58,14 @@ export function ImageLightbox({
       )}
 
       {/* Image */}
-      <div className="max-w-4xl max-h-[80vh] flex flex-col items-center min-h-0" onClick={(e) => e.stopPropagation()}>
-        <div className="relative w-full max-w-3xl flex-1 min-h-0 max-h-[70vh] flex items-center justify-center">
+      <div className="w-full max-w-4xl max-h-[85vh] flex flex-col items-center" onClick={(e) => e.stopPropagation()}>
+        <div className="relative w-full max-w-3xl h-[62vh] max-h-[62vh] flex items-center justify-center">
           <Image
             src={images[currentIndex]}
             alt={`Foto ${currentIndex + 1}`}
             fill
             sizes="(max-width: 1280px) 100vw, 1280px"
+            loading="eager"
             className="object-contain rounded-lg shadow-2xl"
           />
         </div>
@@ -75,4 +77,10 @@ export function ImageLightbox({
       </div>
     </div>
   );
+
+  // Portal naar body: position:fixed wordt anders opgevangen door een
+  // transform op een ancestor (sectie-overgang) en de overlay dekt dan
+  // niet de viewport maar de hele sectie.
+  if (typeof document === 'undefined') return null;
+  return createPortal(overlay, document.body);
 }
