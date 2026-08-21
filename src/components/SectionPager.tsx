@@ -17,7 +17,7 @@ export function SectionPager({ current, onNavigate }: {
   if (!prev && !next) return null;
 
   return (
-    <nav aria-label="Paginanavigatie" className="mx-auto mt-16 flex w-full max-w-2xl items-center justify-between gap-3 sm:mt-20">
+    <nav aria-label="Paginanavigatie" className="relative z-10 mx-auto mt-16 flex w-full max-w-2xl items-center justify-between gap-3 sm:mt-20">
       {prev ? (
         <button
           type="button"
