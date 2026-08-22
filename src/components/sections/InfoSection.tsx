@@ -12,6 +12,7 @@ import {
   SumiLandscape, SakuraPetals, InkBleeds, WatermarkKanji, VoxelGrid,
 } from '@/components/sections/ZenScenery';
 import { useZenProgress } from '@/lib/zen-scroll';
+import { ZenCanvas } from '@/components/ui/ZenCanvas';
 import type { Section } from '@/components/nav-config';
 
 /* Kleuren op zacht oud-creme papier: donkere sumi-inkt in plaats van washi-licht */
@@ -146,71 +147,87 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
       <InkBleeds tone="light" />
 
       {/* ============================ PROLOOG ============================= */}
-      <div className="relative flex min-h-[92vh] flex-col items-center justify-center px-5 py-24 text-center sm:px-8">
-        <SumiLandscape className="opacity-90" tone="light" />
+      {/* Cinematische openings-scène: dojo in gouden-uur-licht */}
+      <div className="relative flex min-h-[100svh] flex-col items-center justify-center overflow-hidden px-5 py-24 text-center sm:px-8">
+        {/* Pixel-scène met langzame Ken-Burns-zoom */}
+        <div className="zen-cinema absolute inset-0">
+          <Image
+            src="/zen/dojo.webp"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="ken-burns object-cover"
+          />
+          {/* Scrim: donker onderaan voor tekstleesbaarheid, vignet aan de randen */}
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_90%_80%_at_50%_42%,rgba(24,18,14,0.12)_0%,rgba(20,15,11,0.62)_78%,rgba(16,12,9,0.85)_100%)]" />
+          <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-[rgba(18,13,9,0.92)] via-[rgba(18,13,9,0.45)] to-transparent" />
+        </div>
+        <ZenCanvas rays dust={34} petals={6} tint="warm" className="z-10" />
+
         <motion.div
-          style={{
-            y: prologY,
-            background: 'radial-gradient(ellipse 72% 62% at 50% 46%, rgba(248,241,229,0.88) 0%, rgba(248,241,229,0.55) 48%, rgba(248,241,229,0) 74%)',
-            WebkitMaskImage: 'radial-gradient(ellipse 82% 74% at 50% 46%, black 62%, transparent 86%)',
-            maskImage: 'radial-gradient(ellipse 82% 74% at 50% 46%, black 62%, transparent 86%)',
-          }}
-          className="relative z-10 max-w-2xl rounded-[28px] px-2 py-8 sm:px-10"
-          // zachte papier-scrim: houdt de gecentreerde tekst leesbaar boven
-          // de drukke inktscène, vervaagt naar buiten (scene blijft zichtbaar)
+          style={{ y: prologY }}
+          className="relative z-20 max-w-2xl px-2 py-8 sm:px-10"
         >
-          <InkReveal as="p" className={cn('text-xs font-semibold uppercase tracking-[0.35em]', KIN)}>
-            Est. 1993 · Steenbergen
+          {/* Letterbox-accent boven de titel */}
+          <InkReveal className="mx-auto mb-7 flex w-fit items-center gap-3">
+            <span className="block h-px w-10 bg-gradient-to-r from-transparent to-[var(--kin-400)]/80" />
+            <p className={cn('text-xs font-semibold uppercase tracking-[0.35em]', 'text-[var(--kin-300)] drop-shadow-[0_1px_6px_rgba(0,0,0,0.8)]')}>
+              Est. 1993 · Steenbergen
+            </p>
+            <span className="block h-px w-10 bg-gradient-to-l from-transparent to-[var(--kin-400)]/80" />
           </InkReveal>
           <InkReveal delay={0.2} className="relative mt-6">
-            <WatermarkKanji char="柔" className="-inset-x-24 -top-28" size={360} tone="light" />
+            <WatermarkKanji char="柔" className="-inset-x-24 -top-28 opacity-25 invert" size={360} tone="dark" />
             <h1 className={cn(
-              'ink-title relative font-display text-4xl leading-[1.08] sm:text-6xl',
-              INK,
+              'ink-title relative font-display text-4xl leading-[1.08] text-[#f7efe2] drop-shadow-[0_2px_18px_rgba(0,0,0,0.85)] sm:text-6xl',
             )}>
               Al dertig jaar<br />
-              <span className={SHU}>bloeit judo hier</span>
+              <span className="text-[var(--kin-300)] drop-shadow-[0_0_24px_rgba(255,205,120,0.35)]">bloeit judo hier</span>
             </h1>
           </InkReveal>
           <InkType delay={0.4} text={
             'Michigami groeide uit tot een van de grootste judoclubs van de regio — een bloeiende club die altijd doorging, door de gouden jaren en de stillere tijden. Meer dan dertig jaar later bloeit het judo hier nog steeds. Dit is het verhaal van een pad dat hier nooit gestopt heeft.'
           } as="p" className={cn(
             'mx-auto mt-7 max-w-xl font-serif text-lg leading-relaxed sm:text-xl',
-            INK_SOFT,
+            'text-[#e8ddcb] [text-shadow:0_1px_10px_rgba(0,0,0,0.9)]',
           )} />
 
-          <div className={cn('mx-auto mt-10 grid max-w-lg grid-cols-3 divide-x', 'divide-[var(--sumi-500)]/25')}>
+          <div className={cn('mx-auto mt-10 grid max-w-lg grid-cols-3 divide-x', 'divide-white/20')}>
             {[
               { n: 1993, l: 'opgericht', raw: true },
               { n: 2, l: 'locaties' },
               { n: 8, l: 'dan oprichter', suffix: 'e' },
             ].map((s, i) => (
               <InkReveal key={i} delay={0.5 + i * 0.12} className="px-3">
-                <div className={cn('font-display text-3xl sm:text-4xl', i === 2 ? SHU : INK)}>
+                <div className={cn('font-display text-3xl sm:text-4xl', i === 2 ? 'text-[var(--kin-300)]' : 'text-[#f7efe2]')}>
                   {s.raw ? (
                     <>19<CountUp value={93} delay={0.5 + i * 0.12} /></>
                   ) : (
                     <CountUp value={s.n} suffix={s.suffix ?? ''} delay={0.5 + i * 0.12} />
                   )}
                 </div>
-                <div className={cn('mt-1 text-[11px] uppercase tracking-[0.2em]', INK_FAINT)}>{s.l}</div>
+                <div className={cn('mt-1 text-[11px] uppercase tracking-[0.2em]', 'text-[#c9bda6]')}>{s.l}</div>
               </InkReveal>
             ))}
           </div>
 
           <InkReveal delay={0.65} className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Button onClick={() => onNavigate?.('leden')}
-              className="bg-[var(--shu-600)] px-7 py-3 text-[var(--washi-50)] hover:bg-[var(--shu-700)]">
+              className="bg-[var(--shu-600)] px-7 py-3 text-[var(--washi-50)] shadow-[0_8px_30px_-8px_rgba(169,0,0,0.7)] hover:bg-[var(--shu-700)]">
               Boek een proefles
             </Button>
             <Button onClick={() => onNavigate?.('timeline')}
               variant="outline"
-              className="border-[var(--sumi-700)]/40 bg-transparent text-[var(--sumi-800)] hover:bg-[var(--sumi-900)]/5 hover:text-[var(--sumi-900)]">
+              className="border-[#f7efe2]/40 bg-black/30 text-[#f7efe2] backdrop-blur-sm hover:bg-[#f7efe2]/10 hover:text-white">
               <ScrollText className="mr-2 h-4 w-4" />
               Bekijk de volledige tijdlijn
             </Button>
           </InkReveal>
         </motion.div>
+
+        {/* Overgang naar papier */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-28 bg-gradient-to-b from-transparent to-[#f8f1e5]" />
       </div>
 
       {/* ====================== HOOFDSTUKKEN (verhaal) ===================== */}
@@ -259,6 +276,7 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
               label="Eerbewijs aan de meester"
               title="Haku Michigami"
               sub="1912–2002 · de zachte weg naar het westen"
+              portraitUrl="/zen/sensei.webp"
               body="Hij bracht judo naar het westen: dertien jaar in Nederland, technisch adviseur van de bond en vormgever van grootse judoka’s — waaronder Anton Geesink. Zijn traditie is de ziel die hier in Steenbergen haar naam draagt."
             />
             <TributeCard
@@ -328,25 +346,35 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
       </div>
 
       {/* ============================ EPILOOG ============================= */}
-      <div className="relative mt-24 flex min-h-[70vh] flex-col items-center justify-center px-5 py-24 text-center sm:px-8">
-        <SumiLandscape className="opacity-85" tone="light" />
-        <div
-          style={{
-            background: 'radial-gradient(ellipse 74% 64% at 50% 46%, rgba(248,241,229,0.85) 0%, rgba(248,241,229,0.5) 48%, rgba(248,241,229,0) 74%)',
-            WebkitMaskImage: 'radial-gradient(ellipse 84% 76% at 50% 46%, black 62%, transparent 86%)',
-            maskImage: 'radial-gradient(ellipse 84% 76% at 50% 46%, black 62%, transparent 86%)',
-          }}
-          className="relative z-10 max-w-xl rounded-[24px] px-2 py-8 sm:px-10"
+      {/* Cinematische slot-scène: torii in het schemerlicht */}
+      <div className="relative mt-24 flex min-h-[88svh] flex-col items-center justify-center overflow-hidden px-5 py-24 text-center sm:px-8">
+        <div className="zen-cinema absolute inset-0">
+          <Image
+            src="/zen/torii.webp"
+            alt=""
+            fill
+            sizes="100vw"
+            className="ken-burns object-cover [transform-origin:50%_60%]"
+          />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_85%_75%_at_50%_45%,rgba(12,10,22,0.25)_0%,rgba(10,8,18,0.66)_80%,rgba(8,6,14,0.9)_100%)]" />
+          <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[#f8f1e5] to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-[rgba(8,6,14,0.94)] via-[rgba(8,6,14,0.5)] to-transparent" />
+        </div>
+        <ZenCanvas rays={false} dust={20} petals={16} tint="dusk" className="z-10" />
+
+        <motion.div
+          style={{ y: prologY }}
+          className="relative z-20 max-w-xl px-2 py-8 sm:px-10"
         >
           <InkReveal className="relative">
-            <WatermarkKanji char="今" className="-inset-x-16 -top-12" size={300} tone="light" />
-            <h2 className={cn('ink-title relative font-display text-3xl sm:text-5xl', INK)}>
-              Het verhaal gaat <span className={SHU}>verder</span>
+            <WatermarkKanji char="今" className="-inset-x-16 -top-12 opacity-25 invert" size={300} tone="dark" />
+            <h2 className={cn('ink-title relative font-display text-3xl text-[#f7efe2] drop-shadow-[0_2px_16px_rgba(0,0,0,0.9)] sm:text-5xl')}>
+              Het verhaal gaat <span className="text-[var(--kin-300)] drop-shadow-[0_0_22px_rgba(255,205,120,0.35)]">verder</span>
             </h2>
           </InkReveal>
           <InkType text="De volgende hoofdstukken worden hier geschreven, op de matten in Steenbergen en Oud-Vossemeer. Wil je erbij horen?" as="p" className={cn(
             'mx-auto mt-6 max-w-lg font-serif text-lg leading-relaxed',
-            INK_SOFT,
+            'text-[#ded4c4] [text-shadow:0_1px_10px_rgba(0,0,0,0.9)]',
           )} />
           <InkReveal delay={0.35} className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Button onClick={() => onNavigate?.('leden')}
@@ -382,7 +410,9 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
 
           {/* Pagina-pager staat onderaan de sectie (SectionPager) — oude
               '‹ Agenda / Lid worden ›'-knoppen zijn vervangen door die. */}
-        </div>
+        </motion.div>
+
+        {/* Overgang naar papier bovenaan is al in de scène; hier sluit de scène af */}
       </div>
     </div>
   );
@@ -460,9 +490,9 @@ function Chapter({ index, data }: { index: number; data: (typeof storyChapters)[
 }
 
 /* --- Eerbewijz-kaart ------------------------------------------------------ */
-function TributeCard({ kanji, stamp, label, title, sub, body, photoUrl, photoCaption }: {
+function TributeCard({ kanji, stamp, label, title, sub, body, photoUrl, photoCaption, portraitUrl }: {
   kanji: string; stamp?: string; label: string; title: string; sub: string; body: string;
-  photoUrl?: string; photoCaption?: string;
+  photoUrl?: string; photoCaption?: string; portraitUrl?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [photoOpen, setPhotoOpen] = useState(false);
@@ -470,6 +500,16 @@ function TributeCard({ kanji, stamp, label, title, sub, body, photoUrl, photoCap
   return (
     <div ref={ref}
       className={cn('ink-card ink-write relative overflow-hidden rounded-xl p-7 sm:p-8', inView && 'ink-write-run')}>
+      {/* Cinematisch pixel-portret als kaart-header (optioneel) */}
+      {portraitUrl && (
+        <div className="zen-cinema relative -mx-7 -mt-7 mb-6 overflow-hidden sm:-mx-8">
+          <div className="relative aspect-[16/9] w-full">
+            <Image src={portraitUrl} alt="" fill sizes="(max-width: 1024px) 100vw, 480px"
+              className="ken-burns-slow object-cover object-top" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[rgba(20,15,11,0.55)] to-transparent" />
+          </div>
+        </div>
+      )}
       <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
         <div className="relative shrink-0">
           <div className="flex h-20 w-20 items-center justify-center rounded-lg border border-[var(--shu-600)]/40 bg-[var(--shu-600)]/5">

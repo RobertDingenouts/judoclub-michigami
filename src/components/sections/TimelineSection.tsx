@@ -9,6 +9,7 @@ import { Trophy, Award, MapPin, Star, Users, Swords } from 'lucide-react';
 import { ImageLightbox } from '@/components/ui/ImageLightbox';
 import { type Section } from '@/components/nav-config';
 import { useZenProgress } from '@/lib/zen-scroll';
+import { ZenCanvas } from '@/components/ui/ZenCanvas';
 import { cn } from '@/lib/utils';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -149,28 +150,44 @@ export function TimelineSection({ onNavigate }: { onNavigate?: (s: Section) => v
       <InkBleeds tone="light" className="opacity-60" />
       <SakuraPetals count={14} className="opacity-90" />
 
-      <div className="relative z-10 max-w-4xl mx-auto px-5 sm:px-10 py-10 sm:py-16">
-        {/* Header */}
+      {/* ── Cinematische header-scène: dojo bij zonsopgang ── */}
+      <div className="relative flex min-h-[62svh] items-center justify-center overflow-hidden text-center">
+        <div className="zen-cinema absolute inset-0">
+          <Image
+            src="/zen/dojo.webp"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="ken-burns object-cover"
+          />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_88%_78%_at_50%_45%,rgba(22,16,12,0.3)_0%,rgba(20,15,11,0.68)_80%,rgba(16,12,9,0.88)_100%)]" />
+          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent to-[#f8f1e5]" />
+        </div>
+        <ZenCanvas rays dust={26} petals={4} tint="warm" />
+
         <motion.div
           ref={headerRef}
           initial={{ opacity: 0, y: 30, filter: 'blur(8px)' }}
           animate={headerInView ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
           transition={{ duration: 0.9, ease: EASE }}
-          className="relative text-center"
+          className="relative z-10 px-5 py-14"
         >
-          <SumiLandscape tone="light" className="opacity-80 h-[280px] top-[-80px]" />
-          <p className="relative text-[10px] sm:text-xs uppercase tracking-[0.5em] text-[var(--kin-700)]">
+          <p className="text-[10px] sm:text-xs uppercase tracking-[0.5em] text-[var(--kin-300)] drop-shadow-[0_1px_6px_rgba(0,0,0,0.8)]">
             1882 — heden
           </p>
-          <h1 className="relative ink-title font-heading text-3xl sm:text-5xl text-[var(--sumi-900)] mt-3">
-            De tijdlijn <span className="text-[var(--shu-700)]">van het pad</span>
+          <h1 className="ink-title font-heading text-3xl sm:text-5xl text-[#f7efe2] drop-shadow-[0_2px_18px_rgba(0,0,0,0.85)] mt-3">
+            De tijdlijn <span className="text-[var(--kin-300)] drop-shadow-[0_0_24px_rgba(255,205,120,0.35)]">van het pad</span>
           </h1>
-          <div className="relative h-px w-40 mx-auto mt-5 bg-gradient-to-r from-transparent via-[var(--kin-500)]/70 to-transparent brush-stroke" />
-          <p className="relative max-w-xl mx-auto mt-5 text-sm sm:text-[15px] leading-[1.8] text-[var(--sumi-700)]">
+          <div className="h-px w-40 mx-auto mt-5 bg-gradient-to-r from-transparent via-[var(--kin-400)]/80 to-transparent brush-stroke" />
+          <p className="max-w-xl mx-auto mt-5 text-sm sm:text-[15px] leading-[1.8] text-[#e8ddcb] [text-shadow:0_1px_10px_rgba(0,0,0,0.9)]">
             Van de Kodokan in Tokio tot de matten in Steenbergen — elke stap op dit pad
             stond niet alleen.
           </p>
         </motion.div>
+      </div>
+
+      <div className="relative z-10 max-w-4xl mx-auto px-5 sm:px-10 pt-6 sm:pt-10">
 
         {/* Tijdlijn */}
         <div ref={spineRef} className="relative mt-12 sm:mt-16">
