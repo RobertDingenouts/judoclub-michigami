@@ -25,6 +25,7 @@ interface AgendaItemWithWeegtijden {
   inschrijfTekst?: string;
   cancelled?: boolean;
   weegtijden?: Weegtijd[];
+  weegtijdTitel?: string;
   special?: boolean;
 }
 
@@ -38,7 +39,7 @@ function getEmojiIcon(emoji: string, className = "w-5 h-5") {
   }
 }
 
-function InfoTooltip({ weegtijden }: { weegtijden: Weegtijd[] }) {
+function InfoTooltip({ weegtijden, title }: { weegtijden: Weegtijd[]; title?: string }) {
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -55,7 +56,7 @@ function InfoTooltip({ weegtijden }: { weegtijden: Weegtijd[] }) {
       </button>
       {hovered && (
         <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-white border-2 border-[#a90000] rounded-lg px-4 py-3 min-w-[240px] shadow-lg z-50 text-sm">
-          <h4 className="m-0 mb-2 text-[#a90000] text-sm font-bold">⏰ Weegtijden</h4>
+          <h4 className="m-0 mb-2 text-[#a90000] text-sm font-bold">⏰ {title || 'Weegtijden'}</h4>
           <ul className="list-none p-0 m-0">
             {weegtijden.map((wt, i) => (
               <li key={i} className="py-1 text-sm text-[#333] border-b border-gray-100 last:border-b-0">
@@ -157,6 +158,7 @@ export function AgendaSection() {
               const isPast = !item.cancelled && eventDate < today;
               const isFirstFuture = idx === firstFutureIdx;
               const weegtijden = (item as AgendaItemWithWeegtijden).weegtijden;
+              const weegtijdTitel = (item as AgendaItemWithWeegtijden).weegtijdTitel;
 
               return (
                 <tr key={idx} ref={isFirstFuture ? desktopFirstFutureRef : null} className={`border-b border-[#e9e0cf] last:border-b-0 transition-colors hover:bg-[#fff2f2] ${item.cancelled ? 'cancelled-event' : isPast ? 'past-event' : ''} ${item.special ? 'special-event-row' : ''}`} style={item.special ? { animation: 'special-pulse 3s ease-in-out infinite' } : undefined} onClick={item.special ? triggerConfetti : undefined}>
@@ -170,7 +172,7 @@ export function AgendaSection() {
                   <td className={`px-5 py-4 text-sm ${isPast ? 'text-gray-400' : 'text-gray-600'}`}>
                     {item.details || '-'}
                     {weegtijden && (
-                      <InfoTooltip weegtijden={weegtijden} />
+                      <InfoTooltip weegtijden={weegtijden} title={weegtijdTitel} />
                     )}
                   </td>
                   <td className="px-5 py-4 text-sm">
@@ -204,6 +206,7 @@ export function AgendaSection() {
           const isPast = !item.cancelled && eventDate < today;
           const isFirstFuture = idx === firstFutureIdx;
           const weegtijden = (item as AgendaItemWithWeegtijden).weegtijden;
+          const weegtijdTitel = (item as AgendaItemWithWeegtijden).weegtijdTitel;
 
           return (
             <div key={idx} ref={isFirstFuture ? mobileFirstFutureRef : null} className={`relative bg-white rounded-lg border shadow-sm overflow-hidden transition-all active:scale-[0.98] ${item.cancelled ? 'border-red-200/60 opacity-55 bg-red-50/30' : isPast ? 'border-gray-200/60 opacity-50' : item.special ? 'special-card' : 'border-[#e8e0e0] shadow-[0_2px_12px_rgba(80,0,0,0.06)]'}`} onClick={item.special ? triggerConfetti : undefined}>
@@ -236,7 +239,7 @@ export function AgendaSection() {
                     <p className={`text-xs leading-relaxed ${isPast ? 'text-gray-400' : 'text-gray-600'}`}>{item.details}</p>
                     {weegtijden && (
                       <div className="mt-2 pt-2 border-t border-red-100">
-                        <p className="text-[10px] font-bold text-[#a90000] mb-1">⏰ Weegtijden</p>
+                        <p className="text-[10px] font-bold text-[#a90000] mb-1">⏰ {weegtijdTitel || 'Weegtijden'}</p>
                         <ul className="space-y-0.5">
                           {weegtijden.map((wt, i) => (
                             <li key={i} className="text-xs text-gray-600">
