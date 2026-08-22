@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import { galleryData, type GalleryImage, fullResSrc } from '@/data/gallery';
@@ -42,26 +42,112 @@ function Lightbox({
   initialIndex: number;
   onClose: () => void;
 }) {
-  const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  // Onbeperkte index (geen modulo) zodat de carousel-track soepel kan
+  // meeglijden; de foto-content wordt modulo-afgeleid.
+  const [index, setIndex] = useState(initialIndex);
   const [errorSrc, setErrorSrc] = useState<string | null>(null);
-  const current = images[currentIndex];
+  const [loaded, setLoaded] = useState(false);
+  const [dragX, setDragX] = useState(0);
+  const [dragging, setDragging] = useState(false);
+  // Mutable drag-state in refs: React-state is asynchroon, dus een
+  // pointermove direct na pointerdown zou anders op een stale `dragging`
+  // (nog false) controleren en de move negeren.
+  const draggingRef = useRef(false);
+  const startXRef = useRef(0);
+  const dragXRef = useRef(0);
+  const widthRef = useRef(0);
+  const trackRef = useRef<HTMLDivElement>(null);
+
+  const n = images.length;
+  const at = (i: number) => images[((i % n) + n) % n];
+  const current = at(index);
 
   // Hoogere-resolutie versie voor de lightbox (x.jpg → x_orig.jpg).
-  const lightboxSrc = errorSrc ?? (current.fullSrc ?? fullResSrc(current.src));
+  const srcFor = (img: GalleryImage) =>
+    errorSrc === img.src ? img.src : img.fullSrc ?? fullResSrc(img.src);
 
-  const changeIndex = (delta: number) => {
-    setCurrentIndex((i) => (i + delta + images.length) % images.length);
+  const changeIndex = (delta: number) => setIndex((i) => i + delta);
+
+  // Window-level drag: tijdens de drag volgen we de vinger overal (ook
+  // buiten de track), dus pointer-capture is niet nodig — dat kan op
+  // sommige mobile browsers een pointercancel uitlokken.
+  const endDrag = () => {
+    if (!draggingRef.current) return;
+    draggingRef.current = false;
+    setDragging(false);
+    const dx = dragXRef.current;
+    const threshold = Math.max(50, widthRef.current * 0.18);
+    if (dx <= -threshold) changeIndex(1);
+    else if (dx >= threshold) changeIndex(-1);
+    dragXRef.current = 0;
+    setDragX(0);
     setErrorSrc(null);
+    detach();
   };
+
+  // Stabiele wrapper-functies (zelfde referentie over renders heen) die
+  // via een ref naar de actuele handler wijzen. Zo werkt
+  // removeEventListener betrouwbaar — anders zou elke render een nieuw
+  // functie-object maken en de listener nooit verwijderd worden.
+  const moveRef = useRef<(e: PointerEvent) => void>(() => {});
+  const upRef = useRef<() => void>(() => {});
+  moveRef.current = (e: PointerEvent) => {
+    if (!draggingRef.current) return;
+    const dx = e.clientX - startXRef.current;
+    dragXRef.current = dx;
+    setDragX(dx);
+  };
+  upRef.current = () => endDrag();
+
+  const onWinMove = useRef((e: PointerEvent) => moveRef.current(e)).current;
+  const onWinUp = useRef(() => upRef.current()).current;
+
+  const attach = () => {
+    window.addEventListener("pointermove", onWinMove);
+    window.addEventListener("pointerup", onWinUp);
+    window.addEventListener("pointercancel", onWinUp);
+  };
+  const detach = () => {
+    window.removeEventListener("pointermove", onWinMove);
+    window.removeEventListener("pointerup", onWinUp);
+    window.removeEventListener("pointercancel", onWinUp);
+  };
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    if (n <= 1) return;
+    draggingRef.current = true;
+    startXRef.current = e.clientX;
+    dragXRef.current = 0;
+    widthRef.current = trackRef.current?.offsetWidth ?? window.innerWidth;
+    setDragging(true);
+    setDragX(0);
+    attach();
+  };
+
+  const counter = ((index % n) + n) % n + 1;
+
+  // Ladingstato reset zodra de actieve foto verandert, zodat de
+  // spinner terugkomt tot de nieuwe foto daadwerkelijk geladen is.
+  useEffect(() => { setLoaded(false); }, [index]);
+
+  // Bij unmount (lightbox sluit) eventuele actieve window-listeners opruimen.
+  useEffect(() => {
+    return () => {
+      draggingRef.current = false;
+      detach();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-[var(--sumi-950)]/90 backdrop-blur-sm flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 bg-[var(--sumi-950)]/92 backdrop-blur-sm flex flex-col items-center justify-center"
       onClick={onClose}
     >
+      {/* Sluiten */}
       <button
         onClick={onClose}
-        className="absolute top-4 right-4 text-white/70 hover:text-white z-10 p-2"
+        className="absolute top-3 right-3 sm:top-4 sm:right-4 text-white/70 hover:text-white z-20 p-2"
         aria-label="Sluiten"
       >
         <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -69,45 +155,86 @@ function Lightbox({
         </svg>
       </button>
 
-      <button
-        onClick={(e) => { e.stopPropagation(); changeIndex(-1); }}
-        className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-2"
-        aria-label="Vorige"
-      >
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-        </svg>
-      </button>
-      <button
-        onClick={(e) => { e.stopPropagation(); changeIndex(1); }}
-        className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-2"
-        aria-label="Volgende"
-      >
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-        </svg>
-      </button>
-
-      <div className="w-full max-w-4xl max-h-[85vh] flex flex-col items-center" onClick={(e) => e.stopPropagation()}>
-        <div className="relative w-full max-w-3xl h-[62vh] max-h-[62vh] flex items-center justify-center">
-          <Image
-            key={lightboxSrc}
-            src={lightboxSrc}
-            alt={current.caption}
-            fill
-            sizes="(max-width: 1280px) 100vw, 1280px"
-            loading="eager"
-            className="object-contain rounded-md shadow-2xl"
-            onError={() => {
-              if (errorSrc !== current.src) setErrorSrc(current.src);
-            }}
-          />
-        </div>
-        <p className="text-[var(--washi-100)]/90 mt-3 text-sm text-center px-12">{current.caption}</p>
-        <p className="text-white/40 mt-1 text-xs tabular-nums">
-          {currentIndex + 1} / {images.length}
-        </p>
+      {/* Teller */}
+      <div className="absolute top-4 sm:top-5 left-1/2 -translate-x-1/2 z-20 text-white/60 text-xs sm:text-sm tabular-nums px-3 py-1 rounded-full bg-black/30">
+        {counter} / {n}
       </div>
+
+      {/* Swipe-track — foto beweegt mee met de vinger, volgende glijdt in */}
+      <div
+        ref={trackRef}
+        className="w-full flex-1 overflow-hidden touch-none select-none"
+        onClick={(e) => e.stopPropagation()}
+        onPointerDown={onPointerDown}
+      >
+        <div
+          className="flex h-full"
+          style={{
+            transform: `translateX(calc(${-index * 100}% + ${dragX}px))`,
+            transition: dragging ? 'none' : 'transform 0.42s cubic-bezier(0.22, 1, 0.36, 1)',
+          }}
+        >
+          {[index - 1, index, index + 1].map((i, pos) => {
+            const item = at(i);
+            return (
+              <div
+                key={i}
+                className="w-full flex-shrink-0 h-full relative flex items-center justify-center px-2 sm:px-8"
+              >
+                <Image
+                  src={errorSrc === srcFor(item) ? item.src : srcFor(item)}
+                  alt={item.caption}
+                  fill
+                  sizes="100vw"
+                  priority={pos === 1}
+                  loading="eager"
+                  onLoad={() => { if (pos === 1) setLoaded(true); }}
+                  className="object-contain rounded-md shadow-2xl"
+                  onError={() => {
+                    if (errorSrc !== item.src) setErrorSrc(item.src);
+                  }}
+                />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Lading-indicator: geen "leeg donker scherm" tijdens het laden */}
+      {!loaded && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+          <div className="w-10 h-10 rounded-full border-2 border-white/20 border-t-white/80 animate-spin" />
+        </div>
+      )}
+
+      {/* Bijschrift */}
+      <p className="z-20 text-[var(--washi-100)]/90 mt-2 sm:mt-3 mb-3 sm:mb-5 text-sm text-center px-14 max-w-2xl leading-snug">
+        {current.caption}
+      </p>
+
+      {/* Vorige / Volgende (vooral desktop; op mobiel werkt swipe) */}
+      {n > 1 && (
+        <>
+          <button
+            onClick={(e) => { e.stopPropagation(); changeIndex(-1); }}
+            className="absolute left-1 sm:left-3 top-1/2 -translate-y-1/2 text-white/60 hover:text-white p-2 z-10"
+            aria-label="Vorige"
+          >
+            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); changeIndex(1); }}
+            className="absolute right-1 sm:right-3 top-1/2 -translate-y-1/2 text-white/60 hover:text-white p-2 z-10"
+            aria-label="Volgende"
+          >
+            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </>
+      )}
     </div>
   );
 }

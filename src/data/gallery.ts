@@ -40,8 +40,8 @@ export const galleryData: GalleryAlbum[] = [
     order: 1,
     images: [
 
-      { src: "/instagram/202602/17880571311378479.webp", caption: "Examenresultaten — mooie vooruitgang! 🎉" },
-      { src: "/instagram/202602/18086493668155953.webp", caption: "Lintjestoernooi — Mika, Lotte, Vive en Luuk!" },
+      { src: "/instagram/202602/17880571311378479.webp", caption: "Examenresultaten — mooie vooruitgang! 🎉", fullSrc: "/instagram/202602/17880571311378479.webp" },
+      { src: "/instagram/202602/18086493668155953.webp", caption: "Lintjestoernooi — Mika, Lotte, Vive en Luuk!", fullSrc: "/instagram/202602/18086493668155953.webp" },
     ],
   },
   {
@@ -50,12 +50,12 @@ export const galleryData: GalleryAlbum[] = [
     order: 2,
     images: [
 
-      { src: "/instagram/202508/18343839076164581.webp", caption: "Teun geslaagd voor gele slip — na operatie doorgezet! 💪" },
-      { src: "/instagram/202506/17911599114036467.webp", caption: "14 judoka's — allemaal gehaald! 🔥" },
-      { src: "/instagram/202505/18059800228932051.webp", caption: "Toppers geslaagd voor de witte band! 🥋" },
-      { src: "/instagram/202505/17964879629866342.webp", caption: "Lola geslaagd voor de Witte Band!" },
-      { src: "/instagram/202502/18083536591593823.webp", caption: "Spelletjesdag bij Judoclub Michigami! 🎲" },
-      { src: "/instagram/202506/18033414857673919.webp", caption: "Laatste judoles van het seizoen — Spelletjesdag + Examens!" },
+      { src: "/instagram/202508/18343839076164581.webp", caption: "Teun geslaagd voor gele slip — na operatie doorgezet! 💪", fullSrc: "/instagram/202508/18343839076164581.webp" },
+      { src: "/instagram/202506/17911599114036467.webp", caption: "14 judoka's — allemaal gehaald! 🔥", fullSrc: "/instagram/202506/17911599114036467.webp" },
+      { src: "/instagram/202505/18059800228932051.webp", caption: "Toppers geslaagd voor de witte band! 🥋", fullSrc: "/instagram/202505/18059800228932051.webp" },
+      { src: "/instagram/202505/17964879629866342.webp", caption: "Lola geslaagd voor de Witte Band!", fullSrc: "/instagram/202505/17964879629866342.webp" },
+      { src: "/instagram/202502/18083536591593823.webp", caption: "Spelletjesdag bij Judoclub Michigami! 🎲", fullSrc: "/instagram/202502/18083536591593823.webp" },
+      { src: "/instagram/202506/18033414857673919.webp", caption: "Laatste judoles van het seizoen — Spelletjesdag + Examens!", fullSrc: "/instagram/202506/18033414857673919.webp" },
     ],
   },
   {
@@ -64,13 +64,13 @@ export const galleryData: GalleryAlbum[] = [
     order: 3,
     images: [
 
-      { src: "/instagram/202412/18033690059145049.webp", caption: "Actief judoweekend — Shintai jubileumtoernooi + Lintjestoernooi" },
-      { src: "/instagram/202412/18048006761489114.webp", caption: "18 judoka's behalen nieuwe band of slip!" },
-      { src: "/instagram/202411/17853748029319957.webp", caption: "Lintjestoernooi Roosendaal — 7 judoka's mee!" },
-      { src: "/instagram/202406/18007030151320287.webp", caption: "Succesvolle examens — einde schooljaar 2024" },
-      { src: "/instagram/202406/18022436702039909.webp", caption: "Wendy Jansen behaalt 1e Dan zwarte band! 🎉" },
-      { src: "/instagram/202403/18338069749129662.webp", caption: "CJJF Kata en technische training in onze dojo" },
-      { src: "/instagram/202403/17874703655999244.webp", caption: "Nieuwe matten — dankzij donatie Kruisbeek!" },
+      { src: "/instagram/202412/18033690059145049.webp", caption: "Actief judoweekend — Shintai jubileumtoernooi + Lintjestoernooi", fullSrc: "/instagram/202412/18033690059145049.webp" },
+      { src: "/instagram/202412/18048006761489114.webp", caption: "18 judoka's behalen nieuwe band of slip!", fullSrc: "/instagram/202412/18048006761489114.webp" },
+      { src: "/instagram/202411/17853748029319957.webp", caption: "Lintjestoernooi Roosendaal — 7 judoka's mee!", fullSrc: "/instagram/202411/17853748029319957.webp" },
+      { src: "/instagram/202406/18007030151320287.webp", caption: "Succesvolle examens — einde schooljaar 2024", fullSrc: "/instagram/202406/18007030151320287.webp" },
+      { src: "/instagram/202406/18022436702039909.webp", caption: "Wendy Jansen behaalt 1e Dan zwarte band! 🎉", fullSrc: "/instagram/202406/18022436702039909.webp" },
+      { src: "/instagram/202403/18338069749129662.webp", caption: "CJJF Kata en technische training in onze dojo", fullSrc: "/instagram/202403/18338069749129662.webp" },
+      { src: "/instagram/202403/17874703655999244.webp", caption: "Nieuwe matten — dankzij donatie Kruisbeek!", fullSrc: "/instagram/202403/17874703655999244.webp" },
     ],
   },
   {
