@@ -871,28 +871,6 @@
     from { transform: scaleX(0); }
     to   { transform: scaleX(1); }
   }
-
-  /* ── Cinematische pixel-scènes ── */
-  .zen-cinema {
-    /* pixel-art knalt beter met een subtiele contrast-boost */
-    filter: saturate(1.08) contrast(1.05);
-  }
-  .ken-burns {
-    animation: kenBurns 36s ease-in-out infinite alternate;
-    will-change: transform;
-  }
-  .ken-burns-slow {
-    animation: kenBurns 52s ease-in-out infinite alternate;
-    will-change: transform;
-  }
-  @keyframes kenBurns {
-    from { transform: scale(1) translate3d(0, 0, 0); }
-    to   { transform: scale(1.12) translate3d(-1.6%, -1.8%, 0); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .ken-burns, .ken-burns-slow { animation: none; }
-  }
-
   .brush-stroke {
     transform-origin: left center;
     animation: brushDraw 2.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
