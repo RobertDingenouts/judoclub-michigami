@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useEffect, Fragment } from 'react';
+import { useRef, useState, Fragment } from 'react';
 import Image from 'next/image';
 import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -11,7 +11,6 @@ import { storyChapters } from '@/data/story-chapters';
 import {
   SumiLandscape, SakuraPetals, InkBleeds, WatermarkKanji, VoxelGrid,
 } from '@/components/sections/ZenScenery';
-import { useZenProgress } from '@/lib/zen-scroll';
 import type { Section } from '@/components/nav-config';
 
 /* Kleuren op zacht oud-creme papier: donkere sumi-inkt in plaats van washi-licht */
@@ -69,52 +68,15 @@ function InkType({ text, className = '', as: Tag = 'p', speed = 30, delay = 0 }:
   );
 }
 
-/* --- Optellend cijfer: telt van 0 naar target zodra het in beeld komt ----- */
-function CountUp({ value, suffix = '', className = '', delay = 0 }: {
-  value: number; suffix?: string; className?: string; delay?: number;
-}) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: '-60px' });
-  const [n, setN] = useState(0);
-  useEffect(() => {
-    if (!inView) return;
-    const dur = 1600;
-    const start = performance.now() + delay * 1000;
-    let raf = 0;
-    const tick = (t: number) => {
-      const p = Math.min(1, Math.max(0, (t - start) / dur));
-      // easeOutExpo — snel begin, zacht landen
-      const e = p === 1 ? 1 : 1 - Math.pow(2, -10 * p);
-      setN(Math.round(e * value));
-      if (p < 1) raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [inView, value, delay]);
-  return (
-    <span ref={ref} className={cn('stat-ink', className)}>
-      {n}{suffix}
-    </span>
-  );
-}
-
 export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void }) {
   const [signupOpen, setSignupOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
-  const spineRef = useRef<HTMLDivElement>(null);
 
   const { scrollYProgress } = useScroll({
     target: rootRef,
     offset: ['start start', 'end start'],
   });
   const prologY = useTransform(scrollYProgress, [0, 1], ['0%', '38%']);
-
-  // Hoofdstukken-ruglijn trekt zich mee met het scrollen (eigen hook — de
-  // sectie scrolt binnen de ScrollArea-viewport, niet via het venster)
-  const spineP = useZenProgress(spineRef, 0.75, 0.6);
-  const spineHeight = `${Math.round(spineP * 10000) / 100}%`;
-  // Inkt-druppel reist met de punt van de lijn mee
-  const dropTop = spineHeight;
 
   const masters = [
     { name: 'Robin Hack', dan: '三', danLabel: '3e Dan', role: 'Trainer & penningmeester' },
@@ -181,18 +143,12 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
 
           <div className={cn('mx-auto mt-10 grid max-w-lg grid-cols-3 divide-x', 'divide-[var(--sumi-500)]/25')}>
             {[
-              { n: 1993, l: 'opgericht', raw: true },
-              { n: 2, l: 'locaties' },
-              { n: 8, l: 'dan oprichter', suffix: 'e' },
+              { n: '1993', l: 'opgericht' },
+              { n: '2', l: 'locaties' },
+              { n: '8e', l: 'dan oprichter' },
             ].map((s, i) => (
               <InkReveal key={i} delay={0.5 + i * 0.12} className="px-3">
-                <div className={cn('font-display text-3xl sm:text-4xl', i === 2 ? SHU : INK)}>
-                  {s.raw ? (
-                    <>19<CountUp value={93} delay={0.5 + i * 0.12} /></>
-                  ) : (
-                    <CountUp value={s.n} suffix={s.suffix ?? ''} delay={0.5 + i * 0.12} />
-                  )}
-                </div>
+                <div className={cn('font-display text-3xl sm:text-4xl', i === 2 ? SHU : INK)}>{s.n}</div>
                 <div className={cn('mt-1 text-[11px] uppercase tracking-[0.2em]', INK_FAINT)}>{s.l}</div>
               </InkReveal>
             ))}
@@ -225,17 +181,9 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
           </InkReveal>
           <div className="mt-4 h-px w-24 origin-left bg-[var(--shu-600)]/50 brush-stroke" />
 
-          {/* Ruglijn die zich trekt + reizende inkt-druppel */}
-          <div ref={spineRef} className="relative mt-14 space-y-16">
+          {/* Gouden ruglijn die zich trekt */}
+          <div className="relative mt-14 space-y-16">
             <div className="absolute left-2 top-2 h-full w-px bg-gradient-to-b from-[var(--sumi-500)]/40 via-[var(--shu-600)]/50 to-[var(--kin-500)]/60 sm:left-3" />
-            <motion.div
-              style={{ height: spineHeight }}
-              className="absolute left-2 top-2 w-px origin-top bg-[var(--shu-600)] shadow-[0_0_10px_rgba(192,0,0,0.3)] sm:left-3"
-            />
-            <motion.div
-              style={{ top: dropTop }}
-              className="spine-drop absolute -left-[5px] z-10 sm:left-[7px]"
-            />
             {storyChapters.map((ch, i) => (
               <Chapter key={i} index={i} data={ch} />
             ))}
@@ -393,9 +341,6 @@ function Chapter({ index, data }: { index: number; data: (typeof storyChapters)[
   const ref = useRef<HTMLDivElement>(null);
   const [photoOpen, setPhotoOpen] = useState(false);
   const inView = useInView(ref, { once: true, margin: '-120px' });
-  // Foto-parallax via eigen hook (ScrollArea-viewport, niet window)
-  const paraP = useZenProgress(ref, 1.05, -0.05);
-  const photoY = `${(paraP * 12 - 6).toFixed(2)}%`; // −6% → +6%
   return (
     <div ref={ref} className="relative pl-10 sm:pl-14">
       {/* Knot op de ruglijn */}
@@ -429,16 +374,14 @@ function Chapter({ index, data }: { index: number; data: (typeof storyChapters)[
                 className="group relative block w-full overflow-hidden rounded-lg border border-[var(--sumi-700)]/20 shadow-[0_10px_30px_-18px_rgba(42,33,28,0.7)]"
                 aria-label={data.photoCaption ? `Grootbeeld: ${data.photoCaption}` : 'Grootbeeld openen'}
               >
-                <div className={cn('parallax-frame relative w-full', data.photoAspect ?? 'aspect-[16/10]')}>
-                  <motion.div style={{ y: photoY }} className="absolute inset-[-8%]">
-                    <Image
-                      src={data.photoUrl}
-                      alt={data.photoCaption ?? data.title}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 700px"
-                      className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-                    />
-                  </motion.div>
+                <div className={cn('relative w-full', data.photoAspect ?? 'aspect-[16/10]')}>
+                  <Image
+                    src={data.photoUrl}
+                    alt={data.photoCaption ?? data.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 700px"
+                    className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                  />
                 </div>
               </button>
               {data.photoCaption && (
@@ -523,33 +466,17 @@ function TributeCard({ kanji, stamp, label, title, sub, body, photoUrl, photoCap
   );
 }
 
-/* --- Meester-kaart: 3D-helling bij muis + hanko-stempel ------------------ */
+/* --- Meester-kaart -------------------------------------------------------- */
 function MasterCard({ index, name, dan, danLabel, role }: {
   index: number; name: string; dan: string; danLabel: string; role: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: '-60px' });
-  // Rustige tilt: de kaart helt licht naar de muis
-  const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const el = e.currentTarget;
-    const r = el.getBoundingClientRect();
-    const px = (e.clientX - r.left) / r.width - 0.5;
-    const py = (e.clientY - r.top) / r.height - 0.5;
-    el.style.transform = `perspective(700px) rotateY(${px * 7}deg) rotateX(${py * -7}deg)`;
-  };
-  const onLeave = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.currentTarget.style.transform = '';
-  };
   return (
     <div ref={ref}
-      onMouseMove={onMove}
-      onMouseLeave={onLeave}
-      className={cn('ink-card ink-write tilt-card relative overflow-hidden rounded-xl p-6', inView && 'ink-write-run')}
+      className={cn('ink-card ink-write relative overflow-hidden rounded-xl p-6', inView && 'ink-write-run')}
       style={{ transitionDelay: `${index * 90}ms` }}>
       <span className={cn('absolute right-4 top-3 font-jp text-5xl', 'text-[var(--sumi-700)]/12')} aria-hidden>{dan}</span>
-      <span className="tilt-stamp absolute bottom-3 right-3 flex h-9 w-9 items-center justify-center rounded-sm bg-[var(--shu-600)] font-jp text-xs text-[var(--washi-50)] shadow-lg">
-        道
-      </span>
       <div className="relative">
         <div className={cn('text-xs uppercase tracking-[0.2em]', KIN)}>{danLabel}</div>
         <h3 className={cn('mt-1 font-display text-xl', INK)}>{name}</h3>
