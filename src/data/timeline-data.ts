@@ -61,9 +61,9 @@ export const timelineEvents: TimelineEvent[] = [
     isMilestone: true,
   },
   {
-    year: "Jaren '90",
+    year: "Jaren '90 — 2000",
     title: 'Gouden jaren Michigami',
-    description: 'De gouden tijd van de club: donderdag twee trainingsgroepen, vrijdag drie groepen. Les in Nieuw-Vossemeer en Scherpenisse. Elk jaar toernooien in Londen en Parijs. Pony Park Slagharen met les van Anton Geesink zelf. Een echte familieclub: zoon Erwin is zelf actief en geeft weleens les, Els steunt de club altijd en dochter Jolanda is een vaste waarde. Jolanda trouwt met Franco Hack; samen kregen zij drie zoons, waaronder de tweeling Robin en Pascal — de twee kleine judoka’s die later het bestuur en de trainers van Michigami worden.',
+    description: 'De gouden tijd van de club — de jaren negentig én de jaren tweeduizend: donderdag twee trainingsgroepen, vrijdag drie groepen. Les in Nieuw-Vossemeer en Scherpenisse. Elk jaar toernooien in Londen en Parijs. Pony Park Slagharen met les van Anton Geesink zelf. Een echte familieclub: zoon Erwin is zelf actief en geeft weleens les, Els steunt de club altijd en dochter Jolanda is een vaste waarde. Jolanda trouwt met Franco Hack; samen kregen zij drie zoons, waaronder de tweeling Robin en Pascal — de twee kleine judoka’s die later het bestuur en de trainers van Michigami worden.',
     icon: 'star',
     photoUrl: '/uploads/2/0/5/8/20583900/2133725_orig.jpg',
     photoCaption: 'Jaarlijks trainingskamp in Slagharen — met Anton Geesink op de foto',
@@ -108,14 +108,14 @@ export const timelineEvents: TimelineEvent[] = [
   {
     year: "Jaren '10",
     title: 'Geleidelijke afname & de coronacrisis',
-    description: 'De ledenkring wordt geleidelijk kleiner — eerst heel langzaam, maar vooral in de tweede helft van de jaren ’10 van de 21e eeuw. De coronacrisis (2020–2021) is de genadeslag: de trainingen staan maandenlang stil, en toen de mat weer open is, zijn velen omgevallen en nooit meer teruggekomen. De club moet daarna hard werken om op te bouwen.',
+    description: 'Vanaf het midden van de jaren ’10 van de 21e eeuw gaat het geleidelijk rustiger aan: er zijn minder wedstrijdjudoka’s, waardoor toernooien moeilijker te organiseren worden, de ledenkring krimpt en in de regio verdwijnen clubs. De coronacrisis (2020–2021) is dan de genadeklap: veel clubs gaan om, Michigami kan net overeind blijven. Daarna werkt de club hard om weer te groeien en te verbeteren.',
     icon: 'club',
     isMilestone: true,
   },
   {
     year: '2021',
     title: 'Volledige overname na Koos\' overlijden',
-    description: 'Na het overlijden van Koos van Wezel in december 2021 nemen Robin, Pascal en Robert de club volledig over. Zij gaven al jaren samen met Koos les en zorgen ervoor dat de Michigami-geest levend blijft.',
+    description: 'Koos van Wezel overlijdt in december 2021 op veel te vroege leeftijd. Robin, Pascal en Robert — die al jaren samen met Koos les gaven — nemen de club volledig over en zorgen ervoor dat de Michigami-geest levend blijft.',
     icon: 'person',
     isMilestone: true,
   },

@@ -174,7 +174,7 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
           <InkReveal className="flex items-end gap-4">
             <span className={cn('font-jp text-6xl leading-none sm:text-7xl', 'text-[var(--shu-600)]/70')} aria-hidden>語</span>
             <div>
-              <h2 className={cn('ink-title font-display text-3xl sm:text-4xl', INK)}>Vijf hoofdstukken, één pad</h2>
+              <h2 className={cn('ink-title font-display text-3xl sm:text-4xl', INK)}>Zeven hoofdstukken, één pad</h2>
               <p className={cn('mt-1 text-sm', INK_FAINT)}>Van de wortels tot twee locaties, één club</p>
             </div>
           </InkReveal>

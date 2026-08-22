@@ -1,5 +1,5 @@
 /**
- * Het verhaal van Judoclub Michigami — in vijf chronologische hoofdstukken.
+ * Het verhaal van Judoclub Michigami — in zeven chronologische hoofdstukken.
  * Bron: de geverifieerde geschiedenis in club-info.ts (feiten gekruisd met
  * de tijdlijn-data en de club).
  */
@@ -30,9 +30,9 @@ export const storyChapters: StoryChapter[] = [
     kanji: '光',
     number: '二',
     title: 'De gouden jaren',
-    era: 'jaren ’90 — begin 2000',
+    era: 'jaren ’90 — 2010',
     paragraphs: [
-      'De jaren negentig en het begin van de jaren tweeduizend waren de bloeiperiode. De dojo was een bruisende plek waar judo als een tweede taal werd gesproken: twee trainingsgroepen op donderdag, drie op vrijdag. Koos gaf ook les in Nieuw-Vossemeer en Scherpenisse, en de club kreeg een breed fundament in de hele regio. Michigami was een van de grootste clubs van de regio.',
+      'De jaren negentig en de jaren tweeduizend waren de bloeiperiode. De dojo was een bruisende plek waar judo als een tweede taal werd gesproken: twee trainingsgroepen op donderdag, drie op vrijdag. Koos gaf ook les in Nieuw-Vossemeer en Scherpenisse, en de club kreeg een breed fundament in de hele regio. Michigami was een van de grootste clubs van de regio — en bleef dat ook in de jaren tweeduizend.',
       'De vereniging leefde ook buiten de mat. Koos’ zoon Erwin was in die jaren zelf actief en gaf weleens les, zijn vrouw Els steunde de club altijd, en dochter Jolanda was een vaste waarde. Jolanda trouwde met Franco Hack — samen kregen zij drie zoons, waaronder de tweeling Robin en Pascal. Beide jongens stonden al als kind op de mat, en zouden later het bestuursorgaan en trainers van Michigami worden.',
       'De wedstrijdgroep reisde elk jaar naar grote toernooien in Londen en Parijs. Elk jaar was de uitstap naar Pony Park Slagharen een hoogtepunt, waar judoka’s sparren mochten met topfiguren zoals Anton Geesink zelf. In die tijd stond de regio bol van judo — en Michigami was een van de motoren ervan.',
     ],
@@ -44,9 +44,8 @@ export const storyChapters: StoryChapter[] = [
     kanji: '継',
     number: '三',
     title: 'De nieuwe generatie',
-    era: '2005 — 2016',
+    era: '2010 — 2016',
     paragraphs: [
-      'Tussen 2005 en 2010 veranderde het judolandschap: regionale clubs en toernooien verdwenen. Michigami hield vol en bleef doorgaan, door zich voort te durven te ontwikkelen: kata werd integraal onderdeel van de training, eigen technieken zorgvuldig gedocumenteerd.',
       'Rond 2010 brak een nieuwe fase aan. Robin Hack, Pascal Hack en Robert Dingenouts — al bijna vanaf de oprichting bij de club — begonnen naast hun eigen training ook les te geven, onder begeleiding van Koos. Op 5 juni 2010 slaagden ze allen voor de 1e Dan, in 2014 voor de 2e Dan en in 2016 voor de 3e Dan. Ook Wendy Jansen, die al bij Koos begon in Tholen in 1988, was een vaste waarde in de club — zij zou haar zwarte band in 2024 halen.',
     ],
     photoUrl: '/uploads/2/0/5/8/20583900/59265_orig.jpg',
@@ -54,26 +53,43 @@ export const storyChapters: StoryChapter[] = [
     photoAspect: 'aspect-[4/3]',
   },
   {
-    kanji: '合',
+    kanji: '影',
     number: '四',
-    title: 'De vlam blijft branden',
-    era: '2021 — 2024',
+    title: 'De rustigere jaren',
+    era: '2016 — 2020',
     paragraphs: [
-      'De coronacrisis (2020–2021) was de genadeslag. De ledenkring was al geleidelijk kleiner geworden — voorheen hooguit heel langzaam, maar in de tweede helft van de jaren ’10 van de 21e eeuw vooral. De trainingen stonden maandenlang stil, en toen de mat weer open was, waren velen omgevallen en nooit meer teruggekomen. De club moest hard werken om op te bouwen — en doet dat tot op de dag van vandaag.',
-      'In december 2021 overleed Koos van Wezel. De dojo hield adem, maar de geest hield stand: Robin, Pascal en Robert namen de volledige leiding over.',
-      'Robin en Pascal gaven les in Oud-Vossemeer, een locatie die later vast bij de club zou horen. In 2024 groeide de dojo in Steenbergen uit met vernieuwde matten van 120 m² — vast opgeslagen, klaar voor de club en de verenigingen die de zaal delen.',
+      'Vanaf het midden van de jaren ’10 van de 21e eeuw ging het geleidelijk rustiger aan. Het was een langzaam proces: er waren minder wedstrijdjudoka’s, waardoor toernooien moeilijker te organiseren werden. De ledenkring werd kleiner, en in de regio verdwenen clubs. De regio die in de jaren negentig en tweeduizend bolstond van judo, werd stilletjan kleiner.',
+    ],
+  },
+  {
+    kanji: '風',
+    number: '五',
+    title: 'De genadeklap',
+    era: '2020 — 2021',
+    paragraphs: [
+      'De coronacrisis (2020–2021) was de genadeklap. De trainingen stonden maandenlang stil, en veel clubs in de regio gingen om. Michigami kon net overeind blijven — en vanaf dat moment werkte de club hard om weer te groeien en te verbeteren.',
+      'In december 2021 overleed Koos van Wezel op veel te vroege leeftijd. De dojo hield adem, maar de geest hield stand: Robin, Pascal en Robert — die al jaren samen met Koos les gaven — namen de volledige leiding over en hielden de vlam van Michigami levend.',
     ],
   },
   {
     kanji: '絆',
-    number: '五',
-    title: 'Twee locaties, één club',
-    era: '2026 — heden',
+    number: '六',
+    title: 'Minuut stilte',
+    era: '2026',
     paragraphs: [
       'Het jaar 2026 bracht een verlies dat diep raakte: op 28 maart overleed Franco Hack — schoonzoon van Koos, vader van Robin en Pascal — op amper 59 jaar. Franco was vierde dan en een vast gezicht bij Michigami: hij trainde velen mee naar hun zwarte band, oefende samen kata’s en fungeerde bij het dangraadexamen als uke voor verschillende judoka’s. Hij was een fijn sparpartner — vooral in het ne-waza. Samen met Jolanda zat hij achter de jurytafel bij legio toernooien, en als coach was hij erbij toen Robert, Robin en Pascal internationaal in actie kwamen, zoals op het CSIT in Grenoble.',
       'Op 1 april 2026 hield de club in Steenbergen en in Oud-Vossemeer een minuut stilte voor hem: rond de mat gezeten, stil, samen. Een judoka voor het leven, die het pad van Koos met dezelfde zachte hand verder heeft gedragen.',
+    ],
+  },
+  {
+    kanji: '春',
+    number: '七',
+    title: 'Twee locaties, één club',
+    era: '2026 — heden',
+    paragraphs: [
+      'Het harde werk betaalde zich terug. Michigami is weer een bloeiende vereniging: van kleuters tot volwassenen, recreatief of competitief. In 2024 groeide de dojo in Steenbergen uit met vernieuwde matten van 120 m² — vast opgeslagen, klaar voor de club en de verenigingen die de zaal delen — en Robin en Pascal gaven les in Oud-Vossemeer, een locatie die vast bij de club hoort.',
       'In oktober 2026 viert OVJV (Oud-Vossemeerse Judo Vereniging) haar 50-jarig jubileum — een mijlpaal die Michigami met trots meeviert. Het bestuur van OVJV verzocht Michigami om de vereniging over te nemen. 2026 is het overgangsjaar: in 2027 is de integratie voltooid, en stopt OVJV als zelfstandige vereniging. Vanaf dan: twee locaties, één club.',
-      'Judoclub Michigami blijft een bloeiende plek waar judo voor iedereen toegankelijk is — van kleuters tot volwassenen, recreatief of competitief. Met een warme sfeer en een betrokken community kijkt de club met vertrouwen in de toekomst, klaar om nog vele generaties te inspireren met de zachte weg.',
+      'Met een warme sfeer en een betrokken community kijkt de club met vertrouwen in de toekomst, klaar om nog vele generaties te inspireren met de zachte weg.',
     ],
   },
 ];
