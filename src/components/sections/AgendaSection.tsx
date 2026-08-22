@@ -10,6 +10,16 @@ interface Weegtijd {
   age: string;
 }
 
+interface EventInfoSection {
+  label: string;
+  lines: string[];
+}
+
+interface EventInfo {
+  title?: string;
+  sections: EventInfoSection[];
+}
+
 interface AgendaItemWithWeegtijden {
   compareDate: string;
   displayDate: string;
@@ -26,6 +36,7 @@ interface AgendaItemWithWeegtijden {
   cancelled?: boolean;
   weegtijden?: Weegtijd[];
   weegtijdTitel?: string;
+  eventInfo?: EventInfo;
   special?: boolean;
 }
 
@@ -71,6 +82,77 @@ function InfoTooltip({ weegtijden, title }: { weegtijden: Weegtijd[]; title?: st
         </div>
       )}
     </span>
+  );
+}
+
+function EventInfoTooltip({ info }: { info: EventInfo }) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <span
+      className="inline-flex relative ml-1"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <button
+        className="w-[22px] h-[22px] rounded-lg bg-[#a90000] text-white text-[11px] font-bold flex items-center justify-center cursor-pointer hover:bg-[#8c0000] hover:scale-110 transition-all border-none"
+        aria-label={info.title || 'Meer informatie'}
+      >
+        i
+      </button>
+      {hovered && (
+        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-white border-2 border-[#a90000] rounded-lg px-4 py-3 min-w-[300px] max-w-[380px] shadow-lg z-50 text-sm">
+          {info.title && <h4 className="m-0 mb-2 text-[#a90000] text-sm font-bold">{info.title}</h4>}
+          <div className="space-y-2.5">
+            {info.sections.map((sec, i) => (
+              <div key={i}>
+                <p className="m-0 mb-1 text-[11px] font-bold text-[#c00000] uppercase tracking-wide">{sec.label}</p>
+                <ul className="list-none p-0 m-0">
+                  {sec.lines.map((line, j) => (
+                    <li key={j} className="py-0.5 text-sm text-[#333] border-b border-gray-100 last:border-b-0">{line}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+          {/* Arrow */}
+          <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-[1px]">
+            <div className="w-0 h-0 border-x-[6px] border-x-transparent border-t-[6px] border-t-[#a90000]" />
+          </div>
+        </div>
+      )}
+    </span>
+  );
+}
+
+function EventInfoInline({ info }: { info: EventInfo }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="mt-2 pt-2 border-t border-red-100">
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between bg-white border border-[#a90000] rounded-lg px-3 py-2 text-[11px] font-bold text-[#a90000] uppercase tracking-wider"
+      >
+        <span>ⓘ {info.title || 'Meer informatie'}</span>
+        <span className="text-[#a90000]">{open ? '−' : '+'}</span>
+      </button>
+      {open && (
+        <div className="mt-2 space-y-2.5">
+          {info.sections.map((sec, i) => (
+            <div key={i}>
+              <p className="text-[10px] font-bold text-[#c00000] uppercase tracking-wide mb-0.5">{sec.label}</p>
+              <ul className="space-y-0.5">
+                {sec.lines.map((line, j) => (
+                  <li key={j} className="text-xs text-gray-600">{line}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -159,6 +241,7 @@ export function AgendaSection() {
               const isFirstFuture = idx === firstFutureIdx;
               const weegtijden = (item as AgendaItemWithWeegtijden).weegtijden;
               const weegtijdTitel = (item as AgendaItemWithWeegtijden).weegtijdTitel;
+              const eventInfo = (item as AgendaItemWithWeegtijden).eventInfo;
 
               return (
                 <tr key={idx} ref={isFirstFuture ? desktopFirstFutureRef : null} className={`border-b border-[#e9e0cf] last:border-b-0 transition-colors hover:bg-[#fff2f2] ${item.cancelled ? 'cancelled-event' : isPast ? 'past-event' : ''} ${item.special ? 'special-event-row' : ''}`} style={item.special ? { animation: 'special-pulse 3s ease-in-out infinite' } : undefined} onClick={item.special ? triggerConfetti : undefined}>
@@ -171,7 +254,10 @@ export function AgendaSection() {
                   </td>
                   <td className={`px-5 py-4 text-sm ${isPast ? 'text-gray-400' : 'text-gray-600'}`}>
                     {item.details || '-'}
-                    {weegtijden && (
+                    {eventInfo && (
+                      <EventInfoTooltip info={eventInfo} />
+                    )}
+                    {weegtijden && !eventInfo && (
                       <InfoTooltip weegtijden={weegtijden} title={weegtijdTitel} />
                     )}
                   </td>
@@ -207,6 +293,7 @@ export function AgendaSection() {
           const isFirstFuture = idx === firstFutureIdx;
           const weegtijden = (item as AgendaItemWithWeegtijden).weegtijden;
           const weegtijdTitel = (item as AgendaItemWithWeegtijden).weegtijdTitel;
+          const eventInfo = (item as AgendaItemWithWeegtijden).eventInfo;
 
           return (
             <div key={idx} ref={isFirstFuture ? mobileFirstFutureRef : null} className={`relative bg-white rounded-lg border shadow-sm overflow-hidden transition-all active:scale-[0.98] ${item.cancelled ? 'border-red-200/60 opacity-55 bg-red-50/30' : isPast ? 'border-gray-200/60 opacity-50' : item.special ? 'special-card' : 'border-[#e8e0e0] shadow-[0_2px_12px_rgba(80,0,0,0.06)]'}`} onClick={item.special ? triggerConfetti : undefined}>
@@ -237,7 +324,7 @@ export function AgendaSection() {
                   <div className="bg-[#fdfafa] rounded-lg px-3 py-2.5">
                     <p className="text-[10px] font-bold text-[#a90000] uppercase tracking-wider mb-0.5">Details</p>
                     <p className={`text-xs leading-relaxed ${isPast ? 'text-gray-400' : 'text-gray-600'}`}>{item.details}</p>
-                    {weegtijden && (
+                    {weegtijden && !eventInfo && (
                       <div className="mt-2 pt-2 border-t border-red-100">
                         <p className="text-[10px] font-bold text-[#a90000] mb-1">⏰ {weegtijdTitel || 'Weegtijden'}</p>
                         <ul className="space-y-0.5">
@@ -248,6 +335,9 @@ export function AgendaSection() {
                           ))}
                         </ul>
                       </div>
+                    )}
+                    {eventInfo && (
+                      <EventInfoInline info={eventInfo} />
                     )}
                   </div>
                 )}

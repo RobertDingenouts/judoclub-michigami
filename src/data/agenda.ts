@@ -1,3 +1,8 @@
+export interface EventInfoSection {
+  label: string;
+  lines: string[];
+}
+
 export interface AgendaItem {
   compareDate: string;
   displayDate: string;
@@ -15,6 +20,7 @@ export interface AgendaItem {
   special?: boolean;
   weegtijden?: Array<{ time: string; age: string }>;
   weegtijdTitel?: string;
+  eventInfo?: { title?: string; sections: EventInfoSection[] };
 }
 
 export const agendaItems: AgendaItem[] = [
@@ -42,7 +48,7 @@ export const agendaItems: AgendaItem[] = [
   { compareDate: "2026-07-10", displayDate: "10 juli t/m 21 aug", event: "Geen lessen (Steenbergen) i.v.m.", emoji: "ban", eventSub: "Zomervakantie", details: "", location: "De Knotwilg", time: "-", locationUrl: "https://www.google.com/maps/search/?api=1&query=Sportcentrum+De+Knotwilg+Wipstraat+2+4651+XW+Steenbergen" },
   { compareDate: "2026-07-08", displayDate: "8 jul t/m 19 aug", event: "Geen lessen (Oud-Vossemeer) i.v.m.", emoji: "ban", eventSub: "Zomervakantie", details: "", location: "De Vossenkuil", time: "-", locationUrl: "https://www.google.com/maps/search/?api=1&query=Bou+Kooijmanstraat+48+4698+AM+Oud-Vossemeer" },
   { compareDate: "2026-10-16", displayDate: "16 okt & 23 okt", event: "Geen lessen (Steenbergen) i.v.m.", emoji: "ban", eventSub: "Herfstvakantie", details: "", location: "De Knotwilg", time: "-", locationUrl: "https://www.google.com/maps/search/?api=1&query=Sportcentrum+De+Knotwilg+Wipstraat+2+4651+XW+Steenbergen" },
-  { compareDate: "2026-10-17", displayDate: "17 oktober", event: "Jubileumtoernooi OVJV", emoji: "champagne", eventSub: "50-jarig bestaan OVJV · 47e editie", details: "Recreatief breedtesporttoernooi — amateur-scheidsrechters, nadruk op sportiviteit en plezier. €7,50 per judoka (incl. 1 consumptie). Overmaken: NL81 RBRB 0939 7268 15 t.n.v. Judovereniging O.V.J.V. (vermeld: naam judoka + jubileumtoernooi OVJV). Inschrijven uiterlijk 30 september.", location: "De Vossenkuil", locationSub: "Oud-Vossemeer", locationUrl: "https://www.google.com/maps/search/?api=1&query=Bou+Kooijmanstraat+48+4698+AM+Oud-Vossemeer", inschrijfUrl: "https://forms.cloud.microsoft/r/XZkMDrBVRk", inschrijfTekst: "Inschrijven", time: "n.n.b.", special: true, weegtijden: [{ time: "09:00-09:15", age: "geboortejaar 2016 t/m 2020" }, { time: "09:30-09:45", age: "geboortejaar 2011 t/m 2015" }, { time: "10:00-10:15", age: "geboortejaar 2010 en eerder" }], weegtijdTitel: "Aanwezigheid per geboortejaar" },
+  { compareDate: "2026-10-17", displayDate: "17 oktober", event: "Jubileumtoernooi OVJV", emoji: "champagne", eventSub: "50-jarig bestaan OVJV · 47e editie", details: "Recreatief toernooi voor alle leeftijden. Inschrijven uiterlijk 30 september.", location: "De Vossenkuil", locationSub: "Oud-Vossemeer", locationUrl: "https://www.google.com/maps/search/?api=1&query=Bou+Kooijmanstraat+48+4698+AM+Oud-Vossemeer", inschrijfUrl: "https://forms.cloud.microsoft/r/XZkMDrBVRk", inschrijfTekst: "Inschrijven", time: "n.n.b.", special: true, eventInfo: { title: "Jubileumtoernooi OVJV", sections: [ { label: "Over het toernooi", lines: ["Recreatief breedtesporttoernooi — amateur-scheidsrechters, nadruk op sportiviteit en plezier.", "Locatie: Bou-Kooijmanstraat 48, 4698 AM Oud-Vossemeer"] }, { label: "Kosten & betaling", lines: ["€ 7,50 per judoka (inclusief 1 consumptie)", "Overmaken naar: NL81 RBRB 0939 7268 15 t.n.v. Judovereniging O.V.J.V.", "Vermeld: voornaam & achternaam judoka + jubileumtoernooi OVJV"] }, { label: "Aanwezigheid per geboortejaar", lines: ["09:00-09:15 — geboortejaar 2016 t/m 2020", "09:30-09:45 — geboortejaar 2011 t/m 2015", "10:00-10:15 — geboortejaar 2010 en eerder"] }, { label: "Inschrijven", lines: ["Uiterlijk 30 september", "Via het inschrijfformulier (knop rechts)"] } ] } },
   { compareDate: "2026-10-21", displayDate: "21 oktober", event: "Geen les (Oud-Vossemeer) i.v.m.", emoji: "ban", eventSub: "Herfstvakantie", details: "", location: "De Vossenkuil", time: "-", locationUrl: "https://www.google.com/maps/search/?api=1&query=Bou+Kooijmanstraat+48+4698+AM+Oud-Vossemeer" },
   { compareDate: "2026-11-04", displayDate: "4 november", event: "Geen les (Oud-Vossemeer) i.v.m.", emoji: "ban", eventSub: "Dankdag", details: "", location: "De Vossenkuil", time: "-", locationUrl: "https://www.google.com/maps/search/?api=1&query=Bou+Kooijmanstraat+48+4698+AM+Oud-Vossemeer" },
   { compareDate: "2026-12-18", displayDate: "18 december", event: "Geen lessen (Steenbergen) i.v.m.", emoji: "ban", eventSub: "Kerstvakantie", details: "", location: "De Knotwilg", time: "-", locationUrl: "https://www.google.com/maps/search/?api=1&query=Sportcentrum+De+Knotwilg+Wipstraat+2+4651+XW+Steenbergen" },
