@@ -11,6 +11,7 @@ import { storyChapters } from '@/data/story-chapters';
 import {
   SumiLandscape, SakuraPetals, InkBleeds, WatermarkKanji, VoxelGrid,
 } from '@/components/sections/ZenScenery';
+import { useScrollProgress } from '@/lib/use-scroll-progress';
 import type { Section } from '@/components/nav-config';
 
 /* Kleuren op zacht oud-creme papier: donkere sumi-inkt in plaats van washi-licht */
@@ -35,27 +36,39 @@ function InkReveal({ children, className = '', as: Tag = 'div', delay = 0 }: {
   );
 }
 
-/* --- Letter voor letter "geschreven" (logica uit "Een sprookje van 10 jaar")
-   Woorden blijven bij elkaar (inline-block), elke letter fade-in met een
-   oplopende delay. Pas als het blok in beeld scrolt start het schrijven —
-   layout blijft stabiel, letters bestaan al (alleen de opacity verandert). */
+/* --- Letter voor letter, scroll-gekoppeld ---------------------------------
+   Elke letter krijgt een opacity die direct afhangt van de scrollpositie
+   van het blok: hoe verder je scrolt, hoe meer letters "geschreven" zijn.
+   Daardoor volgt de onthulling exact je scrollsnelheid — snel scrollen
+   schrijft snel, langzaam scrollen schrijft langzaam, en terugscrollen
+   veegt zacht terug. Layout blijft stabiel (letters bestaan altijd). */
 function InkType({ text, className = '', as: Tag = 'p', speed = 30, delay = 0 }: {
   text: string; className?: string; as?: 'p' | 'div' | 'span'; speed?: number; delay?: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: '-80px' });
+  // 0 → blok onderin beeld, 1 → blok volledig voorbij het midden
+  const progress = useScrollProgress(ref, 0.92, 0.42);
   const words = text.split(' ');
-  const baseMs = delay * 1000;
+  const total = Array.from(text).length;
+  // delay/speed bepalen nu de breedte van het schrijfmoment per letter
+  const lead = delay * 6; // latere blokken beginnen iets later in de progress
+  const span = Math.max(0.12, total * (speed / 100000) * 8);
   let letterIndex = 0;
   return (
-    <Tag ref={ref as never} className={cn('ink-type', className, inView && 'ink-type-run')}>
+    <Tag ref={ref as never} className={cn('ink-type', className)}>
       {words.map((word, wi) => (
         <Fragment key={wi}>
           <span className="ink-word">
             {Array.from(word).map((ch, ci) => {
-              const d = baseMs + letterIndex++ * speed;
+              const i = letterIndex++;
+              const start = lead + (i / Math.max(1, total)) * span;
+              const local = Math.min(1, Math.max(0, (progress - start) / 0.06));
               return (
-                <span key={ci} className="ink-letter" style={{ animationDelay: `${d}ms` }}>
+                <span
+                  key={ci}
+                  className="ink-letter"
+                  style={{ opacity: local, transition: 'opacity 120ms linear' }}
+                >
                   {ch}
                 </span>
               );
