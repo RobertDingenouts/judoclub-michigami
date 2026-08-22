@@ -58,7 +58,7 @@ export const storyChapters: StoryChapter[] = [
     title: 'De rustigere jaren',
     era: '2016 — 2020',
     paragraphs: [
-      'Vanaf het midden van de jaren ’10 van de 21e eeuw ging het geleidelijk rustiger aan. Het was een langzaam proces: er waren minder wedstrijdjudoka’s, waardoor toernooien moeilijker te organiseren werden. De ledenkring werd kleiner, en in de regio verdwenen clubs. De regio die in de jaren negentig en tweeduizend bolstond van judo, werd stilletjan kleiner.',
+      'Vanaf het midden van de jaren ’10 van de 21e eeuw ging het geleidelijk rustiger aan. Het was een langzaam proces: er waren minder wedstrijdjudoka’s, waardoor toernooien moeilijker te organiseren werden. De ledenkring werd kleiner, en in de regio verdwenen clubs. De regio die in de jaren negentig en tweeduizend bolstond van judo, werd stilletjesaan kleiner.',
     ],
   },
   {

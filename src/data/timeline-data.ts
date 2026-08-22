@@ -63,7 +63,7 @@ export const timelineEvents: TimelineEvent[] = [
   {
     year: "Jaren '90 — 2000",
     title: 'Gouden jaren Michigami',
-    description: 'De gouden tijd van de club — de jaren negentig én de jaren tweeduizend: donderdag twee trainingsgroepen, vrijdag drie groepen. Les in Nieuw-Vossemeer en Scherpenisse. Elk jaar toernooien in Londen en Parijs. Pony Park Slagharen met les van Anton Geesink zelf. Een echte familieclub: zoon Erwin is zelf actief en geeft weleens les, Els steunt de club altijd en dochter Jolanda is een vaste waarde. Jolanda trouwt met Franco Hack; samen kregen zij drie zoons, waaronder de tweeling Robin en Pascal — de twee kleine judoka’s die later het bestuur en de trainers van Michigami worden.',
+    description: 'De gouden tijd van de club — de jaren negentig én de jaren tweeduizend: donderdag twee trainingsgroepen, vrijdag drie groepen. Les in Nieuw-Vossemeer en Scherpenisse. Elk jaar toernooien in Londen en Parijs. Pony Park Slagharen met les van Anton Geesink zelf. Een echte familieclub: zoon Erwin is zelf actief en geeft weleens les, Els steunt de club altijd en dochter Jolanda is een vaste waarde. Jolanda trouwt met Franco Hack; samen kregen zij drie zoons, waaronder de tweeling Robin en Pascal — de twee kleine judoka’s die later het bestuur en de trainers van Michigami worden. En dan is er nog Alex van Loon, die Koos jarenlang bij de trainingen assisteert — een onmisbare tweede hand achter de mat.',
     icon: 'star',
     photoUrl: '/uploads/2/0/5/8/20583900/2133725_orig.jpg',
     photoCaption: 'Jaarlijks trainingskamp in Slagharen — met Anton Geesink op de foto',
