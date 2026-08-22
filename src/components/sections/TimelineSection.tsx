@@ -8,6 +8,7 @@ import { SakuraPetals, SumiLandscape, InkBleeds } from '@/components/sections/Ze
 import { Trophy, Award, MapPin, Star, Users, Swords } from 'lucide-react';
 import { ImageLightbox } from '@/components/ui/ImageLightbox';
 import { type Section } from '@/components/nav-config';
+import { useZenProgress } from '@/lib/zen-scroll';
 import { cn } from '@/lib/utils';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -41,22 +42,24 @@ function TimelineItem({ event, index }: { event: TimelineEvent; index: number })
           initial={{ scale: 0, opacity: 0 }}
           animate={inView ? { scale: 1, opacity: 1 } : {}}
           transition={{ delay: 0.15, type: 'spring', stiffness: 260, damping: 18 }}
-          className={`flex items-center justify-center rounded-full ${
+          className={`relative flex items-center justify-center rounded-full ${
             event.isMilestone
               ? 'w-12 h-12 bg-gradient-to-br from-[var(--kin-400)] to-[var(--kin-600)] text-[#241c14] shadow-[0_0_24px_rgba(160,125,46,0.35)] ring-4 ring-[rgba(160,125,46,0.18)]'
               : 'w-9 h-9 bg-[var(--shu-600)] border border-[var(--kin-400)]/50 text-[var(--washi-50)]'
           }`}
         >
+          {event.isMilestone && <span className="pulse-ring" />}
           {iconMap[event.icon || 'club']}
         </motion.div>
       </div>
 
-      {/* Kaart */}
+      {/* Kaart — glijdt richtingsbewust binnen: van de kant van zijn eigen
+          ruglijn-zijde, alsof de druppel op de lijn de kaart "achterlaat" */}
       <div className={`ml-12 md:ml-0 md:w-[calc(50%-3rem)] ${isLeft ? 'md:pr-0' : 'md:pl-0'}`}>
         <motion.div
-          initial={{ opacity: 0, y: 28, filter: 'blur(6px)' }}
-          animate={inView ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
-          transition={{ duration: 0.7, delay: 0.1, ease: EASE }}
+          initial={{ opacity: 0, x: isLeft ? -34 : 34, y: 18, filter: 'blur(5px)' }}
+          animate={inView ? { opacity: 1, x: 0, y: 0, filter: 'blur(0px)' } : {}}
+          transition={{ duration: 0.75, delay: 0.1, ease: EASE }}
         >
           <article
             className={`ink-card relative overflow-hidden rounded-lg p-5 sm:p-6 transition-all duration-500
@@ -132,12 +135,11 @@ export function TimelineSection({ onNavigate }: { onNavigate?: (s: Section) => v
   void onNavigate; // gereserveerd voor latere navigatie
   const spineRef = useRef<HTMLDivElement>(null);
 
-  // De ruglijn trekt zich mee met het scrollen
-  const { scrollYProgress } = useScroll({
-    target: spineRef,
-    offset: ['start 0.75', 'end 0.6'],
-  });
-  const spineHeight = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
+  // Spine-groei + druppel via eigen hook: luistert naar de ScrollArea-viewport
+  // (framer-motion's useScroll kijkt alleen naar het venster — zie zen-scroll.ts)
+  const spineP = useZenProgress(spineRef, 0.75, 0.6);
+  const spineHeight = `${Math.round(spineP * 10000) / 100}%`;
+  const dropTop = spineHeight;
 
   const headerRef = useRef<HTMLDivElement>(null);
   const headerInView = useInView(headerRef, { once: true, margin: '-100px' });
@@ -178,6 +180,11 @@ export function TimelineSection({ onNavigate }: { onNavigate?: (s: Section) => v
           <motion.div
             style={{ height: spineHeight }}
             className="absolute left-4 md:left-1/2 md:-translate-x-px top-0 w-px origin-top bg-gradient-to-b from-[var(--kin-500)] via-[var(--shu-500)] to-[var(--shu-600)] shadow-[0_0_10px_rgba(192,0,0,0.25)]"
+          />
+          {/* Inkt-druppel reist met de punt van de ruglijn mee */}
+          <motion.div
+            style={{ top: dropTop }}
+            className="spine-drop absolute left-4 -translate-x-[5px] z-10 md:left-1/2 md:-translate-x-1/2"
           />
 
           {timelineEvents.map((event, index) => (
