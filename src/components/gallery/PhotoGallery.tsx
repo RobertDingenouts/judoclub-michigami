@@ -45,8 +45,10 @@ function Lightbox({
   // Onbeperkte index (geen modulo) zodat de carousel-track soepel kan
   // meeglijden; de foto-content wordt modulo-afgeleid.
   const [index, setIndex] = useState(initialIndex);
-  const [errorSrc, setErrorSrc] = useState<string | null>(null);
-  const [loaded, setLoaded] = useState(false);
+  // Gelukt/mislukt per bron-URL (Set i.p.v. één waarde): elke foto houdt
+  // zijn eigen status, ook bij snel doorswipen.
+  const [loadedSrcs, setLoadedSrcs] = useState<Set<string>>(new Set());
+  const [failedSrcs, setFailedSrcs] = useState<Set<string>>(new Set());
   const [dragX, setDragX] = useState(0);
   const [dragging, setDragging] = useState(false);
   // Mutable drag-state in refs: React-state is asynchroon, dus een
@@ -62,9 +64,19 @@ function Lightbox({
   const at = (i: number) => images[((i % n) + n) % n];
   const current = at(index);
 
-  // Hoogere-resolutie versie voor de lightbox (x.jpg → x_orig.jpg).
-  const srcFor = (img: GalleryImage) =>
-    errorSrc === img.src ? img.src : img.fullSrc ?? fullResSrc(img.src);
+  // Hoogere-resolutie versie voor de lightbox (x.jpg → x_orig.jpg);
+  // valt terug op de kleine versie zodra die bron faalde.
+  const srcFor = (img: GalleryImage) => {
+    const full = img.fullSrc ?? fullResSrc(img.src);
+    return failedSrcs.has(full) ? img.src : full;
+  };
+  const markLoaded = (src: string) =>
+    setLoadedSrcs(prev => {
+      if (prev.has(src)) return prev;
+      const next = new Set(prev);
+      next.add(src);
+      return next;
+    });
 
   const changeIndex = (delta: number) => setIndex((i) => i + delta);
 
@@ -81,7 +93,6 @@ function Lightbox({
     else if (dx >= threshold) changeIndex(-1);
     dragXRef.current = 0;
     setDragX(0);
-    setErrorSrc(null);
     detach();
   };
 
@@ -126,9 +137,12 @@ function Lightbox({
 
   const counter = ((index % n) + n) % n + 1;
 
-  // Ladingstato reset zodra de actieve foto verandert, zodat de
-  // spinner terugkomt tot de nieuwe foto daadwerkelijk geladen is.
-  useEffect(() => { setLoaded(false); }, [index]);
+  // Spinner-status: de actieve foto is "klaar" als zijn bron geladen is.
+  // Belangrijk: een gecachete browser-foto vuurt soms géén onLoad-event
+  // meer — daarom checken we ook of de bron al in loadedSrcs zit vóór we
+  // de spinner tonen, en resetten we nooit globaal bij index-wissel.
+  const currentSrc = srcFor(current);
+  const currentLoaded = loadedSrcs.has(currentSrc);
 
   // Buur-foto's vooraf laden: bij snel doorswipen staat de volgende foto
   // dan al in de cache in plaats van pas te beginnen na de render.
@@ -183,28 +197,39 @@ function Lightbox({
         <div
           className="flex h-full"
           style={{
-            transform: `translateX(calc(${-index * 100}% + ${dragX}px))`,
+            // Slides staan vast als [vorige, huidige, volgende]; de viewport
+            // toont altijd de MIDDELSTE (−100%). Zo zie je bij openen direct
+            // de aangeklikte foto (een track op −index*100% toonde bij
+            // index=0 per ongeluk de laatste foto van het album).
+            transform: `translateX(calc(-100% + ${dragX}px))`,
             transition: dragging ? 'none' : 'transform 0.42s cubic-bezier(0.22, 1, 0.36, 1)',
           }}
         >
-          {[index - 1, index, index + 1].map((i, pos) => {
-            const item = at(i);
+          {[-1, 0, 1].map((off) => {
+            const item = at(index + off);
+            const isCurrent = off === 0;
             return (
               <div
-                key={i}
+                key={off}
                 className="w-full flex-shrink-0 h-full relative flex items-center justify-center px-2 sm:px-8"
               >
                 <Image
-                  src={errorSrc === srcFor(item) ? item.src : srcFor(item)}
+                  src={srcFor(item)}
                   alt={item.caption}
                   fill
                   sizes="100vw"
-                  priority={pos === 1}
+                  priority={isCurrent}
                   loading="eager"
-                  onLoad={() => { if (pos === 1) setLoaded(true); }}
+                  onLoad={() => markLoaded(srcFor(item))}
                   className="object-contain rounded-md shadow-2xl"
                   onError={() => {
-                    if (errorSrc !== item.src) setErrorSrc(item.src);
+                    const full = item.fullSrc ?? fullResSrc(item.src);
+                    setFailedSrcs(prev => {
+                      if (prev.has(full)) return prev;
+                      const next = new Set(prev);
+                      next.add(full);
+                      return next;
+                    });
                   }}
                 />
               </div>
@@ -214,7 +239,7 @@ function Lightbox({
       </div>
 
       {/* Lading-indicator: geen "leeg donker scherm" tijdens het laden */}
-      {!loaded && (
+      {!currentLoaded && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
           <div className="w-10 h-10 rounded-full border-2 border-white/20 border-t-white/80 animate-spin" />
         </div>
@@ -253,7 +278,7 @@ function Lightbox({
 }
 
 export function PhotoGallery() {
-  const [lightbox, setLightbox] = useState<{ images: GalleryImage[]; index: number } | null>(null);
+  const [lightbox, setLightbox] = useState<{ images: GalleryImage[]; index: number; openId: number } | null>(null);
   const [expandedAlbums, setExpandedAlbums] = useState<Set<string>>(new Set());
 
   // Sorteer op order (Archive = 999, altijd onderaan).
@@ -330,7 +355,7 @@ export function PhotoGallery() {
                   <div className="px-4 pb-4">
                     <ImageGrid
                       images={album.images}
-                      onImageClick={(images, index) => setLightbox({ images, index })}
+                      onImageClick={(images, index) => setLightbox({ images, index, openId: Date.now() })}
                     />
                   </div>
                 )}
@@ -352,10 +377,12 @@ export function PhotoGallery() {
       </div>
 
       {/* Lightbox — via portal naar body, zodat position:fixed niet
-          opgevangen wordt door de transform van de sectie-overgang. */}
+          opgevangen wordt door de transform van de sectie-overgang.
+          key forceert een verse mount per opening (state altijd schoon). */}
       {lightbox && typeof document !== 'undefined' &&
         createPortal(
           <Lightbox
+            key={lightbox.openId}
             images={lightbox.images}
             initialIndex={lightbox.index}
             onClose={() => setLightbox(null)}

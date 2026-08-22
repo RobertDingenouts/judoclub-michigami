@@ -20,7 +20,7 @@ export function ImageLightbox({
 }) {
   // Onbeperkte index (wrap-around via modulo-afleiding)
   const [index, setIndex] = useState(initialIndex);
-  const [loaded, setLoaded] = useState(false);
+  const [loadedIdxs, setLoadedIdxs] = useState<Set<number>>(new Set());
   const [dragX, setDragX] = useState(0);
   const [dragging, setDragging] = useState(false);
   const draggingRef = useRef(false);
@@ -84,7 +84,11 @@ export function ImageLightbox({
 
   const counter = ((index % n) + n) % n + 1;
 
-  useEffect(() => { setLoaded(false); }, [index]);
+  // Gecachete foto's vuurt soms geen onLoad meer — daarom bijhouden welke
+  // indexen geladen zijn en nooit globaal resetten.
+  const markLoaded = (i: number) =>
+    setLoadedIdxs(prev => prev.has(i) ? prev : new Set(prev).add(i));
+  const currentLoaded = loadedIdxs.has(((index % n) + n) % n);
 
   // Buur-foto's vooraf laden
   useEffect(() => {
@@ -146,23 +150,25 @@ export function ImageLightbox({
         <div
           className="flex h-full"
           style={{
-            transform: `translateX(calc(${-index * 100}% + ${dragX}px))`,
+            // Zelfde patroon als PhotoGallery: slides [vorige, huidige,
+            // volgende], viewport toont de middelste (−100%).
+            transform: `translateX(calc(-100% + ${dragX}px))`,
             transition: dragging ? 'none' : 'transform 0.42s cubic-bezier(0.22, 1, 0.36, 1)',
           }}
         >
-          {[index - 1, index, index + 1].map((i, pos) => (
+          {[-1, 0, 1].map((off) => (
             <div
-              key={i}
+              key={off}
               className="w-full flex-shrink-0 h-full relative flex items-center justify-center px-2 sm:px-8"
             >
               <Image
-                src={at(i)}
-                alt={`Foto ${((i % n) + n) % n + 1}`}
+                src={at(index + off)}
+                alt={`Foto ${((index + off) % n + n) % n + 1}`}
                 fill
                 sizes="100vw"
-                priority={pos === 1}
+                priority={off === 0}
                 loading="eager"
-                onLoad={() => { if (pos === 1) setLoaded(true); }}
+                onLoad={() => { if (off === 0) markLoaded(((index % n) + n) % n); }}
                 className="object-contain rounded-md shadow-2xl"
               />
             </div>
@@ -171,7 +177,7 @@ export function ImageLightbox({
       </div>
 
       {/* Lading-indicator */}
-      {!loaded && (
+      {!currentLoaded && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
           <div className="w-10 h-10 rounded-full border-2 border-white/20 border-t-white/80 animate-spin" />
         </div>
