@@ -8,7 +8,6 @@ import { SakuraPetals, SumiLandscape, InkBleeds } from '@/components/sections/Ze
 import { Trophy, Award, MapPin, Star, Users, Swords } from 'lucide-react';
 import { ImageLightbox } from '@/components/ui/ImageLightbox';
 import { type Section } from '@/components/nav-config';
-import { useScrollProgress } from '@/lib/use-scroll-progress';
 import { cn } from '@/lib/utils';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -26,12 +25,8 @@ const iconMap: Record<string, React.ReactNode> = {
 function TimelineItem({ event, index }: { event: TimelineEvent; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const [photoOpen, setPhotoOpen] = useState(false);
+  const inView = useInView(ref, { once: true, margin: '-120px' });
   const isLeft = index % 2 === 0;
-  // Scroll-gekoppelde onthulling: opacity/positie volgen direct de scroll-
-  // snelheid (0 → onderin beeld, 1 → netjes gepositioneerd)
-  const p = useScrollProgress(ref, 0.94, 0.72);
-  const eased = 1 - Math.pow(1 - p, 3); // easeOutCubic
-  const nodeScale = Math.min(1, Math.max(0, (p - 0.15) / 0.45));
 
   return (
     <div
@@ -42,26 +37,26 @@ function TimelineItem({ event, index }: { event: TimelineEvent; index: number })
     >
       {/* Node op de ruglijn */}
       <div className="absolute left-4 md:left-1/2 md:-translate-x-1/2 z-10 -top-1">
-        <div
-          style={{ transform: `scale(${nodeScale})`, opacity: nodeScale }}
-          className={`flex items-center justify-center rounded-full transition-none ${
+        <motion.div
+          initial={{ scale: 0, opacity: 0 }}
+          animate={inView ? { scale: 1, opacity: 1 } : {}}
+          transition={{ delay: 0.15, type: 'spring', stiffness: 260, damping: 18 }}
+          className={`flex items-center justify-center rounded-full ${
             event.isMilestone
               ? 'w-12 h-12 bg-gradient-to-br from-[var(--kin-400)] to-[var(--kin-600)] text-[#241c14] shadow-[0_0_24px_rgba(160,125,46,0.35)] ring-4 ring-[rgba(160,125,46,0.18)]'
               : 'w-9 h-9 bg-[var(--shu-600)] border border-[var(--kin-400)]/50 text-[var(--washi-50)]'
           }`}
         >
           {iconMap[event.icon || 'club']}
-        </div>
+        </motion.div>
       </div>
 
       {/* Kaart */}
       <div className={`ml-12 md:ml-0 md:w-[calc(50%-3rem)] ${isLeft ? 'md:pr-0' : 'md:pl-0'}`}>
-        <div
-          style={{
-            opacity: eased,
-            transform: `translateY(${(1 - eased) * 28}px)`,
-            filter: `blur(${(1 - eased) * 6}px)`,
-          }}
+        <motion.div
+          initial={{ opacity: 0, y: 28, filter: 'blur(6px)' }}
+          animate={inView ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
+          transition={{ duration: 0.7, delay: 0.1, ease: EASE }}
         >
           <article
             className={`ink-card relative overflow-hidden rounded-lg p-5 sm:p-6 transition-all duration-500
@@ -123,7 +118,7 @@ function TimelineItem({ event, index }: { event: TimelineEvent; index: number })
               <div className="absolute bottom-0 left-0 h-0.5 w-full bg-gradient-to-r from-[var(--shu-600)]/70 via-[var(--kin-500)]/70 to-transparent" />
             )}
           </article>
-        </div>
+        </motion.div>
       </div>
 
       {/* Spacer */}
