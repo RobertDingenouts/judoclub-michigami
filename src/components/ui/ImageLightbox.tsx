@@ -1,9 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import Image from 'next/image';
 
+/**
+ * Gedeelde lightbox met swipe-carousel (foto beweegt mee met de vinger),
+ * wrap-around, buur-preload en portal naar body (position:fixed is anders
+ * gebroken binnen getransformeerde sectie-ancestors).
+ */
 export function ImageLightbox({
   images,
   initialIndex,
@@ -13,74 +18,191 @@ export function ImageLightbox({
   initialIndex: number;
   onClose: () => void;
 }) {
-  const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  // Onbeperkte index (wrap-around via modulo-afleiding)
+  const [index, setIndex] = useState(initialIndex);
+  const [loaded, setLoaded] = useState(false);
+  const [dragX, setDragX] = useState(0);
+  const [dragging, setDragging] = useState(false);
+  const draggingRef = useRef(false);
+  const startXRef = useRef(0);
+  const dragXRef = useRef(0);
+  const widthRef = useRef(0);
+  const trackRef = useRef<HTMLDivElement>(null);
+
+  const n = images.length;
+  const at = (i: number) => images[((i % n) + n) % n];
+
+  const changeIndex = (delta: number) => setIndex((i) => i + delta);
+
+  const endDrag = () => {
+    if (!draggingRef.current) return;
+    draggingRef.current = false;
+    setDragging(false);
+    const dx = dragXRef.current;
+    const threshold = Math.max(50, widthRef.current * 0.18);
+    if (dx <= -threshold) changeIndex(1);
+    else if (dx >= threshold) changeIndex(-1);
+    dragXRef.current = 0;
+    setDragX(0);
+    detach();
+  };
+
+  const moveRef = useRef<(e: PointerEvent) => void>(() => {});
+  const upRef = useRef<() => void>(() => {});
+  moveRef.current = (e: PointerEvent) => {
+    if (!draggingRef.current) return;
+    const dx = e.clientX - startXRef.current;
+    dragXRef.current = dx;
+    setDragX(dx);
+  };
+  upRef.current = () => endDrag();
+
+  const onWinMove = useRef((e: PointerEvent) => moveRef.current(e)).current;
+  const onWinUp = useRef(() => upRef.current()).current;
+
+  const attach = () => {
+    window.addEventListener('pointermove', onWinMove);
+    window.addEventListener('pointerup', onWinUp);
+    window.addEventListener('pointercancel', onWinUp);
+  };
+  const detach = () => {
+    window.removeEventListener('pointermove', onWinMove);
+    window.removeEventListener('pointerup', onWinUp);
+    window.removeEventListener('pointercancel', onWinUp);
+  };
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    if (n <= 1) return;
+    draggingRef.current = true;
+    startXRef.current = e.clientX;
+    dragXRef.current = 0;
+    widthRef.current = trackRef.current?.offsetWidth ?? window.innerWidth;
+    setDragging(true);
+    setDragX(0);
+    attach();
+  };
+
+  const counter = ((index % n) + n) % n + 1;
+
+  useEffect(() => { setLoaded(false); }, [index]);
+
+  // Buur-foto's vooraf laden
+  useEffect(() => {
+    for (const off of [-1, 1, -2, 2]) {
+      const src = at(index + off);
+      if (!src) continue;
+      const pre = new window.Image();
+      pre.src = src;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [index]);
+
+  // Listeners opruimen bij unmount
+  useEffect(() => {
+    return () => {
+      draggingRef.current = false;
+      detach();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Escape-toets sluit
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
 
   const overlay = (
     <div
-      className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex flex-col items-center justify-center"
       onClick={onClose}
     >
-      {/* Close button */}
+      {/* Sluiten */}
       <button
         onClick={onClose}
-        className="absolute top-4 right-4 text-white/80 hover:text-white z-10"
+        className="absolute top-3 right-3 sm:top-4 sm:right-4 text-white/70 hover:text-white z-20 p-2"
         aria-label="Sluiten"
       >
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
         </svg>
       </button>
 
-      {/* Prev button */}
-      {images.length > 1 && (
-        <button
-          onClick={(e) => { e.stopPropagation(); setCurrentIndex((currentIndex - 1 + images.length) % images.length); }}
-          className="absolute left-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white p-2"
-          aria-label="Vorige"
-        >
-          <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-      )}
-
-      {/* Next button */}
-      {images.length > 1 && (
-        <button
-          onClick={(e) => { e.stopPropagation(); setCurrentIndex((currentIndex + 1) % images.length); }}
-          className="absolute right-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white p-2"
-          aria-label="Volgende"
-        >
-          <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7-7-7 7" />
-          </svg>
-        </button>
-      )}
-
-      {/* Image */}
-      <div className="w-full max-w-4xl max-h-[85vh] flex flex-col items-center" onClick={(e) => e.stopPropagation()}>
-        <div className="relative w-full max-w-3xl h-[62vh] max-h-[62vh] flex items-center justify-center">
-          <Image
-            src={images[currentIndex]}
-            alt={`Foto ${currentIndex + 1}`}
-            fill
-            sizes="(max-width: 1280px) 100vw, 1280px"
-            loading="eager"
-            className="object-contain rounded-lg shadow-2xl"
-          />
+      {/* Teller */}
+      {n > 1 && (
+        <div className="absolute top-4 sm:top-5 left-1/2 -translate-x-1/2 z-20 text-white/60 text-xs sm:text-sm tabular-nums px-3 py-1 rounded-full bg-black/30">
+          {counter} / {n}
         </div>
-        {images.length > 1 && (
-          <p className="text-white/50 mt-3 text-xs">
-            {currentIndex + 1} / {images.length}
-          </p>
-        )}
+      )}
+
+      {/* Swipe-track */}
+      <div
+        ref={trackRef}
+        className="w-full flex-1 overflow-hidden touch-none select-none"
+        onClick={(e) => e.stopPropagation()}
+        onPointerDown={onPointerDown}
+      >
+        <div
+          className="flex h-full"
+          style={{
+            transform: `translateX(calc(${-index * 100}% + ${dragX}px))`,
+            transition: dragging ? 'none' : 'transform 0.42s cubic-bezier(0.22, 1, 0.36, 1)',
+          }}
+        >
+          {[index - 1, index, index + 1].map((i, pos) => (
+            <div
+              key={i}
+              className="w-full flex-shrink-0 h-full relative flex items-center justify-center px-2 sm:px-8"
+            >
+              <Image
+                src={at(i)}
+                alt={`Foto ${((i % n) + n) % n + 1}`}
+                fill
+                sizes="100vw"
+                priority={pos === 1}
+                loading="eager"
+                onLoad={() => { if (pos === 1) setLoaded(true); }}
+                className="object-contain rounded-md shadow-2xl"
+              />
+            </div>
+          ))}
+        </div>
       </div>
+
+      {/* Lading-indicator */}
+      {!loaded && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+          <div className="w-10 h-10 rounded-full border-2 border-white/20 border-t-white/80 animate-spin" />
+        </div>
+      )}
+
+      {/* Vorige / volgende (desktop) */}
+      {n > 1 && (
+        <>
+          <button
+            onClick={(e) => { e.stopPropagation(); changeIndex(-1); }}
+            className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white z-20 p-2"
+            aria-label="Vorige"
+          >
+            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); changeIndex(1); }}
+            className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white z-20 p-2"
+            aria-label="Volgende"
+          >
+            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </>
+      )}
     </div>
   );
 
-  // Portal naar body: position:fixed wordt anders opgevangen door een
-  // transform op een ancestor (sectie-overgang) en de overlay dekt dan
-  // niet de viewport maar de hele sectie.
   if (typeof document === 'undefined') return null;
   return createPortal(overlay, document.body);
 }

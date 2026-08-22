@@ -5,7 +5,8 @@ import Image from 'next/image';
 import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 import { timelineEvents, type TimelineEvent } from '@/data/timeline-data';
 import { SakuraPetals, SumiLandscape, InkBleeds } from '@/components/sections/ZenScenery';
-import { Trophy, Award, MapPin, Star, Users, Swords, X } from 'lucide-react';
+import { Trophy, Award, MapPin, Star, Users, Swords } from 'lucide-react';
+import { ImageLightbox } from '@/components/ui/ImageLightbox';
 import { type Section } from '@/components/nav-config';
 import { cn } from '@/lib/utils';
 
@@ -103,35 +104,11 @@ function TimelineItem({ event, index }: { event: TimelineEvent; index: number })
                   <figcaption className="mt-2 text-center text-xs text-[var(--sumi-500)]">{event.photoCaption}</figcaption>
                 )}
                 {photoOpen && (
-                  <div
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm"
-                    onClick={() => setPhotoOpen(false)}
-                    role="dialog"
-                    aria-modal="true"
-                  >
-                    <button
-                      type="button"
-                      className="absolute right-4 top-4 rounded-full p-2 text-white/80 hover:text-white"
-                      onClick={() => setPhotoOpen(false)}
-                      aria-label="Sluiten"
-                    >
-                      <X className="h-7 w-7" />
-                    </button>
-                    <div className="flex max-h-full max-w-3xl flex-col items-center" onClick={(e) => e.stopPropagation()}>
-                      <div className="relative w-full max-w-xl">
-                        <Image
-                          src={event.photoUrl}
-                          alt={event.photoCaption || event.title}
-                          fill
-                          sizes="(max-width: 1024px) 100vw, 1024px"
-                          className="object-contain rounded-lg shadow-2xl"
-                        />
-                      </div>
-                      {event.photoCaption && (
-                        <p className="mt-3 max-w-xl text-center text-sm text-white/70">{event.photoCaption}</p>
-                      )}
-                    </div>
-                  </div>
+                  <ImageLightbox
+                    images={[event.photoUrl]}
+                    initialIndex={0}
+                    onClose={() => setPhotoOpen(false)}
+                  />
                 )}
               </figure>
             )}

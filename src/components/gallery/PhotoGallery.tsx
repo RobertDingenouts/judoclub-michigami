@@ -130,6 +130,19 @@ function Lightbox({
   // spinner terugkomt tot de nieuwe foto daadwerkelijk geladen is.
   useEffect(() => { setLoaded(false); }, [index]);
 
+  // Buur-foto's vooraf laden: bij snel doorswipen staat de volgende foto
+  // dan al in de cache in plaats van pas te beginnen na de render.
+  // Fouten worden genegeerd (de carousel heeft al een fallback per foto).
+  useEffect(() => {
+    for (const off of [-1, 1, -2, 2]) {
+      const img = at(index + off);
+      if (!img) continue;
+      const pre = new window.Image();
+      pre.src = img.fullSrc ?? fullResSrc(img.src);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [index]);
+
   // Bij unmount (lightbox sluit) eventuele actieve window-listeners opruimen.
   useEffect(() => {
     return () => {

@@ -4,7 +4,8 @@ import { useRef, useState, Fragment } from 'react';
 import Image from 'next/image';
 import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { ChevronRight, ScrollText, Award, X } from 'lucide-react';
+import { ChevronRight, ScrollText, Award } from 'lucide-react';
+import { ImageLightbox } from '@/components/ui/ImageLightbox';
 import { cn } from '@/lib/utils';
 import { storyChapters } from '@/data/story-chapters';
 import {
@@ -387,35 +388,11 @@ function Chapter({ index, data }: { index: number; data: (typeof storyChapters)[
                 <figcaption className="mt-2 text-center text-xs text-[var(--sumi-500)]">{data.photoCaption}</figcaption>
               )}
               {photoOpen && (
-                <div
-                  className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm"
-                  onClick={() => setPhotoOpen(false)}
-                  role="dialog"
-                  aria-modal="true"
-                >
-                  <button
-                    type="button"
-                    className="absolute right-4 top-4 rounded-full p-2 text-white/80 hover:text-white"
-                    onClick={() => setPhotoOpen(false)}
-                    aria-label="Sluiten"
-                  >
-                    <X className="h-7 w-7" />
-                  </button>
-                  <div className="flex max-h-full max-w-3xl flex-col items-center" onClick={(e) => e.stopPropagation()}>
-                    <div className="relative w-full max-w-2xl aspect-[16/11]">
-                      <Image
-                        src={data.photoUrl}
-                        alt={data.photoCaption ?? data.title}
-                        fill
-                        sizes="(max-width: 1024px) 100vw, 1024px"
-                        className="object-contain rounded-lg shadow-2xl"
-                      />
-                    </div>
-                    {data.photoCaption && (
-                      <p className="mt-3 max-w-xl text-center text-sm text-white/70">{data.photoCaption}</p>
-                    )}
-                  </div>
-                </div>
+                <ImageLightbox
+                  images={[data.photoUrl]}
+                  initialIndex={0}
+                  onClose={() => setPhotoOpen(false)}
+                />
               )}
             </figure>
           )}
@@ -477,35 +454,11 @@ function TributeCard({ kanji, stamp, label, title, sub, body, photoUrl, photoCap
             <figcaption className="mt-2 text-center text-xs text-[var(--sumi-500)]">{photoCaption}</figcaption>
           )}
           {photoOpen && (
-            <div
-              className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm"
-              onClick={() => setPhotoOpen(false)}
-              role="dialog"
-              aria-modal="true"
-            >
-              <button
-                type="button"
-                className="absolute right-4 top-4 rounded-full p-2 text-white/80 hover:text-white"
-                onClick={() => setPhotoOpen(false)}
-                aria-label="Sluiten"
-              >
-                <X className="h-7 w-7" />
-              </button>
-              <div className="flex max-h-full max-w-3xl flex-col items-center" onClick={(e) => e.stopPropagation()}>
-                <div className="relative w-full max-w-xl aspect-[16/10]">
-                  <Image
-                    src={photoUrl}
-                    alt={photoCaption ?? title}
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 1024px"
-                    className="object-contain rounded-lg shadow-2xl"
-                  />
-                </div>
-                {photoCaption && (
-                  <p className="mt-3 max-w-xl text-center text-sm text-white/70">{photoCaption}</p>
-                )}
-              </div>
-            </div>
+            <ImageLightbox
+              images={[photoUrl]}
+              initialIndex={0}
+              onClose={() => setPhotoOpen(false)}
+            />
           )}
         </figure>
       )}
