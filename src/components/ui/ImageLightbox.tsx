@@ -34,14 +34,38 @@ export function ImageLightbox({
 
   const changeIndex = (delta: number) => setIndex((i) => i + delta);
 
+  // ── Slide-animatie in twee fases (zelfde als PhotoGallery) ────────────
+  const [pos, setPos] = useState(initialIndex);
+  const [settle, setSettle] = useState(0);
+  const [instant, setInstant] = useState(false);
+
+  useEffect(() => {
+    if (!settle) return;
+    const t = setTimeout(() => {
+      setInstant(true);
+      setPos(index);
+      setSettle(0);
+      requestAnimationFrame(() => requestAnimationFrame(() => setInstant(false)));
+    }, 440);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settle]);
+
+  const settling = settle !== 0;
+  const goTo = (delta: number) => {
+    if (settling || n <= 1) return;
+    changeIndex(delta);
+    setSettle(delta);
+  };
+
   const endDrag = () => {
     if (!draggingRef.current) return;
     draggingRef.current = false;
     setDragging(false);
     const dx = dragXRef.current;
     const threshold = Math.max(50, widthRef.current * 0.18);
-    if (dx <= -threshold) changeIndex(1);
-    else if (dx >= threshold) changeIndex(-1);
+    if (dx <= -threshold) goTo(1);
+    else if (dx >= threshold) goTo(-1);
     dragXRef.current = 0;
     setDragX(0);
     detach();
@@ -110,12 +134,16 @@ export function ImageLightbox({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Escape-toets sluit
+  // Toetsen: Escape sluit, pijltjes navigeren (via goTo voor de animatie)
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+      else if (e.key === 'ArrowLeft') goTo(-1);
+      else if (e.key === 'ArrowRight') goTo(1);
+    };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [onClose]);
+  });
 
   const overlay = (
     <div
@@ -150,10 +178,10 @@ export function ImageLightbox({
         <div
           className="flex h-full"
           style={{
-            // Zelfde patroon als PhotoGallery: slides [vorige, huidige,
-            // volgende], viewport toont de middelste (−100%).
-            transform: `translateX(calc(-100% + ${dragX}px))`,
-            transition: dragging ? 'none' : 'transform 0.42s cubic-bezier(0.22, 1, 0.36, 1)',
+            // Drie fysieke posities (zelfde twee-fases-mechaniek als
+            // PhotoGallery): idle −100%, settle+1 → −200%, settle−1 → 0%.
+            transform: `translateX(calc(${settle === 0 ? -100 : settle === 1 ? -200 : 0}% + ${dragX}px))`,
+            transition: (dragging || instant) ? 'none' : 'transform 0.42s cubic-bezier(0.22, 1, 0.36, 1)',
           }}
         >
           {[-1, 0, 1].map((off) => (
@@ -162,13 +190,13 @@ export function ImageLightbox({
               className="w-full flex-shrink-0 h-full relative flex items-center justify-center px-2 sm:px-8"
             >
               <Image
-                src={at(index + off)}
-                alt={`Foto ${((index + off) % n + n) % n + 1}`}
+                src={at(pos + off)}
+                alt={`Foto ${(((pos + off) % n) + n) % n + 1}`}
                 fill
                 sizes="100vw"
                 priority={off === 0}
                 loading="eager"
-                onLoad={() => { if (off === 0) markLoaded(((index % n) + n) % n); }}
+                onLoad={() => { if (off === 0) markLoaded((((pos % n) + n) % n)); }}
                 className="object-contain rounded-md shadow-2xl"
               />
             </div>
@@ -187,7 +215,7 @@ export function ImageLightbox({
       {n > 1 && (
         <>
           <button
-            onClick={(e) => { e.stopPropagation(); changeIndex(-1); }}
+            onClick={(e) => { e.stopPropagation(); goTo(-1); }}
             className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white z-20 p-2"
             aria-label="Vorige"
           >
@@ -196,7 +224,7 @@ export function ImageLightbox({
             </svg>
           </button>
           <button
-            onClick={(e) => { e.stopPropagation(); changeIndex(1); }}
+            onClick={(e) => { e.stopPropagation(); goTo(1); }}
             className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white z-20 p-2"
             aria-label="Volgende"
           >

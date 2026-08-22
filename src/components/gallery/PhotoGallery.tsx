@@ -80,6 +80,42 @@ function Lightbox({
 
   const changeIndex = (delta: number) => setIndex((i) => i + delta);
 
+  // ── Slide-animatie in twee fases ──────────────────────────────────────
+  // Fase 1 (settle): de track glijdt fysiek één breedte door richting de
+  //   nieuwe foto (naar −200% of 0%). De slides tonen nog de OUDE rij.
+  // Fase 2 (remap): na afloop van de transitie springt de track zonder
+  //   overgang terug naar −100% én wisselt de inhoud naar de nieuwe rij.
+  //   Omdat beide tegelijk gebeuren, is de sprong onzichtbaar.
+  // Dit geeft een échte schuivende overgang: de volgende foto komt binnen
+  // vanaf de kant waar je heenswipet.
+  const [pos, setPos] = useState(initialIndex);      // fysieke slide-inhoud
+  const [settle, setSettle] = useState(0);            // 0=idle, ±1 = glijdt door
+  const [instant, setInstant] = useState(false);      // remap zonder overgang
+
+  // Fase 2: na de uitglij-transitie (420ms) onzichtbaar terugremappen.
+  useEffect(() => {
+    if (!settle) return;
+    const t = setTimeout(() => {
+      setInstant(true);
+      setPos(index);
+      setSettle(0);
+      // Eén frame later de transitie weer inschakelen.
+      requestAnimationFrame(() => requestAnimationFrame(() => setInstant(false)));
+    }, 440);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settle]);
+
+  const settling = settle !== 0;
+
+  // Centrale navigatie: index direct bijwerken (teller/spinner) én de
+  // track fysiek laten doorschuiven. Genegeerd middenin een animatie.
+  const goTo = (delta: number) => {
+    if (settling || n <= 1) return;
+    changeIndex(delta);
+    setSettle(delta);
+  };
+
   // Window-level drag: tijdens de drag volgen we de vinger overal (ook
   // buiten de track), dus pointer-capture is niet nodig — dat kan op
   // sommige mobile browsers een pointercancel uitlokken.
@@ -89,8 +125,8 @@ function Lightbox({
     setDragging(false);
     const dx = dragXRef.current;
     const threshold = Math.max(50, widthRef.current * 0.18);
-    if (dx <= -threshold) changeIndex(1);
-    else if (dx >= threshold) changeIndex(-1);
+    if (dx <= -threshold) goTo(1);
+    else if (dx >= threshold) goTo(-1);
     dragXRef.current = 0;
     setDragX(0);
     detach();
@@ -197,17 +233,18 @@ function Lightbox({
         <div
           className="flex h-full"
           style={{
-            // Slides staan vast als [vorige, huidige, volgende]; de viewport
-            // toont altijd de MIDDELSTE (−100%). Zo zie je bij openen direct
-            // de aangeklikte foto (een track op −index*100% toonde bij
-            // index=0 per ongeluk de laatste foto van het album).
-            transform: `translateX(calc(-100% + ${dragX}px))`,
-            transition: dragging ? 'none' : 'transform 0.42s cubic-bezier(0.22, 1, 0.36, 1)',
+            // Drie fysieke posities:
+            //  idle    → −100% (huidige foto in het midden)
+            //  settle+1→ −200% (schuift door richting de volgende foto)
+            //  settle−1→ 0%    (schuift terug richting de vorige foto)
+            // Na de transitie wordt onzichtbaar teruggemapt naar −100%
+            // met nieuwe slide-inhoud — de sprong is niet zichtbaar.
+            transform: `translateX(calc(${settle === 0 ? -100 : settle === 1 ? -200 : 0}% + ${dragX}px))`,
+            transition: (dragging || instant) ? 'none' : 'transform 0.42s cubic-bezier(0.22, 1, 0.36, 1)',
           }}
         >
           {[-1, 0, 1].map((off) => {
-            const item = at(index + off);
-            const isCurrent = off === 0;
+            const item = at(pos + off);
             return (
               <div
                 key={off}
@@ -218,7 +255,7 @@ function Lightbox({
                   alt={item.caption}
                   fill
                   sizes="100vw"
-                  priority={isCurrent}
+                  priority={off === 0}
                   loading="eager"
                   onLoad={() => markLoaded(srcFor(item))}
                   className="object-contain rounded-md shadow-2xl"
@@ -254,7 +291,7 @@ function Lightbox({
       {n > 1 && (
         <>
           <button
-            onClick={(e) => { e.stopPropagation(); changeIndex(-1); }}
+            onClick={(e) => { e.stopPropagation(); goTo(-1); }}
             className="absolute left-1 sm:left-3 top-1/2 -translate-y-1/2 text-white/60 hover:text-white p-2 z-10"
             aria-label="Vorige"
           >
@@ -263,7 +300,7 @@ function Lightbox({
             </svg>
           </button>
           <button
-            onClick={(e) => { e.stopPropagation(); changeIndex(1); }}
+            onClick={(e) => { e.stopPropagation(); goTo(1); }}
             className="absolute right-1 sm:right-3 top-1/2 -translate-y-1/2 text-white/60 hover:text-white p-2 z-10"
             aria-label="Volgende"
           >
