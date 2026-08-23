@@ -66,7 +66,7 @@ function GripIcon() {
   );
 }
 
-export function MiniPlayer({ onOpenMusic }: { onOpenMusic: () => void }) {
+export function MiniPlayer({ onOpenMusic, formOpen = false }: { onOpenMusic: () => void; formOpen?: boolean }) {
   const mp = useMusicPlayer();
   const [ready, setReady] = useState(false);
   const [mode, setMode] = useState<Mode>('bar');
@@ -83,6 +83,9 @@ export function MiniPlayer({ onOpenMusic }: { onOpenMusic: () => void }) {
   // kan de browser de (synthetic) click op het 88px-veld richten i.p.v. de
   // knop — dan leest dit vlaggetje af of de tap play/pauze was of het bolletje.
   const tapWasButtonRef = useRef(false);
+  // Onthoud stand + positie vóór het formulier open was, zodat we ze na
+  // sluiten weer terug kunnen zetten.
+  const savedStateRef = useRef<{ mode: Mode; pos: Pos } | null>(null);
 
   const savePos = (p: Pos) => {
     try { localStorage.setItem(POS_KEY, JSON.stringify(p)); } catch { /* ignore */ }
@@ -151,6 +154,45 @@ export function MiniPlayer({ onOpenMusic }: { onOpenMusic: () => void }) {
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
   }, []);
+
+  // ============ Formulier open → speler uit de weg ============
+  // Zodra het proeflesformulier (drawer) open is, klapt de speler automatisch
+  // in op het kleine bolletje en schuift naar rechtsboven — uit de weg van het
+  // toetsenbord en de onderbalk. Na sluiten keert de vorige stand + positie
+  // terug. Zo is het formulier altijd goed te vullen en de speler te vatten.
+  useEffect(() => {
+    if (formOpen) {
+      if (savedStateRef.current) return; // al ingeklapt
+      savedStateRef.current = { mode: modeRef.current, pos: { ...posRef.current } };
+      const target = { x: window.innerWidth - DOT - 8, y: 8 };
+      posRef.current = target;
+      setPos(target);
+      setMode('dot');
+      try { localStorage.setItem(MODE_KEY, 'dot'); } catch { /* ignore */ }
+      requestAnimationFrame(() => {
+        const el = wrapRef.current;
+        if (!el) return;
+        const c = clampPos(posRef.current.x, posRef.current.y, el.offsetWidth, el.offsetHeight, true);
+        posRef.current = c;
+        setPos(c);
+      });
+    } else if (savedStateRef.current) {
+      const s = savedStateRef.current;
+      savedStateRef.current = null;
+      setMode(s.mode);
+      posRef.current = s.pos;
+      setPos(s.pos);
+      try { localStorage.setItem(MODE_KEY, s.mode); } catch { /* ignore */ }
+      requestAnimationFrame(() => {
+        const el = wrapRef.current;
+        if (!el) return;
+        const c = clampPos(s.pos.x, s.pos.y, el.offsetWidth, el.offsetHeight, s.mode === 'dot');
+        posRef.current = c;
+        setPos(c);
+        savePos(c);
+      });
+    }
+  }, [formOpen]);
 
   // ============ Verslepen (1:1, pagina blijft stilstaan) ============
   // touch-action: none op de handle zorgt ervoor dat de browser de touch

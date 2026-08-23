@@ -461,7 +461,7 @@ export default function MichigamiApp() {
       </Drawer>
 
       {/* Versleepbare mini-speler — loopt over alle secties mee */}
-      <MiniPlayer onOpenMusic={() => setActiveSection('muziek')} />
+      <MiniPlayer onOpenMusic={() => setActiveSection('muziek')} formOpen={proeflesOpen} />
 
       {/* Actie-popup: gratis inschrijven vóór 1 oktober */}
       <ActionPopup />
