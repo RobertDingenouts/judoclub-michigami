@@ -1,7 +1,225 @@
 'use client';
 
+import { useState } from 'react';
+import { Mail, Phone, MapPin, Send, Check } from 'lucide-react';
 import { contactInfo } from '@/data/contact';
 
+// --- Form state ---
+interface ContactFormData {
+  name: string;
+  email: string;
+  phone: string;
+  subject: string;
+  message: string;
+}
+
+const SUBJECTS = [
+  'Algemene vraag',
+  'Proefles / inschrijving',
+  'Training & agenda',
+  'Toernooi / evenement',
+  'Sponsoring / samenwerking',
+  'Anders',
+];
+
+function getWhatsAppLink(data: ContactFormData) {
+  const text = encodeURIComponent(
+    `Hoi! (via contactformulier website)\n\n` +
+    `Naam: ${data.name}\n` +
+    `Onderwerp: ${data.subject}\n` +
+    (data.email ? `Email: ${data.email}\n` : '') +
+    (data.phone ? `Telefoon: ${data.phone}\n` : '') +
+    `\n${data.message}`
+  );
+  return `https://wa.me/31${contactInfo.whatsapp.slice(1)}?text=${text}`;
+}
+
+function getMailtoLink(data: ContactFormData) {
+  const subject = encodeURIComponent(`Website contact: ${data.subject} — ${data.name}`);
+  const body = encodeURIComponent(
+    `Beste Judoclub Michigami,\n\n` +
+    `${data.message}\n\n` +
+    `Groet,\n${data.name}\n` +
+    (data.email ? `Email: ${data.email}\n` : '') +
+    (data.phone ? `Telefoon: ${data.phone}` : '')
+  );
+  return `mailto:${contactInfo.email}?subject=${subject}&body=${body}`;
+}
+
+// --- Location card ---
+function LocationCard({ loc }: { loc: (typeof contactInfo.locations)[number] }) {
+  return (
+    <div className="bg-white rounded-lg shadow-sm border border-[#e9e0cf] overflow-hidden">
+      <div className="p-4 sm:p-5">
+        <div className="flex items-start gap-3">
+          <MapPin className="w-5 h-5 text-[#a90000] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" />
+          <div className="min-w-0">
+            <p className="font-semibold text-gray-800">{loc.name}</p>
+            <p className="text-sm text-gray-600">{loc.address}</p>
+            <p className="text-sm text-gray-600">{loc.postalCode} {loc.city}</p>
+            <p className="text-xs text-[#a90000] font-semibold mt-1.5">
+              {loc.trainingDay} · {loc.trainingTime}
+            </p>
+          </div>
+        </div>
+        <a
+          href={loc.mapsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-3 inline-flex items-center gap-2 bg-[#a90000] hover:bg-[#8c0000] text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors w-full justify-center"
+        >
+          <MapPin className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" />
+          Open in Google Maps
+        </a>
+      </div>
+    </div>
+  );
+}
+
+// --- Contact form (eigen beheer: WhatsApp of mail) ---
+function ContactForm() {
+  const [data, setData] = useState<ContactFormData>({
+    name: '',
+    email: '',
+    phone: '',
+    subject: SUBJECTS[0],
+    message: '',
+  });
+  const [submitted, setSubmitted] = useState<null | 'whatsapp' | 'email'>(null);
+
+  const canSubmit = data.name.trim().length > 0 && data.message.trim().length > 0;
+
+  const handleWhatsApp = () => {
+    if (!canSubmit) return;
+    window.open(getWhatsAppLink(data), '_blank');
+    setSubmitted('whatsapp');
+  };
+
+  const handleEmail = () => {
+    if (!canSubmit) return;
+    window.location.href = getMailtoLink(data);
+    setSubmitted('email');
+  };
+
+  if (submitted) {
+    return (
+      <div className="p-6 sm:p-8 text-center">
+        <div className="w-14 h-14 mx-auto rounded-full bg-green-100 flex items-center justify-center mb-4">
+          <Check className="w-7 h-7 text-green-600" />
+        </div>
+        <h3 className="text-lg font-bold text-gray-800 mb-1">
+          {submitted === 'whatsapp' ? 'WhatsApp geopend' : 'E-mailprogramma geopend'}
+        </h3>
+        <p className="text-sm text-gray-600 mb-5">
+          {submitted === 'whatsapp'
+            ? 'Je bericht is klaar in WhatsApp — druk op verzenden!'
+            : 'Je bericht is klaar in je e-mailprogramma — druk op verzenden!'}
+        </p>
+        <button
+          onClick={() => {
+            setSubmitted(null);
+            setData({ name: '', email: '', phone: '', subject: SUBJECTS[0], message: '' });
+          }}
+          className="text-sm text-[#a90000] font-semibold hover:text-[#8c0000]"
+        >
+          Nog een bericht sturen
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-4 sm:p-5 space-y-4">
+      {/* Naam */}
+      <div>
+        <label className="block text-sm font-semibold text-gray-700 mb-1">
+          Naam <span className="text-[#a90000]">*</span>
+        </label>
+        <input
+          type="text"
+          value={data.name}
+          onChange={(e) => setData({ ...data, name: e.target.value })}
+          placeholder="Je naam"
+          className="w-full px-3 py-2.5 rounded-lg border border-[#e9e0cf] bg-[#fdfcfa] text-sm focus:outline-none focus:ring-2 focus:ring-[#a90000]/30 focus:border-[#a90000]"
+        />
+      </div>
+
+      {/* Onderwerp */}
+      <div>
+        <label className="block text-sm font-semibold text-gray-700 mb-1">Onderwerp</label>
+        <select
+          value={data.subject}
+          onChange={(e) => setData({ ...data, subject: e.target.value })}
+          className="w-full px-3 py-2.5 rounded-lg border border-[#e9e0cf] bg-[#fdfcfa] text-sm focus:outline-none focus:ring-2 focus:ring-[#a90000]/30 focus:border-[#a90000]"
+        >
+          {SUBJECTS.map((s) => (
+            <option key={s} value={s}>{s}</option>
+          ))}
+        </select>
+      </div>
+
+      {/* Email + telefoon */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-1">Email</label>
+          <input
+            type="email"
+            value={data.email}
+            onChange={(e) => setData({ ...data, email: e.target.value })}
+            placeholder="jij@voorbeeld.nl"
+            className="w-full px-3 py-2.5 rounded-lg border border-[#e9e0cf] bg-[#fdfcfa] text-sm focus:outline-none focus:ring-2 focus:ring-[#a90000]/30 focus:border-[#a90000]"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-1">Telefoon</label>
+          <input
+            type="tel"
+            value={data.phone}
+            onChange={(e) => setData({ ...data, phone: e.target.value })}
+            placeholder="06 12345678"
+            className="w-full px-3 py-2.5 rounded-lg border border-[#e9e0cf] bg-[#fdfcfa] text-sm focus:outline-none focus:ring-2 focus:ring-[#a90000]/30 focus:border-[#a90000]"
+          />
+        </div>
+      </div>
+
+      {/* Bericht */}
+      <div>
+        <label className="block text-sm font-semibold text-gray-700 mb-1">
+          Bericht <span className="text-[#a90000]">*</span>
+        </label>
+        <textarea
+          value={data.message}
+          onChange={(e) => setData({ ...data, message: e.target.value })}
+          placeholder="Waar kunnen we je mee helpen?"
+          rows={5}
+          className="w-full px-3 py-2.5 rounded-lg border border-[#e9e0cf] bg-[#fdfcfa] text-sm focus:outline-none focus:ring-2 focus:ring-[#a90000]/30 focus:border-[#a90000] resize-none"
+        />
+      </div>
+
+      {/* Verzendknoppen */}
+      <div className="space-y-2 pt-1">
+        <button
+          onClick={handleWhatsApp}
+          disabled={!canSubmit}
+          className="w-full inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1fb857] disabled:bg-gray-300 disabled:cursor-not-allowed text-white px-4 py-3 rounded-lg text-sm font-semibold transition-colors"
+        >
+          <Send className="w-4 h-4" />
+          Verstuur via WhatsApp
+        </button>
+        <button
+          onClick={handleEmail}
+          disabled={!canSubmit}
+          className="w-full inline-flex items-center justify-center gap-2 bg-[#a90000] hover:bg-[#8c0000] disabled:bg-gray-300 disabled:cursor-not-allowed text-white px-4 py-3 rounded-lg text-sm font-semibold transition-colors"
+        >
+          <Mail className="w-4 h-4" />
+          Verstuur via email
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// --- Main section ---
 export function ContactSection() {
   return (
     <div className="space-y-8">
@@ -25,22 +243,15 @@ export function ContactSection() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Contact Form */}
+        {/* Contact Form (eigen beheer) */}
         <div className="bg-white rounded-lg shadow-sm border border-[#e9e0cf] overflow-hidden">
           <div className="p-4 sm:p-5 border-b border-[#e9e0cf]">
             <h2 className="text-lg sm:text-xl font-bold text-[#8c0000] section-title">Contactformulier</h2>
+            <p className="text-xs text-gray-500 mt-0.5">
+              Verstuur je bericht via WhatsApp of je e-mailprogramma
+            </p>
           </div>
-          <div className="p-2">
-            <iframe
-              id="JotFormIFrame-252603880994366"
-              title="Contactformulier"
-              src={contactInfo.jotformUrl}
-              allow="geolocation; microphone; camera; fullscreen; payment"
-              className="w-full border-0"
-              style={{ minHeight: '539px' }}
-              scrolling="no"
-            />
-          </div>
+          <ContactForm />
         </div>
 
         {/* Contact Info */}
@@ -51,29 +262,14 @@ export function ContactSection() {
               {contactInfo.clubName}
             </h2>
             <div className="space-y-3 text-sm sm:text-base text-gray-600">
-              <div className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-[#a90000] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                <div>
-                  <p className="font-semibold text-gray-800">{contactInfo.location.name}</p>
-                  <p>{contactInfo.location.address}</p>
-                  <p>{contactInfo.location.postalCode} {contactInfo.location.city}</p>
-                </div>
-              </div>
               <div className="flex items-center gap-3">
-                <svg className="w-5 h-5 text-[#a90000] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                </svg>
+                <Phone className="w-5 h-5 text-[#a90000] flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" />
                 <a href={`tel:${contactInfo.whatsapp}`} className="text-[#a90000] hover:text-[#8c0000]">
                   WhatsApp {contactInfo.whatsapp}
                 </a>
               </div>
               <div className="flex items-center gap-3">
-                <svg className="w-5 h-5 text-[#a90000] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
+                <Mail className="w-5 h-5 text-[#a90000] flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" />
                 <a href={`mailto:${contactInfo.email}`} className="text-[#a90000] hover:text-[#8c0000]">
                   {contactInfo.email}
                 </a>
@@ -123,36 +319,12 @@ export function ContactSection() {
             </div>
           </div>
 
-     {/* Location Map */}
-          <div className="bg-white rounded-lg shadow-sm border border-[#e9e0cf] overflow-hidden">
-            <div className="p-4 sm:p-5 border-b border-[#e9e0cf]">
-              <h2 className="text-lg sm:text-xl font-bold text-[#8c0000] section-title">Onze locatie</h2>
-            </div>
-            <div className="p-4 space-y-3">
-              <div className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-[#a90000] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                <div>
-                  <p className="font-semibold text-gray-800">{contactInfo.location.name}</p>
-                  <p className="text-sm text-gray-600">{contactInfo.location.address}</p>
-                  <p className="text-sm text-gray-600">{contactInfo.location.postalCode} {contactInfo.location.city}</p>
-                </div>
-              </div>
-              <a
-                href={contactInfo.location.mapsUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-[#a90000] hover:bg-[#8c0000] text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors w-full justify-center"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                Open in Google Maps
-              </a>
-            </div>
+          {/* Locations (beide) */}
+          <div className="space-y-4">
+            <h2 className="text-lg sm:text-xl font-bold text-[#8c0000] section-title">Onze locaties</h2>
+            {contactInfo.locations.map((loc) => (
+              <LocationCard key={loc.name} loc={loc} />
+            ))}
           </div>
         </div>
       </div>

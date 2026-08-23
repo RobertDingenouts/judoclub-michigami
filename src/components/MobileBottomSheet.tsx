@@ -58,15 +58,20 @@ export function ContactBottomSheet({ trigger }: { trigger?: React.ReactNode }) {
             </div>
           </a>
 
-          {/* Address */}
-          <div className="flex items-start gap-3 p-4 rounded-lg bg-white border border-[#e9e0cf]">
-            <MapPin className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: '#c00000' }} />
-            <div>
-              <p className="text-sm font-semibold text-gray-800">{contactInfo.location.name}</p>
-              <p className="text-xs text-gray-500">{contactInfo.location.address}</p>
-              <p className="text-xs text-gray-500">{contactInfo.location.postalCode} {contactInfo.location.city}</p>
+          {/* Addresses — beide locaties */}
+          {contactInfo.locations.map((loc) => (
+            <div key={loc.name} className="flex items-start gap-3 p-4 rounded-lg bg-white border border-[#e9e0cf]">
+              <MapPin className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: '#c00000' }} />
+              <div>
+                <p className="text-sm font-semibold text-gray-800">{loc.name}</p>
+                <p className="text-xs text-gray-500">{loc.address}</p>
+                <p className="text-xs text-gray-500">{loc.postalCode} {loc.city}</p>
+                <p className="text-[11px] font-semibold mt-1" style={{ color: '#a90000' }}>
+                  {loc.trainingDay} · {loc.trainingTime}
+                </p>
+              </div>
             </div>
-          </div>
+          ))}
 
           {/* Social Links */}
           <div className="flex flex-wrap gap-2 pt-2">
