@@ -21,7 +21,7 @@ export default async function DiplomaVerifyPage({ params }: DiplomaVerifyPagePro
   }
 
   // Fetch diploma data
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'https://judoclub-michigami.vercel.app'}/api/diplomas/verify?code=${code}`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'https://judoclubmichigami.nl'}/api/diplomas/verify?code=${code}`, {
     cache: 'no-store',
   })
 
