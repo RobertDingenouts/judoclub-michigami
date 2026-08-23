@@ -3,6 +3,7 @@
 import { membershipInfo } from '@/data/membership';
 import { Calendar } from 'lucide-react';
 import { openProeflesForm } from '@/lib/form-events';
+import { ActionCostNote } from '@/components/ActionCostNote';
 
 export function MembershipSection() {
   return (
@@ -59,8 +60,18 @@ export function MembershipSection() {
             </div>
 
             <div className="mb-3">
-              <span className="text-xl sm:text-2xl font-bold text-[#a90000]">{tier.price}</span>
-              <span className="text-xs text-gray-500 ml-1">{tier.pricePeriod}</span>
+              {tier.name === 'Extra kosten' ? (
+                <>
+                  <span className="text-xl sm:text-2xl font-bold text-gray-400 line-through">€15</span>
+                  <span className="text-xl sm:text-2xl font-bold text-[#27ae60] ml-2">gratis</span>
+                  <span className="text-xs text-gray-500 ml-1">({tier.pricePeriod})</span>
+                </>
+              ) : (
+                <>
+                  <span className="text-xl sm:text-2xl font-bold text-[#a90000]">{tier.price}</span>
+                  <span className="text-xs text-gray-500 ml-1">{tier.pricePeriod}</span>
+                </>
+              )}
             </div>
 
             <ul className="space-y-1.5">
@@ -73,6 +84,11 @@ export function MembershipSection() {
             </ul>
           </div>
         ))}
+      </div>
+
+      {/* Actie-notitie onder de tarieven */}
+      <div className="rounded-lg">
+        <ActionCostNote />
       </div>
 
       {/* Signup Button */}

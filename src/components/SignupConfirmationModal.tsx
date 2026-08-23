@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, AlertTriangle, Check, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { membershipInfo } from '@/data/membership';
+import { ActionCostNote } from '@/components/ActionCostNote';
 
 export function SignupConfirmationModal({ open, onClose, signupUrl }: { open: boolean; onClose: () => void; signupUrl: string }) {
   const [confirmed, setConfirmed] = useState(false);
@@ -75,9 +76,17 @@ export function SignupConfirmationModal({ open, onClose, signupUrl }: { open: bo
                   {membershipInfo.tiers.filter(t => t.name === 'Extra kosten' || t.name === 'Verzekering').map((tier) => (
                     <div key={tier.name} className="flex items-center justify-between text-sm bg-gray-50 rounded-lg p-3">
                       <span className="text-gray-700">{tier.name}</span>
-                      <span className="font-bold" style={{ color: '#a90000' }}>{tier.price} <span className="font-normal text-gray-500">{tier.pricePeriod}</span></span>
+                      {tier.name === 'Extra kosten' ? (
+                        <span className="font-bold">
+                          <span className="line-through text-gray-400 mr-1" style={{ color: '#9ca3af' }}>{tier.price}</span>
+                          <span style={{ color: '#27ae60' }}>gratis</span>
+                        </span>
+                      ) : (
+                        <span className="font-bold" style={{ color: '#a90000' }}>{tier.price} <span className="font-normal text-gray-500">{tier.pricePeriod}</span></span>
+                      )}
                     </div>
                   ))}
+                  <ActionCostNote compact />
                 </div>
 
                 {/* Confirmation checkbox */}

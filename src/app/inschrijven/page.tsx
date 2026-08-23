@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { TRAINING_GROUPS } from '@/lib/student-progress-types'
 import { LegalModal } from '@/components/LegalModal'
+import { ActionCostNote } from '@/components/ActionCostNote'
 
 export default function InschrijvenPage() {
   const router = useRouter()
@@ -330,7 +331,10 @@ export default function InschrijvenPage() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Inschrijfgeld (eenmalig)</span>
-                    <span className="font-medium">€15</span>
+                    <span className="font-medium">
+                      <span className="line-through text-gray-400 mr-1">€15</span>
+                      <span className="text-[#27ae60]">gratis</span>
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Verzekering</span>
@@ -339,10 +343,14 @@ export default function InschrijvenPage() {
                   <div className="border-t border-gray-200 pt-2">
                     <div className="flex justify-between font-semibold">
                       <span>Totaal eerste kwartaal</span>
-                      <span>€72</span>
+                      <span>
+                        <span className="line-through text-gray-400 mr-1">€72</span>
+                        <span className="text-[#27ae60]">€57</span>
+                      </span>
                     </div>
                   </div>
                 </div>
+                <ActionCostNote />
                 <p className="mt-3 text-xs text-gray-500">
                   Lidmaatschap wordt per kwartaal in rekening gebracht. Opzegtermijn is 1 maand voor het einde van het kwartaal.
                 </p>
