@@ -2,17 +2,9 @@
 
 import { scheduleInfo } from '@/data/schedule';
 import { Clock } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import type { Section } from '@/components/nav-config';
 
-export function ScheduleSection() {
-  const [navigateToAgenda, setNavigateToAgenda] = useState(false);
-
-  useEffect(() => {
-    if (navigateToAgenda) {
-      window.location.hash = '#agenda';
-      setNavigateToAgenda(false);
-    }
-  }, [navigateToAgenda]);
+export function ScheduleSection({ onNavigate }: { onNavigate?: (s: Section) => void }) {
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -94,7 +86,7 @@ export function ScheduleSection() {
         <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
           <span className="font-bold text-[#8c0000]">Let op:</span> De lestijden kunnen wijzigen i.v.m. vakanties en evenementen.
           Houd de{' '}
-          <button onClick={() => setNavigateToAgenda(true)} className="text-[#a90000] hover:text-[#8c0000] underline cursor-pointer">agenda</button> in de gaten voor de actuele informatie.
+          <button onClick={() => onNavigate?.('agenda')} className="text-[#a90000] hover:text-[#8c0000] underline cursor-pointer">agenda</button> in de gaten voor de actuele informatie.
         </p>
       </div>
     </div>

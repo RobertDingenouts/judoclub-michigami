@@ -413,7 +413,7 @@ export default function MichigamiApp() {
             {activeSection === 'info' && <InfoSection onNavigate={setActiveSection} />}
             {activeSection === 'login' && <LoginSection />}
             {activeSection === 'leden' && <MembershipSection />}
-            {activeSection === 'lestijden' && <ScheduleSection />}
+            {activeSection === 'lestijden' && <ScheduleSection onNavigate={setActiveSection} />}
             {activeSection === 'band-knopen' && <BeltKnotsSection />}
             {activeSection === 'foto-galerij' && <PhotoGallery />}
             {activeSection === 'video-galerij' && <VideoGallery />}
