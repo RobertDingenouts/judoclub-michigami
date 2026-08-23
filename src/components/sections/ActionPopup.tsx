@@ -111,8 +111,8 @@ export function ActionPopup() {
               </ul>
 
               <p className="text-xs text-gray-500 mt-4">
-                Voor iedereen vanaf 6 jaar — woensdag & vrijdagavond in
-                Steenbergen en Oud-Vossemeer.
+                Voor iedereen vanaf 6 jaar — woensdagavond in
+                Oud-Vossemeer & vrijdagavond in Steenbergen.
               </p>
 
               {/* CTA */}

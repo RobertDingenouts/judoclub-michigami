@@ -98,8 +98,7 @@ function getMailtoLink(formData: FormData, groupInfo: ReturnType<typeof getGroup
 function StepIndicator({ currentStep, totalSteps }: { currentStep: number; totalSteps: number }) {
   const steps = [
     { label: 'Judoka' },
-    { label: 'Groep' },
-    { label: 'Voorkeur' },
+    { label: 'Groep & dag' },
     { label: 'Bevestiging' },
   ];
 
@@ -184,13 +183,30 @@ function Step1_JudokaInfo({ data, onChange }: { data: FormData; onChange: (field
   );
 }
 
-// --- Step 2: Group Auto-Select ---
-function Step2_GroupSelection({ age }: { age: string }) {
+// --- Step 2: Groep + voorkeur trainingsdag (samengevoegd) ---
+function Step2_GroupAndDay({ age, data, onChange }: { age: string; data: FormData; onChange: (field: string, value: string) => void }) {
   const groupInfo = getGroupInfo(parseInt(age) || 0);
+
+  const days = [
+    {
+      key: 'woensdag',
+      label: 'Woensdagavond',
+      time: '19:00 - 20:00 · alle leeftijden',
+      location: 'De Vossenkuil, Oud-Vossemeer',
+      icon: '🥋',
+    },
+    {
+      key: 'vrijdag',
+      label: 'Vrijdagavond',
+      time: '18:45 - 20:45',
+      location: 'De Knotwilg, Steenbergen',
+      icon: '🥋',
+    },
+  ];
 
   return (
     <div className="space-y-4">
-      <h3 className="font-bold text-[#8c0000] text-base sm:text-lg text-center">Jouw groep</h3>
+      <h3 className="font-bold text-[#8c0000] text-base sm:text-lg text-center">Jouw groep & trainingsdag</h3>
 
       {parseInt(age) >= 4 ? (
         <div className="bg-gradient-to-br from-[#fdf6f6] to-white rounded-lg p-4 sm:p-5 border border-[#a90000]/10">
@@ -219,14 +235,8 @@ function Step2_GroupSelection({ age }: { age: string }) {
             </div>
           </div>
 
-          <div className="mt-3 rounded-lg bg-green-50 border border-green-200 px-3 py-2">
-            <p className="text-xs text-green-800">
-              📅 Wil je liever <strong>woensdag</strong>? Die training is voor <strong>alle leeftijden</strong> (19:00 - 20:00, De Vossenkuil). Je geeft je voorkeur in de volgende stap aan.
-            </p>
-          </div>
-
           <p className="text-xs text-gray-500 mt-3 italic">
-            Deze groep is automatisch geselecteerd op basis van de leeftijd. Je kunt in de volgende stap nog een voorkeur aangeven (vrijdag of woensdag).
+            Deze groep is automatisch geselecteerd op basis van de leeftijd.
           </p>
         </div>
       ) : (
@@ -236,64 +246,44 @@ function Step2_GroupSelection({ age }: { age: string }) {
           </p>
         </div>
       )}
-    </div>
-  );
-}
 
-// --- Step 3: Preferred Day ---
-function Step3_PreferredDay({ data, onChange }: { data: FormData; onChange: (field: string, value: string) => void }) {
-  const days = [
-    {
-      key: 'woensdag',
-      label: 'Woensdagavond',
-      time: '19:00 - 20:00 · alle leeftijden',
-      location: 'De Vossenkuil, Oud-Vossemeer',
-      icon: '🥋',
-    },
-    {
-      key: 'vrijdag',
-      label: 'Vrijdagavond',
-      time: '18:45 - 20:45',
-      location: 'De Knotwilg, Steenbergen',
-      icon: '🥋',
-    },
-  ];
-
-  return (
-    <div className="space-y-4">
-      <h3 className="font-bold text-[#8c0000] text-base sm:text-lg text-center">Voorkeur trainingsdag</h3>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {days.map((day) => {
-          const isSelected = data.preferredDay === day.key;
-          return (
-            <button
-              key={day.key}
-              onClick={() => onChange('preferredDay', day.key)}
-              className={`relative rounded-lg p-4 sm:p-5 text-left transition-all border-2 ${
-                isSelected
-                  ? 'border-[#a90000] bg-gradient-to-br from-[#fdf6f6] to-white shadow-md'
-                  : 'border-[#e9e0cf] bg-white hover:border-[#a90000]/40'
-              }`}
-            >
-              {isSelected && (
-                <div className="absolute top-2 right-2 w-5 h-5 sm:w-6 sm:h-6 rounded-lg bg-green-500 text-white flex items-center justify-center">
-                  <Check className="w-3 h-3 sm:w-4 sm:h-4" />
-                </div>
-              )}
-              <div className="text-2xl mb-2">{day.icon}</div>
-              <h4 className="font-bold text-[#8c0000] text-sm sm:text-base">{day.label}</h4>
-              <p className="text-xs text-gray-500 mt-1">{day.time}</p>
-              <p className="text-xs text-gray-500">{day.location}</p>
-            </button>
-          );
-        })}
+      {/* Voorkeur trainingsdag */}
+      <div>
+        <h4 className="font-bold text-[#8c0000] text-sm sm:text-base text-center mb-3">
+          Kies je voorkeur trainingsdag
+        </h4>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {days.map((day) => {
+            const isSelected = data.preferredDay === day.key;
+            return (
+              <button
+                key={day.key}
+                onClick={() => onChange('preferredDay', day.key)}
+                className={`relative rounded-lg p-4 sm:p-5 text-left transition-all border-2 ${
+                  isSelected
+                    ? 'border-[#a90000] bg-gradient-to-br from-[#fdf6f6] to-white shadow-md'
+                    : 'border-[#e9e0cf] bg-white hover:border-[#a90000]/40'
+                }`}
+              >
+                {isSelected && (
+                  <div className="absolute top-2 right-2 w-5 h-5 sm:w-6 sm:h-6 rounded-lg bg-green-500 text-white flex items-center justify-center">
+                    <Check className="w-3 h-3 sm:w-4 sm:h-4" />
+                  </div>
+                )}
+                <div className="text-2xl mb-2">{day.icon}</div>
+                <h4 className="font-bold text-[#8c0000] text-sm sm:text-base">{day.label}</h4>
+                <p className="text-xs text-gray-500 mt-1">{day.time}</p>
+                <p className="text-xs text-gray-500">{day.location}</p>
+              </button>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
 }
 
-// --- Step 4: Confirmation (Contact + Summary) ---
+// --- Step 3: Confirmation (Contact + Summary) ---
 function Step4_Confirmation({ data, onChange, onSubmit }: { data: FormData; onChange: (field: string, value: string) => void; onSubmit: () => void }) {
   const groupInfo = getGroupInfo(parseInt(data.judokaAge) || 0);
   const details = getTrainingDetails(data.preferredDay, parseInt(data.judokaAge) || 0);
@@ -405,7 +395,7 @@ export function TrialLessonForm({ onClose }: { onClose?: () => void }) {
     parentEmail: '',
   });
 
-  const totalSteps = 4;
+  const totalSteps = 3;
 
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -414,9 +404,8 @@ export function TrialLessonForm({ onClose }: { onClose?: () => void }) {
   const canProceed = useMemo(() => {
     switch (step) {
       case 1: return formData.judokaName.trim().length > 0 && parseInt(formData.judokaAge) >= 4;
-      case 2: return parseInt(formData.judokaAge) >= 4; // Auto-step, just review
-      case 3: return formData.preferredDay !== '';
-      case 4: return formData.parentName.trim().length > 0 && formData.parentPhone.trim().length >= 10;
+      case 2: return formData.preferredDay !== ''; // Groep + dag-keuze in één stap
+      case 3: return formData.parentName.trim().length > 0 && formData.parentPhone.trim().length >= 10;
       default: return true;
     }
   }, [step, formData]);
@@ -458,9 +447,8 @@ export function TrialLessonForm({ onClose }: { onClose?: () => void }) {
       {/* Form Content */}
       <div className="px-4 sm:px-6 pb-4">
         {step === 1 && <Step1_JudokaInfo data={formData} onChange={handleChange} />}
-        {step === 2 && <Step2_GroupSelection age={formData.judokaAge} />}
-        {step === 3 && <Step3_PreferredDay data={formData} onChange={handleChange} />}
-        {step === 4 && (
+        {step === 2 && <Step2_GroupAndDay age={formData.judokaAge} data={formData} onChange={handleChange} />}
+        {step === 3 && (
           <Step4_Confirmation data={formData} onChange={handleChange} onSubmit={handleSubmit} />
         )}
       </div>
