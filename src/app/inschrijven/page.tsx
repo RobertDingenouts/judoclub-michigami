@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { TRAINING_GROUPS } from '@/lib/student-progress-types'
+import { LegalModal } from '@/components/LegalModal'
 
 export default function InschrijvenPage() {
   const router = useRouter()
@@ -11,6 +12,7 @@ export default function InschrijvenPage() {
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [legalDoc, setLegalDoc] = useState<string | null>(null)
 
   const [form, setForm] = useState({
     firstName: '',
@@ -360,7 +362,7 @@ export default function InschrijvenPage() {
                   <input type="checkbox" checked={form.privacyAgreed} onChange={e => update('privacyAgreed', e.target.checked)}
                     className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[#a90000] focus:ring-[#a90000]" />
                   <span className="text-sm text-gray-700">
-                    Ik ga akkoord met de <a href="/#juridisch" target="_blank" className="text-[#a90000] underline">privacyverklaring</a> van Judoclub Michigami. *
+                    Ik ga akkoord met de <button type="button" onClick={() => setLegalDoc('privacyverklaring-michigami')} className="text-[#a90000] underline hover:text-[#8c0000]">privacyverklaring</button> van Judoclub Michigami. *
                   </span>
                 </label>
 
@@ -368,7 +370,7 @@ export default function InschrijvenPage() {
                   <input type="checkbox" checked={form.termsAgreed} onChange={e => update('termsAgreed', e.target.checked)}
                     className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[#a90000] focus:ring-[#a90000]" />
                   <span className="text-sm text-gray-700">
-                    Ik ga akkoord met de <a href="/#juridisch" target="_blank" className="text-[#a90000] underline">algemene voorwaarden</a> van Judoclub Michigami. *
+                    Ik ga akkoord met de <button type="button" onClick={() => setLegalDoc('algemene-voorwaarden-michigami')} className="text-[#a90000] underline hover:text-[#8c0000]">algemene voorwaarden</button> van Judoclub Michigami. *
                   </span>
                 </label>
 
@@ -376,7 +378,7 @@ export default function InschrijvenPage() {
                   <input type="checkbox" checked={form.codeOfConduct} onChange={e => update('codeOfConduct', e.target.checked)}
                     className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[#a90000] focus:ring-[#a90000]" />
                   <span className="text-sm text-gray-700">
-                    Ik ga akkoord met de <a href="/#juridisch" target="_blank" className="text-[#a90000] underline">gedragscode</a> van Judoclub Michigami. *
+                    Ik ga akkoord met de <button type="button" onClick={() => setLegalDoc('gedragscode-michigami')} className="text-[#a90000] underline hover:text-[#8c0000]">gedragscode</button> van Judoclub Michigami. *
                   </span>
                 </label>
 
@@ -432,6 +434,9 @@ export default function InschrijvenPage() {
           Na goedkeuring door de admin ontvang je een e-mail met je inloggegevens.
         </p>
       </div>
+
+      {/* Juridische documenten in modal — formulier (met data) blijft staan */}
+      {legalDoc && <LegalModal docId={legalDoc} onClose={() => setLegalDoc(null)} />}
     </div>
   )
 }
