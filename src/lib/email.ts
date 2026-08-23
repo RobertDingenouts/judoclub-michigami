@@ -13,7 +13,7 @@ type MailOptions = {
 
 const FROM_ADDRESS = process.env.MAIL_FROM || 'webmaster@judoclubmichigami.nl'
 const APP_NAME = 'Judoclub Michigami'
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://judoclub-michigami.vercel.app'
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://judoclubmichigami.nl'
 
 // Transporter wordt lazy geïnitialiseerd (één keer per runtime)
 let transporter: nodemailer.Transporter | null = null
