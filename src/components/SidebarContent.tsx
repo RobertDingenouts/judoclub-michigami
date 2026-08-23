@@ -39,13 +39,13 @@ export function SidebarContent({ activeSection, onSelect }: { activeSection: Sec
               <Image src="/logo.png" alt="Judoclub Michigami" width={72} height={72} className="object-contain" />
             </div>
           </AnimatedCard>
-          {/* Hanko seal — 白 (haku — wit, naar Haku Michigami) */}
+          {/* Hanko seal — 道 (dō — de weg, Michigami) */}
           <span className="absolute -right-1 -bottom-1 hanko w-9 h-9 text-[13px] rotate-[-8deg]">
-            白
+            道
           </span>
         </div>
         <p className="relative text-[10px] text-[#8a7f70] tracking-[0.2em] uppercase">Opgericht in 1993</p>
-        <p className="relative font-mincho text-[11px] text-[#a90000]/70 tracking-[0.35em] mt-0.5">白道</p>
+        <p className="relative font-mincho text-[11px] text-[#a90000]/70 tracking-[0.35em] mt-0.5">道上</p>
       </div>
 
       {/* Search Bar */}
