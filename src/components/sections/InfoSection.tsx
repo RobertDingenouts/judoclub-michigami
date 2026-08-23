@@ -11,6 +11,10 @@ import { storyChapters } from '@/data/story-chapters';
 import {
   SumiLandscape, SakuraPetals, InkBleeds, WatermarkKanji, VoxelGrid,
 } from '@/components/sections/ZenScenery';
+import ZenInkField from '@/components/sections/ZenInkField';
+import SumiEnso from '@/components/sections/SumiEnso';
+import ParallaxKanji from '@/components/sections/ParallaxKanji';
+import { useInkHover } from '@/components/sections/useInkHover';
 import type { Section } from '@/components/nav-config';
 
 /* Kleuren op zacht oud-creme papier: donkere sumi-inkt in plaats van washi-licht */
@@ -46,6 +50,10 @@ function InkType({ text, className = '', as: Tag = 'p', speed = 30, delay = 0 }:
   const inView = useInView(ref, { once: true, margin: '-80px' });
   const words = text.split(' ');
   const baseMs = delay * 1000;
+  // Adaptieve snelheid: korte tekst houdt het dramatische inkt-effect (30ms/letter),
+  // lange alinea's onthullen in max ~2,2s zodat de lezer niet 10+ seconden wacht.
+  const charCount = text.replace(/\s/g, '').length;
+  const effSpeed = Math.min(speed, 2200 / Math.max(1, charCount));
   let letterIndex = 0;
   return (
     <Tag ref={ref as never} className={cn('ink-type', className, inView && 'ink-type-run')}>
@@ -53,7 +61,7 @@ function InkType({ text, className = '', as: Tag = 'p', speed = 30, delay = 0 }:
         <Fragment key={wi}>
           <span className="ink-word">
             {Array.from(word).map((ch, ci) => {
-              const d = baseMs + letterIndex++ * speed;
+              const d = baseMs + letterIndex++ * effSpeed;
               return (
                 <span key={ci} className="ink-letter" style={{ animationDelay: `${d}ms` }}>
                   {ch}
@@ -102,6 +110,8 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
 
   return (
     <div ref={rootRef} className="ink-paper zen-fullbleed relative overflow-hidden">
+      {/* Levend sumi-inktveld — drijft als inkt in water, reageert op de cursor */}
+      <ZenInkField density={0.9} maxAlpha={0.09} />
       {/* Lichte structuur die rustig beweegt achter het papier */}
       <VoxelGrid count={48} className="opacity-70" tone="light" />
       <SakuraPetals count={16} />
@@ -125,6 +135,15 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
             Est. 1993 · Steenbergen
           </InkReveal>
           <InkReveal delay={0.2} className="relative mt-6">
+            {/* Ensō die zich tekent — de zachte cirkel achter de titel */}
+            <SumiEnso
+              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.16]"
+              size={340}
+              weight={12}
+              sweep={0.9}
+              rotate={-38}
+              duration={2.6}
+            />
             <WatermarkKanji char="柔" className="-inset-x-24 -top-28" size={360} tone="light" />
             <h1 className={cn(
               'ink-title relative font-display text-4xl leading-[1.08] sm:text-6xl',
@@ -171,6 +190,19 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
 
       {/* ====================== HOOFDSTUKKEN (verhaal) ===================== */}
       <div className="relative">
+        {/* Parallax-kanji die in eigen tempo meedrijft door het verhaal */}
+        <ParallaxKanji
+          kanji="話"
+          depth={90}
+          peakOpacity={0.05}
+          className="pointer-events-none absolute left-[6%] top-24 font-jp text-[16rem] leading-none text-[var(--sumi-800)] sm:text-[22rem]"
+        />
+        <ParallaxKanji
+          kanji="道"
+          depth={-70}
+          peakOpacity={0.04}
+          className="pointer-events-none absolute right-[4%] top-[42rem] font-jp text-[14rem] leading-none text-[var(--shu-700)] sm:text-[19rem]"
+        />
         <div className="mx-auto max-w-3xl px-5 sm:px-8">
           <InkReveal className="flex items-end gap-4">
             <span className={cn('font-jp text-6xl leading-none sm:text-7xl', 'text-[var(--shu-600)]/70')} aria-hidden>語</span>
@@ -203,6 +235,7 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
           </InkReveal>
           <div className="mt-10 grid gap-6 lg:grid-cols-2">
             <TributeCard
+              index={0}
               kanji="道"
               label="Eerbewijs aan de meester"
               title="Haku Michigami"
@@ -210,6 +243,7 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
               body="Hij bracht judo naar het westen: dertien jaar in Nederland, technisch adviseur van de bond en vormgever van grootse judoka’s — waaronder Anton Geesink. Zijn traditie is de ziel die hier in Steenbergen haar naam draagt."
             />
             <TributeCard
+              index={1}
               kanji="八"
               stamp="段"
               label="Eerbewijs aan de oprichter"
@@ -218,6 +252,7 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
               body="Meester in grondwerk, internationaal gerenommeerd scheidsrechter en hoofdscheidsrechter bij de CJJF. Hij groeide veel judoka’s groot en nam ze mee naar legio nationale en internationale toernooien — streng als het nodig was, maar vooral met de zachte hand."
             />
             <TributeCard
+              index={2}
               kanji="絆"
               stamp="段"
               label="Eerbewijs aan een vast gezicht"
@@ -403,17 +438,22 @@ function Chapter({ index, data }: { index: number; data: (typeof storyChapters)[
 }
 
 /* --- Eerbewijz-kaart ------------------------------------------------------ */
-function TributeCard({ kanji, stamp, label, title, sub, body, photoUrl, photoCaption }: {
-  kanji: string; stamp?: string; label: string; title: string; sub: string; body: string;
+function TributeCard({ index = 0, kanji, stamp, label, title, sub, body, photoUrl, photoCaption }: {
+  index?: number; kanji: string; stamp?: string; label: string; title: string; sub: string; body: string;
   photoUrl?: string; photoCaption?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [photoOpen, setPhotoOpen] = useState(false);
   const inView = useInView(ref, { once: true, margin: '-100px' });
+  const inkHover = useInkHover();
   return (
-    <div ref={ref}
-      className={cn('ink-card ink-write relative overflow-hidden rounded-xl p-7 sm:p-8', inView && 'ink-write-run')}>
-      <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
+    <div
+      ref={ref}
+      onPointerMove={inkHover}
+      className={cn('ink-card ink-bloom ink-write relative overflow-hidden rounded-xl p-7 sm:p-8', inView && 'ink-write-run')}
+      style={{ transitionDelay: `${index * 90}ms` }}
+    >
+      <div className="relative z-10 flex flex-col gap-5 sm:flex-row sm:items-start">
         <div className="relative shrink-0">
           <div className="flex h-20 w-20 items-center justify-center rounded-lg border border-[var(--shu-600)]/40 bg-[var(--shu-600)]/5">
             <span className={cn('font-jp text-4xl', SHU)}>{kanji}</span>
@@ -433,7 +473,7 @@ function TributeCard({ kanji, stamp, label, title, sub, body, photoUrl, photoCap
       </div>
 
       {photoUrl && (
-        <figure className="mt-6">
+        <figure className="relative z-10 mt-6">
           <button
             type="button"
             onClick={() => setPhotoOpen(true)}
@@ -472,12 +512,14 @@ function MasterCard({ index, name, dan, danLabel, role }: {
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: '-60px' });
+  const inkHover = useInkHover();
   return (
     <div ref={ref}
-      className={cn('ink-card ink-write relative overflow-hidden rounded-xl p-6', inView && 'ink-write-run')}
+      onPointerMove={inkHover}
+      className={cn('ink-card ink-bloom ink-write relative overflow-hidden rounded-xl p-6', inView && 'ink-write-run')}
       style={{ transitionDelay: `${index * 90}ms` }}>
       <span className={cn('absolute right-4 top-3 font-jp text-5xl', 'text-[var(--sumi-700)]/12')} aria-hidden>{dan}</span>
-      <div className="relative">
+      <div className="relative z-10">
         <div className={cn('text-xs uppercase tracking-[0.2em]', KIN)}>{danLabel}</div>
         <h3 className={cn('mt-1 font-display text-xl', INK)}>{name}</h3>
         <p className={cn('mt-1 text-sm', INK_SOFT)}>{role}</p>
