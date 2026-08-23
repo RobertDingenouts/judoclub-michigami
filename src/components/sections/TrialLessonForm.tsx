@@ -18,6 +18,12 @@ interface FormData {
 }
 
 // --- Helpers ---
+// Woensdagtraining is voor ALLE leeftijden (De Vossenkuil, Oud-Vossemeer)
+const WOEN = {
+  time: '19:00 - 20:00',
+  location: 'De Vossenkuil, Oud-Vossemeer',
+};
+
 function getGroupInfo(age: number) {
   if (age >= 6 && age <= 9) {
     return {
@@ -39,11 +45,20 @@ function getGroupInfo(age: number) {
     return {
       groupName: 'Algemene training',
       ageRange: 'Alle leeftijden',
-      time: '19:00 - 20:00',
-      location: 'De Vossenkuil, Oud-Vossemeer',
+      time: WOEN.time,
+      location: WOEN.location,
       day: 'woensdag',
     };
   }
+}
+
+// Trainingstijd/locatie die bij de gekozen voorkeur hoort
+function getTrainingDetails(preferredDay: string, age: number) {
+  if (preferredDay === 'woensdag') {
+    return { time: WOEN.time, location: WOEN.location };
+  }
+  const g = getGroupInfo(age);
+  return { time: g.time, location: g.location };
 }
 
 function getWhatsAppLink(formData: FormData, groupInfo: ReturnType<typeof getGroupInfo>) {
@@ -60,6 +75,7 @@ function getWhatsAppLink(formData: FormData, groupInfo: ReturnType<typeof getGro
 }
 
 function getMailtoLink(formData: FormData, groupInfo: ReturnType<typeof getGroupInfo>) {
+  const details = getTrainingDetails(formData.preferredDay, parseInt(formData.judokaAge) || 0);
   const subject = encodeURIComponent(`Proefles aanvraag - ${formData.judokaName} (${formData.judokaAge} jaar)`);
   const body = encodeURIComponent(
     `Beste Judoclub Michigami,\n\n` +
@@ -68,7 +84,7 @@ function getMailtoLink(formData: FormData, groupInfo: ReturnType<typeof getGroup
     `Leeftijd: ${formData.judokaAge} jaar\n` +
     `Auto-geselecteerde groep: ${groupInfo.groupName} (${groupInfo.ageRange})\n` +
     `Voorkeur trainingsdag: ${formData.preferredDay === 'woensdag' ? 'Woensdag' : 'Vrijdag'}\n` +
-    `${groupInfo.time} — ${groupInfo.location}\n\n` +
+    `${details.time} — ${details.location}\n\n` +
     `Ouder/verantwoordelijke: ${formData.parentName}\n` +
     `Telefoon: ${formData.parentPhone}\n` +
     `Email: ${formData.parentEmail}\n\n` +
@@ -203,8 +219,14 @@ function Step2_GroupSelection({ age }: { age: string }) {
             </div>
           </div>
 
+          <div className="mt-3 rounded-lg bg-green-50 border border-green-200 px-3 py-2">
+            <p className="text-xs text-green-800">
+              📅 Wil je liever <strong>woensdag</strong>? Die training is voor <strong>alle leeftijden</strong> (19:00 - 20:00, De Vossenkuil). Je geeft je voorkeur in de volgende stap aan.
+            </p>
+          </div>
+
           <p className="text-xs text-gray-500 mt-3 italic">
-            Deze groep is automatisch geselecteerd op basis van de leeftijd. Je kunt later nog een voorkeur aangeven.
+            Deze groep is automatisch geselecteerd op basis van de leeftijd. Je kunt in de volgende stap nog een voorkeur aangeven (vrijdag of woensdag).
           </p>
         </div>
       ) : (
@@ -224,7 +246,7 @@ function Step3_PreferredDay({ data, onChange }: { data: FormData; onChange: (fie
     {
       key: 'woensdag',
       label: 'Woensdagavond',
-      time: '19:00 - 20:00',
+      time: '19:00 - 20:00 · alle leeftijden',
       location: 'De Vossenkuil, Oud-Vossemeer',
       icon: '🥋',
     },
@@ -274,6 +296,7 @@ function Step3_PreferredDay({ data, onChange }: { data: FormData; onChange: (fie
 // --- Step 4: Confirmation (Contact + Summary) ---
 function Step4_Confirmation({ data, onChange, onSubmit }: { data: FormData; onChange: (field: string, value: string) => void; onSubmit: () => void }) {
   const groupInfo = getGroupInfo(parseInt(data.judokaAge) || 0);
+  const details = getTrainingDetails(data.preferredDay, parseInt(data.judokaAge) || 0);
 
   return (
     <div className="space-y-4">
@@ -293,12 +316,12 @@ function Step4_Confirmation({ data, onChange, onSubmit }: { data: FormData; onCh
         <div className="flex items-center gap-2 text-sm">
           <Clock className="w-4 h-4 text-[#a90000] flex-shrink-0" />
           <span className="text-gray-700">
-            {data.preferredDay === 'woensdag' ? 'Woensdagavond' : 'Vrijdagavond'} — {groupInfo.time}
+            {data.preferredDay === 'woensdag' ? 'Woensdagavond' : 'Vrijdagavond'} — {details.time}
           </span>
         </div>
         <div className="flex items-center gap-2 text-sm">
           <MapPin className="w-4 h-4 text-[#a90000] flex-shrink-0" />
-          <span className="text-gray-700">{groupInfo.location}</span>
+          <span className="text-gray-700">{details.location}</span>
         </div>
       </div>
 
