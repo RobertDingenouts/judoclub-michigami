@@ -34,6 +34,7 @@ import { MusicPlayerProvider } from '@/context/MusicPlayerContext';
 import { PullToRefreshIndicator } from '@/components/PullToRefreshIndicator';
 import { StickyCTA } from '@/components/StickyCTA';
 import { TrialLessonForm } from '@/components/sections/TrialLessonForm';
+import { ActionPopup } from '@/components/sections/ActionPopup';
 import { navGroups, mobileNavItems, groupHubMap, allNavItems, clubPageSequence, type Section } from '@/components/nav-config';
 import { SectionPager } from '@/components/SectionPager';
 import {
@@ -461,6 +462,9 @@ export default function MichigamiApp() {
 
       {/* Versleepbare mini-speler — loopt over alle secties mee */}
       <MiniPlayer onOpenMusic={() => setActiveSection('muziek')} />
+
+      {/* Actie-popup: gratis inschrijven vóór 1 oktober */}
+      <ActionPopup />
     </div>
     </MusicPlayerProvider>
   );
