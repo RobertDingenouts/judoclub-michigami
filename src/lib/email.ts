@@ -192,3 +192,96 @@ export function buildAccountWelcomeEmail(name: string, email: string, tempPasswo
   `
   return { subject: `Welkom bij ${APP_NAME} — inloggegevens & e-mail bevestigen`, html: baseTemplate(content) }
 }
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+/** Escape user-input voor veilige inbedding in HTML (voorkomt kapotte mail/HTML-injectie). */
+function esc(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+}
+
+// ---------------------------------------------------------------------------
+// Admin-notificatie: nieuwe inschrijving die goedgekeurd moet worden
+// ---------------------------------------------------------------------------
+
+const LOCATION_LABELS: Record<string, string> = {
+  STeenbergen: 'Steenbergen',
+  OUD_VOSSEMEER: 'Oud-Vossemeer',
+}
+
+const GROUP_LABELS: Record<string, string> = {
+  VRI_JONG: 'Vrijdag 18:45–19:45 (6–9 jaar)',
+  VRI_OUD: 'Vrijdag 19:45–20:45 (9+ jaar)',
+  WOEN: 'Woensdagavond',
+}
+
+/**
+ * Melding naar de admin dat er een nieuwe inschrijving is die goedkeuring
+ * vereist. Toont de belangrijkste gegevens van de aanvrager + een directe
+ * knop naar het admin dashboard.
+ */
+export function buildNewApplicationEmail(app: {
+  firstName: string
+  lastName: string
+  email: string
+  phone?: string | null
+  location: string
+  preferredGroup?: string | null
+  isChild?: boolean
+  parentName?: string | null
+  parentEmail?: string | null
+  parentPhone?: string | null
+  medicalNotes?: string | null
+}): { subject: string; html: string } {
+  const loc = LOCATION_LABELS[app.location] || app.location
+  const grp = app.preferredGroup
+    ? GROUP_LABELS[app.preferredGroup] || app.preferredGroup
+    : '—'
+
+  const rows: Array<[string, string]> = [
+    ['Naam', `${app.firstName} ${app.lastName}`.trim()],
+    ['E-mail', app.email],
+  ]
+  if (app.phone) rows.push(['Telefoon', app.phone])
+  rows.push(['Locatie', loc])
+  rows.push(['Voorkeursgroep', grp])
+  if (app.isChild) {
+    rows.push(['Type', 'Kind-inschrijving'])
+    if (app.parentName) rows.push(['Ouder / verzorger', app.parentName])
+    if (app.parentEmail) rows.push(['E-mail ouder', app.parentEmail])
+    if (app.parentPhone) rows.push(['Telefoon ouder', app.parentPhone])
+  }
+  if (app.medicalNotes) rows.push(['Medische notities', app.medicalNotes])
+
+  const tableRows = rows
+    .map(
+      ([label, value]) => `
+        <tr>
+          <td style="padding:8px 0;color:#888;font-size:13px;white-space:nowrap;vertical-align:top;">${esc(label)}</td>
+          <td style="padding:8px 0;color:#2a2a2a;font-size:14px;font-weight:bold;">${esc(value)}</td>
+        </tr>`
+    )
+    .join('')
+
+  const url = `${BASE_URL}/admin/inschrijvingen`
+  const content = `
+    <p>Er is een <strong>nieuwe inschrijving</strong> binnengekomen die je moet goedkeuren.</p>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f0;border-radius:8px;padding:8px 16px;margin:16px 0;">
+      ${tableRows}
+    </table>
+    <p style="text-align:center;margin:28px 0;">
+      <a href="${url}" style="background:#a90000;color:#fff;text-decoration:none;padding:12px 28px;border-radius:8px;font-weight:bold;display:inline-block;">Inschrijving goedkeuren</a>
+    </p>
+    <p style="color:#888;font-size:13px;">Klik op de knop om naar het admin dashboard te gaan. De inschrijving staat daar als "wachtend" tot je hem goedkeurt of afwijst.</p>
+  `
+  return {
+    subject: `Nieuwe inschrijving: ${app.firstName} ${app.lastName} — goedkeuren`,
+    html: baseTemplate(content),
+  }
+}

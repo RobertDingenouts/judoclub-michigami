@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { sendEmail, buildNewApplicationEmail } from '@/lib/email'
 
 export const dynamic = 'force-dynamic'
 
@@ -96,6 +97,35 @@ export async function POST(request: NextRequest) {
     })
 
     console.log(`[INSCHRIJVING] Nieuw inschrijfformulier: ${firstName} ${lastName} (${email}) — ID: ${application.id}`)
+
+    // Meld de admin dat er een nieuwe inschrijving is die goedkeuring vereist.
+    // Best-effort: als de mail niet doorkomt, faalt de inschrijving NIET —
+    // de admin ziet de inschrijving gewoon in /admin/inschrijvingen.
+    const notifyEmails = (process.env.ADMIN_NOTIFY_EMAIL || 'judoclub_michigami@hotmail.com')
+      .split(',')
+      .map((e) => e.trim())
+      .filter(Boolean)
+
+    for (const notifyTo of notifyEmails) {
+      try {
+        const tpl = buildNewApplicationEmail({
+          firstName: application.firstName,
+          lastName: application.lastName,
+          email: application.email,
+          phone: application.phone,
+          location: application.location,
+          preferredGroup: application.preferredGroup,
+          isChild: application.isChild,
+          parentName: application.parentName,
+          parentEmail: application.parentEmail,
+          parentPhone: application.parentPhone,
+          medicalNotes: application.medicalNotes,
+        })
+        await sendEmail({ to: notifyTo, subject: tpl.subject, html: tpl.html })
+      } catch (mailErr) {
+        console.error(`[INSCHRIJVING] Notificatiemail naar ${notifyTo} mislukt:`, mailErr)
+      }
+    }
 
     return NextResponse.json({
       success: true,
