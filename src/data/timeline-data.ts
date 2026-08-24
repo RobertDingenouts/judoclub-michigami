@@ -7,8 +7,6 @@ export interface TimelineEvent {
   photoCaption?: string;
   photoAspect?: string;
   isMilestone?: boolean;
-  /** Herinneringsmoment (overlijden/minuut stilte) — krijgt kaarsgloed + bloesem. */
-  memorial?: boolean;
 }
 
 export const timelineEvents: TimelineEvent[] = [
@@ -120,7 +118,6 @@ export const timelineEvents: TimelineEvent[] = [
     description: 'Koos van Wezel overlijdt in december 2021 op veel te vroege leeftijd. Robin, Pascal en Robert — die al jaren samen met Koos les gaven — nemen de club volledig over en zorgen ervoor dat de Michigami-geest levend blijft.',
     icon: 'person',
     isMilestone: true,
-    memorial: true,
   },
   {
     year: '2024',
@@ -140,7 +137,6 @@ export const timelineEvents: TimelineEvent[] = [
     description: 'Op 28 maart overlijdt Franco Hack — vierde dan, vader van Robin en Pascal, schoonzoon van Koos — op amper 59 jaar. Hij trainde velen mee naar hun zwarte band, oefende samen kata’s en fungeerde bij het dangraadexamen als uke voor verschillende judoka’s. Was een fijn sparpartner, vooral in het ne-waza, zat met Jolanda achter de jurytafel bij legio toernooien en was coach bij internationale uitstapjes zoals het CSIT in Grenoble. Op 1 april houdt de club in Steenbergen en Oud-Vossemeer een minuut stilte voor hem — rond de mat gezeten, samen.',
     icon: 'person',
     isMilestone: true,
-    memorial: true,
     photoUrl: '/images/minuut-stilte-franco.jpg',
     photoCaption: '1 april 2026 · minuut stilte voor Franco Hack, De Vossenkuil Oud-Vossemeer',
   },

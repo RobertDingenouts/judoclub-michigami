@@ -922,182 +922,6 @@
     scrollbar-color: rgba(74,58,34,0.5) transparent;
   }
 
-  /* ===================== INK BLOOM (cursor-gedreven kaart) ============ */
-  /* Sumi-inkt die opbloeit vanuit de cursor. De positie komt van
-     --ink-x / --ink-y (geschreven door useInkHover bij pointermove).
-     De bloem is een zachte radiale vlek + een ring die meebeweegt,
-     zodat het voelt als inkt die in het papier trekt. */
-  .ink-bloom {
-    position: relative;
-    isolation: isolate;
-    overflow: hidden;
-  }
-  .ink-bloom::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    background: radial-gradient(
-      220px circle at var(--ink-x, 50%) var(--ink-y, 50%),
-      rgba(28, 25, 21, 0.07),
-      rgba(28, 25, 21, 0.025) 45%,
-      transparent 70%
-    );
-    opacity: 0;
-    transition: opacity 0.5s ease;
-  }
-  .ink-bloom::after {
-    content: "";
-    position: absolute;
-    z-index: 0;
-    pointer-events: none;
-    width: 120px;
-    height: 120px;
-    margin: -60px 0 0 -60px;
-    left: var(--ink-x, 50%);
-    top: var(--ink-y, 50%);
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(169, 0, 0, 0.10), transparent 65%);
-    opacity: 0;
-    transform: scale(0.6);
-    transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  @media (hover: hover) {
-    .ink-bloom:hover::before { opacity: 1; }
-    .ink-bloom:hover::after { opacity: 1; transform: scale(1); }
-  }
-  /* Op donker papier (tijdlijn): lichtere inkt-bloem */
-  .ink-paper-dark .ink-bloom::before {
-    background: radial-gradient(
-      220px circle at var(--ink-x, 50%) var(--ink-y, 50%),
-      rgba(255, 244, 224, 0.06),
-      rgba(255, 244, 224, 0.02) 45%,
-      transparent 70%
-    );
-  }
-  .ink-paper-dark .ink-bloom::after {
-    background: radial-gradient(circle, rgba(212, 58, 58, 0.14), transparent 65%);
-  }
-
-  /* ===================== BRUSH SPINE (tijdlijn-ruglijn) =============== */
-  /* De ruglijn is een kwaststreek: een rood gradient met een pulserende
-     "kwastpunt" die de vooruitgang markeert. De hoogte wordt door JS
-     (spineHeight) gedreven. */
-  .brush-spine {
-    position: relative;
-    width: 100%;
-  }
-  .brush-spine-fill {
-    position: absolute;
-    left: 50%;
-    top: 0;
-    width: 6px;
-    transform: translateX(-50%);
-    background: linear-gradient(
-      180deg,
-      rgba(169, 0, 0, 0.95) 0%,
-      rgba(169, 0, 0, 0.7) 60%,
-      rgba(169, 0, 0, 0.45) 100%
-    );
-    border-radius: 3px;
-    box-shadow: 0 0 12px rgba(169, 0, 0, 0.35);
-  }
-  .brush-spine-tip {
-    position: absolute;
-    left: 50%;
-    width: 14px;
-    height: 14px;
-    margin-left: -7px;
-    border-radius: 50%;
-    background: radial-gradient(circle, #d43a3a 0%, rgba(169, 0, 0, 0.6) 55%, transparent 75%);
-    box-shadow: 0 0 16px rgba(212, 58, 58, 0.7);
-    animation: spinePulse 2.4s ease-in-out infinite;
-  }
-  @keyframes spinePulse {
-    0%, 100% { transform: scale(1); opacity: 0.9; }
-    50%      { transform: scale(1.5); opacity: 0.5; }
-  }
-  .brush-spine-track {
-    position: absolute;
-    left: 50%;
-    top: 0;
-    width: 2px;
-    height: 100%;
-    transform: translateX(-50%);
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.04));
-    border-radius: 2px;
-  }
-
-  /* ===================== CANDLE GLOW (stichter-herinnering) =========== */
-  /* Een warme, flikkerende kaarsgloed op de stichter-herinnering —
-     het licht dat in de dojo bleef branden. Op een lichte washi-kaart
-     werkt screen-blend nauwelijks (licht op licht), dus we gebruiken een
-     normale warme overlay die de kaart verft + een box-shadow-halo die
-     licht van de kaart afstraalt op de achtergrond. */
-  .candle-glow {
-    position: relative;
-  }
-  .candle-glow::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 20;
-    pointer-events: none;
-    background: radial-gradient(
-      ellipse 100% 95% at 50% 52%,
-      rgba(255, 178, 98, 0.52),
-      rgba(244, 145, 65, 0.26) 46%,
-      rgba(210, 100, 45, 0.08) 66%,
-      transparent 82%
-    );
-    animation: candleFlicker 4.5s ease-in-out infinite;
-  }
-  @keyframes candleFlicker {
-    0%, 100% { opacity: 0.7; transform: scale(1); }
-    28%      { opacity: 0.95; transform: scale(1.03); }
-    46%      { opacity: 0.75; transform: scale(0.99); }
-    62%      { opacity: 1;    transform: scale(1.05); }
-    80%      { opacity: 0.8;  transform: scale(1.01); }
-  }
-
-  /* ===================== LOCALE PETAL (sectie-afgebakken bloesem) ===== */
-  /* De bestaande .petal valt over 108vh (viewport). Deze variant valt
-     over een vaste afstand en blijft binnen de container (overflow-hidden). */
-  @keyframes petalFallLocal {
-    0%   { top: -20px; transform: translate3d(0, 0, 0) rotate(0deg); opacity: 0; }
-    10%  { opacity: var(--petal-o, 0.5); }
-    50%  { top: 45%; transform: translate3d(var(--sway, 18px), 0, 0) rotate(200deg); }
-    100% { top: 115%; transform: translate3d(calc(var(--sway, 18px) * -0.6), 0, 0) rotate(430deg); opacity: 0; }
-  }
-  .petal-local {
-    position: absolute;
-    top: 0;
-    animation: petalFallLocal linear infinite;
-    will-change: transform;
-    pointer-events: none;
-  }
-
-  /* ===================== CHAR STAGGER (letter voor letter) ============ */
-  /* Een compacte, snelle letter-stagger voor kortere teksten (subtitels,
-     citaat-regels). Woorden blijven bij elkaar; elke letter fade-in met
-     oplopende delay. */
-  @keyframes charInk {
-    from { opacity: 0; transform: translateY(4px); filter: blur(2px); }
-    to   { opacity: 1; transform: translateY(0); filter: blur(0); }
-  }
-  .char-stagger .char {
-    opacity: 0;
-    display: inline-block;
-  }
-  .char-stagger-run .char {
-    animation: charInk 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  }
-  .char-stagger .char-word {
-    display: inline-block;
-    white-space: pre;
-  }
-
   /* Respect reduced motion */
   @media (prefers-reduced-motion: reduce) {
     .animate-heroZoom,
@@ -1112,9 +936,6 @@
     .animate-mist,
     .animate-flicker,
     .petal,
-    .petal-local,
-    .brush-spine-tip,
-    .candle-glow::before,
     .river-flow,
     .canopy,
     .moon-glow,
@@ -1126,9 +947,6 @@
     }
     .ink-write { opacity: 1; }
     .ink-type .ink-letter { animation: none !important; opacity: 1; }
-    .char-stagger .char { animation: none !important; opacity: 1; }
-    .ink-bloom::before,
-    .ink-bloom::after { transition: none !important; }
   }
 
   /* Focus ring — gold */
