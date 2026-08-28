@@ -44,7 +44,17 @@ export function StudentActions({ studentId, firstName, lastName, showTrashed }: 
           <button
             onClick={async () => {
               if (!confirm('Definitief verwijderen? Dit kan niet ongedaan worden.')) return
-              await fetch(`/api/admin/students/${studentId}?permanent=true`, { method: 'DELETE' })
+              try {
+                const res = await fetch(`/api/admin/students/${studentId}?permanent=true`, { method: 'DELETE' })
+                const data = await res.json().catch(() => ({}))
+                if (!res.ok) {
+                  alert(`Verwijderen mislukt: ${data.error || 'Onbekende fout'}`)
+                  return
+                }
+              } catch {
+                alert('Verwijderen mislukt: netwerkfout')
+                return
+              }
               window.location.reload()
             }}
             className="rounded-lg bg-red-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-red-700"

@@ -88,6 +88,10 @@ export async function login(email: string, password: string) {
     return { error: 'Ongeldig e-mailadres of wachtwoord', success: false }
   }
 
+  if (user.is_active === false) {
+    return { error: 'Dit account is gedeactiveerd. Neem contact op met de club.', success: false }
+  }
+
   const valid = await verifyPassword(password, user.passwordHash)
   if (!valid) {
     return { error: 'Ongeldig e-mailadres of wachtwoord', success: false }

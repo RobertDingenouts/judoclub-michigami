@@ -5,17 +5,27 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 const BELTS = [
-  { value: 'WIT', label: 'Wit' },
-  { value: 'GEEL', label: 'Geel' },
-  { value: 'ORANJE', label: 'Oranje' },
-  { value: 'GROEN', label: 'Groen' },
-  { value: 'BLAUW', label: 'Blauw' },
-  { value: 'BRUIN', label: 'Bruine band' },
-  { value: 'BRUIN', label: 'Bruine band' },
+  { value: 'WIT', label: 'Witte band' },
+  { value: 'WIT_GEEL', label: 'Witte band met gele slip' },
+  { value: 'GEEL', label: 'Gele band' },
+  { value: 'GEEL_ORANJE', label: 'Gele band met oranje slip' },
+  { value: 'ORANJE', label: 'Oranje band' },
+  { value: 'ORANJE_GROEN', label: 'Oranje band met groene slip' },
+  { value: 'GROEN', label: 'Groene band' },
+  { value: 'GROEN_BLAUW', label: 'Groene band met blauwe slip' },
+  { value: 'BLAUW', label: 'Blauwe band' },
+  { value: 'BLAUW_BRUIN', label: 'Blauwe band met bruine slip' },
   { value: 'BRUIN', label: 'Bruine band' },
   { value: 'ZWART_1', label: 'Zwarte band 1e Dan' },
   { value: 'ZWART_2', label: 'Zwarte band 2e Dan' },
   { value: 'ZWART_3', label: 'Zwarte band 3e Dan' },
+  { value: 'ZWART_4', label: 'Zwarte band 4e Dan' },
+  { value: 'ZWART_5', label: 'Zwarte band 5e Dan' },
+  { value: 'ZWART_6', label: '6e Dan (Rood-wit geblokt)' },
+  { value: 'ZWART_7', label: '7e Dan (Rood-wit geblokt)' },
+  { value: 'ZWART_8', label: '8e Dan (Rood-wit geblokt)' },
+  { value: 'ZWART_9', label: '9e Dan (Rode band)' },
+  { value: 'ZWART_10', label: '10e Dan (Rode band)' },
 ]
 
 export default function NewStudentPage() {

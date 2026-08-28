@@ -80,7 +80,7 @@ export async function PATCH(
     }
 
     // Sync belt/role/joinDate to user if changed
-    if (body.currentBelt || body.role !== undefined || body.joinDate !== undefined) {
+    if (body.currentBelt !== undefined || body.role !== undefined || body.joinDate !== undefined) {
       await db.user.update({
         where: { id: member.userId },
         data: {
@@ -88,6 +88,14 @@ export async function PATCH(
           ...(body.role !== undefined && { role: body.role as Role }),
           ...(body.joinDate !== undefined && { joinDate: body.joinDate ? new Date(body.joinDate) : undefined }),
         },
+      })
+    }
+
+    // Sync active status to user (gedeactiveerd lid = geen inlog meer)
+    if (body.isActive !== undefined) {
+      await db.user.update({
+        where: { id: member.userId },
+        data: { is_active: body.isActive },
       })
     }
 
@@ -136,8 +144,23 @@ export async function DELETE(
     const permanent = url.searchParams.get('permanent') === 'true'
 
     if (permanent) {
-      // Hard delete - also delete related records
-      await db.member.delete({ where: { id } })
+      // Hard delete - cascade: exam results → exam attempts → diplomas →
+      // course progress → member → user (alle FK's opschonen, anders P2003)
+      const member = await db.member.findUnique({
+        where: { id },
+        include: { user: true },
+      })
+      if (!member) {
+        return NextResponse.json({ error: 'Student niet gevonden' }, { status: 404 })
+      }
+      await db.$transaction([
+        db.examResult.deleteMany({ where: { attempt: { memberId: id } } }),
+        db.examAttempt.deleteMany({ where: { memberId: id } }),
+        db.diploma.deleteMany({ where: { recipientId: id } }),
+        db.courseProgress.deleteMany({ where: { memberId: id } }),
+        db.member.delete({ where: { id } }),
+        db.user.delete({ where: { id: member.userId } }),
+      ])
     } else {
       // Soft delete
       await db.member.update({ where: { id }, data: { isActive: false } })
