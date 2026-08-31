@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { isAdmin, hashPassword, generateToken } from '@/lib/auth'
+import { isAdmin, hashPassword } from '@/lib/auth'
 import { sendEmail, buildAccountWelcomeEmail } from '@/lib/email'
 import type { BeltLevel } from '@prisma/client'
 import { Role } from '@prisma/client'
@@ -102,17 +102,12 @@ export async function POST(request: Request) {
       },
     })
 
-    // Welkomstmail: tijdelijk wachtwoord + e-mailverificatielink in één.
+    // Welkomstmail met tijdelijk wachtwoord.
     // Best-effort: toevoegen slaagt ook als de mail niet doorkomt, het tijdelijke
     // wachtwoord wordt hier in de UI weergegeven.
     if (hasEmail && tempPassword) {
       try {
-        const verifyToken = generateToken()
-        await db.user.update({
-          where: { id: user.id },
-          data: { emailVerifyToken: verifyToken, emailVerifyExpires: new Date(Date.now() + 24 * 60 * 60 * 1000) },
-        })
-        const tpl = buildAccountWelcomeEmail(`${firstName} ${lastName}`.trim(), normalizedEmail, tempPassword, verifyToken)
+        const tpl = buildAccountWelcomeEmail(`${firstName} ${lastName}`.trim(), normalizedEmail, tempPassword)
         await sendEmail({ to: normalizedEmail, subject: tpl.subject, html: tpl.html })
         mailSent = true
       } catch (mailErr) {

@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getCurrentUser } from '@/lib/auth'
-import { generateToken } from '@/lib/auth'
 import { db } from '@/lib/db'
-import { sendEmail, buildEmailChangeConfirmEmail, buildEmailChangeNoticeEmail } from '@/lib/email'
+import { sendEmail, buildEmailChangeNoticeEmail } from '@/lib/email'
 
 export const dynamic = 'force-dynamic'
 
@@ -54,63 +53,37 @@ export async function PATCH(request: Request) {
 
     // Track important changes for admin notification
     const importantChanges: string[] = []
-    let emailChangePending = false
 
     // Normaliseer e-mail (trim + lowercase) zodat casewijziging niet per
-    // ongeluk een "wijziging + verificatie" triggert.
+    // ongeluk een "wijziging" triggert.
     const normalizedEmail = email ? String(email).trim().toLowerCase() : email
 
-    // If email is being changed: veilig proces.
-    // Oude adres blijft login tot het nieuwe bevestigd is.
+    // E-mail wijzigen: direct van kracht (geen bevestigingsstap meer).
+    // Beveiligingsmelding naar het oude adres, zodat misbruik opvalt.
     if (normalizedEmail && normalizedEmail !== (user.email?.toLowerCase() || '')) {
-      if (normalizedEmail === user.email?.toLowerCase()) {
-        // geen echte wijziging (kan na normalisatie niet meer, maar defensief)
-      } else {
-        const existing = await db.user.findFirst({
-          where: { email: normalizedEmail, NOT: { id: user.id } },
-        })
-        if (existing) {
-          return NextResponse.json({ error: 'Dit e-mailadres is al in gebruik' }, { status: 400 })
-        }
-
-        const token = generateToken()
-        const expires = new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 uur
-
-        // Zet pendingEmail + token; het oude adres blijft actief als login
-        await db.user.update({
-          where: { id: user.id },
-          data: {
-            pendingEmail: normalizedEmail,
-            emailVerifyToken: token,
-            emailVerifyExpires: expires,
-          },
-        })
-
-        // Bevestigingsmail naar NIEUW adres
-        try {
-          const tpl = buildEmailChangeConfirmEmail(user.name || 'lid', normalizedEmail, token)
-          await sendEmail({ to: normalizedEmail, subject: tpl.subject, html: tpl.html })
-        } catch (mailErr) {
-          console.error('Verificatiemail nieuw adres mislukt:', mailErr)
-          // Niet blokkeren: gebruiker kan later opnieuw bevestigen
-        }
-
-        // Beveiligingsmelding naar OUD adres
-        if (user.email) {
-          try {
-            const notice = buildEmailChangeNoticeEmail(user.name || 'lid', normalizedEmail)
-            await sendEmail({ to: user.email, subject: notice.subject, html: notice.html })
-          } catch (mailErr) {
-            console.error('Beveiligingsmelding oud adres mislukt:', mailErr)
-          }
-        }
-
-        importantChanges.push(`E-mail wijziging aangevraagd: ${user.email || '(geen)'} → ${normalizedEmail} (wacht op bevestiging)`)
-        emailChangePending = true
-
-        // email NOOIT direct overschrijven — pas na bevestiging via verify-email
-        // We overschrijven member.email ook nog niet; dat gebeurt bij verificatie.
+      const existing = await db.user.findFirst({
+        where: { email: normalizedEmail, NOT: { id: user.id } },
+      })
+      if (existing) {
+        return NextResponse.json({ error: 'Dit e-mailadres is al in gebruik' }, { status: 400 })
       }
+
+      await db.user.update({
+        where: { id: user.id },
+        data: { email: normalizedEmail },
+      })
+
+      // Beveiligingsmelding naar OUD adres (best-effort)
+      if (user.email) {
+        try {
+          const notice = buildEmailChangeNoticeEmail(user.name || 'lid', normalizedEmail)
+          await sendEmail({ to: user.email, subject: notice.subject, html: notice.html })
+        } catch (mailErr) {
+          console.error('Beveiligingsmelding oud adres mislukt:', mailErr)
+        }
+      }
+
+      importantChanges.push(`E-mail wijziging: ${user.email || '(geen)'} → ${normalizedEmail}`)
     }
 
     // Check for other important changes
@@ -193,7 +166,6 @@ export async function PATCH(request: Request) {
       success: true,
       member: updatedMember,
       importantChanges,
-      emailChangePending,
     })
   } catch (error) {
     console.error('Update profile error:', error)

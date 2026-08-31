@@ -39,7 +39,7 @@ export async function POST(request: Request) {
     // Update password
     await db.user.update({
       where: { id: user.id },
-      data: { passwordHash: newPasswordHash, emailVerified: user.emailVerified || new Date() },
+      data: { passwordHash: newPasswordHash },
     })
 
     // Beveiligingsmelding

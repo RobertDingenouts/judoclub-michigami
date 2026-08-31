@@ -90,41 +90,14 @@ function baseTemplate(content: string): string {
 </html>`
 }
 
-/** Welkomstmail na registratie, met verificatielink */
-export function buildVerificationEmail(name: string, token: string): { subject: string; html: string } {
-  const url = `${BASE_URL}/api/auth/verify-email?token=${encodeURIComponent(token)}`
-  const content = `
-    <p>Beste ${name},</p>
-    <p>Welkom bij ${APP_NAME}! Bedankt voor je inschrijving. Je kunt direct inloggen en alles gebruiken — de bevestiging hieronder is alleen een kleine controle dat dit e-mailadres van jou is.</p>
-    <p style="text-align:center;margin:28px 0;">
-      <a href="${url}" style="background:#a90000;color:#fff;text-decoration:none;padding:12px 28px;border-radius:8px;font-weight:bold;display:inline-block;">Bevestig mijn e-mailadres</a>
-    </p>
-    <p>Of kopieer deze link in je browser:<br/><span style="color:#a90000;word-break:break-all;">${url}</span></p>
-    <p style="color:#888;font-size:13px;">Deze link is 24 uur geldig. Verlopen? Klik dan in je profiel op "Nogmaals versturen" of neem contact op met de club.</p>
-  `
-  return { subject: `Bevestig je e-mailadres bij ${APP_NAME}`, html: baseTemplate(content) }
-}
-
-/** Mail naar het NIEUWE adres bij wijziging: klik om te bevestigen */
-export function buildEmailChangeConfirmEmail(name: string, newEmail: string, token: string): { subject: string; html: string } {
-  const url = `${BASE_URL}/api/auth/verify-email?token=${encodeURIComponent(token)}`
-  const content = `
-    <p>Beste ${name},</p>
-    <p>Je hebt je e-mailadres gewijzigd naar <strong>${newEmail}</strong>. Klik op de knop om deze wijziging te bevestigen.</p>
-    <p style="text-align:center;margin:28px 0;">
-      <a href="${url}" style="background:#a90000;color:#fff;text-decoration:none;padding:12px 28px;border-radius:8px;font-weight:bold;display:inline-block;">Wijziging bevestigen</a>
-    </p>
-    <p style="color:#888;font-size:13px;">Deze link is 24 uur geldig. Herken je deze wijziging niet? Neem dan contact op met de club.</p>
-  `
-  return { subject: `Bevestig je nieuwe e-mailadres bij ${APP_NAME}`, html: baseTemplate(content) }
-}
-
-/** Beveiligingsmelding naar het OUDE adres bij wijziging */
+// ============================================================================
+// E-mailadres wijziging: beveiligingsmelding naar het OUDE adres
+// ============================================================================
 export function buildEmailChangeNoticeEmail(name: string, newEmail: string): { subject: string; html: string } {
   const content = `
     <p>Beste ${name},</p>
     <p>Je e-mailadres bij ${APP_NAME} is zojuist gewijzigd naar <strong>${newEmail}</strong>.</p>
-    <p>Als jij dit zelf hebt gedaan, hoef je niets te doen — je logt voortaan in met het nieuwe adres zodra je het hebt bevestigd.</p>
+    <p>Je logt voortaan in met het nieuwe adres.</p>
     <p>Als jij dit <strong>niet</strong> hebt gedaan, neem dan direct contact op met de club, want iemand anders kan toegang hebben tot je account.</p>
   `
   return { subject: `Je e-mailadres bij ${APP_NAME} is gewijzigd`, html: baseTemplate(content) }
@@ -170,13 +143,10 @@ export function buildAdminWelcomeEmail(name: string, email: string, tempPassword
 }
 
 /**
- * Gecombineerde welkomstmail voor nieuw aangemaakte accounts: tijdelijk
- * wachtwoord + e-mailverificatielink in één mail. Gebruikt door beide
- * admin-flows (inschrijving goedkeuren + lid toevoegen) zodat de nieuwe
- * lid meteen inlogt én zijn e-mail bevestigt.
+ * Welkomstmail voor nieuw aangemaakte accounts: tijdelijk wachtwoord.
+ * Gebruikt door beide admin-flows (inschrijving goedkeuren + lid toevoegen).
  */
-export function buildAccountWelcomeEmail(name: string, email: string, tempPassword: string, verifyToken: string): { subject: string; html: string } {
-  const url = `${BASE_URL}/api/auth/verify-email?token=${encodeURIComponent(verifyToken)}`
+export function buildAccountWelcomeEmail(name: string, email: string, tempPassword: string): { subject: string; html: string } {
   const content = `
     <p>Beste ${name},</p>
     <p>Welkom bij ${APP_NAME}! Er is een account voor je aangemaakt. Je kunt inloggen met:</p>
@@ -184,13 +154,9 @@ export function buildAccountWelcomeEmail(name: string, email: string, tempPasswo
       <strong>E-mail:</strong> ${email}<br/>
       <strong>Tijdelijk wachtwoord:</strong> ${tempPassword}
     </p>
-    <p>Log eerst in met het tijdelijk wachtwoord en stel direct je eigen wachtwoord in. Daarna kun je je e-mailadres nog even bevestigen (kleine controle of het adres goed is ingevuld — je kunt de site ondertussen gewoon gebruiken):</p>
-    <p style="text-align:center;margin:28px 0;">
-      <a href="${url}" style="background:#a90000;color:#fff;text-decoration:none;padding:12px 28px;border-radius:8px;font-weight:bold;display:inline-block;">Bevestig mijn e-mailadres</a>
-    </p>
-    <p style="color:#888;font-size:13px;">Deze link is 24 uur geldig. Verlopen? Klik dan in je profiel op "Nogmaals versturen" of neem contact op met de club.</p>
+    <p>Log in via <strong>judoclubmichigami.nl</strong> en stel via "Profiel en instellingen" direct je eigen wachtwoord in.</p>
   `
-  return { subject: `Welkom bij ${APP_NAME} — inloggegevens & e-mail bevestigen`, html: baseTemplate(content) }
+  return { subject: `Welkom bij ${APP_NAME} — je inloggegevens`, html: baseTemplate(content) }
 }
 
 // ---------------------------------------------------------------------------

@@ -18,12 +18,8 @@ model User {
   joinDate         DateTime?
   is_active        Boolean        @default(true)
 
-  // E-mailverificatie
-  emailVerified      DateTime?
-  emailVerifyToken   String?    @unique
-  emailVerifyExpires DateTime?
-  // Het nieuwe adres dat wacht op bevestiging (oude blijft login tot bevestigd)
-  pendingEmail       String?
+  // E-mailverificatie is afgeschaft (aug 2026): geen verificatielinks meer,
+  // gewoon een welkomstmail. Kolommen verwijderd uit schema + DB.
 
   // Wachtwoord-reset
   resetToken     String?    @unique

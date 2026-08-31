@@ -31,7 +31,6 @@ export async function POST(request: Request) {
         passwordHash,
         resetToken: null,
         resetTokenExpires: null,
-        emailVerified: user.emailVerified || new Date(), // reset impliceert toegang tot mailbox
       },
     })
 

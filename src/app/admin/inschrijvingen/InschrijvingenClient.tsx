@@ -256,7 +256,7 @@ export default function InschrijvingenClient({ applications }: InschrijvingenCli
                     <strong>Tijdelijk wachtwoord:</strong>{' '}
                     <code className="rounded bg-green-100 px-2 py-0.5 font-mono text-sm">{result.tempPassword}</code>
                     <p className="mt-1 text-xs">
-                      Het lid krijgt dit automatisch per e-mail (met bevestigingslink) naar <strong>{selectedApp.email}</strong>.
+                      Het lid krijgt dit automatisch per e-mail naar <strong>{selectedApp.email}</strong>.
                       Ziet het lid geen mail, geef het tijdelijke wachtwoord dan handmatig door.
                     </p>
                   </div>

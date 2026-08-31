@@ -103,7 +103,7 @@ export default function InschrijvenPage() {
             Je inschrijfformulier is ontvangen. We nemen zo snel mogelijk contact met je op.
           </p>
           <p className="mt-1 text-sm text-gray-500">
-            Controleer je e-mail ({form.email}) voor bevestiging.
+            Je ontvangt binnen enkele dagen een bevestiging van de club.
           </p>
           <div className="mt-8">
             <Link href="/" className="inline-flex items-center gap-2 rounded-lg bg-[#a90000] px-6 py-2.5 text-sm font-medium text-white hover:bg-[#8c0000]">

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Camera, Shield, Eye, EyeOff } from 'lucide-react'
@@ -32,8 +32,6 @@ interface ProfileEditData {
   emergencyContactPhone: string
   medicalNotes: string
   imageUrl?: string | null
-  emailVerified?: string | null
-  pendingEmail?: string | null
 }
 
 export default function ProfileEditPage() {
@@ -56,38 +54,10 @@ export default function ProfileEditPage() {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false)
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [resending, setResending] = useState(false)
-  const [resendMsg, setResendMsg] = useState<string | null>(null)
 
   useEffect(() => {
     fetchProfile()
   }, [])
-
-  const resendStartedRef = useRef(false)
-
-  const handleResendVerification = async (emailOverride?: string, force = false) => {
-    const targetEmail = (emailOverride || form?.email || '').trim().toLowerCase()
-    if (!targetEmail) return
-    if (!force && resendStartedRef.current) return
-    resendStartedRef.current = true
-    setResending(true)
-    setResendMsg(null)
-    try {
-      const res = await fetch('/api/auth/resend-verification', { method: 'POST' })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'Fout bij versturen bevestigingsmail')
-      setResendMsg(data.message || 'Bevestigingsmail verzonden!')
-      // Throttle: niet opnieuw auto-versturen binnen 6 uur (handmatige
-      // verzending kan altijd via de knop).
-      try {
-        localStorage.setItem('michigami-verify-resent-' + targetEmail, String(Date.now()))
-      } catch { /* privacy-mode: negeer */ }
-    } catch (err: any) {
-      setResendMsg(err.message || 'Fout bij versturen bevestigingsmail')
-    } finally {
-      setResending(false)
-    }
-  }
 
   async function fetchProfile() {
     try {
@@ -121,26 +91,11 @@ export default function ProfileEditPage() {
           emergencyContactPhone: p.member?.emergencyContactPhone || '',
           medicalNotes: p.member?.medicalNotes || '',
           imageUrl: p.imageUrl || null,
-          emailVerified: p.emailVerified || null,
-          pendingEmail: p.pendingEmail || null,
         }
         setProfile(profileData)
         setForm(profileData)
         if (p.imageUrl) {
           setAvatarPreview(p.imageUrl)
-        }
-        // Auto-resend verificatielink voor legacy accounts (aangemaakt vóór
-        // de e-mailverificatie-logica): die ontvingen nooit een bevestigingsmail.
-        // Max. één keer per 6 uur (throttle in localStorage).
-        if (!p.emailVerified && !p.pendingEmail && p.email) {
-          const key = 'michigami-verify-resent-' + p.email.toLowerCase()
-          let last = 0
-          try {
-            last = Number(localStorage.getItem(key) || 0)
-          } catch { /* privacy-mode */ }
-          if (Date.now() - last > 6 * 60 * 60 * 1000) {
-            handleResendVerification(p.email)
-          }
         }
       }
     } catch {
@@ -211,11 +166,7 @@ export default function ProfileEditPage() {
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Fout bij opslaan')
 
-      let successMsg = 'Profiel succesvol bijgewerkt!'
-      if (data.emailChangePending) {
-        successMsg = 'Profiel bijgewerkt! We hebben een bevestigingsmail gestuurd naar je nieuwe adres. Je oude adres blijft werken tot je bevestigt.'
-      }
-      setSuccess(successMsg)
+      setSuccess('Profiel succesvol bijgewerkt!')
       const updatedProfile = { ...form, imageUrl: uploadedImageUrl }
       setProfile(updatedProfile)
       setForm(updatedProfile)
@@ -422,35 +373,6 @@ export default function ProfileEditPage() {
           {success && (
             <div className="mb-6 rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-700 flex items-center gap-2">
               {success}
-            </div>
-          )}
-
-          {/* E-mailverificatie status */}
-          {form && !form.emailVerified && !form.pendingEmail && (
-            <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800 space-y-3">
-              <div className="flex items-start gap-2">
-                <span>⚠️</span>
-                <span>Je e-mailadres <strong>{form.email || '(nog niet ingevuld)'}</strong> is nog niet bevestigd. Controleer je inbox (en je spammap) voor de bevestigingsmail.</span>
-              </div>
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => handleResendVerification(undefined, true)}
-                  disabled={resending || !form.email}
-                  className="inline-flex items-center gap-2 rounded-lg bg-[#a90000] px-4 py-2 text-xs font-medium text-white transition-colors hover:bg-[#8c0000] disabled:opacity-50"
-                >
-                  {resending ? 'Versturen...' : '📧 Nieuwe bevestigingsmail versturen'}
-                </button>
-                {resendMsg && <span className="text-xs">{resendMsg}</span>}
-              </div>
-            </div>
-          )}
-          {form && form.pendingEmail && (
-            <div className="mb-6 rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-800 flex items-center gap-2">
-              <span>📧</span>
-              <span>
-                Er wacht een bevestiging op <strong>{form.pendingEmail}</strong>. Je oude adres blijft actief tot je de mail hebt bevestigd.
-              </span>
             </div>
           )}
 

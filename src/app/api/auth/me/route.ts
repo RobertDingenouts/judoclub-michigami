@@ -18,8 +18,6 @@ export async function GET() {
         role: user.role,
         currentBelt: user.currentBelt,
         imageUrl: user.imageUrl,
-        emailVerified: user.emailVerified ? user.emailVerified.toISOString() : null,
-        pendingEmail: user.pendingEmail || null,
         member: user.member ? {
           firstName: user.member.firstName,
           lastName: user.member.lastName,

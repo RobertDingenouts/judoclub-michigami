@@ -200,7 +200,7 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
           </p>
           <p className="text-xs text-blue-700">
             {newAccount.mailSent
-              ? 'De inloggegevens + bevestigingslink zijn per e-mail verzonden.'
+              ? 'De inloggegevens zijn per e-mail verzonden.'
               : 'De e-mail kon niet worden verstuurd — geef het tijdelijke wachtwoord handmatig door.'}{' '}
             Het lid kan het wachtwoord wijzigen in "Profiel en instellingen".
           </p>

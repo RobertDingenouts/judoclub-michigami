@@ -104,7 +104,7 @@ export async function PATCH(
       const passwordHash = await hashPassword(body.tempPassword.trim())
       await db.user.update({
         where: { id: member.userId },
-        data: { passwordHash, emailVerified: new Date() },
+        data: { passwordHash },
       })
 
       // Welkomstmail met tijdelijk wachtwoord (best-effort)

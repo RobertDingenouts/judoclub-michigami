@@ -198,8 +198,6 @@ const VALID_SECTIONS = new Set(Object.keys(sectionMeta));
 export default function MichigamiApp() {
   // Start at 'home' to match the server render (hydration-safe).
   const [activeSection, setActiveSection] = useState<Section>('home');
-  // Feedback voor e-mailbevestiging: verify-email redirecteert naar /?verify=<status>
-  const [verifyStatus, setVerifyStatus] = useState<string | null>(null);
 
   // Honor ?section= or #hash on initial load so deep-links (e.g. /#muziek) work.
   // Done in a post-hydration effect to avoid a client/server hydration mismatch.
@@ -210,13 +208,6 @@ export default function MichigamiApp() {
     } else {
       const param = new URLSearchParams(window.location.search).get('section');
       if (param && VALID_SECTIONS.has(param)) setActiveSection(param as Section);
-    }
-    // E-mailbevestiging: /?verify=<status> → banner tonen (uit de e-mail-link)
-    const v = new URLSearchParams(window.location.search).get('verify');
-    if (v) {
-      setVerifyStatus(v);
-      // URL opschonen zodat herladen niet opnieuw triggert
-      window.history.replaceState(null, '', window.location.pathname);
     }
   }, []);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -362,32 +353,6 @@ export default function MichigamiApp() {
 
       {/* Main Content */}
       <main className="flex-1 md:ml-64 w-full min-w-0">
-        {verifyStatus && (() => {
-          const isSuccess = verifyStatus === 'success';
-          const messages: Record<string, string> = {
-            success: 'E-mailadres bevestigd — je bent geregistreerd bij Judoclub Michigami.',
-            invalid: 'Deze bevestigingslink is ongeldig. Vraag in je profiel een nieuwe link aan.',
-            expired: 'Deze bevestigingslink is verlopen. Vraag in je profiel een nieuwe link aan.',
-            missing: 'Ontbrekende bevestigingslink. Vraag in je profiel een nieuwe link aan.',
-            clash: 'Dit e-mailadres is al gekoppeld aan een ander account. Vraag in je profiel een nieuwe link aan.',
-            error: 'Bevestiging mislukt. Vraag in je profiel een nieuwe link aan.',
-          };
-          return (
-            <div className={`relative z-30 flex items-center justify-between gap-3 text-white px-4 py-2.5 text-sm shadow-md ${isSuccess ? 'bg-emerald-600' : 'bg-amber-500'}`}>
-              <div className="flex items-center gap-2 min-w-0">
-                <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  {isSuccess ? (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  ) : (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                  )}
-                </svg>
-                <span className="font-medium truncate">{messages[verifyStatus] ?? messages.error}</span>
-              </div>
-              <button onClick={() => setVerifyStatus(null)} className="shrink-0 text-white/80 hover:text-white font-bold px-1" aria-label="Sluiten">×</button>
-            </div>
-          );
-        })()}
         <div ref={scrollAreaRef} className="h-[calc(100vh-3.5rem)] sm:h-[calc(100vh-3.5rem)] md:h-screen w-full">
         <ScrollArea className="w-full h-full zen-scroll">
           <div

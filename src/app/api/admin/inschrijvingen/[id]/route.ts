@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { requireAdmin, hashPassword, generateToken } from '@/lib/auth'
+import { requireAdmin, hashPassword } from '@/lib/auth'
 import { sendEmail, buildAccountWelcomeEmail } from '@/lib/email'
 
 export const dynamic = 'force-dynamic'
@@ -94,17 +94,11 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 
       console.log(`[INSCHRIJVING] Goedgekeurd: ${application.firstName} ${application.lastName} (${application.email}) — temp pw: ${tempPassword}`)
 
-      // Welkomstmail: tijdelijk wachtwoord + e-mailverificatielink in één.
-      // Best-effort: goedkeuring slaagt ook als de mail niet doorkomt,
-      // het lid kan via "opnieuw versturen" in het profiel nog een link krijgen.
+      // Welkomstmail met tijdelijk wachtwoord.
+      // Best-effort: goedkeuring slaagt ook als de mail niet doorkomt.
       let mailSent = false
       try {
-        const verifyToken = generateToken()
-        await db.user.update({
-          where: { id: user.id },
-          data: { emailVerifyToken: verifyToken, emailVerifyExpires: new Date(Date.now() + 24 * 60 * 60 * 1000) },
-        })
-        const tpl = buildAccountWelcomeEmail(`${application.firstName} ${application.lastName}`.trim(), memberEmail, tempPassword, verifyToken)
+        const tpl = buildAccountWelcomeEmail(`${application.firstName} ${application.lastName}`.trim(), memberEmail, tempPassword)
         await sendEmail({ to: memberEmail, subject: tpl.subject, html: tpl.html })
         mailSent = true
       } catch (mailErr) {
