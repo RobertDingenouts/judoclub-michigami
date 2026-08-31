@@ -95,12 +95,12 @@ export function buildVerificationEmail(name: string, token: string): { subject: 
   const url = `${BASE_URL}/api/auth/verify-email?token=${encodeURIComponent(token)}`
   const content = `
     <p>Beste ${name},</p>
-    <p>Welkom bij ${APP_NAME}! Bedankt voor je inschrijving. Bevestig je e-mailadres om volledig toegang te krijgen tot je account.</p>
+    <p>Welkom bij ${APP_NAME}! Bedankt voor je inschrijving. Je kunt direct inloggen en alles gebruiken — de bevestiging hieronder is alleen een kleine controle dat dit e-mailadres van jou is.</p>
     <p style="text-align:center;margin:28px 0;">
       <a href="${url}" style="background:#a90000;color:#fff;text-decoration:none;padding:12px 28px;border-radius:8px;font-weight:bold;display:inline-block;">Bevestig mijn e-mailadres</a>
     </p>
     <p>Of kopieer deze link in je browser:<br/><span style="color:#a90000;word-break:break-all;">${url}</span></p>
-    <p style="color:#888;font-size:13px;">Deze link is 24 uur geldig.</p>
+    <p style="color:#888;font-size:13px;">Deze link is 24 uur geldig. Verlopen? Klik dan in je profiel op "Nogmaals versturen" of neem contact op met de club.</p>
   `
   return { subject: `Bevestig je e-mailadres bij ${APP_NAME}`, html: baseTemplate(content) }
 }
@@ -184,11 +184,11 @@ export function buildAccountWelcomeEmail(name: string, email: string, tempPasswo
       <strong>E-mail:</strong> ${email}<br/>
       <strong>Tijdelijk wachtwoord:</strong> ${tempPassword}
     </p>
-    <p>Voordat je profiel volledig werkt, bevestig je e-mailadres:</p>
+    <p>Log eerst in met het tijdelijk wachtwoord en stel direct je eigen wachtwoord in. Daarna kun je je e-mailadres nog even bevestigen (kleine controle of het adres goed is ingevuld — je kunt de site ondertussen gewoon gebruiken):</p>
     <p style="text-align:center;margin:28px 0;">
       <a href="${url}" style="background:#a90000;color:#fff;text-decoration:none;padding:12px 28px;border-radius:8px;font-weight:bold;display:inline-block;">Bevestig mijn e-mailadres</a>
     </p>
-    <p style="color:#888;font-size:13px;">Deze link is 24 uur geldig. Klik daarna in op "Inloggen" met het tijdelijk wachtwoord en stel direct je eigen wachtwoord in.</p>
+    <p style="color:#888;font-size:13px;">Deze link is 24 uur geldig. Verlopen? Klik dan in je profiel op "Nogmaals versturen" of neem contact op met de club.</p>
   `
   return { subject: `Welkom bij ${APP_NAME} — inloggegevens & e-mail bevestigen`, html: baseTemplate(content) }
 }
