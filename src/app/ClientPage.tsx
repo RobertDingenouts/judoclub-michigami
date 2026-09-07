@@ -35,6 +35,7 @@ import { PullToRefreshIndicator } from '@/components/PullToRefreshIndicator';
 import { StickyCTA } from '@/components/StickyCTA';
 import { TrialLessonForm } from '@/components/sections/TrialLessonForm';
 import { ActionPopup } from '@/components/sections/ActionPopup';
+import { VotePopup } from '@/components/sections/VotePopup';
 import { navGroups, mobileNavItems, groupHubMap, allNavItems, clubPageSequence, type Section } from '@/components/nav-config';
 import { SectionPager } from '@/components/SectionPager';
 import {
@@ -224,6 +225,16 @@ export default function MichigamiApp() {
     const handler = () => setProeflesOpen(true);
     window.addEventListener('open-proefles', handler);
     return () => window.removeEventListener('open-proefles', handler);
+  }, []);
+
+  // Listen for custom event to navigate to a section (e.g. popups → Nieuws)
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const section = (e as CustomEvent).detail as Section;
+      if (section) setActiveSection(section);
+    };
+    window.addEventListener('navigate-section', handler);
+    return () => window.removeEventListener('navigate-section', handler);
   }, []);
 
   // Update document title + meta tags when section changes (SPA SEO)
@@ -430,6 +441,9 @@ export default function MichigamiApp() {
 
       {/* Actie-popup: gratis inschrijven vóór 1 oktober */}
       <ActionPopup />
+
+      {/* Stem-popup: Rabo ClubSupport 2026 (7-29 sept, eenmalig) */}
+      <VotePopup />
     </div>
     </MusicPlayerProvider>
   );

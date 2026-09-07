@@ -18,6 +18,15 @@ export const newsArchive: NewsYear[] = [
     articles: [
 
       {
+        id: "rabo-clubsupport-2026",
+        title: "🗳️ Steun Judoclub Michigami bij Rabo ClubSupport 2026!",
+        content:
+          "Het is weer zover: de stemperiode van Rabo ClubSupport is geopend! 💙🧡\n\nVan 7 t/m 29 september kun je weer stemmen op jouw favoriete clubs. En natuurlijk doen wij met Judoclub Michigami dit jaar ook weer mee!\n\nElke stem brengt ons een stap dichter bij onze clubdoelen. Ben je klant bij de Rabobank? Vergeet dan niet om je stem op ons uit te brengen via de Rabo App (Instellingen > Lidmaatschap > Rabo ClubSupport).\n\nHelp je mee?\n\n• Breng zelf je stem uit op Judoclub Michigami!\n• Vraag ook je gezinsleden, familie, vrienden en buren om op ons te stemmen.\n\nWist je dat stemmen al kan vanaf 12 jaar (met toestemming van een ouder/verzorger in de app via Ouderlijk toezicht)?\n\nDe uitslag is bekend tussen 5 en 16 oktober. Alvast ontzettend bedankt voor jullie steun! Samen maken we Michigami nog sterker! 💪🥋",
+        date: "2026-09-07",
+        imageUrl: "/stem-rabo-clubsupport-2026.jpg",
+      },
+
+      {
         id: "gratis-inschrijven-actie-2026",
         title: "🎁 Actie: gratis inschrijven vóór 1 oktober!",
         content:

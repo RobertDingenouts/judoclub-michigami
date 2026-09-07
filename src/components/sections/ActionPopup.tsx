@@ -31,6 +31,9 @@ export function ActionPopup() {
     } catch {
       // negeer
     }
+    // Meld dat de actie-popup gesloten is, zodat andere popups (bijv. de
+    // Rabo ClubSupport stem-popup) daarna pas mogen tonen
+    window.dispatchEvent(new CustomEvent('actie-popup-gezien'));
   };
 
   const openProefles = () => {
