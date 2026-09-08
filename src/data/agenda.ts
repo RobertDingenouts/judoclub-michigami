@@ -39,7 +39,7 @@ const LINTJE_2026_INFO = {
       lines: [
         "Weegtijd 8.15-8.30 uur (4 t/m 16 jaar)",
         "Wees kwartier vóór aanvang van de weging aanwezig",
-        "Wedstrijden beginnen ca. 8.45-9.00 uur",
+        "Wedstrijden beginnen ca. 8.30-8.45 uur",
       ],
     },
     {
@@ -53,8 +53,8 @@ const LINTJE_2026_INFO = {
     {
       label: "Kosten & inschrijving",
       lines: [
-        "€ 8,50 per deelnemer, te betalen bij het wegen in de zaal",
-        "Inschrijfformulier in te leveren aan het lintjescomité (ook bij de weging)",
+        "€ 8,50 per deelnemer, contant te betalen bij het wegen in de zaal",
+        "Digitaal invullen via de inschrijflink (knop Inschrijven)",
       ],
     },
   ],
@@ -90,14 +90,14 @@ const LINTJE_2027_INFO = {
     {
       label: "Kosten & inschrijving",
       lines: [
-        "€ 8,50 per deelnemer, te betalen bij het wegen in de zaal",
-        "Inschrijfformulier in te leveren aan het lintjescomité (ook bij de weging)",
+        "€ 8,50 per deelnemer, contant te betalen bij het wegen in de zaal",
+        "Digitaal invullen via de inschrijflink (knop Inschrijven)",
       ],
     },
   ],
 };
 
-const LINTJE_DETAILS = "Beginnende Judoka's t/m 16 jaar · Toernooikosten € 8,50";
+const LINTJE_DETAILS = "Beginnende Judoka's t/m 16 jaar · Toernooikosten € 8,50 (contant, te betalen bij het wegen)";
 
 export const agendaItems: AgendaItem[] = [
   { compareDate: "2026-01-02", displayDate: "2 januari", event: "Geen les i.v.m.", emoji: "ban", eventSub: "Kerstvakantie", details: "", location: "-", time: "-" },
@@ -123,13 +123,13 @@ export const agendaItems: AgendaItem[] = [
   { compareDate: "2026-06-26", displayDate: "26 juni", event: "Les - AFGELAST", emoji: "xmark", eventSub: "i.v.m. extreme hitte (38°C)", details: "38 graden verwacht. Spanningsboog te laag door warmte, risico op oververhitting. Eenmalige afgelasting.", location: "-", time: "-", cancelled: true },
   { compareDate: "2026-07-10", displayDate: "10 juli t/m 21 aug", event: "Geen lessen (Steenbergen) i.v.m.", emoji: "ban", eventSub: "Zomervakantie", details: "", location: "De Knotwilg", time: "-", locationUrl: "https://www.google.com/maps/search/?api=1&query=Sportcentrum+De+Knotwilg+Wipstraat+2+4651+XW+Steenbergen" },
   { compareDate: "2026-07-08", displayDate: "8 jul t/m 19 aug", event: "Geen lessen (Oud-Vossemeer) i.v.m.", emoji: "ban", eventSub: "Zomervakantie", details: "", location: "De Vossenkuil", time: "-", locationUrl: "https://www.google.com/maps/search/?api=1&query=Bou+Kooijmanstraat+48+4698+AM+Oud-Vossemeer" },
-  { compareDate: "2026-09-13", displayDate: "13 september", event: "Lintjestoernooi", emoji: "medal", eventSub: "Budoschool Cor Schuurbiers", details: LINTJE_DETAILS, location: "Sporthal In de Roos", locationSub: "Roosendaal", locationUrl: "https://maps.app.goo.gl/7ZnFrSxadrgEiAhm6", inschrijfUrl: "https://budoschool-corschuurbiers.nl/3-3/", inschrijfTekst: "Inschrijven", time: "8.00-10.30", eventInfo: LINTJE_2026_INFO },
-  { compareDate: "2026-10-11", displayDate: "11 oktober", event: "Lintjestoernooi", emoji: "medal", eventSub: "Budoschool Cor Schuurbiers", details: LINTJE_DETAILS, location: "Sporthal In de Roos", locationSub: "Roosendaal", locationUrl: "https://maps.app.goo.gl/7ZnFrSxadrgEiAhm6", inschrijfUrl: "https://budoschool-corschuurbiers.nl/3-3/", inschrijfTekst: "Inschrijven", time: "8.00-10.30", eventInfo: LINTJE_2026_INFO },
+  { compareDate: "2026-09-13", displayDate: "13 september", event: "Lintjestoernooi", emoji: "medal", eventSub: "Budoschool Cor Schuurbiers", details: LINTJE_DETAILS, location: "Sporthal In de Roos", locationSub: "Roosendaal", locationUrl: "https://maps.app.goo.gl/7ZnFrSxadrgEiAhm6", inschrijfUrl: "https://budoschool-corschuurbiers.nl/3-3/", inschrijfTekst: "Inschrijven", time: "8.15-10.30", eventInfo: LINTJE_2026_INFO },
+  { compareDate: "2026-10-11", displayDate: "11 oktober", event: "Lintjestoernooi", emoji: "medal", eventSub: "Budoschool Cor Schuurbiers", details: LINTJE_DETAILS, location: "Sporthal In de Roos", locationSub: "Roosendaal", locationUrl: "https://maps.app.goo.gl/7ZnFrSxadrgEiAhm6", inschrijfUrl: "https://budoschool-corschuurbiers.nl/3-3/", inschrijfTekst: "Inschrijven", time: "8.15-10.30", eventInfo: LINTJE_2026_INFO },
   { compareDate: "2026-10-16", displayDate: "16 okt & 23 okt", event: "Geen lessen (Steenbergen) i.v.m.", emoji: "ban", eventSub: "Herfstvakantie", details: "", location: "De Knotwilg", time: "-", locationUrl: "https://www.google.com/maps/search/?api=1&query=Sportcentrum+De+Knotwilg+Wipstraat+2+4651+XW+Steenbergen" },
   { compareDate: "2026-10-17", displayDate: "17 oktober", event: "Jubileumtoernooi OVJV", emoji: "champagne", eventSub: "50-jarig bestaan OVJV · 47e editie", details: "Recreatief toernooi voor alle leeftijden. Inschrijven uiterlijk 30 september.", location: "De Vossenkuil", locationSub: "Oud-Vossemeer", locationUrl: "https://www.google.com/maps/search/?api=1&query=Bou+Kooijmanstraat+48+4698+AM+Oud-Vossemeer", inschrijfUrl: "https://forms.cloud.microsoft/r/XZkMDrBVRk", inschrijfTekst: "Inschrijven", time: "Vanaf 09:00", special: true, eventInfo: { title: "Jubileumtoernooi OVJV", sections: [ { label: "Over het toernooi", lines: ["Recreatief breedtesporttoernooi — amateur-scheidsrechters, nadruk op sportiviteit en plezier.", "Locatie: Bou-Kooijmanstraat 48, 4698 AM Oud-Vossemeer"] }, { label: "Kosten & betaling", lines: ["€ 7,50 per judoka (inclusief 1 consumptie)", "Overmaken naar: NL81 RBRB 0939 7268 15 t.n.v. Judovereniging O.V.J.V.", "Vermeld: voornaam & achternaam judoka + jubileumtoernooi OVJV"] }, { label: "Aanwezigheid per geboortejaar", lines: ["09:00-09:15 — geboortejaar 2016 t/m 2020", "09:30-09:45 — geboortejaar 2011 t/m 2015", "10:00-10:15 — geboortejaar 2010 en eerder"] }, { label: "Inschrijven", lines: ["Uiterlijk 30 september", "Via het inschrijfformulier (knop rechts)"] } ] } },
   { compareDate: "2026-10-21", displayDate: "21 oktober", event: "Geen les (Oud-Vossemeer) i.v.m.", emoji: "ban", eventSub: "Herfstvakantie", details: "", location: "De Vossenkuil", time: "-", locationUrl: "https://www.google.com/maps/search/?api=1&query=Bou+Kooijmanstraat+48+4698+AM+Oud-Vossemeer" },
   { compareDate: "2026-11-04", displayDate: "4 november", event: "Geen les (Oud-Vossemeer) i.v.m.", emoji: "ban", eventSub: "Dankdag", details: "", location: "De Vossenkuil", time: "-", locationUrl: "https://www.google.com/maps/search/?api=1&query=Bou+Kooijmanstraat+48+4698+AM+Oud-Vossemeer" },
-  { compareDate: "2026-11-08", displayDate: "8 november", event: "Lintjestoernooi", emoji: "medal", eventSub: "Budoschool Cor Schuurbiers", details: LINTJE_DETAILS, location: "Sporthal In de Roos", locationSub: "Roosendaal", locationUrl: "https://maps.app.goo.gl/7ZnFrSxadrgEiAhm6", inschrijfUrl: "https://budoschool-corschuurbiers.nl/3-3/", inschrijfTekst: "Inschrijven", time: "8.00-10.30", eventInfo: LINTJE_2026_INFO },
+  { compareDate: "2026-11-08", displayDate: "8 november", event: "Lintjestoernooi", emoji: "medal", eventSub: "Budoschool Cor Schuurbiers", details: LINTJE_DETAILS, location: "Sporthal In de Roos", locationSub: "Roosendaal", locationUrl: "https://maps.app.goo.gl/7ZnFrSxadrgEiAhm6", inschrijfUrl: "https://budoschool-corschuurbiers.nl/3-3/", inschrijfTekst: "Inschrijven", time: "8.15-10.30", eventInfo: LINTJE_2026_INFO },
   { compareDate: "2026-12-18", displayDate: "18 december", event: "Geen lessen (Steenbergen) i.v.m.", emoji: "ban", eventSub: "Kerstvakantie", details: "", location: "De Knotwilg", time: "-", locationUrl: "https://www.google.com/maps/search/?api=1&query=Sportcentrum+De+Knotwilg+Wipstraat+2+4651+XW+Steenbergen" },
   { compareDate: "2026-12-23", displayDate: "23 december", event: "Geen les (Oud-Vossemeer) i.v.m.", emoji: "ban", eventSub: "Kerstvakantie", details: "", location: "De Vossenkuil", time: "-", locationUrl: "https://www.google.com/maps/search/?api=1&query=Bou+Kooijmanstraat+48+4698+AM+Oud-Vossemeer" },
   { compareDate: "2026-12-25", displayDate: "25 december", event: "Geen lessen (Steenbergen) i.v.m.", emoji: "ban", eventSub: "Kerstvakantie", details: "", location: "De Knotwilg", time: "-", locationUrl: "https://www.google.com/maps/search/?api=1&query=Sportcentrum+De+Knotwilg+Wipstraat+2+4651+XW+Steenbergen" },
