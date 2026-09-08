@@ -61,7 +61,23 @@ function getTrainingDetails(preferredDay: string, age: number) {
   return { time: g.time, location: g.location };
 }
 
-function getWhatsAppLink(formData: FormData, groupInfo: ReturnType<typeof getGroupInfo>) {
+// Groep die geldt voor de gekozen dag: woensdag = algemene training (alle leeftijden,
+// geen groepen), vrijdag = leeftijdsgroep op basis van leeftijd
+function getEffectiveGroup(preferredDay: string, age: number): ReturnType<typeof getGroupInfo> {
+  if (preferredDay === 'woensdag') {
+    return {
+      groupName: 'Algemene training',
+      ageRange: 'Alle leeftijden',
+      time: WOEN.time,
+      location: WOEN.location,
+      day: 'woensdag',
+    };
+  }
+  return getGroupInfo(age);
+}
+
+function getWhatsAppLink(formData: FormData) {
+  const groupInfo = getEffectiveGroup(formData.preferredDay, parseInt(formData.judokaAge) || 0);
   const text = encodeURIComponent(
     `Hoi! Ik wil graag een proefles judo aanvragen.\n\n` +
     `Naam judoka: ${formData.judokaName}\n` +
@@ -74,7 +90,8 @@ function getWhatsAppLink(formData: FormData, groupInfo: ReturnType<typeof getGro
   return `https://wa.me/31${contactInfo.whatsapp.slice(1)}?text=${text}`;
 }
 
-function getMailtoLink(formData: FormData, groupInfo: ReturnType<typeof getGroupInfo>) {
+function getMailtoLink(formData: FormData) {
+  const groupInfo = getEffectiveGroup(formData.preferredDay, parseInt(formData.judokaAge) || 0);
   const details = getTrainingDetails(formData.preferredDay, parseInt(formData.judokaAge) || 0);
   const subject = encodeURIComponent(`Proefles aanvraag - ${formData.judokaName} (${formData.judokaAge} jaar)`);
   const body = encodeURIComponent(
@@ -82,7 +99,7 @@ function getMailtoLink(formData: FormData, groupInfo: ReturnType<typeof getGroup
     `Ik wil graag een proefles judo aanvragen.\n\n` +
     `Naam judoka: ${formData.judokaName}\n` +
     `Leeftijd: ${formData.judokaAge} jaar\n` +
-    `Auto-geselecteerde groep: ${groupInfo.groupName} (${groupInfo.ageRange})\n` +
+    `Groep: ${groupInfo.groupName} (${groupInfo.ageRange})\n` +
     `Voorkeur trainingsdag: ${formData.preferredDay === 'woensdag' ? 'Woensdag' : 'Vrijdag'}\n` +
     `${details.time} — ${details.location}\n\n` +
     `Ouder/verantwoordelijke: ${formData.parentName}\n` +
@@ -185,7 +202,7 @@ function Step1_JudokaInfo({ data, onChange }: { data: FormData; onChange: (field
 
 // --- Step 2: Groep + voorkeur trainingsdag (samengevoegd) ---
 function Step2_GroupAndDay({ age, data, onChange }: { age: string; data: FormData; onChange: (field: string, value: string) => void }) {
-  const groupInfo = getGroupInfo(parseInt(age) || 0);
+  const groupInfo = getEffectiveGroup(data.preferredDay, parseInt(age) || 0);
 
   const days = [
     {
@@ -236,7 +253,9 @@ function Step2_GroupAndDay({ age, data, onChange }: { age: string; data: FormDat
           </div>
 
           <p className="text-xs text-gray-500 mt-3 italic">
-            Deze groep is automatisch geselecteerd op basis van de leeftijd.
+            {data.preferredDay === 'woensdag'
+              ? 'Op woensdagavond is één algemene training voor alle leeftijden.'
+              : 'Deze groep is automatisch geselecteerd op basis van de leeftijd.'}
           </p>
         </div>
       ) : (
@@ -285,7 +304,7 @@ function Step2_GroupAndDay({ age, data, onChange }: { age: string; data: FormDat
 
 // --- Step 3: Confirmation (Contact + Summary) ---
 function Step4_Confirmation({ data, onChange, onSubmit }: { data: FormData; onChange: (field: string, value: string) => void; onSubmit: () => void }) {
-  const groupInfo = getGroupInfo(parseInt(data.judokaAge) || 0);
+  const groupInfo = getEffectiveGroup(data.preferredDay, parseInt(data.judokaAge) || 0);
   const details = getTrainingDetails(data.preferredDay, parseInt(data.judokaAge) || 0);
 
   return (
@@ -366,7 +385,7 @@ function Step4_Confirmation({ data, onChange, onSubmit }: { data: FormData; onCh
         <div className="text-center text-xs text-gray-500">of</div>
 
         <a
-          href={getWhatsAppLink(data, groupInfo)}
+          href={getWhatsAppLink(data)}
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center justify-center gap-2 w-full bg-[#25D366] hover:bg-[#128C7E] text-white px-6 py-3 rounded-lg font-bold text-sm sm:text-base transition-all shadow-md hover:shadow-lg"
@@ -419,8 +438,7 @@ export function TrialLessonForm({ onClose }: { onClose?: () => void }) {
   };
 
   const handleSubmit = () => {
-    const groupInfo = getGroupInfo(parseInt(formData.judokaAge) || 0);
-    window.open(getMailtoLink(formData, groupInfo), '_blank');
+    window.open(getMailtoLink(formData), '_blank');
   };
 
   return (
