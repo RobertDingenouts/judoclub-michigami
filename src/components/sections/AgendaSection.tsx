@@ -163,6 +163,10 @@ export function AgendaSection() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
+  // Jaartal(en) voor de header: berekend uit de agenda-data (dynamisch)
+  const years = [...new Set(agendaItems.map(i => new Date(i.compareDate).getFullYear()))].sort();
+  const yearLabel = years.length === 1 ? `${years[0]}` : `${years[0]}/${years[years.length - 1]}`;
+
   const firstFutureIdx = agendaItems.findIndex(i => !i.cancelled && new Date(i.compareDate) >= today);
 
   const triggerConfetti = () => {
@@ -216,7 +220,7 @@ export function AgendaSection() {
       {/* Header — gradient branding zoals oude agenda */}
       <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-lg p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
         <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">Judoclub Michigami</h1>
-        <p className="text-white/80 mt-1 text-xs sm:text-sm">Activiteitenkalender <span className="font-bold text-[#fce0e0]">2026</span></p>
+        <p className="text-white/80 mt-1 text-xs sm:text-sm">Activiteitenkalender <span className="font-bold text-[#fce0e0]">{yearLabel}</span></p>
         <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-lg mt-2 sm:mt-3" />
       </div>
 
