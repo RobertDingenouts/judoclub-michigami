@@ -974,6 +974,229 @@
   }
 }
 
+/* ===================== STORY 2026 — OVER ONS (from scratch) =============== */
+/* Volledig nieuw: Japanse rol-esthetiek, hanko-stempels, echt vloeiend
+   caustics-water via SVG-turbulentie + CSS, scroll-reveals via native
+   animation-timeline. Twee thema's via is-light/is-dark (JS) + media-query. */
+.story-root {
+  --st-bg-a: #f4efe4;
+  --st-bg-b: #eae2d0;
+  --st-ink: #241f19;
+  --st-ink-soft: rgba(36, 31, 25, 0.7);
+  --st-ink-faint: rgba(36, 31, 25, 0.45);
+  --st-gold: #96742c;
+  --st-gold-soft: rgba(150, 116, 44, 0.4);
+  --st-red: #a90000;
+  --st-red-soft: rgba(169, 0, 0, 0.5);
+  --st-card: rgba(255, 253, 248, 0.78);
+  --st-card-border: rgba(120, 96, 48, 0.22);
+  --st-card-shadow: 0 24px 50px -28px rgba(60, 45, 20, 0.35), inset 0 1px 0 rgba(255,255,255,0.9);
+  --st-hairline: rgba(120, 96, 48, 0.25);
+  --st-ghost: rgba(36, 31, 25, 0.08);
+  --st-glow: rgba(150, 116, 44, 0.22);
+  --st-disc: radial-gradient(circle at 38% 32%, rgba(169,0,0,0.16), rgba(169,0,0,0.07) 55%, transparent 72%);
+  --st-disc-ring: rgba(169, 0, 0, 0.28);
+  --st-vkanji: rgba(36, 31, 25, 0.12);
+  --st-spine: linear-gradient(180deg, transparent, var(--st-gold-soft) 6%, var(--st-gold-soft) 94%, transparent);
+}
+.story-root.is-dark {
+  --st-bg-a: #17130f;
+  --st-bg-b: #0e0b09;
+  --st-ink: #ece5d8;
+  --st-ink-soft: rgba(236, 229, 216, 0.76);
+  --st-ink-faint: rgba(236, 229, 216, 0.45);
+  --st-gold: #cfa75a;
+  --st-gold-soft: rgba(207, 167, 90, 0.45);
+  --st-red: #e0524f;
+  --st-red-soft: rgba(224, 82, 79, 0.5);
+  --st-card: rgba(255, 250, 240, 0.055);
+  --st-card-border: rgba(233, 226, 214, 0.13);
+  --st-card-shadow: 0 24px 50px -28px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255,252,245,0.09);
+  --st-hairline: rgba(207, 167, 90, 0.3);
+  --st-ghost: rgba(236, 229, 216, 0.09);
+  --st-glow: rgba(207, 167, 90, 0.3);
+  --st-disc: radial-gradient(circle at 38% 32%, rgba(207,167,90,0.14), rgba(207,167,90,0.05) 55%, transparent 72%);
+  --st-disc-ring: rgba(207, 167, 90, 0.35);
+  --st-vkanji: rgba(236, 229, 216, 0.14);
+  --st-spine: linear-gradient(180deg, transparent, var(--st-gold-soft) 6%, var(--st-gold-soft) 94%, transparent);
+}
+@media (prefers-color-scheme: dark) {
+  .story-root:not(.is-light) {
+    --st-bg-a: #17130f; --st-bg-b: #0e0b09;
+    --st-ink: #ece5d8; --st-ink-soft: rgba(236, 229, 216, 0.76); --st-ink-faint: rgba(236, 229, 216, 0.45);
+    --st-gold: #cfa75a; --st-gold-soft: rgba(207, 167, 90, 0.45);
+    --st-red: #e0524f; --st-red-soft: rgba(224, 82, 79, 0.5);
+    --st-card: rgba(255, 250, 240, 0.055); --st-card-border: rgba(233, 226, 214, 0.13);
+    --st-card-shadow: 0 24px 50px -28px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255,252,245,0.09);
+    --st-hairline: rgba(207, 167, 90, 0.3); --st-ghost: rgba(236, 229, 216, 0.09); --st-glow: rgba(207, 167, 90, 0.3);
+    --st-disc: radial-gradient(circle at 38% 32%, rgba(207,167,90,0.14), rgba(207,167,90,0.05) 55%, transparent 72%);
+    --st-disc-ring: rgba(207, 167, 90, 0.35);
+    --st-vkanji: rgba(236, 229, 216, 0.14);
+  }
+}
+.story-root {
+  background:
+    radial-gradient(1100px 520px at 85% -12%, rgba(169, 0, 0, 0.08), transparent 62%),
+    radial-gradient(900px 600px at -10% 30%, var(--st-glow), transparent 60%),
+    linear-gradient(178deg, var(--st-bg-a) 0%, var(--st-bg-b) 100%);
+  color: var(--st-ink);
+}
+.story-mincho { font-family: var(--font-zen-mincho), serif; }
+.story-kaku   { font-family: var(--font-zen-kaku), sans-serif; }
+
+/* ── de zon / de gouden maan ── */
+.story-disc {
+  position: absolute; left: 50%; top: 46%;
+  width: min(62vmin, 560px); aspect-ratio: 1; border-radius: 9999px;
+  transform: translate(-50%, -50%);
+  background: var(--st-disc);
+  pointer-events: none;
+}
+.story-disc::before { /* dunne ring */
+  content: ""; position: absolute; inset: 8%; border-radius: 9999px;
+  border: 1px solid var(--st-disc-ring);
+  -webkit-mask: linear-gradient(290deg, transparent 6%, #000 14%);
+  mask: linear-gradient(290deg, transparent 6%, #000 14%);
+}
+.story-disc::after { /* hele trage rotatie van het ringlicht */
+  content: ""; position: absolute; inset: 8%; border-radius: 9999px;
+  background: conic-gradient(from 0deg, transparent 0 78%, var(--st-glow) 88%, transparent 100%);
+  -webkit-mask: radial-gradient(circle, transparent 68%, #000 70%, #000 71.4%, transparent 73%);
+  mask: radial-gradient(circle, transparent 68%, #000 70%, #000 71.4%, transparent 73%);
+  animation: discSpin 40s linear infinite;
+}
+@keyframes discSpin { to { transform: rotate(360deg); } }
+.story-disc-gold {
+  top: 50%;
+  background: radial-gradient(circle at 40% 34%, var(--st-glow), transparent 70%);
+}
+.story-disc-gold::before { border-color: var(--st-gold-soft); }
+
+/* verticale kanji-marginalia */
+.story-vkanji {
+  writing-mode: vertical-rl;
+  font-family: var(--font-zen-mincho), serif;
+  font-weight: 900;
+  font-size: clamp(3rem, 6vw, 5rem);
+  letter-spacing: 0.28em;
+  color: var(--st-vkanji);
+  user-select: none;
+}
+.story-vkanji-sm { font-size: clamp(1.4rem, 2.4vw, 2rem); opacity: 0.7; }
+
+/* het pad: gouden lijn door de hoofdstukken */
+.story-spine { position: relative; }
+.story-spine-line {
+  position: absolute; left: 25px; top: 0; bottom: 0; width: 1px;
+  background: var(--st-spine);
+  pointer-events: none;
+}
+@media (min-width: 1024px) { .story-spine-line { left: -42px; } }
+
+/* ── scroll-reveal: native scroll-timeline, anders gewoon zichtbaar ── */
+@supports (animation-timeline: view()) {
+  .story-reveal {
+    animation: storyReveal linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 55%;
+  }
+}
+@keyframes storyReveal {
+  from { opacity: 0; transform: translateY(26px); filter: blur(5px); }
+  to   { opacity: 1; transform: none; filter: none; }
+}
+
+/* ── titel-accent ── */
+.story-title-glow { text-shadow: 0 0 36px var(--st-glow), 0 2px 18px rgba(0,0,0,0.18); }
+.story-accent { position: relative; }
+.story-accent::after { /* penseel-streep onder het accent */
+  content: ""; position: absolute; left: 2%; right: 2%; bottom: -0.08em; height: 0.14em;
+  background: linear-gradient(90deg, transparent, var(--st-red-soft) 18%, var(--st-red-soft) 82%, transparent);
+  border-radius: 999px; transform: skewX(-12deg);
+  filter: blur(0.4px);
+}
+.story-rule { display: inline-block; width: 44px; height: 1px; background: var(--st-gold-soft); }
+
+/* ── hanko-stempel: rood vierkant met wit kana ── */
+.story-stamp {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 52px; height: 52px; border-radius: 10px;
+  background: linear-gradient(160deg, #c1100c, var(--st-red));
+  color: #fff7ee;
+  box-shadow: 0 6px 18px -6px rgba(169,0,0,0.55), inset 0 0 0 2px rgba(255,247,238,0.35), inset 0 0 0 3px transparent;
+  transform: rotate(-4deg);
+  transition: transform 0.5s cubic-bezier(0.2,0.6,0.2,1), box-shadow 0.5s ease;
+}
+.story-card:hover .story-stamp, article:hover > .story-stamp { transform: rotate(2deg) scale(1.06); }
+
+/* ── spook-letters ── */
+.story-year-ghost {
+  font-family: var(--font-zen-mincho), serif; font-weight: 900;
+  color: transparent;
+  background: linear-gradient(180deg, var(--st-ghost), transparent);
+  -webkit-background-clip: text; background-clip: text;
+  line-height: 0.8; user-select: none;
+}
+
+/* ── kaarten ── */
+.story-card {
+  position: relative;
+  background: var(--st-card);
+  border: 1px solid var(--st-card-border);
+  border-radius: 18px;
+  backdrop-filter: blur(10px);
+  box-shadow: var(--st-card-shadow);
+  transition: border-color 0.5s ease, transform 0.5s cubic-bezier(0.2,0.6,0.2,1), box-shadow 0.5s ease;
+}
+.story-card::before {
+  content: ""; position: absolute; inset: 0 0 auto 0; height: 1px; border-radius: 18px 18px 0 0;
+  background: linear-gradient(90deg, transparent, var(--st-gold-soft), transparent);
+}
+.story-card:hover {
+  border-color: var(--st-gold-soft);
+  transform: perspective(1100px) rotateX(1.2deg) translateY(-5px);
+  box-shadow: 0 44px 80px -40px rgba(0,0,0,0.5), 0 0 40px -12px var(--st-glow), var(--st-card-shadow);
+}
+
+/* stats-scheiders */
+.story-stat + .story-stat { border-left: 1px solid var(--st-hairline); }
+
+/* outline-knop in thema-kleuren */
+.story-outline { border: 1px solid var(--st-hairline); color: var(--st-ink); background: transparent; }
+.story-outline:hover { background: var(--st-glow); color: var(--st-ink); }
+
+/* glans-sweep over primaire knop */
+.story-sheen { position: relative; overflow: hidden; }
+.story-sheen::after {
+  content: ""; position: absolute; top: 0; bottom: 0; left: -60%; width: 45%;
+  background: linear-gradient(105deg, transparent, rgba(255, 245, 220, 0.4), transparent);
+  transform: skewX(-18deg);
+  animation: sheenSweep 4.5s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes sheenSweep { 0%, 55% { left: -60%; } 85%, 100% { left: 130%; } }
+
+/* foto-hulzen */
+.story-photo {
+  position: relative; overflow: hidden; border-radius: 14px;
+  border: 1px solid var(--st-hairline);
+  box-shadow: 0 30px 60px -35px rgba(0, 0, 0, 0.55);
+}
+.story-photo img { transition: transform 1.4s cubic-bezier(0.2,0.6,0.2,1), filter 1.4s ease; filter: saturate(0.85) contrast(1.04); }
+.story-photo:hover img { transform: scale(1.045); filter: saturate(1) contrast(1.06); }
+
+.story-vtext { writing-mode: vertical-rl; text-orientation: mixed; letter-spacing: 0.35em; }
+
+@keyframes storyNudge { 0%,100% { transform: translateY(0); opacity: .55 } 50% { transform: translateY(8px); opacity: 1 } }
+.story-nudge { animation: storyNudge 2.4s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .story-disc::after, .story-nudge, .story-sheen::after { animation: none !important; }
+  .story-photo img { transition: none; }
+  .story-card:hover { transform: none; }
+  .story-reveal { animation: none !important; opacity: 1 !important; }
+}
+
 /* ===================== SCROLLBAR OVERRIDE (unlayered) =================== */
 /* Unlayered CSS wint over Tailwind utility-layers — de Radix-thumb
    gebruikte bg-border (washi-100) wat op donkere secties een witte
