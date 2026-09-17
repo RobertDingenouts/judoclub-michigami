@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { getLevels, type JudoLevel, type JudoTerm, beltColors } from '@/data/japanese-course';
 import { Lock, Unlock, Trophy, ChevronLeft, ChevronRight, RotateCcw, Volume2, VolumeX, Star, ImageOff, Play, X } from 'lucide-react';
 import { techniqueCategories } from '@/data/techniques';
@@ -65,7 +65,9 @@ function useSounds() {
       setTimeout(() => playTone(784, 0.2, 'sine', 0.12), 200);
     },
     wrong: () => {
-      playTone(200, 0.3, 'sawtooth', 0.08);
+      // tweetoons-buzzer: duidelijk "fout"-gevoel
+      playTone(220, 0.18, 'square', 0.09);
+      setTimeout(() => playTone(165, 0.32, 'square', 0.09), 140);
     },
     pass: () => {
       // Victory fanfare
@@ -310,30 +312,49 @@ function Flashcard({ term, onFlip }: { term: JudoTerm; onFlip: () => void }) {
 // ==========================================================================
 // QUIZ MODE COMPONENT
 // ==========================================================================
-function QuizMode({ level, onPass, onNext, onPrev }: { level: JudoLevel; onPass: (score: number, total: number) => void; onNext?: () => void; onPrev?: () => void }) {
-  const allLevels = getLevels();
-  const allTerms = allLevels.flatMap((l) => l.terms);
+/* Fisher-Yates shuffle — onbevooroordeeld, en IMPORTANT: alleen aanroepen
+   in useMemo/startQuiz, NOOIT in de render-body (anders shopt de opties
+   bij elke re-render en 'springen' de antwoorden weg). */
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
 
+/* Module-niveau: één keer opgebouwd, dus een stabiele array-referentie.
+   Dit MOET buiten de component: getLevels() maakt anders per render een
+   nieuwe array, welke dan als memo-dependency de opties alsnog per klik
+   zou herschudden. */
+const WRONG_ANSWER_POOL: string[] = Array.from(
+  new Set(getLevels().flatMap((l) => l.terms).map((t) => t.nederlands)),
+);
+
+export function QuizMode({ level, onPass, onNext, onPrev }: { level: JudoLevel; onPass: (score: number, total: number) => void; onNext?: () => void; onPrev?: () => void }) {
   const [questions, setQuestions] = useState<JudoTerm[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
   const [finished, setFinished] = useState(false);
+  const [wasWrong, setWasWrong] = useState(false);
   const [autoAdvanceTimer, setAutoAdvanceTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
 
   const { sounds } = useSounds();
 
   function startQuiz() {
+    if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer);
     // Use all terms or a random subset of up to 15 for shorter quizzes
-    const shuffled = [...level.terms].sort(() => Math.random() - 0.5);
-    const quizTerms = shuffled.slice(0, Math.min(15, shuffled.length));
+    const quizTerms = shuffle(level.terms).slice(0, Math.min(15, level.terms.length));
     setQuestions(quizTerms);
     setCurrentIndex(0);
     setScore(0);
     setSelected(null);
     setShowFeedback(false);
     setFinished(false);
+    setWasWrong(false);
   }
 
   // Auto-start quiz on mount
@@ -344,13 +365,24 @@ function QuizMode({ level, onPass, onNext, onPrev }: { level: JudoLevel; onPass:
     };
   }, []);
 
-  function handleAnswer(option: string, optionIdx: number) {
+  /* Opties per vraag exact één keer genereren en onthouden — de volgorde
+     blijft dus staan tijdens feedback én wisselt niet per toeval. */
+  const optionsByQuestion = useMemo(() => {
+    return questions.map((q) => {
+      const correct = q.nederlands;
+      const wrong = shuffle(WRONG_ANSWER_POOL.filter((n) => n !== correct)).slice(0, 3);
+      return shuffle([correct, ...wrong]);
+    });
+  }, [questions]);
+
+  function handleAnswer(option: string) {
     if (showFeedback || !questions.length) return;
     const correct = questions[currentIndex].nederlands;
     const isCorrect = option === correct;
 
     setSelected(option);
     setShowFeedback(true);
+    setWasWrong(!isCorrect);
     sounds.click();
 
     if (isCorrect) {
@@ -358,9 +390,10 @@ function QuizMode({ level, onPass, onNext, onPrev }: { level: JudoLevel; onPass:
       sounds.correct();
     } else {
       sounds.wrong();
+      try { navigator.vibrate?.([60, 40, 90]); } catch {}
     }
 
-    // Auto-advance after 1.5 seconds
+    // Auto-advance: kort bij goed, iets langer bij fout zodat je het antwoord ziet
     const timer = setTimeout(() => {
       if (currentIndex + 1 >= questions.length) {
         const finalScore = score + (isCorrect ? 1 : 0);
@@ -377,8 +410,9 @@ function QuizMode({ level, onPass, onNext, onPrev }: { level: JudoLevel; onPass:
         setCurrentIndex((i) => i + 1);
         setSelected(null);
         setShowFeedback(false);
+        setWasWrong(false);
       }
-    }, 1500);
+    }, isCorrect ? 1100 : 2200);
 
     setAutoAdvanceTimer(timer);
   }
@@ -458,19 +492,13 @@ function QuizMode({ level, onPass, onNext, onPrev }: { level: JudoLevel; onPass:
   const question = questions[currentIndex];
   const correctAnswer = question.nederlands;
 
-  // Generate wrong answers
-  const wrongAnswers = allTerms
-    .filter((t) => t.nederlands !== correctAnswer)
-    .sort(() => Math.random() - 0.5)
-    .slice(0, 3)
-    .map((t) => t.nederlands);
-
-  const options = [correctAnswer, ...wrongAnswers].sort(() => Math.random() - 0.5);
+  /* options komen uit de memo: volgorde is stabiel per vraag */
+  const options = optionsByQuestion[currentIndex] ?? [];
 
   const progress = ((currentIndex + 1) / questions.length) * 100;
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-[#e9e0cf] p-4 sm:p-6">
+    <div className={`bg-white rounded-lg shadow-sm border border-[#e9e0cf] p-4 sm:p-6 ${wasWrong ? 'quiz-shake' : ''}`}>
       {/* Progress Bar */}
       <div className="w-full h-3 bg-gray-100 rounded-lg mb-4 overflow-hidden">
         <div
@@ -497,26 +525,28 @@ function QuizMode({ level, onPass, onNext, onPrev }: { level: JudoLevel; onPass:
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {options.map((option, idx) => {
-          let btnClass = 'bg-white border-[#e9e0cf] text-gray-700 hover:border-[#a90000] hover:text-[#a90000]';
+          let btnClass = 'bg-white border-[#e9e0cf] text-gray-700 hover:border-[#a90000] hover:text-[#a90000] hover:shadow-sm';
+          let mark = '';
           if (showFeedback) {
             if (option === correctAnswer) {
-              btnClass = 'bg-[#198754] border-[#198754] text-white scale-[1.02] shadow-md';
+              btnClass = 'quiz-pop bg-[#198754] border-[#198754] text-white shadow-lg shadow-green-200';
+              mark = '✓';
             } else if (option === selected && option !== correctAnswer) {
-              btnClass = 'bg-[#dc3545] border-[#dc3545] text-white scale-[1.02] shadow-md ring-4 ring-red-200';
+              btnClass = 'quiz-wrong bg-[#dc3545] border-[#dc3545] text-white shadow-lg shadow-red-200';
+              mark = '✗';
             } else {
-              btnClass = 'bg-gray-50 border-[#e9e0cf] text-gray-300';
+              btnClass = 'bg-gray-50 border-[#e9e0cf] text-gray-300 opacity-60';
             }
           }
 
           return (
             <button
-              key={idx}
-              onClick={() => handleAnswer(option, idx)}
+              key={`${currentIndex}-${idx}`}
+              onClick={() => handleAnswer(option)}
               disabled={showFeedback}
-              className={`p-3 sm:p-4 rounded-lg border-2 font-semibold text-sm sm:text-base transition-all flex items-center justify-center gap-2 ${btnClass} ${!showFeedback ? 'cursor-pointer hover:shadow-sm' : 'cursor-default'}`}
+              className={`relative p-3 sm:p-4 rounded-lg border-2 font-semibold text-sm sm:text-base transition-all flex items-center justify-center gap-2 ${btnClass} ${!showFeedback ? 'cursor-pointer active:scale-[0.98]' : 'cursor-default'}`}
             >
-              {showFeedback && option === correctAnswer && <span className="text-lg">✓</span>}
-              {showFeedback && option === selected && option !== correctAnswer && <span className="text-lg">✗</span>}
+              {mark && <span className="text-lg font-black">{mark}</span>}
               {option}
             </button>
           );
@@ -524,8 +554,8 @@ function QuizMode({ level, onPass, onNext, onPrev }: { level: JudoLevel; onPass:
       </div>
 
       {showFeedback && (
-        <p className={`mt-4 text-center font-bold animate-pulse ${selected === correctAnswer ? 'text-[#198754]' : 'text-[#dc3545]'}`}>
-          {selected === correctAnswer ? '✓ Correct!' : `✗ Juist antwoord: ${correctAnswer}`}
+        <p className={`mt-4 text-center font-bold ${selected === correctAnswer ? 'text-[#198754]' : 'quiz-pop text-[#dc3545]'}`}>
+          {selected === correctAnswer ? '✓ Correct!' : `✗ Jammer — juist antwoord: ${correctAnswer}`}
         </p>
       )}
     </div>
