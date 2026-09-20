@@ -47,7 +47,7 @@ export const scheduleInfo: ScheduleInfo = {
           location: 'De Knotwilg, Steenbergen',
         },
         {
-          groupName: 'Groep 2+',
+          groupName: '2e groep',
           ageRange: '9 jaar en ouder',
           startTime: '19:45',
           endTime: '20:45',

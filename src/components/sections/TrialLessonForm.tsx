@@ -35,7 +35,7 @@ function getGroupInfo(age: number) {
     };
   } else if (age >= 10) {
     return {
-      groupName: 'Groep 2+',
+      groupName: '2e groep',
       ageRange: '9 jaar en ouder',
       time: '19:45 - 20:45',
       location: 'De Knotwilg, Steenbergen',

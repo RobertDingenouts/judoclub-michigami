@@ -165,7 +165,7 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
               </div>
               <div className="space-y-2 mt-1.5">
                 <div className="flex items-center gap-3"><span className="text-sm font-bold" style={{ color: '#27466e' }}>18:45 - 19:45</span><span className="text-xs text-[#8a7f70]">•</span><span className="text-xs text-[#6b6155]">Groep 1 (6-9 jaar)</span></div>
-                <div className="flex items-center gap-3"><span className="text-sm font-bold" style={{ color: '#27466e' }}>19:45 - 20:45</span><span className="text-xs text-[#8a7f70]">•</span><span className="text-xs text-[#6b6155]">Groep 2+ (9+ jaar)</span></div>
+                <div className="flex items-center gap-3"><span className="text-sm font-bold" style={{ color: '#27466e' }}>19:45 - 20:45</span><span className="text-xs text-[#8a7f70]">•</span><span className="text-xs text-[#6b6155]">2e groep (9+ jaar)</span></div>
               </div>
               <div className="flex items-center gap-2 mt-3"><MapPin className="w-3 h-3" style={{ color: '#27466e' }} /><span className="text-xs text-[#6b6155]">Steenbergen</span></div>
             </div>
