@@ -28,9 +28,9 @@ export const newsArchive: NewsYear[] = [
 
       {
         id: "gratis-inschrijven-actie-2026",
-        title: "🎁 Actie: gratis inschrijven vóór 1 oktober!",
+        title: "🎁 Actie: gratis inschrijven vóór 31 december!",
         content:
-          "We hebben goed nieuws! Als je vóór 1 oktober 2026 bij Judoclub Michigami inschrijft, betaal je géén inschrijfgeld van €15. Zo kun je dit jaar voordelig starten met judo! 🥋\n\nHoe werkt het?\n\n1️⃣ Schrijf je in voor een gratis proefles via de 'Proefles' knop op onze website.\n2️⃣ Kom 3x gratis proeflessen volgen en ervaar zelf wat judo met je doet.\n3️⃣ Bevalt het? Schrijf je dan vóór 1 oktober in en bespaar je de €15 inschrijfkosten!\n\nVoor iedereen vanaf 6 jaar — van kind tot volwassene. We trainen woensdagavond in Oud-Vossemeer (De Vossenkuil) en vrijdagavond in Steenbergen (Sportcentrum de Knotwilg).\n\nDit doen we in samenwerking met Sportcentrum de Knotwilg Steenbergen. Kom langs, we zien je op de mat! 🙌",
+          "We hebben goed nieuws! Als je vóór 31 december 2026 bij Judoclub Michigami inschrijft, betaal je géén inschrijfgeld van €15. Zo kun je dit jaar nog voordelig starten met judo! 🥋\n\nHoe werkt het?\n\n1️⃣ Schrijf je in voor een gratis proefles via de 'Proefles' knop op onze website.\n2️⃣ Kom 3x gratis proeflessen volgen en ervaar zelf wat judo met je doet.\n3️⃣ Bevalt het? Schrijf je dan vóór 31 december in en bespaar je de €15 inschrijfkosten!\n\nVoor iedereen vanaf 6 jaar — van kind tot volwassene. We trainen woensdagavond in Oud-Vossemeer (De Vossenkuil) en vrijdagavond in Steenbergen (Sportcentrum de Knotwilg).\n\nDit doen we in samenwerking met Sportcentrum de Knotwilg Steenbergen. Kom langs, we zien je op de mat! 🙌",
         date: "2026-08-23",
       },
 

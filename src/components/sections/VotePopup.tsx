@@ -6,7 +6,7 @@ import Image from 'next/image';
 
 const STORAGE_KEY = 'michigami-stem-popup-gezien-2026';
 const ACTIE_POPUP_KEY = 'michigami-actie-popup-gezien';
-const ACTIE_EINDE = new Date('2026-10-01T23:59:59');
+const ACTIE_EINDE = new Date('2026-12-31T23:59:59');
 const STEM_BEGIN = new Date('2026-09-07T00:00:00');
 const STEM_EINDE = new Date('2026-09-29T23:59:59');
 

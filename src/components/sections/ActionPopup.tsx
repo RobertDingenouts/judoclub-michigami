@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
 
 const STORAGE_KEY = 'michigami-actie-popup-gezien';
-const ACTIE_EINDE = new Date('2026-10-01T23:59:59');
+const ACTIE_EINDE = new Date('2026-12-31T23:59:59');
 
 export function ActionPopup() {
   const [open, setOpen] = useState(false);
@@ -82,7 +82,7 @@ export function ActionPopup() {
                 Actie: gratis inschrijven!
               </h3>
               <p className="text-sm mt-1 text-white/90">
-                Schrijf je vóór <strong>1 oktober</strong> in en betaal geen
+                Schrijf je vóór <strong>31 december</strong> in en betaal geen
                 inschrijfgeld van €15.
               </p>
             </div>
@@ -107,7 +107,7 @@ export function ActionPopup() {
                 <li className="flex gap-3">
                   <span className="text-lg">3️⃣</span>
                   <span>
-                    Schrijf je vóór <strong>1 oktober</strong> in en{' '}
+                    Schrijf je vóór <strong>31 december</strong> in en{' '}
                     <strong>bespaar €15</strong> inschrijfkosten!
                   </span>
                 </li>

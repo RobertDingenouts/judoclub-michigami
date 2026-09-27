@@ -439,7 +439,7 @@ export default function MichigamiApp() {
       {/* Versleepbare mini-speler — loopt over alle secties mee */}
       <MiniPlayer onOpenMusic={() => setActiveSection('muziek')} formOpen={proeflesOpen} />
 
-      {/* Actie-popup: gratis inschrijven vóór 1 oktober */}
+      {/* Actie-popup: gratis inschrijven vóór 31 december */}
       <ActionPopup />
 
       {/* Stem-popup: Rabo ClubSupport 2026 (7-29 sept, eenmalig) */}
