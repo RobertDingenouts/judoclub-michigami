@@ -5,41 +5,179 @@
   "devCommand": "npm run dev",
   "installCommand": "npm install",
   "outputDirectory": ".next",
-  "regions": ["fra1"],
+  "regions": [
+    "fra1"
+  ],
   "redirects": [
-    { "source": "/index.html", "destination": "/", "permanent": true },
-    { "source": "/agenda.html", "destination": "/?section=agenda", "permanent": true },
-    { "source": "/2025.html", "destination": "/?section=agenda", "permanent": true },
-    { "source": "/2026.html", "destination": "/?section=agenda", "permanent": true },
-    { "source": "/lestijden.html", "destination": "/?section=lestijden", "permanent": true },
-    { "source": "/technieken.html", "destination": "/?section=technieken", "permanent": true },
-    { "source": "/techniekenkaart.html", "destination": "/?section=techniekenkaart", "permanent": true },
-    { "source": "/band-knopen.html", "destination": "/?section=band-knopen", "permanent": true },
-    { "source": "/cursus-japans.html", "destination": "/?section=cursusjapans", "permanent": true },
-    { "source": "/info.html", "destination": "/?section=info", "permanent": true },
-    { "source": "/info1.html", "destination": "/?section=info", "permanent": true },
-    { "source": "/contact.html", "destination": "/?section=contact", "permanent": true },
-    { "source": "/locatie.html", "destination": "/?section=locatie", "permanent": true },
-    { "source": "/nieuws.html", "destination": "/?section=nieuws", "permanent": true },
-    { "source": "/fotos.html", "destination": "/?section=foto-galerij", "permanent": true },
-    { "source": "/overige-fotos.html", "destination": "/?section=foto-galerij", "permanent": true },
-    { "source": "/videos.html", "destination": "/?section=video-galerij", "permanent": true },
-    { "source": "/lid-worden.html", "destination": "/inschrijven", "permanent": true },
-    { "source": "/heupworpen.html", "destination": "/?section=technieken", "permanent": true },
-    { "source": "/beenworpen.html", "destination": "/?section=technieken", "permanent": true },
-    { "source": "/armworpen.html", "destination": "/?section=technieken", "permanent": true },
-    { "source": "/schouderworpen.html", "destination": "/?section=technieken", "permanent": true },
-    { "source": "/offerworpen.html", "destination": "/?section=technieken", "permanent": true },
-    { "source": "/kanteltechnieken.html", "destination": "/?section=technieken", "permanent": true },
-    { "source": "/armklemmen.html", "destination": "/?section=technieken", "permanent": true },
-    { "source": "/houdgrepen.html", "destination": "/?section=technieken", "permanent": true },
-    { "source": "/wurgingen.html", "destination": "/?section=technieken", "permanent": true },
-    { "source": "/valbreken.html", "destination": "/?section=technieken", "permanent": true },
-    { "source": "/kata-series.html", "destination": "/?section=technieken", "permanent": true },
-    { "source": "/algemene-voorwaarden-judoclub-michigami.html", "destination": "/?section=formulieren", "permanent": true },
-    { "source": "/algemene-voorwaarden-clubkampioenschap-2024.html", "destination": "/?section=formulieren", "permanent": true },
-    { "source": "/gedragscode-judoclub-michigami.html", "destination": "/?section=formulieren", "permanent": true },
-    { "source": "/privacyverklaring-judoclub-michigami.html", "destination": "/?section=formulieren", "permanent": true },
-    { "source": "/(.*)\\.html", "destination": "/?section=nieuws", "permanent": true }
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/agenda.html",
+      "destination": "/?section=agenda",
+      "permanent": true
+    },
+    {
+      "source": "/2025.html",
+      "destination": "/?section=agenda",
+      "permanent": true
+    },
+    {
+      "source": "/2026.html",
+      "destination": "/?section=agenda",
+      "permanent": true
+    },
+    {
+      "source": "/lestijden.html",
+      "destination": "/?section=lestijden",
+      "permanent": true
+    },
+    {
+      "source": "/technieken.html",
+      "destination": "/?section=technieken",
+      "permanent": true
+    },
+    {
+      "source": "/techniekenkaart.html",
+      "destination": "/?section=techniekenkaart",
+      "permanent": true
+    },
+    {
+      "source": "/band-knopen.html",
+      "destination": "/?section=band-knopen",
+      "permanent": true
+    },
+    {
+      "source": "/cursus-japans.html",
+      "destination": "/?section=cursusjapans",
+      "permanent": true
+    },
+    {
+      "source": "/info.html",
+      "destination": "/?section=info",
+      "permanent": true
+    },
+    {
+      "source": "/info1.html",
+      "destination": "/?section=info",
+      "permanent": true
+    },
+    {
+      "source": "/contact.html",
+      "destination": "/?section=contact",
+      "permanent": true
+    },
+    {
+      "source": "/locatie.html",
+      "destination": "/?section=locatie",
+      "permanent": true
+    },
+    {
+      "source": "/nieuws.html",
+      "destination": "/?section=nieuws",
+      "permanent": true
+    },
+    {
+      "source": "/fotos.html",
+      "destination": "/?section=foto-galerij",
+      "permanent": true
+    },
+    {
+      "source": "/overige-fotos.html",
+      "destination": "/?section=foto-galerij",
+      "permanent": true
+    },
+    {
+      "source": "/videos.html",
+      "destination": "/?section=video-galerij",
+      "permanent": true
+    },
+    {
+      "source": "/lid-worden.html",
+      "destination": "/inschrijven",
+      "permanent": true
+    },
+    {
+      "source": "/heupworpen.html",
+      "destination": "/?section=technieken",
+      "permanent": true
+    },
+    {
+      "source": "/beenworpen.html",
+      "destination": "/?section=technieken",
+      "permanent": true
+    },
+    {
+      "source": "/armworpen.html",
+      "destination": "/?section=technieken",
+      "permanent": true
+    },
+    {
+      "source": "/schouderworpen.html",
+      "destination": "/?section=technieken",
+      "permanent": true
+    },
+    {
+      "source": "/offerworpen.html",
+      "destination": "/?section=technieken",
+      "permanent": true
+    },
+    {
+      "source": "/kanteltechnieken.html",
+      "destination": "/?section=technieken",
+      "permanent": true
+    },
+    {
+      "source": "/armklemmen.html",
+      "destination": "/?section=technieken",
+      "permanent": true
+    },
+    {
+      "source": "/houdgrepen.html",
+      "destination": "/?section=technieken",
+      "permanent": true
+    },
+    {
+      "source": "/wurgingen.html",
+      "destination": "/?section=technieken",
+      "permanent": true
+    },
+    {
+      "source": "/valbreken.html",
+      "destination": "/?section=technieken",
+      "permanent": true
+    },
+    {
+      "source": "/kata-series.html",
+      "destination": "/?section=technieken",
+      "permanent": true
+    },
+    {
+      "source": "/algemene-voorwaarden-judoclub-michigami.html",
+      "destination": "/?section=formulieren",
+      "permanent": true
+    },
+    {
+      "source": "/algemene-voorwaarden-clubkampioenschap-2024.html",
+      "destination": "/?section=formulieren",
+      "permanent": true
+    },
+    {
+      "source": "/gedragscode-judoclub-michigami.html",
+      "destination": "/?section=formulieren",
+      "permanent": true
+    },
+    {
+      "source": "/privacyverklaring-judoclub-michigami.html",
+      "destination": "/?section=formulieren",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)\\.html",
+      "destination": "/?section=nieuws",
+      "permanent": true
+    }
   ]
 }

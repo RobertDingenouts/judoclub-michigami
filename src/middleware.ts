@@ -13,6 +13,12 @@ const PUBLIC_ADMIN_ROUTES: string[] = []
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
+  // SEO: oude Weebly .html-pagina's (toernooi-/nieuwsberichten) → nieuwssectie.
+  // Google-verificatiebestanden (google*.html) blijven onaangeroerd.
+  if (pathname.endsWith('.html') && !pathname.startsWith('/google')) {
+    return NextResponse.redirect(new URL('/?section=nieuws', request.url), 308)
+  }
+
   // Only run middleware on /admin paths
   const isAdminPath = ADMIN_PREFIXES.some(prefix => pathname.startsWith(prefix))
   if (!isAdminPath) {
@@ -55,5 +61,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: ['/admin/:path*', '/((?!google)[^/]*\\.html)'],
 }
