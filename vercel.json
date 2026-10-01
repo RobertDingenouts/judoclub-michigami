@@ -173,11 +173,6 @@
       "source": "/privacyverklaring-judoclub-michigami.html",
       "destination": "/?section=formulieren",
       "permanent": true
-    },
-    {
-      "source": "/(.*)\\.html",
-      "destination": "/?section=nieuws",
-      "permanent": true
     }
   ]
 }
