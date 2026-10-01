@@ -3,6 +3,7 @@ import { Geist, Inter, Rokkitt, Noto_Sans_JP, Oswald, Shippori_Mincho, Fraunces,
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { JsonLd } from "@/components/JsonLd";
+import { SeoFooter } from "@/components/SeoFooter";
 import { PWARegister } from "@/components/PWARegister";
 
 const geistSans = Geist({
@@ -80,9 +81,29 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Judoclub Michigami Steenbergen - Judo voor Jong en Oud",
-  description: "Judo voor jong en oud, voor beginners en gevorderden - recreatief of prestatiegericht. Judoclub Michigami Steenbergen, opgericht in 1993.",
-  keywords: ["Judo", "Judoclub", "Michigami", "Steenbergen", "Sport", "Judovereniging", "Vechtsport", "Kawaishi", "Kodokan", "judo lessen Steenbergen", "judo training Zeeland"],
+  metadataBase: new URL("https://judoclubmichigami.nl"),
+  title: "Judo Steenbergen & Oud-Vossemeer | Judoclub Michigami",
+  description:
+    "Judoclub Michigami: judo in Steenbergen en Oud-Vossemeer voor kinderen vanaf 6 jaar, jongeren en volwassenen. 3 gratis proeflessen, lessen in Sportcentrum De Knotwilg en De Vossenkuil. Ook voor judo in Halsteren, Tholen en Bergen op Zoom.",
+  keywords: [
+    "judo Steenbergen",
+    "judo Oud-Vossemeer",
+    "judoles Steenbergen",
+    "judovereniging Steenbergen",
+    "vechtsport Steenbergen",
+    "vechtsport Oud-Vossemeer",
+    "vechtsport Tholen",
+    "sport Steenbergen",
+    "sportvereniging Steenbergen",
+    "judo lessen Halsteren",
+    "judo Bergen op Zoom",
+    "judo Tholen",
+    "judo voor kinderen",
+    "judo kinderen 6 jaar",
+    "zelfverdediging Steenbergen",
+    "proefles judo",
+    "Michigami",
+  ],
   authors: [{ name: "Judoclub Michigami" }],
   icons: {
     icon: [
@@ -100,8 +121,9 @@ export const metadata: Metadata = {
   },
   themeColor: "#a90000",
   openGraph: {
-    title: "Judoclub Michigami Steenbergen - Judo voor Jong en Oud",
-    description: "Judo voor jong en oud, voor beginners en gevorderden - recreatief of prestatiegericht. Opgericht in 1993.",
+    title: "Judo Steenbergen & Oud-Vossemeer | Judoclub Michigami",
+    description:
+      "Judo voor kinderen vanaf 6 jaar, jongeren en volwassenen in Steenbergen en Oud-Vossemeer. 3 gratis proeflessen. Opgericht in 1993.",
     url: "https://judoclubmichigami.nl",
     siteName: "Judoclub Michigami Steenbergen",
     type: "website",
@@ -146,6 +168,7 @@ export default function RootLayout({
       >
         <PWARegister />
         {children}
+        <SeoFooter />
         <Toaster />
         <JsonLd />
       </body>

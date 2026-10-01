@@ -10,7 +10,7 @@ module.exports = {
       },
     ],
   },
-  exclude: ["/api/*"],
+  exclude: ["/api/*", "/admin-login", "/signin", "/signup", "/wachtwoord-reset", "/admin/*", "/leden/*"],
   changefreq: "daily",
   priority: 1.0,
   alternateLinks: [

@@ -52,8 +52,8 @@ const PULL_REFRESH_SECTIONS = new Set(['agenda', 'nieuws', 'home']);
 // Dynamic page titles + descriptions per section for SEO
 const sectionMeta: Record<Section, { title: string; description: string }> = {
   'home': {
-    title: 'Judoclub Michigami Steenbergen - Judo voor Jong en Oud',
-    description: 'Judo voor jong en oud, voor beginners en gevorderden - recreatief of prestatiegericht. Judoclub Michigami Steenbergen, opgericht in 1993.',
+    title: 'Judo Steenbergen & Oud-Vossemeer | Judoclub Michigami',
+    description: 'Judoclub Michigami: judo in Steenbergen en Oud-Vossemeer voor kinderen vanaf 6 jaar, jongeren en volwassenen. 3 gratis proeflessen, opgericht in 1993.',
   },
   'agenda': {
     title: 'Agenda & Trainingstijden | Judoclub Michigami',

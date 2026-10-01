@@ -23,36 +23,53 @@ export function JsonLd() {
       addressRegion: "Noord-Brabant",
       addressCountry: "NL",
     },
-    location: {
-      "@type": "Place",
-      name: "Sportcentrum De Knotwilg",
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: "Wipstraat 2",
-        addressLocality: "Steenbergen",
-        postalCode: "4651 XW",
-        addressRegion: "Noord-Brabant",
-        addressCountry: "NL",
+    location: [
+      {
+        "@type": "Place",
+        name: "Sportcentrum De Knotwilg",
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: "Wipstraat 2",
+          addressLocality: "Steenbergen",
+          postalCode: "4651 XW",
+          addressRegion: "Noord-Brabant",
+          addressCountry: "NL",
+        },
       },
-    },
+      {
+        "@type": "Place",
+        name: "De Vossenkuil",
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: "Oud-Vossemeer",
+          addressRegion: "Noord-Brabant",
+          addressCountry: "NL",
+        },
+      },
+    ],
+    areaServed: [
+      { "@type": "City", name: "Steenbergen" },
+      { "@type": "City", name: "Oud-Vossemeer" },
+      { "@type": "City", name: "De Vossemeer" },
+      { "@type": "City", name: "Halsteren" },
+      { "@type": "City", name: "Tholen" },
+      { "@type": "City", name: "Bergen op Zoom" },
+      { "@type": "City", name: "Wouw" },
+      { "@type": "City", name: "Roosendaal" },
+    ],
+    // Lestijden volgens src/data/schedule.ts (autoriait)
     openingHoursSpecification: [
       {
         "@type": "OpeningHoursSpecification",
-        dayOfWeek: ["Tuesday"],
+        dayOfWeek: ["Wednesday"],
         opens: "19:00",
-        closes: "21:30",
+        closes: "20:00",
       },
       {
         "@type": "OpeningHoursSpecification",
-        dayOfWeek: ["Thursday"],
-        opens: "19:00",
-        closes: "21:30",
-      },
-      {
-        "@type": "OpeningHoursSpecification",
-        dayOfWeek: ["Saturday"],
-        opens: "10:00",
-        closes: "12:00",
+        dayOfWeek: ["Friday"],
+        opens: "18:45",
+        closes: "20:45",
       },
     ],
     sameAs: [
