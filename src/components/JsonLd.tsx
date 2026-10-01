@@ -50,7 +50,12 @@ export function JsonLd() {
     areaServed: [
       { "@type": "City", name: "Steenbergen" },
       { "@type": "City", name: "Oud-Vossemeer" },
-      { "@type": "City", name: "De Vossemeer" },
+      { "@type": "City", name: "Nieuw-Vossemeer" },
+      { "@type": "City", name: "De Heen" },
+      { "@type": "City", name: "Kruisland" },
+      { "@type": "City", name: "Dinteloord" },
+      { "@type": "City", name: "Sint-Philipsland" },
+      { "@type": "City", name: "Oud-Gastel" },
       { "@type": "City", name: "Halsteren" },
       { "@type": "City", name: "Tholen" },
       { "@type": "City", name: "Bergen op Zoom" },

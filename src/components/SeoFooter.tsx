@@ -16,9 +16,10 @@ export function SeoFooter() {
           Judoclub Michigami is een judovereniging in de gemeente Steenbergen,
           opgericht in 1993. Wij geven judoles voor kinderen vanaf 6 jaar,
           jongeren en volwassenen — van beginner tot gevorderde, recreatief en
-          prestatiegericht. Judles in Steenbergen en Oud-Vossemeer, voor iedereen
-          uit Steenbergen, De Vossemeer, Halsteren, Tholen, Bergen op Zoom,
-          Wouw en omstreken.
+          prestatiegericht. Judoles in Steenbergen en Oud-Vossemeer, voor
+          iedereen uit Steenbergen, Oud-Vossemeer, Nieuw-Vossemeer, De Heen,
+          Kruisland, Dinteloord, Sint-Philipsland, Oud-Gastel, Halsteren,
+          Tholen, Bergen op Zoom, Wouw en omstreken.
         </p>
 
         <h3 className="font-semibold">Trainingstijden</h3>
