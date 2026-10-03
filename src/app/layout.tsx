@@ -78,6 +78,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 5,
   userScalable: true,
+  themeColor: '#a90000',
 };
 
 export const metadata: Metadata = {
@@ -126,7 +127,6 @@ export const metadata: Metadata = {
     title: "Michigami",
     statusBarStyle: "default",
   },
-  themeColor: "#a90000",
   openGraph: {
     title: "Judo Steenbergen & Oud-Vossemeer | Judoclub Michigami",
     description:

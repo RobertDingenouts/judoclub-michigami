@@ -8,6 +8,9 @@ const withBundleAnalyzer = bundleAnalyzer({
 const nextConfig: NextConfig = {
   output: "standalone",
 
+  // Geen dev-overlay-knop rechtsonder (stoort op mobiel tijdens testen)
+  devIndicators: false,
+
   // Tailscale-toegang tot de dev-server (mobile dashboard-testen)
   allowedDevOrigins: ['100.89.108.51', '100.89.108.51:3100', 'kiebel', 'kiebel:3100'],
 
@@ -33,6 +36,7 @@ const nextConfig: NextConfig = {
   // Image optimization: support AVIF and WebP formats + external image domains
   images: {
     formats: ["image/avif", "image/webp"],
+    qualities: [40, 75],
 
     // Allow external images (YouTube thumbnails, social media, etc.)
     remotePatterns: [

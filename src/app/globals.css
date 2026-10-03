@@ -1238,3 +1238,10 @@
 .zen-scroll [data-slot="scroll-area-scrollbar"] {
   background-color: transparent !important;
 }
+
+/* Next 16 dev-overlay (N-badge / "Issues"-knop) verbergen tijdens testen.
+   Rendered alleen in dev — op productie bestaat dit element niet.
+   Haal weg als je dev-fouten weer in beeld wilt. */
+nextjs-portal {
+  display: none !important;
+}
