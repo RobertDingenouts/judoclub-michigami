@@ -1,9 +1,9 @@
 import { db } from '@/lib/db'
 import { kwartaalVan } from '@/lib/admin2'
 import { ensureUpcomingDays } from '@/lib/lessen'
-import { getBeltLabel, getNextBelt, isYouth } from '@/lib/belt-utils'
+import { getBeltLabel, getNextBelt, isSlipBelt, isYouth } from '@/lib/belt-utils'
 import type { BeltLevel } from '@prisma/client'
-import AdminDashboard, { type DashData } from './dashboard/AdminDashboard'
+import AdminDashboard, { type DashData, type LedenRow } from './dashboard/AdminDashboard'
 
 export const dynamic = 'force-dynamic'
 
@@ -47,9 +47,11 @@ export default async function AdminStart() {
       orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }],
       select: {
         id: true, firstName: true, lastName: true, primaryGroup: true, clubStatus: true,
-        currentBelt: true, dateOfBirth: true,
+        currentBelt: true, dateOfBirth: true, joinDate: true, bondsnummer: true,
         payments: { where: { period: { label: kw } }, select: { id: true, status: true, amount: true } },
         bondHistory: { orderBy: { awardedAt: 'desc' }, take: 1, select: { awardedAt: true } },
+        examAttempts: { orderBy: { examDate: 'desc' }, take: 1, select: { examDate: true, status: true, beltLevel: true } },
+        courseProgress: { where: { isPassed: true }, select: { beltLevel: true } },
       },
     }),
     db.member.findMany({
@@ -145,6 +147,32 @@ export default async function AdminStart() {
   const attAanw = attTotal.find(g => g.status === 'AANWEZIG')?._count ?? 0
   const attAlle = attTotal.reduce((s, g) => s + g._count, 0)
 
+  // ── Leden-verrijking (gedeeld door ledenwidget + aanwezigheid-wolkje) ──────
+  const rijkeLeden: LedenRow[] = ledenVoorExamen.map(m => {
+    const youth = isYouth(m.dateOfBirth)
+    const volgende = getNextBelt(m.currentBelt as BeltLevel, youth)
+    const laatsteEx = m.examAttempts[0]
+    return {
+      id: m.id,
+      naam: `${m.firstName} ${m.lastName}`,
+      groep: m.primaryGroup ?? '',
+      clubStatus: m.clubStatus,
+      belt: m.currentBelt,
+      dob: m.dateOfBirth?.toISOString().slice(0, 10) ?? null,
+      betaling: m.payments[0]?.status ?? 'GEEN',
+      paymentId: m.payments[0]?.id ?? null,
+      bedrag: m.payments[0] ? Number(m.payments[0].amount) : null,
+      lidSinds: m.joinDate?.toISOString().slice(0, 10) ?? null,
+      bondsnummer: m.bondsnummer,
+      laatsteBand: m.bondHistory[0]?.awardedAt.toISOString().slice(0, 10) ?? null,
+      laatsteExamen: laatsteEx?.examDate?.toISOString().slice(0, 10) ?? null,
+      laatsteExamenStatus: laatsteEx?.status ?? null,
+      volgendeBand: volgende as string | null,
+      volgendeBandSlip: volgende ? isSlipBelt(volgende) : false,
+      cursusJapans: m.courseProgress.length > 0,
+    }
+  })
+
   const d: DashData = {
     nowIso: now.toISOString(),
     kwLabel: kw,
@@ -171,18 +199,9 @@ export default async function AdminStart() {
     trend,
     examList,
     aanwezigheidGroepen,
-    aanwezigheidLeden: ledenVoorExamen.map(m => ({
-      id: m.id, naam: `${m.firstName} ${m.lastName}`, groep: m.primaryGroup ?? '',
-      clubStatus: m.clubStatus, belt: m.currentBelt, dob: m.dateOfBirth?.toISOString().slice(0, 10) ?? null,
-    })),
+    aanwezigheidLeden: rijkeLeden,
     cellen,
-    leden: ledenVoorExamen.map(m => ({
-      id: m.id, naam: `${m.firstName} ${m.lastName}`, groep: m.primaryGroup ?? '',
-      clubStatus: m.clubStatus, belt: m.currentBelt,
-      dob: m.dateOfBirth?.toISOString().slice(0, 10) ?? null,
-      betaling: m.payments[0]?.status ?? 'GEEN',
-      paymentId: m.payments[0]?.id ?? null,
-    })),
+    leden: rijkeLeden,
     openRekeningen: openRekeningen.map(p => ({
       paymentId: p.id, lidId: p.member.id, naam: `${p.member.firstName} ${p.member.lastName}`,
       groep: p.member.primaryGroup ?? '', bedrag: Number(p.amount), status: p.status,

@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { GROEPEN, GROEP_LABEL, PAYMENT_INFO, nlDatum, leeftijd } from '@/lib/admin2'
@@ -26,6 +27,16 @@ type Row = {
 }
 
 const BAND_VOLGORDE = [...BELT_ORDER]
+
+/** "3m geleden" / "1,2j geleden" — compacte tijdstring voor de wolkjes */
+function geledenText(iso: string): string {
+  const dagen = Math.floor((Date.now() - new Date(iso).getTime()) / 864e5)
+  if (dagen < 0) return 'gepland'
+  if (dagen === 0) return 'vandaag'
+  if (dagen < 31) return `${dagen}d geleden`
+  if (dagen < 365) return `${Math.round(dagen / 30.44)}m geleden`
+  return `${(dagen / 365).toFixed(1)}j geleden`
+}
 
 const CLUB_STATUS_INFO: Record<string, { label: string; klas: string }> = {
   LID: { label: 'Lid', klas: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
@@ -140,6 +151,7 @@ export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: 
 function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; onToggle: () => void; periodLabels: string[] }) {
   const router = useRouter()
   const [leave, setLeave] = useState(r.leaveDate ?? '')
+  const [wolkje, setWolke] = useState<{ x: number; y: number } | null>(null)
   const age = leeftijd(r.dateOfBirth)
   const youth = isYouth(r.dateOfBirth ? new Date(r.dateOfBirth) : null)
   const next = r.band ? getNextBelt(r.band as BeltLevel, youth) : (youth ? 'WIT' : null)
@@ -158,8 +170,16 @@ function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; on
   }
 
   return (
-    <div className={`rounded-xl border bg-white transition-colors ${open ? 'border-[#a90000]/40' : 'border-gray-200'}`}>
-      <button onClick={onToggle} className="flex w-full items-center gap-3 p-3 text-left sm:gap-4">
+    <div className={`relative rounded-xl border bg-white transition-colors ${open ? 'border-[#a90000]/40' : 'border-gray-200'}`}>
+      <button
+        onClick={onToggle}
+        onMouseMove={(e) => {
+          const onder = window.innerHeight - e.clientY > 260
+          setWolke({ x: Math.min(e.clientX + 14, window.innerWidth - 290), y: e.clientY + (onder ? 16 : -18) })
+        }}
+        onMouseLeave={() => setWolke(null)}
+        className="flex w-full items-center gap-3 p-3 text-left sm:gap-4"
+      >
         <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-gray-300 text-xs font-bold"
           style={{ backgroundColor: r.band ? (BELT_COLORS[r.band as BeltLevel] ?? '#eee') : '#7C3AED', color: r.band === 'WIT' ? '#555' : '#fff' }}>
           {r.firstName[0]}{r.lastName[0]}
@@ -191,6 +211,79 @@ function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; on
         </div>
         <span className={`shrink-0 text-gray-300 transition-transform ${open ? 'rotate-180' : ''}`}>▾</span>
       </button>
+
+      {/* ── Hover-wolkje: alles van dit lid in één oogopslag ── */}
+      {wolkje && typeof document !== 'undefined' && createPortal(
+        <div style={{ left: wolkje.x, top: wolkje.y }}
+          className="pointer-events-none fixed z-[9999] w-72 rounded-xl border border-gray-200 bg-white p-3 text-left shadow-2xl">
+          <div className="mb-2 flex items-start justify-between gap-2 border-b border-gray-100 pb-2">
+            <div>
+              <p className="text-xs font-bold text-[#2a2a2a]">{r.firstName} {r.lastName}</p>
+              <p className="text-[10px] text-gray-400">
+                {age !== null && `${age} jr · `}{r.groep ? (GROEP_LABEL[r.groep as keyof typeof GROEP_LABEL] ?? r.groep) : 'geen groep'}
+                {r.joinDate && ` · lid sinds ${new Date(r.joinDate).toLocaleDateString('nl-NL', { month: 'short', year: 'numeric' })}`}
+              </p>
+            </div>
+            <span className={`shrink-0 rounded border px-1.5 py-0.5 text-[9px] font-bold ${si.klas}`}>{si.label}</span>
+          </div>
+          <div className="space-y-1 text-[10px] text-gray-600">
+            <div className="flex items-center justify-between gap-2">
+              <span className="shrink-0 text-gray-400">Band</span>
+              <span className="flex items-center gap-1 font-medium text-[#2a2a2a]">
+                <span className="h-2 w-2 rounded-full border border-gray-300" style={{ backgroundColor: r.band ? BELT_COLORS[r.band as BeltLevel] : '#7C3AED' }} />
+                {r.band ? getBeltLabel(r.band as BeltLevel) : 'nog geen band'}
+              </span>
+            </div>
+            {next && (
+              <div className="flex items-center justify-between gap-2">
+                <span className="shrink-0 text-gray-400">Volgende</span>
+                <span className="flex items-center gap-1 font-medium text-[#2a2a2a]">
+                  <span className="h-2 w-2 rounded-full border border-gray-300" style={{ backgroundColor: BELT_COLORS[next as BeltLevel] }} />
+                  {getBeltLabel(next)}
+                </span>
+              </div>
+            )}
+            <div className="flex items-center justify-between gap-2">
+              <span className="shrink-0 text-gray-400">Contributie</span>
+              <span className={`font-medium ${perStatus?.status === 'BETAALD' ? 'text-green-700' : 'text-red-700'}`}>
+                {perStatus ? (PAYMENT_INFO[perStatus.status]?.label ?? perStatus.status) : 'geen regeling'}
+                {openBet.length > 0 && ` · €${openBet.reduce((s, p) => s + p.amount, 0)} open`}
+              </span>
+            </div>
+            {laatsteBand && (
+              <div className="flex items-center justify-between gap-2">
+                <span className="shrink-0 text-gray-400">Laatste band</span>
+                <span className="font-medium text-[#2a2a2a]">{nlDatum(laatsteBand.at)}</span>
+              </div>
+            )}
+            {r.exams[0]?.date && (
+              <div className="flex items-center justify-between gap-2">
+                <span className="shrink-0 text-gray-400">Laatste examen</span>
+                <span className="font-medium text-[#2a2a2a]">{geledenText(r.exams[0].date)}</span>
+              </div>
+            )}
+            {r.jpDiolmas.length > 0 && (
+              <div className="flex items-center justify-between gap-2">
+                <span className="shrink-0 text-gray-400">Cursus Japans</span>
+                <span className="font-medium text-[#2a2a2a]">{r.jpDiolmas.length} diploma('s)</span>
+              </div>
+            )}
+            {r.competitions.length > 0 && (
+              <div className="flex items-center justify-between gap-2">
+                <span className="shrink-0 text-gray-400">Laatste toernooi</span>
+                <span className="font-medium text-[#2a2a2a]">{geledenText(r.competitions[0].date)}</span>
+              </div>
+            )}
+            {r.bondsnummer && (
+              <div className="flex items-center justify-between gap-2">
+                <span className="shrink-0 text-gray-400">Bondsnummer</span>
+                <span className="font-medium text-[#2a2a2a]">{r.bondsnummer}</span>
+              </div>
+            )}
+          </div>
+        </div>,
+        document.body,
+      )}
 
       {open && (
         <div className="grid gap-4 border-t border-gray-100 p-4 text-sm md:grid-cols-2 lg:grid-cols-3">

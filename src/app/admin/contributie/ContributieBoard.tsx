@@ -14,7 +14,7 @@ type Rij = {
 export function ContributieBoard({ rows, periode, periodId }: { rows: Rij[]; periode: string; periodId: string }) {
   const router = useRouter()
   const [data, setData] = useState(rows)
-  const [filter, setFilter] = useState<'alles' | 'open'>('alles')
+  const [filter, setFilter] = useState<'alles' | 'open'>('open')
   const [busy, setBusy] = useState<string | null>(null)
   const [genereren, setGenereren] = useState(false)
   const [bewerken, setBewerken] = useState<string | null>(null)
