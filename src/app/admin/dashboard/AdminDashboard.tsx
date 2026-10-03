@@ -59,7 +59,8 @@ function baseLayout(bp: string): LayoutItem[] {
 }
 
 export default function AdminDashboard({ d }: { d: DashData }) {
-  const [layouts, setLayouts] = React.useState<ResponsiveLayouts | null>(null)
+  const [layouts, setLayouts] = React.useState<ResponsiveLayouts>(() =>
+    Object.fromEntries(BPS.map(bp => [bp, baseLayout(bp)])))
   const [hidden, setHidden] = React.useState<string[]>([])
   const [edit, setEdit] = React.useState(true)
   const [menu, setMenu] = React.useState(false)
@@ -82,8 +83,11 @@ export default function AdminDashboard({ d }: { d: DashData }) {
   }, [])
 
   const onLayoutChange = (_cur: readonly LayoutItem[], all: ResponsiveLayouts) => {
+    try {
+      localStorage.setItem(LS_KEY, JSON.stringify(all))
+      console.log('[dash] opgeslagen:', localStorage.getItem(LS_KEY)?.length, 'bytes')
+    } catch (e) { console.log('[dash] setItem fout:', String(e)) }
     setLayouts(all)
-    localStorage.setItem(LS_KEY, JSON.stringify(all))
   }
   const toggle = (i: string) => {
     const next = hidden.includes(i) ? hidden.filter(x => x !== i) : [...hidden, i]
@@ -95,13 +99,8 @@ export default function AdminDashboard({ d }: { d: DashData }) {
     localStorage.removeItem(LS_KEY)
     localStorage.removeItem(LS_HIDDEN)
     setHidden([])
-    setLayouts(null)
-    setTimeout(() => setLayouts(Object.fromEntries(BPS.map(bp => [bp, baseLayout(bp)]))), 0)
+    setLayouts(Object.fromEntries(BPS.map(bp => [bp, baseLayout(bp)])))
     setMenu(false)
-  }
-
-  if (!layouts) {
-    return <div className="space-y-4"><div className="h-8 w-40 animate-pulse rounded bg-gray-100" /><div className="h-64 animate-pulse rounded-xl bg-gray-100" /></div>
   }
 
   const zichtbaar = WIDGETS.filter(w => !hidden.includes(w.i))

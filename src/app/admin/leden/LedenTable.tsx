@@ -70,8 +70,8 @@ export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: 
     out.sort((a, b) => {
       switch (sortKey) {
         case 'naam': return (`${a.lastName} ${a.firstName}`).localeCompare(`${b.lastName} ${b.firstName}`)
-        case 'leeftijd': return (a.dateOfBirth ?? '9999').localeCompare(b.dateOfBirth ?? '9999')
-        case 'grootste': return (b.dateOfBirth ?? '0').localeCompare(a.dateOfBirth ?? '0')
+        case 'leeftijd': return (b.dateOfBirth ?? '0000').localeCompare(a.dateOfBirth ?? '0000')
+        case 'grootste': return (a.dateOfBirth ?? '9999').localeCompare(b.dateOfBirth ?? '9999')
         case 'band': return BAND_VOLGORDE.indexOf(a.band as BeltLevel) - BAND_VOLGORDE.indexOf(b.band as BeltLevel)
         case 'lidSinds': return (b.joinDate ?? '').localeCompare(a.joinDate ?? '')
         case 'contributie': return openBedrag(b) - openBedrag(a)
