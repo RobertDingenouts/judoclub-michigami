@@ -82,21 +82,21 @@ type WDef = { i: string; titel: string; def: Omit<LayoutItem, 'i'> }
 // Hoofdwidget: aanwezigheid vult standaard het hele scherm op grote schermen.
 // De rest staan er compact naast/onder, zodat niets weggedrukt wordt.
 const WIDGETS: WDef[] = [
-  { i: 'aanwezigheid', titel: '📊 Aanwezigheid (12 lessen)', def: { x: 0, y: 0, w: 15, h: 14, minW: 6, minH: 6 } },
-  { i: 'lessen', titel: '📅 Lessen', def: { x: 15, y: 0, w: 4, h: 7, minW: 3, minH: 3 } },
-  { i: 'contributie', titel: '💶 Contributie', def: { x: 19, y: 0, w: 5, h: 7, minW: 3, minH: 3 } },
-  { i: 'vlaggen', titel: '⚠️ Reserve & stoppend', def: { x: 15, y: 7, w: 4, h: 7, minW: 2, minH: 2 } },
-  { i: 'leden', titel: '👥 Leden', def: { x: 19, y: 7, w: 5, h: 14, minW: 4, minH: 4 } },
-  { i: 'examens', titel: '🥋 Examens', def: { x: 0, y: 14, w: 4, h: 7, minW: 2, minH: 2 } },
-  { i: 'inschrijvingen', titel: '📝 Inschrijvingen', def: { x: 4, y: 14, w: 4, h: 5, minW: 2, minH: 2 } },
-  { i: 'trend', titel: '📈 Trend 7 dagen', def: { x: 8, y: 14, w: 3, h: 5, minW: 2, minH: 2 } },
-  { i: 'gestopt', titel: '🚪 Recent gestopt', def: { x: 11, y: 14, w: 4, h: 5, minW: 2, minH: 2 } },
-  { i: 'betald', titel: '✅ Recent betaald', def: { x: 0, y: 21, w: 4, h: 4, minW: 2, minH: 2 } },
-  { i: 'snel', titel: '⚡ Snel naar', def: { x: 4, y: 19, w: 11, h: 4, minW: 2, minH: 2 } },
+  { i: 'aanwezigheid', titel: '📊 Aanwezigheid (12 lessen)', def: { x: 0, y: 0, w: 17, h: 15, minW: 6, minH: 6 } },
+  { i: 'lessen', titel: '📅 Lessen', def: { x: 17, y: 0, w: 7, h: 8, minW: 3, minH: 3 } },
+  { i: 'leden', titel: '👥 Leden', def: { x: 17, y: 8, w: 7, h: 15, minW: 4, minH: 4 } },
+  { i: 'contributie', titel: '💶 Contributie', def: { x: 0, y: 15, w: 5, h: 8, minW: 3, minH: 3 } },
+  { i: 'vlaggen', titel: '⚠️ Reserve & stoppend', def: { x: 5, y: 15, w: 5, h: 8, minW: 2, minH: 2 } },
+  { i: 'examens', titel: '🥋 Examens', def: { x: 10, y: 15, w: 4, h: 8, minW: 2, minH: 2 } },
+  { i: 'inschrijvingen', titel: '📝 Inschrijvingen', def: { x: 14, y: 15, w: 3, h: 5, minW: 2, minH: 2 } },
+  { i: 'trend', titel: '📈 Trend 7 dagen', def: { x: 14, y: 20, w: 3, h: 3, minW: 2, minH: 2 } },
+  { i: 'gestopt', titel: '🚪 Recent gestopt', def: { x: 0, y: 23, w: 5, h: 4, minW: 2, minH: 2 } },
+  { i: 'betald', titel: '✅ Recent betaald', def: { x: 5, y: 23, w: 5, h: 4, minW: 2, minH: 2 } },
+  { i: 'snel', titel: '⚡ Snel naar', def: { x: 10, y: 23, w: 7, h: 4, minW: 2, minH: 2 } },
 ]
 
-const LS_LAYOUT = 'mj-dash-layout-v4'
-const LS_HIDDEN = 'mj-dash-hidden-v4'
+const LS_LAYOUT = 'mj-dash-layout-v5'
+const LS_HIDDEN = 'mj-dash-hidden-v5'
 const BPS = ['xxl', 'xl', 'lg', 'md', 'sm'] as const
 const COLS: Record<(typeof BPS)[number], number> = { xxl: 24, xl: 18, lg: 12, md: 8, sm: 4 }
 
