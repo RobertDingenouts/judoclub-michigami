@@ -80,6 +80,22 @@ export default async function LesModusPage({
     include: { attendance: { where: { trainingDayId: day.id } } },
   })
 
+  // Historie: laatste 8 eerdere lessen van deze groep + status per lid
+  const histDagenRaw = await db.trainingDay.findMany({
+    where: { group: day.group, date: { lt: day.date } },
+    orderBy: { date: 'desc' },
+    take: 8,
+  })
+  const histDagen = histDagenRaw.reverse()
+  const histAttendance = histDagen.length
+    ? await db.attendance.findMany({
+        where: { trainingDayId: { in: histDagen.map(d => d.id) } },
+        select: { memberId: true, trainingDayId: true, status: true },
+      })
+    : []
+  const histMap: Record<string, Record<string, string>> = {}
+  for (const a of histAttendance) (histMap[a.memberId] ??= {})[a.trainingDayId] = a.status
+
   return (
     <LesModus
       dag={{ id: day.id, datum: day.date.toISOString(), groep: day.group, groepLabel: GROEP_LABEL[day.group as keyof typeof GROEP_LABEL] ?? day.group, activity: day.activity, cancelled: day.cancelled }}
@@ -88,6 +104,11 @@ export default async function LesModusPage({
         naam: `${m.firstName} ${m.lastName}`,
         status: m.attendance[0]?.status ?? null,
         gast: m.clubStatus === 'PROEF',
+        hist: histMap[m.id] ?? {},
+      }))}
+      historie={histDagen.map(d => ({
+        id: d.id,
+        label: d.date.toLocaleDateString('nl-NL', { weekday: 'short', day: 'numeric', month: 'short' }),
       }))}
       recenteDagen={recenteDagen.map(d => ({
         id: d.id,

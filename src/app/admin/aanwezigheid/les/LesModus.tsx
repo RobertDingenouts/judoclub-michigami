@@ -5,9 +5,10 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { STATUS_INFO } from '@/lib/admin2'
 
-type Lid = { id: string; naam: string; status: string | null; gast?: boolean }
+type Lid = { id: string; naam: string; status: string | null; gast?: boolean; hist: Record<string, string> }
 type DagInfo = { id: string; datum: string; groep: string; groepLabel: string; activity: string | null; cancelled: boolean }
 type DagTab = { id: string; label: string; actief: boolean }
+type HistDag = { id: string; label: string }
 
 const KNoppen: { status: string; kort: string }[] = [
   { status: 'AANWEZIG', kort: '✅' },
@@ -17,7 +18,7 @@ const KNoppen: { status: string; kort: string }[] = [
   { status: 'VAKANTIE', kort: '🏖' },
 ]
 
-export function LesModus({ dag, leden: initLeden, recenteDagen }: { dag: DagInfo; leden: Lid[]; recenteDagen: DagTab[] }) {
+export function LesModus({ dag, leden: initLeden, recenteDagen, historie }: { dag: DagInfo; leden: Lid[]; recenteDagen: DagTab[]; historie: HistDag[] }) {
   const router = useRouter()
   const [leden, setLeden] = useState(initLeden)
   const [activity, setActivity] = useState(dag.activity ?? '')
@@ -36,7 +37,7 @@ export function LesModus({ dag, leden: initLeden, recenteDagen }: { dag: DagInfo
       })
       const j = await res.json()
       if (!res.ok) throw new Error(j.error)
-      setLeden(prev => prev.some(l => l.id === j.id) ? prev : [...prev, { id: j.id, naam: j.naam, status: null, gast: true }])
+      setLeden(prev => prev.some(l => l.id === j.id) ? prev : [...prev, { id: j.id, naam: j.naam, status: null, gast: true, hist: {} }])
       setGastNaam(null)
       setOpgeslagen(`${j.naam} toegevoegd als gast`)
     } catch (e) {
@@ -76,6 +77,8 @@ export function LesModus({ dag, leden: initLeden, recenteDagen }: { dag: DagInfo
   }
 
   const tellen = (s: string) => leden.filter(l => l.status === s).length
+  const aantalAanwezig = (l: Lid) => Object.values(l.hist).filter(s => s === 'AANWEZIG').length
+  const aantalMetData = (l: Lid) => Object.values(l.hist).filter(s => s && s !== 'VAKANTIE').length
 
   return (
     <div className="space-y-4">
@@ -141,11 +144,24 @@ export function LesModus({ dag, leden: initLeden, recenteDagen }: { dag: DagInfo
                 {l.naam}
                 {l.gast && <span className="ml-2 rounded border border-sky-300 bg-sky-50 px-1.5 py-0.5 text-[10px] font-medium text-sky-700">gast</span>}
               </p>
-              {l.status && (
-                <span className={`rounded-full border px-2 py-0.5 text-[11px] font-medium ${STATUS_INFO[l.status]?.klas ?? ''}`}>
-                  {STATUS_INFO[l.status]?.emoji} {STATUS_INFO[l.status]?.label}
-                </span>
-              )}
+              <div className="flex items-center gap-2">
+                {historie.length > 0 && (
+                  <span className="flex items-center gap-1.5" title={`Laatste ${historie.length} lessen van deze groep`}>
+                    <span className="hidden items-center gap-0.5 sm:flex">
+                      {historie.map(h => {
+                        const s = l.hist[h.id]
+                        return <span key={h.id} className={`flex h-5 w-5 items-center justify-center rounded text-[10px] ${s ? STATUS_INFO[s]?.klas ?? 'bg-gray-100' : 'bg-gray-50 text-gray-300 border border-gray-100'}`}>{s ? STATUS_INFO[s]?.emoji : '·'}</span>
+                      })}
+                    </span>
+                    <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-medium text-gray-500">{aantalAanwezig(l)}/{aantalMetData(l)} eerdere</span>
+                  </span>
+                )}
+                {l.status && (
+                  <span className={`rounded-full border px-2 py-0.5 text-[11px] font-medium ${STATUS_INFO[l.status]?.klas ?? ''}`}>
+                    {STATUS_INFO[l.status]?.emoji} {STATUS_INFO[l.status]?.label}
+                  </span>
+                )}
+              </div>
             </div>
             <div className="grid grid-cols-5 gap-1.5">
               {KNoppen.map(k => (
