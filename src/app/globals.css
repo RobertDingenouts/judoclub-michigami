@@ -1264,6 +1264,9 @@ nextjs-portal {
 .w-edit .w-drag:active { cursor: grabbing; }
 .w-titel { font-size: 0.8rem; font-weight: 600; color: #2a2a2a; }
 .w-grip { color: #bbb; font-size: 0.9rem; letter-spacing: 1px; }
+.w-x { margin-left: auto; border: 0; background: transparent; color: #bbb; font-size: 0.85rem; line-height: 1; padding: 2px 6px; border-radius: 6px; cursor: pointer; }
+.w-x:hover { background: #fdecec; color: #a90000; }
+.w-edit .w-x { margin-left: 0.4rem; }
 .w-body { flex: 1; min-height: 0; overflow: auto; padding: 0.6rem 0.75rem; }
 /* react-grid-layout states */
 .react-grid-item.react-draggable-dragging .w-card,

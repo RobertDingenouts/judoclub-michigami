@@ -101,6 +101,7 @@ export default function AdminDashboard({ d }: { d: DashData }) {
   }
 
   const zichtbaar = WIDGETS.filter(w => !hidden.includes(w.i))
+  const mobiel = mounted && width > 0 && width < 640
 
   return (
     <div>
@@ -112,33 +113,52 @@ export default function AdminDashboard({ d }: { d: DashData }) {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={() => setEdit(e => !e)}
-            className={`rounded-lg border px-3 py-2 text-xs font-semibold ${edit ? 'border-[#a90000] bg-[#fdf6f6] text-[#a90000]' : 'border-gray-300 bg-white text-gray-600'}`}>
-            {edit ? '✓ Bewerken klaar' : '✋ Indeling aanpassen'}
-          </button>
-          <div className="relative">
-            <button onClick={() => setMenu(m => !m)} className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-600">Widgets ▾</button>
-            {menu && (
-              <div className="absolute right-0 z-30 mt-1 w-64 rounded-xl border border-gray-200 bg-white p-2 shadow-xl">
-                {WIDGETS.map(w => (
-                  <label key={w.i} className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm hover:bg-gray-50">
-                    <input type="checkbox" checked={!hidden.includes(w.i)} onChange={() => toggle(w.i)} />
-                    <span className={hidden.includes(w.i) ? 'text-gray-400' : 'text-[#2a2a2a]'}>{w.titel}</span>
-                  </label>
-                ))}
-                <button onClick={reset} className="mt-1 w-full rounded-lg bg-gray-100 px-2 py-1.5 text-left text-xs font-semibold text-gray-600 hover:bg-gray-200">↺ Standaardindeling herstellen</button>
+          {!mobiel && (
+            <>
+              <button onClick={() => setEdit(e => !e)}
+                className={`rounded-lg border px-3 py-2 text-xs font-semibold ${edit ? 'border-[#a90000] bg-[#fdf6f6] text-[#a90000]' : 'border-gray-300 bg-white text-gray-600'}`}>
+                {edit ? '✓ Bewerken klaar' : '✋ Indeling aanpassen'}
+              </button>
+              <div className="relative">
+                <button onClick={() => setMenu(m => !m)} className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-600">Widgets ▾</button>
+                {menu && (
+                  <div className="absolute right-0 z-30 mt-1 w-80 rounded-xl border border-gray-200 bg-white p-2 shadow-xl">
+                    {WIDGETS.map(w => (
+                      <label key={w.i} className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm hover:bg-gray-50">
+                        <input type="checkbox" checked={!hidden.includes(w.i)} onChange={() => toggle(w.i)} />
+                        <span className={`min-w-0 flex-1 truncate ${hidden.includes(w.i) ? 'text-gray-400' : 'text-[#2a2a2a]'}`}>{w.titel}</span>
+                      </label>
+                    ))}
+                    <button onClick={reset} className="mt-1 w-full rounded-lg bg-gray-100 px-2 py-1.5 text-left text-xs font-semibold text-gray-600 hover:bg-gray-200">↺ Standaardindeling herstellen</button>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            </>
+          )}
           <Link href="/admin/aanwezigheid/les" className="rounded-xl bg-[#a90000] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#8c0000]">✏️ Les invullen</Link>
         </div>
       </div>
 
-      {edit && <p className="mb-3 text-xs text-gray-400">Sleep widgets bij hun kop, sleep een hoek om te vergroten of verkleinen, zet widgets uit via “Widgets”. De indeling wordt per schermformaat onthouden.</p>}
+      {edit && !mobiel && <p className="mb-3 text-xs text-gray-400">Sleep widgets bij hun kop, sleep een hoek om te vergroten of verkleinen, sluit met ✕ of zet uit via “Widgets”. De indeling wordt per schermformaat onthouden.</p>}
 
       <div ref={containerRef} className="w-full">
       {!mounted ? (
         <div className="h-64 animate-pulse rounded-xl bg-gray-100" />
+      ) : mobiel ? (
+        <div className="space-y-3">
+          {zichtbaar.map(w => (
+            <div key={w.i} className="w-card">
+              <div className="w-drag">
+                <span className="w-titel">{w.titel}</span>
+                <button onClick={() => toggle(w.i)} title="Widget sluiten" className="w-x" aria-label={`${w.titel} sluiten`}>✕</button>
+              </div>
+              <div className="w-body">{widgetInhoud(w.i, d)}</div>
+            </div>
+          ))}
+          {hidden.length > 0 && (
+            <button onClick={reset} className="w-full rounded-lg bg-gray-100 px-2 py-2 text-xs font-semibold text-gray-600">↺ Verborgen widgets terugzetten</button>
+          )}
+        </div>
       ) : (
       <ResponsiveGridLayout
         className="dash-grid"
@@ -156,6 +176,7 @@ export default function AdminDashboard({ d }: { d: DashData }) {
           <div key={w.i} className={`w-card${edit ? ' w-edit' : ''}`}>
             <div className="w-drag">
               <span className="w-titel">{w.titel}</span>
+              <button onClick={() => toggle(w.i)} title="Widget sluiten" className="w-x" aria-label={`${w.titel} sluiten`}>✕</button>
               {edit && <span className="w-grip" aria-hidden>⠿</span>}
             </div>
             <div className="w-body">{widgetInhoud(w.i, d)}</div>

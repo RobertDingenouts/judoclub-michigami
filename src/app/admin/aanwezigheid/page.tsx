@@ -48,7 +48,7 @@ export default async function AanwezigheidPage({
     db.member.findMany({
       where: { isActive: true, clubStatus: { notIn: ['PROEF'] }, primaryGroup: { in: groepen } },
       orderBy: [{ lastName: 'asc' }],
-      select: { id: true, firstName: true, lastName: true, primaryGroup: true, clubStatus: true },
+      select: { id: true, firstName: true, lastName: true, primaryGroup: true, clubStatus: true, dateOfBirth: true, currentBelt: true },
     }),
   ])
 
@@ -126,7 +126,7 @@ export default async function AanwezigheidPage({
       ) : (
         <KwartaalGrid
           dagen={grid}
-          leden={leden.map(m => ({ id: m.id, naam: `${m.firstName} ${m.lastName}`, clubStatus: m.clubStatus, groep: m.primaryGroup ?? '' }))}
+          leden={leden.map(m => ({ id: m.id, naam: `${m.firstName} ${m.lastName}`, clubStatus: m.clubStatus, groep: m.primaryGroup ?? '', dateOfBirth: m.dateOfBirth?.toISOString().slice(0, 10) ?? null, currentBelt: m.currentBelt }))}
           cellen={Object.fromEntries(grid.flatMap(d => Object.entries(d.statussen).map(([mid, st]) => [`${mid}|${d.id}`, st as string])))}
         />
       )}
