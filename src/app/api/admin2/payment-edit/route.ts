@@ -19,9 +19,15 @@ export async function POST(req: NextRequest) {
     const clean = items
       .map((x: any) => ({ omschrijving: String(x.omschrijving ?? '').trim(), bedrag: Math.round((Number(x.bedrag) || 0) * 100) / 100 }))
       .filter(x => x.omschrijving || x.bedrag)
-    const som = clean.reduce((s: number, x) => s + x.bedrag, 0)
-    data.items = JSON.stringify(clean)
-    data.amount = som
+    if (clean.length === 0) {
+      // herstellen: standaard contributielijn + standaardbedrag van de periode
+      data.items = null
+      data.amount = p.period.amount
+    } else {
+      const som = clean.reduce((s: number, x) => s + x.bedrag, 0)
+      data.items = JSON.stringify(clean)
+      data.amount = som
+    }
   }
   if (note !== undefined) data.note = note || null
   if (dueDate !== undefined) data.dueDate = dueDate ? new Date(dueDate) : null
