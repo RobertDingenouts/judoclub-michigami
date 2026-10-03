@@ -1,82 +1,128 @@
 'use client'
 
-// Admin startdashboard — vrij indeelbaar: widgets zijn versleepbaar (bij de kop),
-// schaalbaar (hoeken), aan/uit te zetten en per schermformaat opgeslagen in localStorage.
+// ═══════════════════════════════════════════════════════════════════════════
+// Startscherm — één dashboard, alles inline bewerkbaar.
+// Elke clubfunctie is een widget: sleepbaar, schaalbaar, sluitbaar en per
+// schermformaat onthouden in localStorage. Alle data komt in één server-fetch
+// (DashData), dus je hoeft niet tussen bladen te navigeren om iets te doen.
+// ═══════════════════════════════════════════════════════════════════════════
 import * as React from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { ResponsiveGridLayout, useContainerWidth } from 'react-grid-layout'
 import type { LayoutItem, ResponsiveLayouts } from 'react-grid-layout'
 import 'react-grid-layout/css/styles.css'
 import 'react-resizable/css/styles.css'
-import { GROEP_LABEL } from '@/lib/admin2'
+import { GROEP_LABEL, STATUS_INFO, PAYMENT_INFO } from '@/lib/admin2'
 import { getBeltLabel } from '@/lib/belt-utils'
 import { BELT_COLORS } from '@/lib/student-progress-types'
 import type { BeltLevel } from '@prisma/client'
 
+export type LedenRow = {
+  id: string; naam: string; groep: string; clubStatus: string; belt: string | null
+  dob: string | null; betaling: string; paymentId: string | null
+}
+
 export type DashData = {
   nowIso: string
-  actieveLeden: number
   kwLabel: string
-  tiles: { contributieOpen: number; contributieSom: number; inschrijvingen: number; aanwPct: number; aanwVan: number; aanwNoem: number; examensGepland: number }
-  upcoming: { id: string; datum: string; groep: string; activity: string | null; aanw: number; afg: number; ingevuld: boolean }[]
-  trend: { label: string; pct: number }[]
+  periodes: string[]
+  tiles: {
+    actieveLeden: number
+    contributieOpen: number; contributieSom: number
+    inschrijvingen: number
+    aanwPct: number; aanwVan: number; aanwNoem: number
+    examensGepland: number; diplomaRecent: number
+  }
+  komendeLessen: { id: string; datum: string; groep: string; activity: string | null; aanw: number; afg: number; ingevuld: boolean }[]
+  trend: { label: string; pct: number; aanw: number; van: number }[]
   examList: { id: string; naam: string; belt: string; next: string; maanden: number | null }[]
-  vlaggen: { id: string; naam: string; status: string }[]
+  aanwezigheidGroepen: { groep: string; locatie: string; dagen: { id: string; datum: string; activity: string | null }[] }[]
+  aanwezigheidLeden: { id: string; naam: string; groep: string; clubStatus: string; belt: string | null; dob: string | null }[]
+  cellen: Record<string, string>
+  leden: LedenRow[]
+  openRekeningen: { paymentId: string; lidId: string; naam: string; groep: string; bedrag: number; status: string }[]
+  recentBetald: { naam: string; bedrag: number; datum: string }[]
+  inschrijvingen: { id: string; naam: string; email: string; groep: string; datum: string }[]
+  geplandeExamens: { id: string; naam: string; datum: string }[]
+  vlaggen: { id: string; naam: string; status: string; groep: string }[]
   recentGestopt: { id: string; naam: string; leaveDate: string | null }[]
 }
 
+const LOC_KORT: Record<string, string> = { STEENBERGEN: 'Knotwilg', OUD_VOSSEMEER: 'Vossenkuil' }
+const CYCLE: (string | null)[] = ['AANWEZIG', 'AFGEMELD', 'ZIEK', 'NIET_AANWEZIG', null]
+
+function beltKleur(belt: string | null): string {
+  if (!belt) return '#7C3AED' // paars = nog geen band
+  return (BELT_COLORS as Record<string, string>)[belt] ?? '#ccc'
+}
+function leeftijd(dob: string | null): string {
+  if (!dob) return ''
+  const d = new Date(dob), n = new Date()
+  let a = n.getFullYear() - d.getFullYear()
+  if (n.getMonth() < d.getMonth() || (n.getMonth() === d.getMonth() && n.getDate() < d.getDate())) a--
+  return `${a}j`
+}
+
+// ── Widget-register ────────────────────────────────────────────────────────
 type WDef = { i: string; titel: string; def: Omit<LayoutItem, 'i'> }
 
 const WIDGETS: WDef[] = [
-  { i: 'tile-contributie', titel: 'Contributie', def: { x: 0, y: 0, w: 3, h: 2, minW: 2, minH: 2 } },
-  { i: 'tile-inschrijvingen', titel: 'Inschrijvingen', def: { x: 3, y: 0, w: 3, h: 2, minW: 2, minH: 2 } },
-  { i: 'tile-aanwezig', titel: 'Aanwezig', def: { x: 6, y: 0, w: 3, h: 2, minW: 2, minH: 2 } },
-  { i: 'tile-examens', titel: 'Examens', def: { x: 9, y: 0, w: 3, h: 2, minW: 2, minH: 2 } },
-  { i: 'lessen', titel: 'Komende lessen', def: { x: 0, y: 2, w: 6, h: 4, minW: 3, minH: 3 } },
-  { i: 'trend', titel: 'Aanwezigheid laatste 7 dagen', def: { x: 6, y: 2, w: 3, h: 4, minW: 2, minH: 3 } },
-  { i: 'examens', titel: '🥋 Examens in zicht', def: { x: 9, y: 2, w: 3, h: 7, minW: 2, minH: 3 } },
-  { i: 'vlaggen', titel: '⚠️ Reserveringen & stoppend', def: { x: 0, y: 6, w: 6, h: 3, minW: 2, minH: 2 } },
-  { i: 'snel', titel: '⚡ Snel naar', def: { x: 6, y: 6, w: 3, h: 3, minW: 2, minH: 2 } },
-  { i: 'gestopt', titel: 'Recent gestopt', def: { x: 9, y: 8, w: 3, h: 4, minW: 2, minH: 2 } },
+  { i: 'lessen', titel: '📅 Lessen', def: { x: 0, y: 0, w: 4, h: 6, minW: 3, minH: 3 } },
+  { i: 'aanwezigheid', titel: '📊 Aanwezigheid (12 lessen)', def: { x: 4, y: 0, w: 8, h: 11, minW: 4, minH: 4 } },
+  { i: 'contributie', titel: '💶 Contributie', def: { x: 12, y: 0, w: 5, h: 7, minW: 3, minH: 3 } },
+  { i: 'vlaggen', titel: '⚠️ Reserve & stoppend', def: { x: 17, y: 0, w: 3, h: 7, minW: 2, minH: 2 } },
+  { i: 'leden', titel: '👥 Leden', def: { x: 17, y: 7, w: 7, h: 12, minW: 4, minH: 4 } },
+  { i: 'examens', titel: '🥋 Examens', def: { x: 0, y: 6, w: 4, h: 7, minW: 2, minH: 2 } },
+  { i: 'inschrijvingen', titel: '📝 Inschrijvingen', def: { x: 4, y: 11, w: 4, h: 5, minW: 2, minH: 2 } },
+  { i: 'trend', titel: '📈 Trend 7 dagen', def: { x: 8, y: 11, w: 4, h: 5, minW: 2, minH: 2 } },
+  { i: 'gestopt', titel: '🚪 Recent gestopt', def: { x: 12, y: 7, w: 5, h: 4, minW: 2, minH: 2 } },
+  { i: 'betald', titel: '✅ Recent betaald', def: { x: 0, y: 13, w: 4, h: 4, minW: 2, minH: 2 } },
+  { i: 'snel', titel: '⚡ Snel naar', def: { x: 0, y: 17, w: 8, h: 3, minW: 2, minH: 2 } },
 ]
 
-const LS_KEY = 'admin-dash-layout-v1'
-const LS_HIDDEN = 'admin-dash-hidden-v1'
-const BPS = ['lg', 'md', 'sm'] as const
+const LS_LAYOUT = 'mj-dash-layout-v3'
+const LS_HIDDEN = 'mj-dash-hidden-v3'
+const BPS = ['xxl', 'xl', 'lg', 'md', 'sm'] as const
+const COLS: Record<(typeof BPS)[number], number> = { xxl: 24, xl: 18, lg: 12, md: 8, sm: 4 }
 
-function baseLayout(bp: string): LayoutItem[] {
-  const cols = bp === 'lg' ? 12 : bp === 'md' ? 6 : 4
-  // klein scherm: alles onder elkaar, volle breedte
-  let y = 0
-  return WIDGETS.map(w => {
-    const h = bp === 'sm' ? Math.min(w.def.h, 4) : w.def.h
-    const item: LayoutItem = bp === 'lg'
-      ? { i: w.i, ...w.def }
-      : { i: w.i, x: 0, y, w: cols, h }
-    y += h
-    return item
-  })
+// Grote schermen: schaal de widget-breedtes mee zodat alles in beeld past.
+// Layout is ontworpen voor 24 kolommen; kleinere schermen schalen terug.
+const SCALE: Record<(typeof BPS)[number], number> = { xxl: 1, xl: 0.78, lg: 0.55, md: 1, sm: 1 }
+
+function baseLayout(bp: (typeof BPS)[number]): LayoutItem[] {
+  if (bp === 'sm' || bp === 'md') {
+    let y = 0
+    return WIDGETS.map(w => {
+      const h = Math.min(w.def.h, 9)
+      const item: LayoutItem = { i: w.i, x: 0, y, w: COLS[bp], h }
+      y += h
+      return item
+    })
+  }
+  const f = SCALE[bp]
+  return WIDGETS.map(w => ({ i: w.i, ...w.def, w: Math.max(2, Math.min(COLS[bp], Math.round(w.def.w * f))) }))
 }
 
+// ── Hoofdcomponent ─────────────────────────────────────────────────────────
 export default function AdminDashboard({ d }: { d: DashData }) {
+  const router = useRouter()
   const [layouts, setLayouts] = React.useState<ResponsiveLayouts>(() =>
     Object.fromEntries(BPS.map(bp => [bp, baseLayout(bp)])))
   const [hidden, setHidden] = React.useState<string[]>([])
-  const [edit, setEdit] = React.useState(true)
+  const [edit, setEdit] = React.useState(false)
   const [menu, setMenu] = React.useState(false)
+  const [zoek, setZoek] = React.useState('')
   const { width, mounted, containerRef } = useContainerWidth({ measureBeforeMount: true })
 
   React.useEffect(() => {
     let saved: ResponsiveLayouts | null = null
-    try { saved = JSON.parse(localStorage.getItem(LS_KEY) ?? 'null') } catch { /* noop */ }
+    try { saved = JSON.parse(localStorage.getItem(LS_LAYOUT) ?? 'null') } catch { /* noop */ }
+    const known = new Set(WIDGETS.map(w => w.i))
     const merged: ResponsiveLayouts = {}
     for (const bp of BPS) {
-      const cur = saved?.[bp] ?? []
-      const known = new Set(WIDGETS.map(w => w.i))
-      merged[bp] = [
-        ...cur.filter(l => known.has(l.i)),
-        ...baseLayout(bp).filter(n => !cur.some(l => l.i === n.i)),
-      ]
+      const cur = (saved?.[bp] ?? []).filter(l => known.has(l.i))
+      merged[bp] = [...cur, ...baseLayout(bp).filter(n => !cur.some(l => l.i === n.i))]
     }
     setLayouts(merged)
     try { setHidden(JSON.parse(localStorage.getItem(LS_HIDDEN) ?? '[]')) } catch { /* noop */ }
@@ -84,16 +130,15 @@ export default function AdminDashboard({ d }: { d: DashData }) {
 
   const onLayoutChange = (_cur: readonly LayoutItem[], all: ResponsiveLayouts) => {
     setLayouts(all)
-    localStorage.setItem(LS_KEY, JSON.stringify(all))
+    localStorage.setItem(LS_LAYOUT, JSON.stringify(all))
   }
   const toggle = (i: string) => {
     const next = hidden.includes(i) ? hidden.filter(x => x !== i) : [...hidden, i]
     setHidden(next)
     localStorage.setItem(LS_HIDDEN, JSON.stringify(next))
-    setMenu(false)
   }
   const reset = () => {
-    localStorage.removeItem(LS_KEY)
+    localStorage.removeItem(LS_LAYOUT)
     localStorage.removeItem(LS_HIDDEN)
     setHidden([])
     setLayouts(Object.fromEntries(BPS.map(bp => [bp, baseLayout(bp)])))
@@ -102,14 +147,19 @@ export default function AdminDashboard({ d }: { d: DashData }) {
 
   const zichtbaar = WIDGETS.filter(w => !hidden.includes(w.i))
   const mobiel = mounted && width > 0 && width < 640
+  const t = d.tiles
+  const zoekLeden = zoek.trim().length >= 2
+    ? d.leden.filter(l => l.naam.toLowerCase().includes(zoek.toLowerCase())).slice(0, 8)
+    : []
 
   return (
     <div>
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+      {/* Kopbalk */}
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-[#2a2a2a]">Start</h1>
-          <p className="mt-1 text-sm text-gray-500">
-            {new Date(d.nowIso).toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} · {d.actieveLeden} actieve leden
+          <h1 className="text-xl font-bold text-[#2a2a2a]">Start</h1>
+          <p className="mt-0.5 text-xs text-gray-500">
+            {new Date(d.nowIso).toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long' })} · {t.actieveLeden} actieve leden · {d.kwLabel}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -117,166 +167,604 @@ export default function AdminDashboard({ d }: { d: DashData }) {
             <>
               <button onClick={() => setEdit(e => !e)}
                 className={`rounded-lg border px-3 py-2 text-xs font-semibold ${edit ? 'border-[#a90000] bg-[#fdf6f6] text-[#a90000]' : 'border-gray-300 bg-white text-gray-600'}`}>
-                {edit ? '✓ Bewerken klaar' : '✋ Indeling aanpassen'}
+                {edit ? '✓ Klaar' : '✋ Layout'}
               </button>
               <div className="relative">
-                <button onClick={() => setMenu(m => !m)} className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-600">Widgets ▾</button>
+                <button onClick={() => setMenu(m => !m)} className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-600">
+                  Widgets {zichtbaar.length}/{WIDGETS.length} ▾
+                </button>
                 {menu && (
-                  <div className="absolute right-0 z-30 mt-1 w-80 rounded-xl border border-gray-200 bg-white p-2 shadow-xl">
+                  <div className="absolute right-0 z-40 mt-1 w-72 rounded-xl border border-gray-200 bg-white p-2 shadow-xl">
                     {WIDGETS.map(w => (
                       <label key={w.i} className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm hover:bg-gray-50">
                         <input type="checkbox" checked={!hidden.includes(w.i)} onChange={() => toggle(w.i)} />
                         <span className={`min-w-0 flex-1 truncate ${hidden.includes(w.i) ? 'text-gray-400' : 'text-[#2a2a2a]'}`}>{w.titel}</span>
                       </label>
                     ))}
-                    <button onClick={reset} className="mt-1 w-full rounded-lg bg-gray-100 px-2 py-1.5 text-left text-xs font-semibold text-gray-600 hover:bg-gray-200">↺ Standaardindeling herstellen</button>
+                    <button onClick={reset} className="mt-1 w-full rounded-lg bg-gray-100 px-2 py-1.5 text-left text-xs font-semibold text-gray-600 hover:bg-gray-200">↺ Standaard herstellen</button>
                   </div>
                 )}
               </div>
             </>
           )}
-          <Link href="/admin/aanwezigheid/les" className="rounded-xl bg-[#a90000] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#8c0000]">✏️ Les invullen</Link>
+          <Link href="/admin/aanwezigheid/les" className="rounded-xl bg-[#a90000] px-3.5 py-2 text-xs font-semibold text-white shadow-sm hover:bg-[#8c0000]">✏️ Les invullen</Link>
         </div>
       </div>
 
-      {edit && !mobiel && <p className="mb-3 text-xs text-gray-400">Sleep widgets bij hun kop, sleep een hoek om te vergroten of verkleinen, sluit met ✕ of zet uit via “Widgets”. De indeling wordt per schermformaat onthouden.</p>}
+      {/* KPI-rijen: altijd zichtbaar, compact, klikbaar */}
+      <div className="mb-3 grid grid-cols-4 gap-1.5 md:grid-cols-6 xl:grid-cols-8">
+        <Kpi href="/admin/leden" label="Leden" value={t.actieveLeden} />
+        <Kpi href="/admin/contributie" label="Openstaand" value={t.contributieOpen} sub={`€${t.contributieSom.toFixed(0)}`} accent={t.contributieOpen > 0 ? 'text-red-700' : 'text-green-700'} />
+        <Kpi href="/admin/contributie" label="Recent betaald" value={d.recentBetald.length} />
+        <Kpi href="/admin/aanwezigheid" label="Aanwezig" value={`${t.aanwPct}%`} sub={`${t.aanwVan}/${t.aanwNoem}`} />
+        <Kpi href="/admin/inschrijvingen" label="Nieuw" value={t.inschrijvingen} accent={t.inschrijvingen > 0 ? 'text-[#a90000]' : ''} />
+        <Kpi href="/admin/exams" label="Examens" value={t.examensGepland} />
+        <Kpi href="/admin/diplomas" label="Diploma's 6m" value={t.diplomaRecent} />
+        <Kpi href="/admin/leden" label="Reserve/stopt" value={d.vlaggen.length} accent={d.vlaggen.length > 0 ? 'text-amber-600' : ''} />
+      </div>
 
-      <div ref={containerRef} className="w-full">
-      {!mounted ? (
-        <div className="h-64 animate-pulse rounded-xl bg-gray-100" />
-      ) : mobiel ? (
-        <div className="space-y-3">
-          {zichtbaar.map(w => (
-            <div key={w.i} className="w-card">
-              <div className="w-drag">
-                <span className="w-titel">{w.titel}</span>
-                <button onClick={() => toggle(w.i)} title="Widget sluiten" className="w-x" aria-label={`${w.titel} sluiten`}>✕</button>
-              </div>
-              <div className="w-body">{widgetInhoud(w.i, d)}</div>
-            </div>
-          ))}
-          {hidden.length > 0 && (
-            <button onClick={reset} className="w-full rounded-lg bg-gray-100 px-2 py-2 text-xs font-semibold text-gray-600">↺ Verborgen widgets terugzetten</button>
-          )}
-        </div>
-      ) : (
-      <ResponsiveGridLayout
-        className="dash-grid"
-        width={width}
-        layouts={layouts}
-        breakpoints={{ lg: 1024, md: 640, sm: 0 }}
-        cols={{ lg: 12, md: 6, sm: 4 }}
-        rowHeight={56}
-        margin={[12, 12]}
-        dragConfig={{ enabled: edit, handle: '.w-drag', threshold: 4 }}
-        resizeConfig={{ enabled: edit, handles: ['se', 's', 'e', 'sw', 'nw', 'ne', 'n', 'w'] }}
-        onLayoutChange={onLayoutChange}
-      >
-        {zichtbaar.map(w => (
-          <div key={w.i} className={`w-card${edit ? ' w-edit' : ''}`}>
-            <div className="w-drag">
-              <span className="w-titel">{w.titel}</span>
-              <button onClick={() => toggle(w.i)} title="Widget sluiten" className="w-x" aria-label={`${w.titel} sluiten`}>✕</button>
-              {edit && <span className="w-grip" aria-hidden>⠿</span>}
-            </div>
-            <div className="w-body">{widgetInhoud(w.i, d)}</div>
+      {/* Zoombalk */}
+      <div className="relative mb-3">
+        <input value={zoek} onChange={e => setZoek(e.target.value)} placeholder="Zoek lid… (2+ letters)"
+          className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none" />
+        {zoekLeden.length > 0 && (
+          <div className="absolute left-0 right-0 z-40 mt-1 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl">
+            {zoekLeden.map(l => (
+              <Link key={l.id} href={`/admin/students/${l.id}`}
+                className="flex items-center justify-between border-b border-gray-50 px-3 py-2 text-sm last:border-0 hover:bg-[#fdf6f6]">
+                <span className="flex items-center gap-2">
+                  <span className="h-2.5 w-2.5 rounded-full border border-gray-300" style={{ background: beltKleur(l.belt) }} />
+                  <span className="font-medium text-[#2a2a2a]">{l.naam}</span>
+                  <span className="text-xs text-gray-400">{GROEP_LABEL[l.groep] ?? l.groep}</span>
+                </span>
+                <span className="text-xs text-gray-400">{l.betaling === 'BETAALD' ? '✅ betaald' : l.betaling === 'VIJGESTELD' ? '🔵 vrijgesteld' : '💶 open'}</span>
+              </Link>
+            ))}
           </div>
-        ))}
-      </ResponsiveGridLayout>
+        )}
+      </div>
+
+      {edit && !mobiel && (
+        <p className="mb-3 text-xs text-gray-400">
+          Sleep bij de kop · sleep een hoek om te schalen · ✕ sluit · of zet uit via “Widgets”. Layout wordt per schermformaat onthouden.
+        </p>
       )}
+
+      {/* Widgetraster */}
+      <div ref={containerRef} className="w-full">
+        {!mounted ? (
+          <div className="h-64 animate-pulse rounded-xl bg-gray-100" />
+        ) : mobiel ? (
+          <div className="space-y-3">
+            {zichtbaar.map(w => (
+              <div key={w.i} className="w-card">
+                <div className="w-drag">
+                  <span className="w-titel">{w.titel}</span>
+                  <button onClick={() => toggle(w.i)} className="w-x" aria-label={`${w.titel} sluiten`}>✕</button>
+                </div>
+                <div className="w-body"><Widget id={w.i} d={d} /></div>
+              </div>
+            ))}
+            {hidden.length > 0 && (
+              <button onClick={reset} className="w-full rounded-lg bg-gray-100 px-2 py-2 text-xs font-semibold text-gray-600">↺ Verborgen widgets terugzetten</button>
+            )}
+          </div>
+        ) : (
+          <ResponsiveGridLayout
+            className="dash-grid"
+            width={width}
+            layouts={layouts}
+            {...({ breakpoints: { xxl: 1900, xl: 1500, lg: 1100, md: 640, sm: 0 }, cols: COLS } as any)}
+            rowHeight={34}
+            margin={[10, 10]}
+            compactType="vertical"
+            dragConfig={{ enabled: edit, handle: '.w-drag', threshold: 4 }}
+            resizeConfig={{ enabled: edit, handles: ['se', 's', 'e', 'sw', 'nw', 'ne', 'n', 'w'] }}
+            onLayoutChange={onLayoutChange}
+          >
+            {zichtbaar.map(w => (
+              <div key={w.i} className={`w-card${edit ? ' w-edit' : ''}`}>
+                <div className="w-drag">
+                  <span className="w-titel">{w.titel}</span>
+                  <button onClick={() => toggle(w.i)} title="Widget sluiten" className="w-x" aria-label={`${w.titel} sluiten`}>✕</button>
+                  {edit && <span className="w-grip" aria-hidden>⠿</span>}
+                </div>
+                <div className="w-body"><Widget id={w.i} d={d} /></div>
+              </div>
+            ))}
+          </ResponsiveGridLayout>
+        )}
       </div>
     </div>
   )
 }
 
-function widgetInhoud(i: string, d: DashData): React.ReactNode {
-  const t = d.tiles
-  switch (i) {
-    case 'tile-contributie':
-      return <Klik href="/admin/contributie" titel="Contributie" value={`${t.contributieOpen} open`} sub={`€${t.contributieSom.toFixed(0)} in ${d.kwLabel}`} accent={t.contributieOpen > 0 ? 'text-red-700' : 'text-green-700'} />
-    case 'tile-inschrijvingen':
-      return <Klik href="/admin/inschrijvingen" titel="Inschrijvingen" value={t.inschrijvingen} sub={t.inschrijvingen ? 'wachten op goedkeuring' : 'niets te doen'} accent={t.inschrijvingen ? 'text-[#a90000]' : ''} />
-    case 'tile-aanwezig':
-      return <Klik href="/admin/aanwezigheid" titel="Aanwezig (alles)" value={`${t.aanwPct}%`} sub={`${t.aanwVan}/${t.aanwNoem} registraties`} />
-    case 'tile-examens':
-      return <Klik href="/admin/exams" titel="Examens" value={t.examensGepland} sub={t.examensGepland ? 'gepland' : 'geen gepland'} />
-    case 'lessen':
-      return d.upcoming.length === 0
-        ? <Leeg tekst="Geen lessen gepland." />
-        : <div className="space-y-1.5">{d.upcoming.map(l => (
-            <Link key={l.id} href={`/admin/aanwezigheid/les?dag=${l.id}`} className="flex items-center justify-between rounded-lg border border-gray-100 p-2.5 hover:border-[#a90000]/40">
-              <div>
-                <p className="text-sm font-semibold text-[#2a2a2a]">
-                  {new Date(l.datum).toLocaleDateString('nl-NL', { weekday: 'short', day: 'numeric', month: 'short' })}
-                  <span className="ml-2 rounded bg-gray-100 px-1.5 py-0.5 text-[11px] font-medium text-gray-600">{(GROEP_LABEL as Record<string, string>)[l.groep] ?? l.groep}</span>
-                </p>
-                {l.activity && <p className="mt-0.5 text-xs text-gray-500">🎯 {l.activity}</p>}
-              </div>
-              <div className="text-right text-xs text-gray-500">{l.ingevuld ? <>{l.aanw} ✅ · {l.afg} 🅰</> : <span className="text-[#a90000]">Invullen →</span>}</div>
-            </Link>
-          ))}</div>
-    case 'trend':
-      return d.trend.length === 0
-        ? <Leeg tekst="Nog geen data" />
-        : <div className="space-y-1.5">{d.trend.map((x, k) => (
-            <div key={k} className="flex items-center gap-2 text-xs">
-              <span className="w-14 shrink-0 text-gray-500">{x.label}</span>
-              <div className="h-2.5 flex-1 overflow-hidden rounded bg-gray-100"><div className="h-full rounded bg-[#a90000]" style={{ width: `${x.pct}%` }} /></div>
-              <span className="w-9 shrink-0 text-right font-medium">{x.pct}%</span>
-            </div>
-          ))}</div>
-    case 'examens':
-      return d.examList.length === 0
-        ? <Leeg tekst="Niemand komt in aanmerking" />
-        : <div className="space-y-1.5">{d.examList.map(e => (
-            <Link key={e.id} href={`/admin/students/${e.id}`} className="flex items-center gap-2.5 rounded-lg border border-gray-100 p-2 hover:border-[#a90000]/40">
-              <span className="h-3.5 w-3.5 shrink-0 rounded-full border border-gray-300" style={{ backgroundColor: (BELT_COLORS as Record<string, string>)[e.belt] ?? '#ccc' }} />
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium text-[#2a2a2a]">{e.naam}</p>
-                <p className="text-xs text-gray-500">nu {getBeltLabel(e.belt as BeltLevel)} → <b className="text-[#a90000]">{e.next}</b></p>
-              </div>
-              <span className="shrink-0 text-xs text-gray-400">{e.maanden ?? '?'} mnd</span>
-            </Link>
-          ))}</div>
-    case 'vlaggen':
-      return d.vlaggen.length === 0
-        ? <Leeg tekst="Niemand gevlagd" />
-        : <div className="space-y-1.5">{d.vlaggen.map(m => (
-            <Link key={m.id} href="/admin/leden" className="flex items-center justify-between rounded-lg border border-gray-100 p-2 text-sm hover:border-[#a90000]/40">
-              <span className="font-medium text-[#2a2a2a]">{m.naam}</span>
-              <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${m.status === 'RESERVE' ? 'bg-amber-100 text-amber-800' : 'bg-orange-100 text-orange-800'}`}>{m.status === 'RESERVE' ? 'reserve' : 'stopt?'}</span>
-            </Link>
-          ))}</div>
-    case 'snel':
-      return <div className="grid grid-cols-2 gap-2">{[
-        ['/admin/aanwezigheid/les', '🥋 Lesmodus'], ['/admin/leden', '👥 Leden'],
-        ['/admin/contributie', '💶 Contributie'], ['/admin/aanwezigheid', '📊 Aanwezigheid'],
-        ['/admin/exams/new', '🥇 Examen plannen'], ['/admin/inschrijvingen', '📝 Inschrijvingen'],
-      ].map(([h, lbl]) => (
-        <Link key={h} href={h} className="rounded-lg border border-gray-100 p-2.5 text-center text-xs font-semibold text-[#2a2a2a] hover:border-[#a90000]/40 hover:text-[#a90000]">{lbl}</Link>
-      ))}</div>
-    case 'gestopt':
-      return d.recentGestopt.length === 0
-        ? <Leeg tekst="Niemand recent gestopt" />
-        : <div className="space-y-1.5">{d.recentGestopt.map(m => (
-            <Link key={m.id} href="/admin/leden" className="flex items-center justify-between rounded-lg border border-gray-100 p-2 text-sm hover:border-[#a90000]/40">
-              <span className="text-[#2a2a2a]">{m.naam}</span>
-              <span className="text-xs text-gray-400">{m.leaveDate ? new Date(m.leaveDate).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' }) : 'archief'}</span>
-            </Link>
-          ))}</div>
+function Kpi({ href, label, value, sub, accent = '' }: { href: string; label: string; value: string | number; sub?: string; accent?: string }) {
+  return (
+    <Link href={href} className="rounded-lg border border-gray-200 bg-white px-2 py-1 hover:border-[#a90000]/40">
+      <p className="truncate text-[10px] font-medium uppercase tracking-wide text-gray-400">{label}</p>
+      <p className={`text-base font-bold leading-tight ${accent || 'text-[#2a2a2a]'}`}>{value}{sub && <span className="ml-1 text-[10px] font-medium text-gray-400">{sub}</span>}</p>
+    </Link>
+  )
+}
+
+function Widget({ id, d }: { id: string; d: DashData }) {
+  switch (id) {
+    case 'lessen': return <WLessen d={d} />
+    case 'aanwezigheid': return <WAanwezigheid d={d} />
+    case 'contributie': return <WContributie d={d} />
+    case 'leden': return <WLeden d={d} />
+    case 'vlaggen': return <WVlaggen d={d} />
+    case 'examens': return <WExamens d={d} />
+    case 'inschrijvingen': return <WInschrijvingen d={d} />
+    case 'trend': return <WTrend d={d} />
+    case 'gestopt': return <WGestopt d={d} />
+    case 'betald': return <WRecentBetald d={d} />
+    case 'snel': return <WSnel />
     default: return null
   }
 }
 
-function Klik({ href, titel, value, sub, accent = '' }: { href: string; titel: string; value: string | number; sub: string; accent?: string }) {
+function Leeg({ tekst }: { tekst: string }) {
+  return <p className="grid h-full place-items-center py-4 text-center text-xs text-gray-400">{tekst}</p>
+}
+
+// ── Lessen: inline doorlinken naar invullen ────────────────────────────────
+function WLessen({ d }: { d: DashData }) {
   return (
-    <Link href={href} className="flex h-full flex-col justify-center hover:opacity-80">
-      <p className="text-[11px] font-medium uppercase tracking-wide text-gray-400">{titel}</p>
-      <p className={`mt-0.5 text-2xl font-bold ${accent || 'text-[#2a2a2a]'}`}>{value}</p>
-      <p className="mt-0.5 text-xs text-gray-500">{sub}</p>
-    </Link>
+    <div className="space-y-1">
+      {d.komendeLessen.length === 0 ? <Leeg tekst="Geen lessen gepland." /> : d.komendeLessen.map(l => {
+        const vandaag = l.datum === d.nowIso.slice(0, 10)
+        const dt = new Date(l.datum)
+        return (
+          <Link key={l.id} href={`/admin/aanwezigheid/les?dag=${l.id}`}
+            className={`flex items-center justify-between gap-2 rounded-lg border px-2 py-1.5 hover:border-[#a90000]/50 ${vandaag ? 'border-[#a90000]/40 bg-[#fdf6f6]' : 'border-gray-100'}`}>
+            <div className="min-w-0">
+              <p className="truncate text-xs font-semibold text-[#2a2a2a]">
+                {vandaag && <span className="mr-1 text-[#a90000]">●</span>}
+                {dt.toLocaleDateString('nl-NL', { weekday: 'short', day: 'numeric', month: 'short' })}
+                <span className="ml-1.5 rounded bg-gray-100 px-1 py-0.5 text-[10px] font-medium text-gray-600">{GROEP_LABEL[l.groep] ?? l.groep}</span>
+              </p>
+              {l.activity && <p className="truncate text-[10px] text-gray-400">🎯 {l.activity}</p>}
+            </div>
+            <span className="shrink-0 text-[10px] font-medium">
+              {l.ingevuld ? <span className="text-green-700">{l.aanw}✅ {l.afg}🅰</span> : <span className="text-[#a90000]">invullen →</span>}
+            </span>
+          </Link>
+        )
+      })}
+    </div>
   )
 }
-function Leeg({ tekst }: { tekst: string }) {
-  return <p className="grid h-full place-items-center text-center text-sm text-gray-400">{tekst}</p>
+
+// ── Aanwezigheid: mini-grid, klikbaar ─────────────────────────────────────
+function WAanwezigheid({ d }: { d: DashData }) {
+  const router = useRouter()
+  const [local, setLocal] = React.useState<Record<string, string | null>>({})
+  const [compact, setCompact] = React.useState(false)
+  const [sorteer, setSorteer] = React.useState('naam')
+
+  const get = (mid: string, dagId: string) => {
+    const k = `${mid}|${dagId}`
+    return k in local ? local[k] : (d.cellen[k] ?? null)
+  }
+  async function cycle(mid: string, dagId: string) {
+    const k = `${mid}|${dagId}`
+    const cur = get(mid, dagId)
+    const next = CYCLE[(CYCLE.indexOf(cur ?? null) + 1) % CYCLE.length]
+    setLocal(p => ({ ...p, [k]: next }))
+    try {
+      const res = await fetch('/api/admin2/attendance', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ memberId: mid, trainingDayId: dagId, status: next }),
+      })
+      if (!res.ok) setLocal(p => ({ ...p, [k]: cur }))
+    } catch {
+      setLocal(p => ({ ...p, [k]: cur }))
+    }
+  }
+
+  const cel = compact ? 'h-5 w-5 text-[10px]' : 'h-6 w-6 text-[11px]'
+
+  return (
+    <div className="flex h-full flex-col gap-2">
+      <div className="flex flex-shrink-0 items-center gap-2">
+        <select value={sorteer} onChange={e => setSorteer(e.target.value)}
+          className="rounded border border-gray-200 bg-white px-1.5 py-1 text-[10px] text-gray-600 focus:border-[#a90000] focus:outline-none">
+          <option value="naam">naam A→Z</option>
+          <option value="jong">leeftijd jong→oud</option>
+          <option value="oud">leeftijd oud→jong</option>
+          <option value="band">band laag→hoog</option>
+          <option value="opkomstLaag">opkomst laag→hoog</option>
+          <option value="opkomstHoog">opkomst hoog→laag</option>
+        </select>
+        <button onClick={() => setCompact(c => !c)} className="rounded border border-gray-200 px-2 py-1 text-[10px] font-medium text-gray-600 hover:border-[#a90000]">
+          {compact ? '⬜ Groot' : '▦ Compact'}
+        </button>
+        <span className="ml-auto text-[10px] text-gray-400">tik cel = wisselen · laatste 12 lessen per groep</span>
+      </div>
+      {d.aanwezigheidGroepen.map(g => {
+        const aant = (lid: string) => {
+          let a = 0, m = 0
+          for (const dg of g.dagen) { const s = get(lid, dg.id); if (s && s !== 'VAKANTIE') { m++; if (s === 'AANWEZIG') a++ } }
+          return { a, m, p: m ? a / m : -1 }
+        }
+        let leden = d.aanwezigheidLeden.filter(l => l.groep === g.groep)
+        if (sorteer === 'naam') leden = [...leden].sort((x, y) => x.naam.localeCompare(y.naam))
+        if (sorteer === 'jong') leden = [...leden].sort((x, y) => (y.dob ?? '').localeCompare(x.dob ?? ''))
+        if (sorteer === 'oud') leden = [...leden].sort((x, y) => (x.dob ?? '').localeCompare(y.dob ?? ''))
+        if (sorteer === 'band') leden = [...leden].sort((x, y) => (x.belt ?? '').localeCompare(y.belt ?? ''))
+        if (sorteer === 'opkomstLaag') leden = [...leden].sort((x, y) => aant(x.id).p - aant(y.id).p)
+        if (sorteer === 'opkomstHoog') leden = [...leden].sort((x, y) => aant(y.id).p - aant(x.id).p)
+
+        return (
+          <div key={g.groep} className="min-h-0 flex-1 overflow-hidden rounded-lg border border-gray-100">
+            <div className="flex items-center justify-between border-b border-gray-100 bg-gray-50 px-2 py-1">
+              <span className="text-[11px] font-bold text-[#2a2a2a]">{GROEP_LABEL[g.groep] ?? g.groep}</span>
+              <span className="text-[10px] text-gray-400">{LOC_KORT[g.locatie] ?? g.locatie} · {leden.length} leden</span>
+            </div>
+            {g.dagen.length === 0 ? (
+              <p className="px-2 py-3 text-center text-[10px] text-gray-400">Nog geen afgeronde lessen in deze groep</p>
+            ) : (
+            <div className="h-[calc(100%-1.75rem)] overflow-auto">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr>
+                  <th className="sticky left-0 z-10 bg-gray-50 px-2 py-1 text-left text-[9px] font-semibold uppercase tracking-wide text-gray-400">Lid</th>
+                  {g.dagen.map(dg => {
+                    const dt = new Date(dg.datum)
+                    return <th key={dg.id} className="px-0.5 py-1 text-center text-[9px] font-normal text-gray-400" title={`${dt.toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long' })}${dg.activity ? ` · ${dg.activity}` : ''}`}>
+                      {dt.getDate()}/{dt.getMonth() + 1}
+                    </th>
+                  })}
+                  <th className="px-1.5 py-1 text-[9px] font-semibold text-gray-400">Aanw.</th>
+                </tr>
+              </thead>
+              <tbody>
+                {leden.map(l => {
+                  const { a, m } = aant(l.id)
+                  return (
+                    <tr key={l.id} className="border-t border-gray-50 hover:bg-[#fdf6f6]">
+                      <td className="sticky left-0 z-10 bg-white px-2 py-0.5">
+                        <Link href={`/admin/students/${l.id}`} className="flex items-center gap-1 whitespace-nowrap">
+                          <span className="h-2 w-2 shrink-0 rounded-full border border-gray-300" style={{ background: beltKleur(l.belt) }} />
+                          <span className="text-[11px] text-[#2a2a2a] hover:text-[#a90000]">{l.naam}</span>
+                        </Link>
+                      </td>
+                      {g.dagen.map(dg => {
+                        const s = get(l.id, dg.id)
+                        const info = s ? STATUS_INFO[s] : null
+                        return (
+                          <td key={dg.id} className="p-0.5 text-center">
+                            <button onClick={() => cycle(l.id, dg.id)}
+                              className={`mx-auto flex ${cel} items-center justify-center rounded border ${info ? info.klas : 'border-gray-100 bg-gray-50 text-gray-300'}`}
+                              title={info ? info.label : 'leeg'}>
+                              {info ? info.emoji : '·'}
+                            </button>
+                          </td>
+                        )
+                      })}
+                      <td className="px-1.5 text-center text-[10px] font-semibold text-green-700">{m ? `${a}/${m}` : '—'}</td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+            </div>
+            )}
+          </div>
+        )
+      })}
+      {d.aanwezigheidGroepen.length === 0 && <Leeg tekst="Geen lessen gevonden." />}
+    </div>
+  )
+}
+
+// ── Contributie: inline als betaald markeren ───────────────────────────────
+function WContributie({ d }: { d: DashData }) {
+  const router = useRouter()
+  const [status, setStatus] = React.useState<Record<string, string>>(Object.fromEntries(d.openRekeningen.map(r => [r.paymentId, r.status])))
+  const [verbergen, setVerbergen] = React.useState<string[]>([])
+  const [busy, setBusy] = React.useState<string | null>(null)
+
+  async function markeerBetaald(paymentId: string) {
+    const was = status[paymentId] ?? 'OPEN'
+    setBusy(paymentId)
+    setStatus(p => ({ ...p, [paymentId]: 'BETAALD' }))
+    setVerbergen(v => [...v, paymentId])
+    try {
+      const res = await fetch('/api/admin2/payment', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ paymentId, status: 'BETAALD' }),
+      })
+      if (!res.ok) throw new Error()
+      router.refresh()
+    } catch {
+      setStatus(p => ({ ...p, [paymentId]: was }))
+      setVerbergen(v => v.filter(x => x !== paymentId))
+    } finally {
+      setBusy(null)
+    }
+  }
+
+  const zichtbaar = d.openRekeningen.filter(r => !verbergen.includes(r.paymentId))
+  return (
+    <div className="space-y-1">
+      <div className="flex items-center justify-between text-[10px] text-gray-400">
+        <span>{d.tiles.contributieOpen} open · €{d.tiles.contributieSom.toFixed(0)} ({d.kwLabel})</span>
+        <Link href="/admin/contributie" className="text-[#a90000] hover:underline">alles →</Link>
+      </div>
+      {zichtbaar.length === 0 ? <Leeg tekst="Alles betaald of vrijgesteld ✅" /> : zichtbaar.map(r => (
+        <div key={r.paymentId} className="flex items-center gap-2 rounded-lg border border-gray-100 px-2 py-1.5">
+          <Link href={`/admin/students/${r.lidId}`} className="min-w-0 flex-1 truncate text-xs font-medium text-[#2a2a2a] hover:text-[#a90000]">{r.naam}</Link>
+          <span className="shrink-0 text-[10px] text-gray-400">{GROEP_LABEL[r.groep] ?? r.groep}</span>
+          <span className="shrink-0 text-xs font-semibold">€{r.bedrag.toFixed(0)}</span>
+          <button onClick={() => markeerBetaald(r.paymentId)} disabled={busy === r.paymentId} title="Markeer als betaald"
+            className="shrink-0 rounded border border-green-300 bg-green-50 px-1.5 py-0.5 text-[10px] font-semibold text-green-700 hover:bg-green-100 disabled:opacity-40">✓</button>
+        </div>
+      ))}
+      {d.openRekeningen.length > 0 && <p className="pt-1 text-[10px] text-gray-400">tik ✓ = als betaald markeren</p>}
+    </div>
+  )
+}
+
+// ── Leden: zoeken, sorteren, status inline ─────────────────────────────────
+function WLeden({ d }: { d: DashData }) {
+  const router = useRouter()
+  const [q, setQ] = React.useState('')
+  const [sorteer, setSorteer] = React.useState('naam')
+  const [status, setStatus] = React.useState<Record<string, string>>(Object.fromEntries(d.leden.map(l => [l.id, l.clubStatus])))
+
+  async function setClubStatus(lidId: string, clubStatus: string) {
+    setStatus(p => ({ ...p, [lidId]: clubStatus }))
+    await fetch('/api/admin2/member-status', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ memberId: lidId, clubStatus, leaveDate: new Date().toISOString().slice(0, 10) }),
+    })
+    router.refresh()
+  }
+
+  let leden = d.leden
+  if (q.trim().length >= 2) leden = leden.filter(l => l.naam.toLowerCase().includes(q.toLowerCase()))
+  if (sorteer === 'naam') leden = [...leden].sort((a, b) => a.naam.localeCompare(b.naam))
+  if (sorteer === 'groep') leden = [...leden].sort((a, b) => a.groep.localeCompare(b.groep) || a.naam.localeCompare(b.naam))
+  if (sorteer === 'belt') leden = [...leden].sort((a, b) => (a.belt ?? '').localeCompare(b.belt ?? ''))
+  if (sorteer === 'leeftijd') leden = [...leden].sort((a, b) => (b.dob ?? '').localeCompare(a.dob ?? ''))
+  if (sorteer === 'open') leden = [...leden].sort((a, b) => (a.betaling === 'BETAALD' ? 1 : 0) - (b.betaling === 'BETAALD' ? 1 : 0))
+
+  return (
+    <div className="space-y-1.5">
+      <div className="flex items-center gap-2">
+        <input value={q} onChange={e => setQ(e.target.value)} placeholder="filter…"
+          className="w-28 rounded border border-gray-200 px-2 py-1 text-[11px] focus:border-[#a90000] focus:outline-none" />
+        <select value={sorteer} onChange={e => setSorteer(e.target.value)}
+          className="rounded border border-gray-200 bg-white px-1.5 py-1 text-[10px] text-gray-600 focus:border-[#a90000] focus:outline-none">
+          <option value="naam">naam</option>
+          <option value="groep">groep</option>
+          <option value="belt">band</option>
+          <option value="leeftijd">leeftijd</option>
+          <option value="open">openstaand eerst</option>
+        </select>
+        <span className="ml-auto text-[10px] text-gray-400">{leden.length} van {d.leden.length}</span>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse text-[11px]">
+          <thead>
+            <tr className="border-b border-gray-100 text-[9px] uppercase tracking-wide text-gray-400">
+              <th className="py-1 text-left font-semibold">Lid</th>
+              <th className="py-1 text-left font-semibold">Groep</th>
+              <th className="py-1 text-left font-semibold">Band</th>
+              <th className="py-1 text-center font-semibold">Betaling</th>
+              <th className="py-1 text-right font-semibold">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {leden.slice(0, 150).map(l => (
+              <tr key={l.id} className="border-b border-gray-50 hover:bg-[#fdf6f6]">
+                <td className="py-0.5">
+                  <Link href={`/admin/students/${l.id}`} className="flex items-center gap-1.5 whitespace-nowrap text-[#2a2a2a] hover:text-[#a90000]">
+                    <span className="h-2 w-2 shrink-0 rounded-full border border-gray-300" style={{ background: beltKleur(l.belt) }} />
+                    <span className="font-medium">{l.naam}</span>
+                    <span className="text-[9px] text-gray-400">{leeftijd(l.dob)}</span>
+                  </Link>
+                </td>
+                <td className="py-0.5 text-[10px] text-gray-500">{GROEP_LABEL[l.groep] ?? l.groep}</td>
+                <td className="py-0.5 text-[10px] text-gray-500">{l.belt ? getBeltLabel(l.belt as BeltLevel) : <span className="text-[#7C3AED]">geen band</span>}</td>
+                <td className="py-0.5 text-center">
+                  <span className={`rounded px-1 py-0.5 text-[9px] font-medium ${PAYMENT_INFO[l.betaling]?.klas ?? 'bg-gray-100 text-gray-500'}`}>
+                    {PAYMENT_INFO[l.betaling]?.label ?? l.betaling}
+                  </span>
+                </td>
+                <td className="py-0.5">
+                  <select value={status[l.id] ?? l.clubStatus} onChange={e => setClubStatus(l.id, e.target.value)}
+                    className="float-right rounded border border-gray-200 bg-white px-1 py-0.5 text-[9px] text-gray-600 focus:border-[#a90000] focus:outline-none">
+                    <option value="LID">LID</option>
+                    <option value="RESERVE">reserve</option>
+                    <option value="STOPPEND">stopt?</option>
+                    <option value="GESTOPT">gestopt</option>
+                    <option value="VRIJGESTELD">vrijgesteld</option>
+                  </select>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {leden.length === 0 && <Leeg tekst="Geen leden gevonden." />}
+    </div>
+  )
+}
+
+// ── Reserve & stoppend: status inline ──────────────────────────────────────
+function WVlaggen({ d }: { d: DashData }) {
+  const router = useRouter()
+  const [status, setStatus] = React.useState<Record<string, string>>(Object.fromEntries(d.vlaggen.map(v => [v.id, v.status])))
+  async function zet(lidId: string, s: string) {
+    setStatus(p => ({ ...p, [lidId]: s }))
+    await fetch('/api/admin2/member-status', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ memberId: lidId, clubStatus: s, leaveDate: new Date().toISOString().slice(0, 10) }),
+    })
+    router.refresh()
+  }
+  return (
+    <div className="space-y-1">
+      {d.vlaggen.length === 0 ? <Leeg tekst="Niemand gevlagd ✅" /> : d.vlaggen.map(v => (
+        <div key={v.id} className="flex items-center gap-1.5 rounded-lg border border-gray-100 px-2 py-1.5">
+          <Link href={`/admin/students/${v.id}`} className="min-w-0 flex-1 truncate text-xs font-medium text-[#2a2a2a] hover:text-[#a90000]">{v.naam}</Link>
+          <span className="shrink-0 text-[9px] text-gray-400">{GROEP_LABEL[v.groep] ?? v.groep}</span>
+          <select value={status[v.id] ?? v.status} onChange={e => zet(v.id, e.target.value)}
+            className="shrink-0 rounded border border-gray-200 bg-white px-1 py-0.5 text-[10px] focus:border-[#a90000] focus:outline-none">
+            <option value="RESERVE">reserve</option>
+            <option value="STOPPEND">stopt?</option>
+            <option value="GESTOPT">gestopt</option>
+            <option value="LID">LID</option>
+          </select>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+// ── Examens ────────────────────────────────────────────────────────────────
+function WExamens({ d }: { d: DashData }) {
+  return (
+    <div className="space-y-2">
+      <div>
+        <p className="mb-1 text-[9px] font-semibold uppercase tracking-wide text-gray-400">Kandidaten</p>
+        {d.examList.length === 0 ? <p className="text-xs text-gray-400">Niemand komt in aanmerking</p> : d.examList.map(e => (
+          <Link key={e.id} href={`/admin/students/${e.id}`} className="flex items-center gap-1.5 rounded px-1 py-0.5 hover:bg-[#fdf6f6]">
+            <span className="h-2.5 w-2.5 shrink-0 rounded-full border border-gray-300" style={{ background: beltKleur(e.belt) }} />
+            <span className="min-w-0 flex-1 truncate text-[11px] text-[#2a2a2a]">{e.naam}</span>
+            <span className="shrink-0 text-[9px] text-gray-500">{e.next}</span>
+            <span className="shrink-0 text-[9px] text-gray-400">{e.maanden ?? '?'}m</span>
+          </Link>
+        ))}
+      </div>
+      {d.geplandeExamens.length > 0 && (
+        <div>
+          <p className="mb-1 text-[9px] font-semibold uppercase tracking-wide text-gray-400">Gepland</p>
+          {d.geplandeExamens.map(e => (
+            <div key={e.id} className="flex items-center justify-between rounded px-1 py-0.5 text-[11px]">
+              <span className="text-[#2a2a2a]">{e.naam}</span>
+              <span className="text-[9px] text-gray-400">{e.datum ? new Date(e.datum).toLocaleDateString('nl-NL') : '—'}</span>
+            </div>
+          ))}
+        </div>
+      )}
+      <Link href="/admin/exams/new" className="block rounded-lg bg-[#a90000] px-2 py-1.5 text-center text-[11px] font-semibold text-white hover:bg-[#8c0000]">+ Examen plannen</Link>
+    </div>
+  )
+}
+
+// ── Inschrijvingen: inline goedkeuren/afkeuren ──────────────────────────────
+function WInschrijvingen({ d }: { d: DashData }) {
+  const router = useRouter()
+  const [lijst, setLijst] = React.useState(d.inschrijvingen)
+  const [busy, setBusy] = React.useState<string | null>(null)
+
+  async function verwerk(id: string, action: 'APPROVE' | 'REJECT') {
+    setBusy(id)
+    try {
+      const res = await fetch(`/api/admin/inschrijvingen/${id}`, {
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action }),
+      })
+      if (!res.ok) throw new Error((await res.json()).error)
+      setLijst(p => p.filter(x => x.id !== id))
+      router.refresh()
+    } catch (e) {
+      setBusy(null)
+      window.alert(`Fout: ${(e as Error).message}`)
+      return
+    }
+    setBusy(null)
+  }
+
+  return (
+    <div className="space-y-1">
+      {lijst.length === 0 ? <Leeg tekst="Geen openstaande aanvragen ✅" /> : lijst.map(a => (
+        <div key={a.id} className="rounded-lg border border-gray-100 px-2 py-1.5">
+          <p className="truncate text-xs font-semibold text-[#2a2a2a]">{a.naam}</p>
+          <p className="truncate text-[9px] text-gray-400">{a.groep} · {a.datum}</p>
+          <div className="mt-1 flex gap-1">
+            <button onClick={() => verwerk(a.id, 'APPROVE')} disabled={busy === a.id}
+              className="flex-1 rounded bg-green-600 px-1.5 py-1 text-[10px] font-semibold text-white hover:bg-green-700 disabled:opacity-40">✓ goedkeuren</button>
+            <button onClick={() => verwerk(a.id, 'REJECT')} disabled={busy === a.id}
+              className="rounded border border-gray-300 px-1.5 py-1 text-[10px] text-gray-500 hover:border-red-400 hover:text-red-600 disabled:opacity-40">✕ afwijzen</button>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+// ── Trend ──────────────────────────────────────────────────────────────────
+function WTrend({ d }: { d: DashData }) {
+  return (
+    <div className="space-y-1.5">
+      {d.trend.length === 0 ? <Leeg tekst="Nog geen data" /> : d.trend.map((x, i) => (
+        <div key={i} className="flex items-center gap-2">
+          <span className="w-16 shrink-0 text-[9px] text-gray-500">{x.label}</span>
+          <div className="h-2 flex-1 overflow-hidden rounded bg-gray-100">
+            <div className="h-full rounded bg-[#a90000]" style={{ width: `${x.pct}%` }} />
+          </div>
+          <span className="w-12 shrink-0 text-right text-[10px] font-medium text-gray-600">{x.aanw}/{x.van}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+// ── Recent gestopt ─────────────────────────────────────────────────────────
+function WGestopt({ d }: { d: DashData }) {
+  return (
+    <div className="space-y-1">
+      {d.recentGestopt.length === 0 ? <Leeg tekst="Niemand gestopt" /> : d.recentGestopt.map(m => (
+        <Link key={m.id} href="/admin/leden" className="flex items-center justify-between rounded px-1 py-0.5 text-[11px] hover:bg-gray-50">
+          <span className="truncate text-[#2a2a2a]">{m.naam}</span>
+          <span className="shrink-0 text-[9px] text-gray-400">{m.leaveDate ? new Date(m.leaveDate).toLocaleDateString('nl-NL') : '—'}</span>
+        </Link>
+      ))}
+    </div>
+  )
+}
+
+// ── Recent betaald ─────────────────────────────────────────────────────────
+function WRecentBetald({ d }: { d: DashData }) {
+  return (
+    <div className="space-y-1">
+      {d.recentBetald.length === 0 ? <Leeg tekst="Nog geen betalingen dit kwartaal" /> : d.recentBetald.map((p, i) => (
+        <div key={i} className="flex items-center justify-between rounded px-1 py-0.5 text-[11px]">
+          <span className="truncate text-[#2a2a2a]">{p.naam}</span>
+          <span className="shrink-0 text-green-700">€{p.bedrag.toFixed(0)}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+// ── Snel naar ──────────────────────────────────────────────────────────────
+function WSnel() {
+  const links: [string, string, string][] = [
+    ['/admin/aanwezigheid/les', '🥋', 'Les invullen'],
+    ['/admin/aanwezigheid', '📊', 'Alle lessen'],
+    ['/admin/leden', '👥', 'Leden'],
+    ['/admin/contributie', '💶', 'Contributie'],
+    ['/admin/inschrijvingen', '📝', 'Inschrijvingen'],
+    ['/admin/exams', '🥇', 'Examens'],
+    ['/admin/exams/new', '➕', 'Examen plannen'],
+    ['/admin/diplomas', '🏆', "Diploma's"],
+    ['/admin/students/new', '🆕', 'Nieuw lid'],
+    ['/diploma/verifieren', '🔍', 'Verifiëren'],
+  ]
+  return (
+    <div className="grid grid-cols-3 gap-1 lg:grid-cols-5">
+      {links.map(([h, ic, lbl]) => (
+        <Link key={h} href={h} className="flex items-center gap-1 rounded-lg border border-gray-100 px-1.5 py-1.5 text-[10px] font-semibold text-[#2a2a2a] hover:border-[#a90000]/40 hover:text-[#a90000]">
+          <span>{ic}</span><span className="truncate">{lbl}</span>
+        </Link>
+      ))}
+    </div>
+  )
 }

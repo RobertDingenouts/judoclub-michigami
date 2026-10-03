@@ -1262,12 +1262,14 @@ nextjs-portal {
 }
 .w-edit .w-drag { cursor: grab; }
 .w-edit .w-drag:active { cursor: grabbing; }
-.w-titel { font-size: 0.8rem; font-weight: 600; color: #2a2a2a; }
+.w-titel { font-size: 0.8rem; font-weight: 600; color: #2a2a2a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .w-grip { color: #bbb; font-size: 0.9rem; letter-spacing: 1px; }
-.w-x { margin-left: auto; border: 0; background: transparent; color: #bbb; font-size: 0.85rem; line-height: 1; padding: 2px 6px; border-radius: 6px; cursor: pointer; }
+.w-x { margin-left: auto; border: 0; background: transparent; color: #bbb; font-size: 0.85rem; line-height: 1; padding: 2px 6px; border-radius: 6px; cursor: pointer; flex-shrink: 0; }
 .w-x:hover { background: #fdecec; color: #a90000; }
 .w-edit .w-x { margin-left: 0.4rem; }
-.w-body { flex: 1; min-height: 0; overflow: auto; padding: 0.6rem 0.75rem; }
+.w-body { flex: 1; min-height: 0; overflow: auto; padding: 0.5rem 0.6rem; }
+/* Widget-body vult de hoogte; tabellen groeien mee */
+.w-body > * { min-height: 0; }
 /* react-grid-layout states */
 .react-grid-item.react-draggable-dragging .w-card,
 .react-grid-item.react-draggable-dragging.w-card { box-shadow: 0 8px 24px rgb(0 0 0 / 0.15); border-color: #a90000; }

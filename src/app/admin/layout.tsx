@@ -68,9 +68,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <Link href="/" className="text-xs text-gray-500 hover:text-[#a90000]">Website</Link>
       </div>
 
-      {/* Main content */}
+      {/* Main content — volledige schermbreedte op grote schermen */}
       <main className="min-h-screen flex-1 pt-14 pb-24 lg:pt-0 lg:pb-0">
-        <div className="mx-auto max-w-[1400px] p-4 lg:p-8">
+        <div className="w-full p-3 lg:p-5 2xl:p-6">
           {children}
         </div>
       </main>
