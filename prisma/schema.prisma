@@ -66,7 +66,8 @@ model Member {
   emergencyContactPhone String?
   medicalNotes          String?
   bondsnummer           String?     @unique
-  createdAt             DateTime      @default(now())
+  clubStatus            String      @default("LID") // LID | RESERVE | STOPPEND | GESTOPT
+  createdAt             DateTime    @default(now())
   updatedAt             DateTime      @updatedAt
   courseProgress        CourseProgress[]
   diplomas              Diploma[]

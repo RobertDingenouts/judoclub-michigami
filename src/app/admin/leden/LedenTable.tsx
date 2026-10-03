@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { GROEPEN, GROEP_LABEL, PAYMENT_INFO, nlDatum, leeftijd } from '@/lib/admin2'
 import { getBeltLabel, getNextBelt, isYouth } from '@/lib/belt-utils'
 import { BELT_COLORS, BELT_ORDER } from '@/lib/student-progress-types'
@@ -9,6 +10,7 @@ import type { BeltLevel } from '@prisma/client'
 
 type Row = {
   id: string; firstName: string; lastName: string; isActive: boolean
+  clubStatus: string
   groep: string | null; band: string | null; bondsnummer: string | null
   dateOfBirth: string | null; email: string | null; phone: string | null; phone2: string | null
   address: string | null; postalCode: string | null; city: string | null; location: string | null
@@ -24,22 +26,60 @@ type Row = {
 
 const BAND_VOLGORDE = [...BELT_ORDER]
 
+const CLUB_STATUS_INFO: Record<string, { label: string; klas: string }> = {
+  LID: { label: 'Lid', klas: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+  RESERVE: { label: 'Reserve', klas: 'bg-amber-50 text-amber-700 border-amber-300' },
+  STOPPEND: { label: 'Stoppend', klas: 'bg-orange-50 text-orange-700 border-orange-300' },
+  GESTOPT: { label: 'Gestopt', klas: 'bg-gray-100 text-gray-500 border-gray-300' },
+}
+
+type SortKey = 'groep' | 'naam' | 'leeftijd' | 'grootste' | 'band' | 'lidSinds' | 'contributie'
+const SORTOPTIES: { key: SortKey; label: string }[] = [
+  { key: 'groep', label: 'Groep' },
+  { key: 'naam', label: 'Achternaam A→Z' },
+  { key: 'leeftijd', label: 'Leeftijd jong→oud' },
+  { key: 'grootste', label: 'Leeftijd oud→jong' },
+  { key: 'band', label: 'Band laag→hoog' },
+  { key: 'lidSinds', label: 'Lid sinds (nieuwst eerst)' },
+  { key: 'contributie', label: 'Contributie (open eerst)' },
+]
+
 export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: string[] }) {
   const [q, setQ] = useState('')
   const [groep, setGroep] = useState('')
   const [status, setStatus] = useState('actief')
+  const [sortKey, setSortKey] = useState<SortKey>('groep')
   const [open, setOpen] = useState<string | null>(null)
 
   const filtered = useMemo(() => {
     const ql = q.toLowerCase()
-    return rows.filter(r => {
-      if (status === 'actief' && !r.isActive) return false
-      if (status === 'gestopt' && r.isActive) return false
+    const out = rows.filter(r => {
+      if (status === 'actief' && !(r.clubStatus === 'LID' || r.clubStatus === 'STOPPEND')) return false
+      if (status === 'gestopt' && r.clubStatus !== 'GESTOPT') return false
+      if (status === 'reserve' && r.clubStatus !== 'RESERVE') return false
       if (groep && r.groep !== groep) return false
       if (ql && !(`${r.firstName} ${r.lastName} ${r.bondsnummer ?? ''}`.toLowerCase().includes(ql))) return false
       return true
     })
-  }, [rows, q, groep, status])
+    const openBedrag = (r: Row) => r.payments.filter(p => ['OPEN', 'HERINNERING1', 'HERINNERING2'].includes(p.status)).reduce((s, p) => s + p.amount, 0)
+    out.sort((a, b) => {
+      switch (sortKey) {
+        case 'naam': return (`${a.lastName} ${a.firstName}`).localeCompare(`${b.lastName} ${b.firstName}`)
+        case 'leeftijd': return (a.dateOfBirth ?? '9999').localeCompare(b.dateOfBirth ?? '9999')
+        case 'grootste': return (b.dateOfBirth ?? '0').localeCompare(a.dateOfBirth ?? '0')
+        case 'band': return BAND_VOLGORDE.indexOf(a.band as BeltLevel) - BAND_VOLGORDE.indexOf(b.band as BeltLevel)
+        case 'lidSinds': return (b.joinDate ?? '').localeCompare(a.joinDate ?? '')
+        case 'contributie': return openBedrag(b) - openBedrag(a)
+        default: return (a.groep ?? 'zzz').localeCompare(b.groep ?? 'zzz') || a.lastName.localeCompare(b.lastName)
+      }
+    })
+    return out
+  }, [rows, q, groep, status, sortKey])
+
+  const statusCount = (s: string) => rows.filter(r =>
+    s === 'actief' ? (r.clubStatus === 'LID' || r.clubStatus === 'STOPPEND') :
+    s === 'gestopt' ? r.clubStatus === 'GESTOPT' :
+    s === 'reserve' ? r.clubStatus === 'RESERVE' : true).length
 
   const groepCount = (g: string) => filtered.filter(r => r.groep === g).length
 
@@ -52,9 +92,17 @@ export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: 
           placeholder="Zoek naam of bondsnummer…"
           className="min-w-[180px] flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none"
         />
+        <select
+          value={sortKey} onChange={e => setSortKey(e.target.value as SortKey)}
+          className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 focus:border-[#a90000] focus:outline-none"
+          aria-label="Sorteren"
+        >
+          {SORTOPTIES.map(o => <option key={o.key} value={o.key}>↕ {o.label}</option>)}
+        </select>
         <div className="flex flex-wrap gap-1.5">
-          <Chip active={status === 'actief'} onClick={() => setStatus('actief')}>Actief</Chip>
-          <Chip active={status === 'gestopt'} onClick={() => setStatus('gestopt')}>Gestopt</Chip>
+          <Chip active={status === 'actief'} onClick={() => setStatus('actief')}>Actief ({statusCount('actief')})</Chip>
+          <Chip active={status === 'reserve'} onClick={() => setStatus('reserve')}>Reserve ({statusCount('reserve')})</Chip>
+          <Chip active={status === 'gestopt'} onClick={() => setStatus('gestopt')}>Gestopt ({statusCount('gestopt')})</Chip>
           <Chip active={status === ''} onClick={() => setStatus('')}>Alle</Chip>
         </div>
       </div>
@@ -81,6 +129,7 @@ export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: 
 }
 
 function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; onToggle: () => void; periodLabels: string[] }) {
+  const router = useRouter()
   const age = leeftijd(r.dateOfBirth)
   const youth = isYouth(r.dateOfBirth ? new Date(r.dateOfBirth) : null)
   const next = r.band ? getNextBelt(r.band as BeltLevel, youth) : (youth ? 'WIT' : null)
@@ -88,6 +137,15 @@ function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; on
   const openBet = r.payments.filter(p => ['OPEN', 'HERINNERING1', 'HERINNERING2'].includes(p.status))
   const laatstePer = periodLabels[periodLabels.length - 1]
   const perStatus = r.payments.find(p => p.label === laatstePer)
+  const si = CLUB_STATUS_INFO[r.clubStatus] ?? CLUB_STATUS_INFO.LID
+
+  const zetStatus = async (s: string) => {
+    await fetch('/api/admin2/member-status', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ memberId: r.id, clubStatus: s }),
+    })
+    router.refresh()
+  }
 
   return (
     <div className={`rounded-xl border bg-white transition-colors ${open ? 'border-[#a90000]/40' : 'border-gray-200'}`}>
@@ -99,13 +157,14 @@ function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; on
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-semibold text-[#2a2a2a]">
             {r.firstName} {r.lastName}
-            {!r.isActive && <span className="ml-2 rounded bg-gray-200 px-1.5 py-0.5 text-[10px] font-medium text-gray-600">gestopt</span>}
+            {r.clubStatus !== 'LID' && <span className={`ml-2 rounded border px-1.5 py-0.5 text-[10px] font-medium ${si.klas}`}>{si.label}</span>}
           </p>
           <p className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-gray-500">
             {r.groep && <span className="rounded bg-[#fdf6f6] px-1.5 py-0.5 font-medium text-[#a90000]">{GROEP_LABEL[r.groep as keyof typeof GROEP_LABEL] ?? r.groep}</span>}
             {age !== null && <span>{age} jr</span>}
             {r.band && <span className="flex items-center gap-1"><span className="h-2.5 w-2.5 rounded-full border border-gray-300" style={{ backgroundColor: BELT_COLORS[r.band as BeltLevel] }} />{getBeltLabel(r.band as BeltLevel)}</span>}
             {r.bondsnummer && <span>#nr {r.bondsnummer}</span>}
+            {r.city && <span className="hidden sm:inline">{r.city}</span>}
           </p>
         </div>
         <div className="hidden shrink-0 text-right text-xs sm:block">
@@ -127,7 +186,7 @@ function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; on
         <div className="grid gap-4 border-t border-gray-100 p-4 text-sm md:grid-cols-2 lg:grid-cols-3">
           {/* Contact */}
           <Section titel="📇 Contact & adres">
-            <KV k="Adres" v={r.address ? `${r.address}, ${r.postalCode ?? ''} ${r.city ?? ''}` : null} />
+            <KV k="Adres" v={r.address ? `${r.address}, ${r.postalCode ?? ''} ${r.city ?? ''}` : (r.city ?? null)} />
             <KV k="Telefoon" v={[r.phone, r.phone2].filter(Boolean).join(' / ') || null} />
             <KV k="E-mail" v={r.email} />
             <KV k="Noodcontact" v={r.emergencyContactName ? `${r.emergencyContactName}${r.emergencyContactPhone ? ' · ' + r.emergencyContactPhone : ''}` : null} />
@@ -136,6 +195,20 @@ function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; on
             <KV k="Portretrecht" v={r.portretrecht === null ? null : r.portretrecht ? 'ja' : 'nee'} />
             {r.medicalNotes && <KV k="Medisch" v={r.medicalNotes} />}
             {r.remarks && <KV k="Notities" v={r.remarks} />}
+            {/* Clubstatus */}
+            <div className="mt-3 border-t border-gray-100 pt-2">
+              <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-gray-400">Clubstatus</p>
+              <div className="flex flex-wrap gap-1.5">
+                {(['LID', 'RESERVE', 'STOPPEND', 'GESTOPT'] as const).map(s => (
+                  <button key={s} onClick={() => zetStatus(s)}
+                    className={`rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors ${
+                      r.clubStatus === s ? `${CLUB_STATUS_INFO[s].klas} ring-1 ring-[#a90000]/40` : 'border-gray-200 bg-white text-gray-500 hover:border-[#a90000]/40'
+                    }`}>
+                    {CLUB_STATUS_INFO[s].label}
+                  </button>
+                ))}
+              </div>
+            </div>
           </Section>
 
           {/* Budopaspoort */}

@@ -63,7 +63,7 @@ for (const [kw, sheet] of Object.entries(data.woensdag2026||{})){
 // 3) Bondsnummers + bandgeschiedenis
 for (const m of data.bondsnummers) upsertMaster(m.voornaam, m.achternaam, { bondsnummer: m.bondsnummer, geboortedatum: m.geboortedatum, bands: m.bands, portretrecht: m.portretrecht }, 'bonds')
 // 4) Gegevens 2025 (actieve kern) + oud leden
-for (const m of data.gegevens2025) upsertMaster(m.voornaam, m.achternaam, { geboortedatum: m.geboortedatum, bands: m.bands }, '2025')
+for (const m of data.gegevens2025) upsertMaster(m.voornaam, m.achternaam, { geboortedatum: m.geboortedatum, bands: m.bands, lidSinds: m.lid_sinds, plaats: m.plaats }, '2025')
 for (const m of data.oudleden) { const k = matchKey(m.voornaam, m.achternaam); upsertMaster(m.voornaam, m.achternaam, { geboortedatum: m.geboortedatum, bands: m.bands, oud: true }, 'oud')
   const e = master.get(k); if (e && !e.actief2026) e.oud = true }
 
@@ -87,17 +87,28 @@ for (const [k, e] of master){
     if (e.geboortedatum && !m.dateOfBirth) patch.dateOfBirth = new Date(e.geboortedatum)
     if (e.groep && !m.primaryGroup) patch.primaryGroup = e.groep
     if (e.actief2026 && !m.isActive) patch.isActive = true
+    if (e.lidSinds && m.joinDate.toISOString().slice(0,10) !== e.lidSinds) patch.joinDate = new Date(e.lidSinds)
+    if (e.plaats && !m.city) patch.city = e.plaats
+    // huidige band = laatste gedateerde band uit geschiedenis
+    const bandEntries = Object.entries(e.bands).sort((a,b) => a[1].localeCompare(b[1]))
+    const laatste = bandEntries.length ? (BELT_ALIAS[bandEntries.at(-1)[0]] || bandEntries.at(-1)[0]) : null
+    if (laatste && BELT_ENUM.has(laatste) && m.currentBelt !== laatste) patch.currentBelt = laatste
     if (Object.keys(patch).length){ await db.member.update({ where: { id: m.id }, data: patch }); report.bijgewerkt.push(`${e.voornaam} ${e.achternaam}`) }
     report.gematcht.push(`${e.voornaam} ${e.achternaam}`)
     updated++
   } else {
     const user = await db.user.create({ data: { role: 'MEMBER', is_active: isActive } })
+    const bandEntries = Object.entries(e.bands).sort((a,b) => a[1].localeCompare(b[1]))
+    const laatste = bandEntries.length ? (BELT_ALIAS[bandEntries.at(-1)[0]] || bandEntries.at(-1)[0]) : null
     m = await db.member.create({ data: {
       userId: user.id, firstName: e.voornaam, lastName: e.achternaam,
       dateOfBirth: e.geboortedatum ? new Date(e.geboortedatum) : null,
       bondsnummer: e.bondsnummer || null,
       primaryGroup: e.groep || null,
       isActive,
+      joinDate: e.lidSinds ? new Date(e.lidSinds) : undefined,
+      city: e.plaats || null,
+      currentBelt: laatste && BELT_ENUM.has(laatste) ? laatste : null,
       location: e.woensdag && !e.actief2026 ? 'OUD_VOSSEMEER' : 'STeenbergen',
     }, include: { user: true } })
     memberByKey.set(k, m)
@@ -212,6 +223,18 @@ for (const [typo, correct] of [['Dingehouts','Dingenouts']]){
     }
   }
 }
+
+// d) Reserve-lijst: geen volwaardig lid maar af en toe op de mat
+const RESERVE = { 'chiem|geers': 'ex-lid, komt nog weleens meedoen', 'tessa|drogers': 'woonachtig Oud-Vossemeer, komt af en toe in Steenbergen' }
+for (const [k, reden] of Object.entries(RESERVE)){
+  const m = memberByKey.get(k)
+  if (m){
+    await db.member.update({ where: { id: m.id }, data: { clubStatus: 'RESERVE', isActive: false, remarks: reden } })
+    report.geslagen.push(`reserve: ${k.replace('|',' ')} → RESERVE`)
+  }
+}
+// bestaande gestopten een duidelijke status geven
+await db.member.updateMany({ where: { isActive: false, clubStatus: 'LID', remarks: null }, data: { clubStatus: 'GESTOPT' } })
 
 // 9) Rapport
 const counts = {
