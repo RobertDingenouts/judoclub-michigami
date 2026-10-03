@@ -32,15 +32,15 @@ const WIDGETS: WDef[] = [
   { i: 'tile-inschrijvingen', titel: 'Inschrijvingen', def: { x: 3, y: 0, w: 3, h: 2, minW: 2, minH: 2 } },
   { i: 'tile-aanwezig', titel: 'Aanwezig', def: { x: 6, y: 0, w: 3, h: 2, minW: 2, minH: 2 } },
   { i: 'tile-examens', titel: 'Examens', def: { x: 9, y: 0, w: 3, h: 2, minW: 2, minH: 2 } },
-  { i: 'lessen', titel: 'Komende lessen', def: { x: 0, y: 2, w: 6, h: 5, minW: 3, minH: 3 } },
-  { i: 'trend', titel: 'Aanwezigheid laatste 7 dagen', def: { x: 6, y: 2, w: 3, h: 5, minW: 2, minH: 3 } },
-  { i: 'examens', titel: '🥋 Examens in zicht', def: { x: 9, y: 2, w: 3, h: 5, minW: 2, minH: 3 } },
-  { i: 'vlaggen', titel: '⚠️ Reserveringen & stoppend', def: { x: 0, y: 7, w: 6, h: 4, minW: 2, minH: 2 } },
-  { i: 'snel', titel: '⚡ Snel naar', def: { x: 6, y: 7, w: 3, h: 4, minW: 2, minH: 2 } },
-  { i: 'gestopt', titel: 'Recent gestopt', def: { x: 9, y: 7, w: 3, h: 4, minW: 2, minH: 2 } },
+  { i: 'lessen', titel: 'Komende lessen', def: { x: 0, y: 2, w: 6, h: 4, minW: 3, minH: 3 } },
+  { i: 'trend', titel: 'Aanwezigheid laatste 7 dagen', def: { x: 6, y: 2, w: 3, h: 4, minW: 2, minH: 3 } },
+  { i: 'examens', titel: '🥋 Examens in zicht', def: { x: 9, y: 2, w: 3, h: 7, minW: 2, minH: 3 } },
+  { i: 'vlaggen', titel: '⚠️ Reserveringen & stoppend', def: { x: 0, y: 6, w: 6, h: 3, minW: 2, minH: 2 } },
+  { i: 'snel', titel: '⚡ Snel naar', def: { x: 6, y: 6, w: 3, h: 3, minW: 2, minH: 2 } },
+  { i: 'gestopt', titel: 'Recent gestopt', def: { x: 9, y: 8, w: 3, h: 4, minW: 2, minH: 2 } },
 ]
 
-const LS_KEY = 'admin-dash-l…y-v1'
+const LS_KEY = 'admin-dash-layout-v1'
 const LS_HIDDEN = 'admin-dash-hidden-v1'
 const BPS = ['lg', 'md', 'sm'] as const
 
@@ -83,11 +83,8 @@ export default function AdminDashboard({ d }: { d: DashData }) {
   }, [])
 
   const onLayoutChange = (_cur: readonly LayoutItem[], all: ResponsiveLayouts) => {
-    try {
-      localStorage.setItem(LS_KEY, JSON.stringify(all))
-      console.log('[dash] opgeslagen:', localStorage.getItem(LS_KEY)?.length, 'bytes')
-    } catch (e) { console.log('[dash] setItem fout:', String(e)) }
     setLayouts(all)
+    localStorage.setItem(LS_KEY, JSON.stringify(all))
   }
   const toggle = (i: string) => {
     const next = hidden.includes(i) ? hidden.filter(x => x !== i) : [...hidden, i]
