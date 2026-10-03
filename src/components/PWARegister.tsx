@@ -4,6 +4,12 @@ import { useEffect } from "react";
 
 export function PWARegister() {
   useEffect(() => {
+    // Service worker alleen op de echte productie-URL.
+    // Op dev/Tailscale-IP's zou een oude SW stale chunks serveren ->
+    // pagina rendert maar knoppen doen niets (hydration faalt).
+    const host = window.location.hostname
+    const isProd = host === "judoclubmichigami.nl" || host === "www.judoclubmichigami.nl" || host === "judoclub-michigami.vercel.app"
+    if (!isProd) return
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         navigator.serviceWorker.register("/sw.js").then(
