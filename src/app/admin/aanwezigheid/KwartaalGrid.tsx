@@ -109,7 +109,7 @@ export function KwartaalGrid({ dagen, leden, cellen }: { dagen: DagCel[]; leden:
                       </th>
                     )
                   })}
-                  <th className="px-2 py-2 text-center font-semibold text-gray-500">%</th>
+                  <th className="px-2 py-2 text-center font-semibold text-gray-500">Aanw.</th>
                 </tr>
               </thead>
               <tbody>
@@ -146,7 +146,7 @@ export function KwartaalGrid({ dagen, leden, cellen }: { dagen: DagCel[]; leden:
                           </td>
                         )
                       })}
-                      <td className="px-2 text-center font-semibold text-gray-600">{meetellend ? `${Math.round((aanw / meetellend) * 100)}%` : '—'}</td>
+                      <td className="px-2 text-center font-semibold text-gray-600 whitespace-nowrap">{meetellend ? <span title={`${aanw} van de ${meetellend} lessen aanwezig`}><span className="text-green-700">{aanw}</span><span className="text-gray-400">/</span>{meetellend}</span> : '—'}</td>
                     </tr>
                   )
                 })}
@@ -154,6 +154,20 @@ export function KwartaalGrid({ dagen, leden, cellen }: { dagen: DagCel[]; leden:
                   <tr><td colSpan={gdagen.length + 2} className="px-3 py-4 text-center text-gray-400">Geen leden met deze groep als hoofdgroep</td></tr>
                 )}
               </tbody>
+              <tfoot>
+                <tr className="border-t border-gray-200 bg-gray-50">
+                  <td className="sticky left-0 z-10 bg-gray-50 px-3 py-1.5 text-[11px] font-semibold text-gray-500">Aanwezig / leden</td>
+                  {gdagen.map(d => {
+                    const aanw = gleden.filter(l => get(l.id, d.id) === 'AANWEZIG').length
+                    return <td key={d.id} className="px-1 py-1.5 text-center text-[11px] font-semibold whitespace-nowrap"><span className="text-green-700">{aanw}</span><span className="text-gray-400">/</span><span className="text-gray-500">{gleden.length}</span></td>
+                  })}
+                  <td className="px-2 text-center text-[11px] font-semibold text-gray-500">{(() => {
+                    const tot = gleden.reduce((s, l) => s + Object.values(gdagen.reduce((m: Record<string, string>, d) => { const v = get(l.id, d.id); if (v && v !== 'VAKANTIE') m[d.id] = v; return m }, {})).filter(v => v === 'AANWEZIG').length, 0)
+                    const meet = gleden.reduce((s, l) => s + gdagen.filter(d => { const v = get(l.id, d.id); return v && v !== 'VAKANTIE' }).length, 0)
+                    return meet ? <span><span className="text-green-700">{tot}</span>/<span className="text-gray-500">{meet}</span></span> : '—'
+                  })()}</td>
+                </tr>
+              </tfoot>
             </table>
           </div>
         )

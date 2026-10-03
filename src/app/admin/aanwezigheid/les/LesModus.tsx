@@ -143,7 +143,7 @@ export function LesModus({ dag, leden: initLeden, recenteDagen, historie }: { da
               <p className="flex items-center gap-2 text-sm font-semibold text-[#2a2a2a]">
                 <span>{l.naam}</span>
                 {l.band && (
-                  <span className="flex items-center gap-1 rounded-full border border-gray-200 bg-gray-50 px-1.5 py-0.5" title={`Band: ${l.band.huidig ?? 'onbekend'} → volgende: ${l.band.volgende ?? '—'}${l.band.slip ? ' (met slip)' : ''}`}>
+                  <span className="flex items-center gap-1 rounded-full border border-gray-200 bg-gray-50 px-1.5 py-0.5" title={`Band: ${l.band.huidig ?? 'nog geen band'} → volgende: ${l.band.volgende ?? '—'}${l.band.slip ? ' (met slip)' : ''}`}>
                     <span className="h-3 w-3 rounded-full border border-gray-300" style={{ background: l.band.huidigKleur }} />
                     <span className="text-[9px] text-gray-400">→</span>
                     <span className={`h-3 w-3 rounded-full border border-gray-300 ${l.band.slip ? 'ring-1 ring-[#a90000]/40' : ''}`} style={{ background: l.band.volgendeKleur }} />

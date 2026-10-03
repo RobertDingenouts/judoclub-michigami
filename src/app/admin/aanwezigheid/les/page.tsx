@@ -87,7 +87,7 @@ export default async function LesModusPage({
     const volgende = getNextBelt(m.currentBelt, jeugd)
     return {
       huidig: m.currentBelt,
-      huidigKleur: getBeltColor(m.currentBelt),
+      huidigKleur: m.currentBelt ? getBeltColor(m.currentBelt) : '#7C3AED', // paars = nog geen band (nieuw lid)
       volgende: volgende,
       volgendeKleur: getBeltColor(volgende),
       slip: volgende ? isSlipBelt(volgende) : false,
