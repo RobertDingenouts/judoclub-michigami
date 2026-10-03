@@ -2,7 +2,8 @@ import { db } from '@/lib/db'
 import { LesModus } from './LesModus'
 import { GROEPEN, GROEP_LABEL } from '@/lib/admin2'
 import { ensureUpcomingDays } from '@/lib/lessen'
-import type { TrainingDay } from '@prisma/client'
+import { getNextBelt, getBeltColor, isSlipBelt, isYouth } from '@/lib/belt-utils'
+import type { TrainingDay, BeltLevel } from '@prisma/client'
 
 export const dynamic = 'force-dynamic'
 
@@ -80,6 +81,19 @@ export default async function LesModusPage({
     include: { attendance: { where: { trainingDayId: day.id } } },
   })
 
+  // Band-status: huidige + volgende band (met slip), voor subtiele chip in de lesmodus
+  const bandInfo = (m: { currentBelt: BeltLevel | null; dateOfBirth: Date | null }) => {
+    const jeugd = isYouth(m.dateOfBirth)
+    const volgende = getNextBelt(m.currentBelt, jeugd)
+    return {
+      huidig: m.currentBelt,
+      huidigKleur: getBeltColor(m.currentBelt),
+      volgende: volgende,
+      volgendeKleur: getBeltColor(volgende),
+      slip: volgende ? isSlipBelt(volgende) : false,
+    }
+  }
+
   // Historie: laatste 8 eerdere lessen van deze groep + status per lid
   const histDagenRaw = await db.trainingDay.findMany({
     where: { group: day.group, date: { lt: day.date } },
@@ -105,6 +119,7 @@ export default async function LesModusPage({
         status: m.attendance[0]?.status ?? null,
         gast: m.clubStatus === 'PROEF',
         hist: histMap[m.id] ?? {},
+        band: bandInfo(m),
       }))}
       historie={histDagen.map(d => ({
         id: d.id,

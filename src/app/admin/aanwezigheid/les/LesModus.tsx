@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { STATUS_INFO } from '@/lib/admin2'
 
-type Lid = { id: string; naam: string; status: string | null; gast?: boolean; hist: Record<string, string> }
+type Lid = { id: string; naam: string; status: string | null; gast?: boolean; hist: Record<string, string>; band?: { huidig: string | null; huidigKleur: string; volgende: string | null; volgendeKleur: string; slip: boolean } }
 type DagInfo = { id: string; datum: string; groep: string; groepLabel: string; activity: string | null; cancelled: boolean }
 type DagTab = { id: string; label: string; actief: boolean }
 type HistDag = { id: string; label: string }
@@ -140,9 +140,17 @@ export function LesModus({ dag, leden: initLeden, recenteDagen, historie }: { da
         {leden.map(l => (
           <div key={l.id} className={`rounded-xl border bg-white p-3 ${busy === l.id ? 'opacity-60' : ''}`}>
             <div className="mb-2 flex items-center justify-between">
-              <p className="text-sm font-semibold text-[#2a2a2a]">
-                {l.naam}
-                {l.gast && <span className="ml-2 rounded border border-sky-300 bg-sky-50 px-1.5 py-0.5 text-[10px] font-medium text-sky-700">gast</span>}
+              <p className="flex items-center gap-2 text-sm font-semibold text-[#2a2a2a]">
+                <span>{l.naam}</span>
+                {l.band && (
+                  <span className="flex items-center gap-1 rounded-full border border-gray-200 bg-gray-50 px-1.5 py-0.5" title={`Band: ${l.band.huidig ?? 'onbekend'} → volgende: ${l.band.volgende ?? '—'}${l.band.slip ? ' (met slip)' : ''}`}>
+                    <span className="h-3 w-3 rounded-full border border-gray-300" style={{ background: l.band.huidigKleur }} />
+                    <span className="text-[9px] text-gray-400">→</span>
+                    <span className={`h-3 w-3 rounded-full border border-gray-300 ${l.band.slip ? 'ring-1 ring-[#a90000]/40' : ''}`} style={{ background: l.band.volgendeKleur }} />
+                    {l.band.slip && <span className="text-[9px] font-semibold text-[#a90000]">slip</span>}
+                  </span>
+                )}
+                {l.gast && <span className="rounded border border-sky-300 bg-sky-50 px-1.5 py-0.5 text-[10px] font-medium text-sky-700">gast</span>}
               </p>
               <div className="flex items-center gap-2">
                 {historie.length > 0 && (
