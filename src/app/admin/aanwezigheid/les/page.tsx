@@ -78,6 +78,7 @@ export default async function LesModusPage({
         id: m.id,
         naam: `${m.firstName} ${m.lastName}`,
         status: m.attendance[0]?.status ?? null,
+        gast: m.clubStatus === 'PROEF',
       }))}
       recenteDagen={recenteDagen.map(d => ({
         id: d.id,

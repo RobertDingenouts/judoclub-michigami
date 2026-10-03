@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { STATUS_INFO } from '@/lib/admin2'
 
-type Lid = { id: string; naam: string; status: string | null }
+type Lid = { id: string; naam: string; status: string | null; gast?: boolean }
 type DagInfo = { id: string; datum: string; groep: string; groepLabel: string; activity: string | null; cancelled: boolean }
 type DagTab = { id: string; label: string; actief: boolean }
 
@@ -23,6 +23,28 @@ export function LesModus({ dag, leden: initLeden, recenteDagen }: { dag: DagInfo
   const [activity, setActivity] = useState(dag.activity ?? '')
   const [opgeslagen, setOpgeslagen] = useState<string | null>(null)
   const [busy, setBusy] = useState<string | null>(null)
+  const [gastNaam, setGastNaam] = useState<string | null>(null)
+  const [gastBusy, setGastBusy] = useState(false)
+
+  async function voegGastToe() {
+    if (!gastNaam?.trim() || gastBusy) return
+    setGastBusy(true)
+    try {
+      const res = await fetch('/api/admin2/gast', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ naam: gastNaam.trim(), groep: dag.groep }),
+      })
+      const j = await res.json()
+      if (!res.ok) throw new Error(j.error)
+      setLeden(prev => prev.some(l => l.id === j.id) ? prev : [...prev, { id: j.id, naam: j.naam, status: null, gast: true }])
+      setGastNaam(null)
+      setOpgeslagen(`${j.naam} toegevoegd als gast`)
+    } catch (e) {
+      setOpgeslagen(`Fout: ${(e as Error).message}`)
+    } finally {
+      setGastBusy(false)
+    }
+  }
 
   async function zetStatus(lidId: string, status: string | null) {
     setBusy(lidId)
@@ -91,12 +113,34 @@ export function LesModus({ dag, leden: initLeden, recenteDagen }: { dag: DagInfo
           className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none" />
       </div>
 
+      {/* Gast / proefles toevoegen */}
+      <div className="rounded-xl border border-dashed border-gray-300 bg-white p-3">
+        {gastNaam === null ? (
+          <button onClick={() => setGastNaam('')} className="text-sm font-medium text-[#a90000]">+ Gast / proefles toevoegen</button>
+        ) : (
+          <div className="flex gap-2">
+            <input autoFocus value={gastNaam} onChange={e => setGastNaam(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && voegGastToe()}
+              placeholder="Naam gast (voor + achternaam)"
+              className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none" />
+            <button onClick={voegGastToe} disabled={!gastNaam.trim() || gastBusy}
+              className="rounded-lg bg-[#a90000] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">
+              {gastBusy ? '…' : 'Toevoegen'}
+            </button>
+            <button onClick={() => setGastNaam(null)} className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-500">✕</button>
+          </div>
+        )}
+      </div>
+
       {/* Ledenlijst met grote knoppen */}
       <div className="space-y-2">
         {leden.map(l => (
           <div key={l.id} className={`rounded-xl border bg-white p-3 ${busy === l.id ? 'opacity-60' : ''}`}>
             <div className="mb-2 flex items-center justify-between">
-              <p className="text-sm font-semibold text-[#2a2a2a]">{l.naam}</p>
+              <p className="text-sm font-semibold text-[#2a2a2a]">
+                {l.naam}
+                {l.gast && <span className="ml-2 rounded border border-sky-300 bg-sky-50 px-1.5 py-0.5 text-[10px] font-medium text-sky-700">gast</span>}
+              </p>
               {l.status && (
                 <span className={`rounded-full border px-2 py-0.5 text-[11px] font-medium ${STATUS_INFO[l.status]?.klas ?? ''}`}>
                   {STATUS_INFO[l.status]?.emoji} {STATUS_INFO[l.status]?.label}

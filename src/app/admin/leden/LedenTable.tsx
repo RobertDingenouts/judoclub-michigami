@@ -28,6 +28,7 @@ const BAND_VOLGORDE = [...BELT_ORDER]
 
 const CLUB_STATUS_INFO: Record<string, { label: string; klas: string }> = {
   LID: { label: 'Lid', klas: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+  PROEF: { label: 'Proefles', klas: 'bg-sky-50 text-sky-700 border-sky-300' },
   RESERVE: { label: 'Reserve', klas: 'bg-amber-50 text-amber-700 border-amber-300' },
   STOPPEND: { label: 'Stoppend', klas: 'bg-orange-50 text-orange-700 border-orange-300' },
   GESTOPT: { label: 'Gestopt', klas: 'bg-gray-100 text-gray-500 border-gray-300' },
@@ -57,6 +58,7 @@ export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: 
       if (status === 'actief' && !(r.clubStatus === 'LID' || r.clubStatus === 'STOPPEND')) return false
       if (status === 'gestopt' && r.clubStatus !== 'GESTOPT') return false
       if (status === 'reserve' && r.clubStatus !== 'RESERVE') return false
+      if (status === 'proef' && r.clubStatus !== 'PROEF') return false
       if (groep && r.groep !== groep) return false
       if (ql && !(`${r.firstName} ${r.lastName} ${r.bondsnummer ?? ''}`.toLowerCase().includes(ql))) return false
       return true
@@ -79,7 +81,8 @@ export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: 
   const statusCount = (s: string) => rows.filter(r =>
     s === 'actief' ? (r.clubStatus === 'LID' || r.clubStatus === 'STOPPEND') :
     s === 'gestopt' ? r.clubStatus === 'GESTOPT' :
-    s === 'reserve' ? r.clubStatus === 'RESERVE' : true).length
+    s === 'reserve' ? r.clubStatus === 'RESERVE' :
+    s === 'proef' ? r.clubStatus === 'PROEF' : true).length
 
   const groepCount = (g: string) => filtered.filter(r => r.groep === g).length
 
@@ -101,6 +104,7 @@ export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: 
         </select>
         <div className="flex flex-wrap gap-1.5">
           <Chip active={status === 'actief'} onClick={() => setStatus('actief')}>Actief ({statusCount('actief')})</Chip>
+          <Chip active={status === 'proef'} onClick={() => setStatus('proef')}>Proefles ({statusCount('proef')})</Chip>
           <Chip active={status === 'reserve'} onClick={() => setStatus('reserve')}>Reserve ({statusCount('reserve')})</Chip>
           <Chip active={status === 'gestopt'} onClick={() => setStatus('gestopt')}>Gestopt ({statusCount('gestopt')})</Chip>
           <Chip active={status === ''} onClick={() => setStatus('')}>Alle</Chip>
@@ -199,7 +203,7 @@ function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; on
             <div className="mt-3 border-t border-gray-100 pt-2">
               <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-gray-400">Clubstatus</p>
               <div className="flex flex-wrap gap-1.5">
-                {(['LID', 'RESERVE', 'STOPPEND', 'GESTOPT'] as const).map(s => (
+                {(['LID', 'PROEF', 'RESERVE', 'STOPPEND', 'GESTOPT'] as const).map(s => (
                   <button key={s} onClick={() => zetStatus(s)}
                     className={`rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors ${
                       r.clubStatus === s ? `${CLUB_STATUS_INFO[s].klas} ring-1 ring-[#a90000]/40` : 'border-gray-200 bg-white text-gray-500 hover:border-[#a90000]/40'
@@ -209,6 +213,8 @@ function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; on
                 ))}
               </div>
             </div>
+            {/* Gast samenvoegen met echt lidrecord */}
+            {r.clubStatus === 'PROEF' && <MergeBox r={r} />}
           </Section>
 
           {/* Budopaspoort */}
@@ -262,6 +268,59 @@ function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; on
               <Link href={`/admin/contributie?lid=${r.id}`} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium hover:border-[#a90000] hover:text-[#a90000]">Factuur</Link>
             </div>
           </Section>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function MergeBox({ r }: { r: Row }) {
+  const router = useRouter()
+  const [open, setOpen] = useState(false)
+  const [kandidaten, setKandidaten] = useState<{ id: string; firstName: string; lastName: string; clubStatus: string; joinDate: string; bondsnummer: string | null }[]>([])
+  const [busy, setBusy] = useState(false)
+
+  async function zoek() {
+    setOpen(true)
+    const res = await fetch(`/api/admin2/merge-kandidaten?naam=${encodeURIComponent(`${r.firstName} ${r.lastName}`)}`)
+    const j = await res.json()
+    setKandidaten(j.kandidaten ?? [])
+  }
+
+  async function merge(toId: string) {
+    if (!confirm(`Alle gegevens van ${r.firstName} ${r.lastName} samenvoegen in dit record? Het proefrecord wordt verwijderd.`)) return
+    setBusy(true)
+    try {
+      const res = await fetch('/api/admin2/merge', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fromId: r.id, toId }),
+      })
+      if (!res.ok) throw new Error((await res.json()).error)
+      router.refresh()
+    } catch (e) {
+      alert(`Samenvoegen mislukt: ${(e as Error).message}`)
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <div className="mt-3 border-t border-gray-100 pt-2">
+      {!open ? (
+        <button onClick={zoek} className="rounded-lg border border-sky-300 bg-sky-50 px-3 py-1.5 text-xs font-medium text-sky-700 hover:bg-sky-100">
+          🔗 Samenvoegen met ingeschreven lid…
+        </button>
+      ) : (
+        <div className="space-y-1.5">
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-400">Kandidaten (klik om samen te voegen)</p>
+          {kandidaten.length === 0 && <p className="text-xs text-gray-400">Geen records gevonden — pas na inschrijving beschikbaar.</p>}
+          {kandidaten.map(k => (
+            <button key={k.id} onClick={() => merge(k.id)} disabled={busy}
+              className="flex w-full items-center justify-between rounded-lg border border-gray-200 bg-white px-3 py-2 text-left text-xs hover:border-[#a90000]/50 disabled:opacity-50">
+              <span className="font-medium text-[#2a2a2a]">{k.firstName} {k.lastName}</span>
+              <span className="text-gray-400">{CLUB_STATUS_INFO[k.clubStatus]?.label ?? k.clubStatus} · {nlDatum(k.joinDate)}{k.bondsnummer ? ` · #${k.bondsnummer}` : ''}</span>
+            </button>
+          ))}
         </div>
       )}
     </div>
