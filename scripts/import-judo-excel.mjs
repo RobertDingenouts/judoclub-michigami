@@ -249,7 +249,20 @@ for (const [typo, correct] of [['Dingehouts','Dingenouts'], ['Schavione','Schiav
   }
 }
 
-// e) Reserve-lijst: geen volwaardig lid maar af en toe op de mat
+// f) Payments van GESTOPTe leden in periodes die ná hun leaveDate starten:
+//    niet verschuldigd -> weg.
+{
+  const ex = await db.member.findMany({ where: { clubStatus: 'GESTOPT', leaveDate: { not: null } }, select: { id: true, leaveDate: true } })
+  const per = await db.contributionPeriod.findMany()
+  for (const m of ex) {
+    const future = per.filter(p => p.start >= m.leaveDate).map(p => p.id)
+    if (!future.length) continue
+    const del = await db.payment.deleteMany({ where: { memberId: m.id, periodId: { in: future }, status: { in: ['OPEN', 'HERINNERING1', 'HERINNERING2'] } } })
+    if (del.count) report.geslagen.push(`${del.count} open payment(s) na uitschrijving verwijderd (${m.id})`)
+  }
+}
+
+// g) Reserve-lijst: geen volwaardig lid maar af en toe op de mat
 const RESERVE = { 'chiem|geers': 'ex-lid, komt nog weleens meedoen', 'tessa|drogers': 'woonachtig Oud-Vossemeer, komt af en toe in Steenbergen' }
 for (const [k, reden] of Object.entries(RESERVE)){
   const m = memberByKey.get(k)
