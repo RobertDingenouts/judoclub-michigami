@@ -22,15 +22,28 @@ export function volgendeLesDatum(weekday: number, from: Date): Date {
 export async function ensureUpcomingDays(dagen = 10): Promise<void> {
   const nu = new Date()
   const tot = new Date(nu.getTime() + dagen * 864e5)
+  await planDaysFrom(nu, tot)
+}
+
+// Plan alle lesdagen van `van` tot en met `tot` volgens het weekpatroon.
+// Bestaande dagen blijven onaangeroerd; geeft het aantal NIUWE dagen terug.
+export async function planDaysFrom(van: Date, tot: Date): Promise<number> {
+  const bestaand = await db.trainingDay.findMany({
+    where: { date: { gte: van, lte: tot } },
+    select: { date: true, group: true },
+  })
+  const key = (d: Date, g: string) => `${d.toISOString().slice(0, 10)}|${g}`
+  const hebben = new Set(bestaand.map(b => key(b.date, b.group)))
+  let gemaakt = 0
   for (const p of PATROON) {
-    let d = volgendeLesDatum(p.weekday, nu)
+    let d = volgendeLesDatum(p.weekday, van)
     while (d <= tot) {
-      await db.trainingDay.upsert({
-        where: { date_group: { date: d, group: p.groep } },
-        create: { date: d, group: p.groep, location: p.locatie },
-        update: {},
-      })
+      if (!hebben.has(key(d, p.groep))) {
+        await db.trainingDay.create({ data: { date: d, group: p.groep, location: p.locatie } })
+        gemaakt++
+      }
       d = new Date(d.getTime() + 7 * 864e5)
     }
   }
+  return gemaakt
 }
