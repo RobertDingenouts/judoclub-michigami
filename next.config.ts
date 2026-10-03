@@ -8,6 +8,9 @@ const withBundleAnalyzer = bundleAnalyzer({
 const nextConfig: NextConfig = {
   output: "standalone",
 
+  // Tailscale-toegang tot de dev-server (mobile dashboard-testen)
+  allowedDevOrigins: ['100.89.108.51', '100.89.108.51:3100', 'kiebel', 'kiebel:3100'],
+
   // Enable React Strict Mode for better development experience
   reactStrictMode: true,
 

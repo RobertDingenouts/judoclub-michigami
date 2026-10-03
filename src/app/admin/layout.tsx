@@ -6,6 +6,20 @@ import { AdminMobileNav } from './AdminMobileNav'
 
 export const dynamic = 'force-dynamic'
 
+const NAV = [
+  { href: '/admin', icon: '🏠', label: 'Start' },
+  { href: '/admin/leden', icon: '👥', label: 'Leden' },
+  { href: '/admin/aanwezigheid', icon: '📅', label: 'Lessen' },
+  { href: '/admin/contributie', icon: '💰', label: 'Contributie' },
+]
+
+const EXTRA = [
+  { href: '/admin/inschrijvingen', icon: '📝', label: 'Inschrijvingen' },
+  { href: '/admin/exams', icon: '🎯', label: 'Examens' },
+  { href: '/admin/diplomas', icon: '🏆', label: "Diploma's" },
+  { href: '/diploma/verifieren', icon: '🔍', label: 'Diploma verifiëren' },
+]
+
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const adminSession = await isAdmin()
 
@@ -16,39 +30,29 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <div className="flex min-h-screen bg-[#f5f5f0]">
       {/* Sidebar (desktop) */}
-      <aside className="hidden w-[260px] flex-col border-r border-gray-200 bg-white lg:flex">
-        {/* Header */}
+      <aside className="hidden w-[240px] shrink-0 flex-col border-r border-gray-200 bg-white lg:flex lg:sticky lg:top-0 lg:h-screen">
         <div className="border-b border-gray-200 p-5">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#fdf6f6]">
               <img src="/logo-hd.png" alt="Michigami" className="h-8 w-8 object-contain" />
             </div>
             <div>
-              <h1 className="text-sm font-bold text-[#2a2a2a]">Michigami Admin</h1>
-              <p className="text-xs text-gray-500">Beheerdashboard</p>
+              <h1 className="text-sm font-bold text-[#2a2a2a]">Michigami</h1>
+              <p className="text-xs text-gray-500">Clubdashboard</p>
             </div>
           </div>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 space-y-1 p-3">
-          <AdminLink href="/admin" icon="📊" label="Overzicht" />
-          <AdminLink href="/admin/inschrijvingen" icon="📝" label="Inschrijvingen" />
-          <AdminLink href="/admin/students" icon="👥" label="Studenten" />
-          <AdminLink href="/admin/exams" icon="🎯" label="Examens" />
-          <AdminLink href="/admin/bandoverzicht" icon="🥋" label="Bandoverzicht" />
-          <AdminLink href="/admin/progress" icon="📈" label="Voortgang" />
-          <AdminLink href="/admin/diplomas" icon="🏆" label="Diploma's" />
-          <AdminLink href="/diploma/verifieren" icon="🔍" label="Diploma Verifiëren" />
+        <nav className="flex-1 space-y-1 overflow-y-auto p-3">
+          {NAV.map(n => <AdminLink key={n.href} {...n} />)}
+          <div className="px-3 pb-1 pt-4 text-[11px] font-semibold uppercase tracking-wide text-gray-400">Meer</div>
+          {EXTRA.map(n => <AdminLink key={n.href} {...n} />)}
         </nav>
 
-        {/* Footer */}
         <div className="border-t border-gray-200 p-4">
           <LogoutButton />
           <div className="mt-3 text-center">
-            <Link href="/" className="text-xs text-gray-400 hover:text-[#a90000]">
-              ← Terug naar website
-            </Link>
+            <Link href="/" className="text-xs text-gray-400 hover:text-[#a90000]">← Terug naar website</Link>
           </div>
         </div>
       </aside>
@@ -59,22 +63,20 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#fdf6f6]">
             <img src="/logo-hd.png" alt="Michigami" className="h-7 w-7 object-contain" />
           </div>
-          <span className="text-sm font-bold">Admin</span>
+          <span className="text-sm font-bold">Clubdashboard</span>
         </div>
-        <div className="flex items-center gap-2">
-          <Link href="/" className="text-xs text-gray-500 hover:text-[#a90000]">
-            ← Website
-          </Link>
-          <AdminMobileNav />
-        </div>
+        <Link href="/" className="text-xs text-gray-500 hover:text-[#a90000]">Website</Link>
       </div>
 
       {/* Main content */}
-      <main className="min-h-screen flex-1 pt-14 lg:pt-0">
-        <div className="p-6 lg:p-8">
+      <main className="min-h-screen flex-1 pt-14 pb-24 lg:pt-0 lg:pb-0">
+        <div className="mx-auto max-w-[1400px] p-4 lg:p-8">
           {children}
         </div>
       </main>
+
+      {/* Mobile bottom tabbar */}
+      <AdminMobileNav />
     </div>
   )
 }

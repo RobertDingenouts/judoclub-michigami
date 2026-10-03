@@ -65,11 +65,16 @@ model Member {
   emergencyContactName  String?
   emergencyContactPhone String?
   medicalNotes          String?
+  bondsnummer           String?     @unique
   createdAt             DateTime      @default(now())
   updatedAt             DateTime      @updatedAt
   courseProgress        CourseProgress[]
   diplomas              Diploma[]
   examAttempts          ExamAttempt[]
+  attendance            Attendance[]
+  payments              Payment[]
+  bondHistory           BondHistory[]
+  competitions          Competition[]
   user                  User          @relation(fields: [userId], references: [id])
 
   @@index([lastName, firstName])
@@ -299,4 +304,109 @@ enum ApplicationStatus {
   PENDING
   APPROVED
   REJECTED
+}
+
+// ============================================================================
+// Admin Dashboard 2.0 (okt 2026) — additieve tabellen, bestaande data blijft
+// ============================================================================
+
+model TrainingDay {
+  id        String        @id @default(cuid())
+  date      DateTime      @db.Date
+  location  String        // 'STEENBERGEN' | 'OUD_VOSSEMEER'
+  group     String        // 'VRIJDAG_1E' | 'VRIJDAG_2E' | 'VRIJDAG_3E' | 'WOENSDAG' | 'SENIOREN'
+  cancelled Boolean       @default(false)
+  activity  String?       // onderwerp/activiteit van deze les
+  notes     String?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  attendance Attendance[]
+
+  @@unique([date, group])
+  @@index([date])
+}
+
+enum AttendanceStatus {
+  AANWEZIG
+  AFGEMELD
+  NIET_AANWEZIG
+  ZIEK
+  VERZET
+  VAKANTIE
+}
+
+model Attendance {
+  id            String           @id @default(cuid())
+  memberId      String
+  trainingDayId String
+  status        AttendanceStatus @default(AANWEZIG)
+  note          String?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  member        Member           @relation(fields: [memberId], references: [id])
+  trainingDay   TrainingDay      @relation(fields: [trainingDayId], references: [id])
+
+  @@unique([memberId, trainingDayId])
+  @@index([trainingDayId])
+}
+
+model ContributionPeriod {
+  id     String   @id @default(cuid())
+  label  String   @unique // '2026-Q1'
+  start  DateTime @db.Date
+  end    DateTime @db.Date
+  amount Decimal  @default(42.00) @db.Decimal(6, 2)
+  payments Payment[]
+}
+
+enum PaymentStatus {
+  OPEN
+  BETAALD
+  HERINNERING1
+  HERINNERING2
+  VIJGESTELD
+}
+
+model Payment {
+  id            String             @id @default(cuid())
+  memberId      String
+  periodId      String
+  amount        Decimal            @db.Decimal(6, 2)
+  status        PaymentStatus      @default(OPEN)
+  dueDate       DateTime?          @db.Date
+  invoiceNumber String?            @unique
+  paidAt        DateTime?
+  note          String?
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  member        Member             @relation(fields: [memberId], references: [id])
+  period        ContributionPeriod @relation(fields: [periodId], references: [id])
+
+  @@unique([memberId, periodId])
+  @@index([periodId, status])
+}
+
+model BondHistory {
+  id        String    @id @default(cuid())
+  memberId  String
+  belt      BeltLevel
+  awardedAt DateTime  @db.Date
+  source    String    @default("IMPORT") // IMPORT | EXAM | HAND
+  member    Member    @relation(fields: [memberId], references: [id])
+
+  @@unique([memberId, belt])
+  @@index([memberId])
+}
+
+model Competition {
+  id       String   @id @default(cuid())
+  memberId String
+  date     DateTime @db.Date
+  name     String
+  result   String?
+  notes    String?
+  member   Member   @relation(fields: [memberId], references: [id])
+
+  @@index([memberId])
+  @@index([date])
 }

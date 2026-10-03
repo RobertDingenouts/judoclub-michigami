@@ -1,262 +1,200 @@
 import { db } from '@/lib/db'
 import Link from 'next/link'
-import { LOCATION_LABELS_NL } from '@/lib/student-progress-types'
-import type { BeltLevel, ExamStatus, DiplomaType } from '@prisma/client'
+import { GROEP_LABEL, PAYMENT_INFO, kwartaalVan } from '@/lib/admin2'
+import { getBeltLabel, getNextBelt, isYouth } from '@/lib/belt-utils'
+import { BELT_COLORS } from '@/lib/student-progress-types'
+import type { BeltLevel } from '@prisma/client'
 
 export const dynamic = 'force-dynamic'
 
-export default async function AdminDashboard() {
-  // Fetch stats (only active members)
-  const [totalStudents, totalExams, totalDiplomas, recentExams, beltDistribution, trashedCount, locationDistribution] = await Promise.all([
+export default async function AdminStart() {
+  const now = new Date()
+  const todayIso = now.toISOString().slice(0, 10)
+  const kw = kwartaalVan(now)
+
+  const [
+    actieveLeden, pendingApps, openPayments,
+    dagenVandaag, dagenWeek,
+    recenteAanwezigheid, geplandeExamens, ledenVoorExamen,
+  ] = await Promise.all([
     db.member.count({ where: { isActive: true } }),
-    db.examAttempt.count(),
-    db.diploma.count(),
-    db.examAttempt.findMany({
-      take: 5,
-      orderBy: { examDate: 'desc' },
-      include: {
-        member: true,
-        results: true,
-      },
-      where: { examDate: { not: null } },
+    db.membershipApplication.count({ where: { status: 'PENDING' } }),
+    db.payment.aggregate({
+      where: { status: { in: ['OPEN', 'HERINNERING1', 'HERINNERING2'] }, period: { label: kw } },
+      _count: true, _sum: { amount: true },
     }),
-    db.member.groupBy({
-      where: { isActive: true },
-      by: ['currentBelt'],
-      _count: { currentBelt: true },
+    db.trainingDay.findMany({
+      where: { date: { gte: new Date(todayIso) }, cancelled: false },
+      orderBy: { date: 'asc' }, take: 4,
+      include: { attendance: true },
     }),
-    db.member.count({ where: { isActive: false } }),
-    db.member.groupBy({
-      where: { isActive: true, location: { not: null } },
-      by: ['location'],
-      _count: { location: true },
+    db.trainingDay.findMany({
+      where: { date: { gte: new Date(now.getTime() - 7 * 864e5), lte: now }, cancelled: false },
+      include: { attendance: true },
+      orderBy: { date: 'asc' },
+    }),
+    db.attendance.groupBy({ by: ['status'], _count: true }),
+    db.examAttempt.count({ where: { status: 'SCHEDULED' } }),
+    db.member.findMany({
+      where: { isActive: true, currentBelt: { not: null }, primaryGroup: { notIn: ['SENIOREN'] } },
+      include: { bondHistory: { orderBy: { awardedAt: 'desc' }, take: 1 } },
+      orderBy: [{ lastName: 'asc' }],
     }),
   ])
 
-  const beltCounts = beltDistribution.reduce<Record<string, number>>((acc, item) => {
-    const belt = item.currentBelt || 'Onbekend'
-    acc[belt] = item._count.currentBelt
-    return acc
-  }, {})
+  const vandaag = dagenVandaag.filter(d => d.date.toISOString().slice(0, 10) === todayIso)
+  const statusCounts: Record<string, number> = {}
+  for (const d of vandaag) for (const a of d.attendance) statusCounts[a.status] = (statusCounts[a.status] || 0) + 1
 
-  const pendingExams = await db.examAttempt.count({
-    where: { status: 'SCHEDULED' },
-  })
+  const trend = dagenWeek.map(d => {
+    const relevant = d.attendance.filter(a => a.status !== 'VAKANTIE')
+    const aanw = d.attendance.filter(a => a.status === 'AANWEZIG').length
+    return {
+      label: d.date.toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' }),
+      pct: relevant.length ? Math.round((aanw / relevant.length) * 100) : 0,
+    }
+  }).filter(t => t.pct > 0)
 
-  const passRate = totalExams > 0
-    ? ((await db.examAttempt.count({ where: { status: 'COMPLETED_PASSED' } }) / totalExams) * 100).toFixed(0)
-    : '0'
+  const examList = ledenVoorExamen.map(m => {
+    const youth = isYouth(m.dateOfBirth)
+    const last = m.bondHistory[0]
+    const next = getNextBelt(m.currentBelt as BeltLevel, youth)
+    const maanden = last ? Math.round((now.getTime() - last.awardedAt.getTime()) / (30.44 * 864e5)) : null
+    return {
+      id: m.id, naam: `${m.firstName} ${m.lastName}`,
+      belt: m.currentBelt as BeltLevel,
+      next: next ? getBeltLabel(next) : '—',
+      maanden,
+    }
+  }).filter(e => e.maanden === null || e.maanden >= 3).slice(0, 12)
+
+  const attTotal = recenteAanwezigheid.reduce((s, g) => s + g._count, 0)
+  const attAanw = recenteAanwezigheid.find(g => g.status === 'AANWEZIG')?._count ?? 0
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-[#2a2a2a]">Admin Dashboard</h1>
-        <p className="text-sm text-gray-500 mt-1">Overzicht van studenten, examens en diploma&apos;s</p>
-      </div>
-
-      {/* Stats cards */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard
-          title="Studenten"
-          value={totalStudents}
-          icon="👥"
-          href="/admin/students"
-          subtitle={`${trashedCount > 0 ? `${trashedCount} in prullenbak` : 'Aangemeld'}`}
-        />
-        <StatCard
-          title="Examens"
-          value={totalExams}
-          icon="🎯"
-          href="/admin/exams"
-          subtitle={`${pendingExams} gepland`}
-        />
-        <StatCard
-          title="Diploma&apos;s"
-          value={totalDiplomas}
-          icon="🏆"
-          href="/admin/diplomas"
-          subtitle="Uitgereikt"
-        />
-        <StatCard
-          title="Slagingspercentage"
-          value={`${passRate}%`}
-          icon="📊"
-          href="/admin/exams"
-          subtitle="Van alle examens"
-        />
-      </div>
-
-      {/* Belt distribution */}
-      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-lg font-semibold text-[#2a2a2a]">Bandverdeling</h2>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6">
-          {Object.entries(beltCounts).map(([belt, count]) => (
-            <div key={belt} className="rounded-lg border border-gray-100 bg-gray-50 p-3 text-center">
-              <div className="text-2xl font-bold text-[#a90000]">{count}</div>
-              <div className="mt-1 truncate text-xs font-medium text-gray-600">{beltLabel(belt)}</div>
-            </div>
-          ))}
-          {Object.keys(beltCounts).length === 0 && (
-            <p className="col-span-6 text-center text-sm text-gray-400">Nog geen studenten geregistreerd</p>
-          )}
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold text-[#2a2a2a]">Start</h1>
+          <p className="mt-1 text-sm text-gray-500">
+            {now.toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} · {actieveLeden} actieve leden
+          </p>
         </div>
+        <Link href="/admin/aanwezigheid/les" className="rounded-xl bg-[#a90000] px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-[#8c0000]">
+          ✏️ Les invullen (op de mat)
+        </Link>
       </div>
 
-      {/* Location distribution */}
-      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-lg font-semibold text-[#2a2a2a]">Trainingslocaties</h2>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {locationDistribution.map((item) => {
-            const locationName = LOCATION_LABELS_NL[item.location as keyof typeof LOCATION_LABELS_NL] || item.location
-            const percentage = totalStudents > 0 ? Math.round((item._count.location / totalStudents) * 100) : 0
-            return (
-              <div key={item.location} className="rounded-lg border border-gray-100 bg-gray-50 p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">📍 {locationName}</p>
-                    <p className="mt-1 text-3xl font-bold text-[#a90000]">{item._count.location}</p>
-                    <p className="mt-1 text-xs text-gray-400">{percentage}% van alle studenten</p>
-                  </div>
-                  <Link
-                    href={`/admin/students?location=${item.location}`}
-                    className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:bg-gray-50"
-                  >
-                    Bekijk →
+      {/* Tegels */}
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <Tegel title="Contributie" value={`${openPayments._count ?? 0} open`} sub={`€${(openPayments._sum.amount ?? 0).toFixed(0)} in ${kw}`} href="/admin/contributie"
+          accent={(openPayments._count ?? 0) > 0 ? 'text-red-700' : 'text-green-700'} />
+        <Tegel title="Inschrijvingen" value={pendingApps} sub={pendingApps ? 'wachten op goedkeuring' : 'niets te doen'} href="/admin/inschrijvingen"
+          accent={pendingApps ? 'text-[#a90000]' : ''} />
+        <Tegel title="Aanwezig (alles)" value={`${attTotal ? Math.round((attAanw / attTotal) * 100) : 0}%`} sub={`${attAanw}/${attTotal} registraties`} href="/admin/aanwezigheid" />
+        <Tegel title="Examens" value={geplandeExamens} sub={geplandeExamens ? 'gepland' : 'geen gepland'} href="/admin/exams" />
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-3">
+        {/* Komende lessen */}
+        <div className="rounded-xl border border-gray-200 bg-white p-5 lg:col-span-2">
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="font-semibold text-[#2a2a2a]">Komende lessen</h2>
+            <Link href="/admin/aanwezigheid" className="text-xs text-[#a90000] hover:underline">Rooster →</Link>
+          </div>
+          {dagenVandaag.length === 0 ? (
+            <p className="py-6 text-center text-sm text-gray-400">Geen lessen gepland. Maak ze aan bij Lessen → Rooster.</p>
+          ) : (
+            <div className="space-y-2">
+              {dagenVandaag.map(d => {
+                const isVandaag = d.date.toISOString().slice(0, 10) === todayIso
+                const aanw = d.attendance.filter(a => a.status === 'AANWEZIG').length
+                const afg = d.attendance.filter(a => a.status === 'AFGEMELD').length
+                return (
+                  <Link key={d.id} href={`/admin/aanwezigheid/les?dag=${d.id}`}
+                    className={`flex items-center justify-between rounded-lg border p-3.5 transition-colors hover:border-[#a90000]/40 ${isVandaag ? 'border-[#a90000]/50 bg-[#fdf6f6]' : 'border-gray-100'}`}>
+                    <div>
+                      <p className="text-sm font-semibold text-[#2a2a2a]">
+                        {d.date.toLocaleDateString('nl-NL', { weekday: 'short', day: 'numeric', month: 'short' })}
+                        <span className="ml-2 rounded bg-gray-100 px-1.5 py-0.5 text-[11px] font-medium text-gray-600">{GROEP_LABEL[d.group as keyof typeof GROEP_LABEL] ?? d.group}</span>
+                      </p>
+                      {d.activity && <p className="mt-0.5 text-xs text-gray-500">🎯 {d.activity}</p>}
+                    </div>
+                    <div className="text-right text-xs text-gray-500">
+                      {d.attendance.length > 0 ? (
+                        <>{aanw} ✅ · {afg} 🅰</>
+                      ) : (
+                        <span className="text-[#a90000]">Invullen →</span>
+                      )}
+                    </div>
                   </Link>
+                )
+              })}
+            </div>
+          )}
+          {vandaag.length > 0 && Object.keys(statusCounts).length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-2 border-t border-gray-100 pt-3 text-xs">
+              {Object.entries(statusCounts).map(([s, n]) => (
+                <span key={s} className={`rounded-full border border-gray-200 px-2.5 py-1 ${PAYMENT_INFO[s]?.klas ?? 'bg-gray-100'}`}>{s}: {n}</span>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Trend */}
+        <div className="rounded-xl border border-gray-200 bg-white p-5">
+          <h2 className="mb-3 font-semibold text-[#2a2a2a]">Aanwezigheid laatste 7 dagen</h2>
+          {trend.length === 0 ? (
+            <p className="py-6 text-center text-sm text-gray-400">Nog geen data</p>
+          ) : (
+            <div className="space-y-2">
+              {trend.slice(-8).map((t, i) => (
+                <div key={i} className="flex items-center gap-2 text-xs">
+                  <span className="w-16 shrink-0 text-gray-500">{t.label}</span>
+                  <div className="h-2.5 flex-1 overflow-hidden rounded bg-gray-100">
+                    <div className="h-full rounded bg-[#a90000]" style={{ width: `${t.pct}%` }} />
+                  </div>
+                  <span className="w-9 shrink-0 text-right font-medium">{t.pct}%</span>
                 </div>
-              </div>
-            )
-          })}
-          {locationDistribution.length === 0 && (
-            <p className="col-span-2 text-center text-sm text-gray-400">Nog geen locaties toegekend aan studenten</p>
+              ))}
+            </div>
           )}
         </div>
       </div>
 
-      {/* Recent exams */}
-      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-[#2a2a2a]">Recente Examens</h2>
-          <Link href="/admin/exams" className="text-sm text-[#a90000] hover:underline">
-            Bekijk alle →
-          </Link>
+      {/* Examens in zicht */}
+      <div className="rounded-xl border border-gray-200 bg-white p-5">
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="font-semibold text-[#2a2a2a]">🥋 Examens in zicht <span className="text-xs font-normal text-gray-400">(≥3 maanden in huidige band)</span></h2>
+          <Link href="/admin/exams/new" className="text-xs text-[#a90000] hover:underline">Examen plannen →</Link>
         </div>
-
-        {recentExams.length > 0 ? (
-          <div className="space-y-3">
-            {recentExams.map((exam) => (
-              <div key={exam.id} className="flex items-center justify-between rounded-lg border border-gray-100 p-4">
-                <div className="flex items-center gap-4">
-                  <div className={`flex h-10 w-10 items-center justify-center rounded-lg text-lg ${
-                    exam.status === 'COMPLETED_PASSED' ? 'bg-green-100 text-green-700' :
-                    exam.status === 'COMPLETED_FAILED' ? 'bg-red-100 text-red-700' :
-                    'bg-yellow-100 text-yellow-700'
-                  }`}>
-                    {exam.status === 'COMPLETED_PASSED' ? '✓' :
-                     exam.status === 'COMPLETED_FAILED' ? '✗' : '⏳'}
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-[#2a2a2a]">
-                      {exam.member?.firstName} {exam.member?.lastName}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      {beltLabel(exam.beltLevel)} • {exam.examDate ? new Date(exam.examDate).toLocaleDateString('nl-NL') : 'Geen datum'}
-                    </p>
-                  </div>
+        {examList.length === 0 ? (
+          <p className="py-4 text-center text-sm text-gray-400">Niemand komt in aanmerking (of bandgegevens nog niet compleet)</p>
+        ) : (
+          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            {examList.map(e => (
+              <Link key={e.id} href={`/admin/students/${e.id}`} className="flex items-center gap-3 rounded-lg border border-gray-100 p-3 hover:border-[#a90000]/40">
+                <span className="h-4 w-4 shrink-0 rounded-full border border-gray-300" style={{ backgroundColor: BELT_COLORS[e.belt] ?? '#ccc' }} />
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium text-[#2a2a2a]">{e.naam}</p>
+                  <p className="text-xs text-gray-500">nu {getBeltLabel(e.belt)} → <b className="text-[#a90000]">{e.next}</b></p>
                 </div>
-                <div className="text-right">
-                  <span className={`inline-flex rounded-lg px-2.5 py-0.5 text-xs font-medium ${statusBadge(exam.status)}`}>
-                    {statusLabel(exam.status)}
-                  </span>
-                  {exam.overallScore != null && (
-                    <p className="mt-1 text-xs text-gray-500">{exam.overallScore}/100</p>
-                  )}
-                </div>
-              </div>
+                <span className="shrink-0 text-xs text-gray-400">{e.maanden ?? '?'} mnd</span>
+              </Link>
             ))}
           </div>
-        ) : (
-          <p className="text-center text-sm text-gray-400 py-8">Nog geen examens geregistreerd</p>
         )}
-      </div>
-
-      {/* Quick actions */}
-      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-lg font-semibold text-[#2a2a2a]">Snelle Acties</h2>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-          <Link href="/admin/students" className="flex items-center gap-3 rounded-lg border border-gray-200 p-4 transition-colors hover:border-[#a90000] hover:bg-[#fdf6f6]">
-            <span className="text-xl">➕</span>
-            <div>
-              <p className="text-sm font-medium text-[#2a2a2a]">Student Toevoegen</p>
-              <p className="text-xs text-gray-500">Nieuwe student registreren</p>
-            </div>
-          </Link>
-          <Link href="/admin/exams" className="flex items-center gap-3 rounded-lg border border-gray-200 p-4 transition-colors hover:border-[#a90000] hover:bg-[#fdf6f6]">
-            <span className="text-xl">📝</span>
-            <div>
-              <p className="text-sm font-medium text-[#2a2a2a]">Examen Plannen</p>
-              <p className="text-xs text-gray-500">Nieuw examen registreren</p>
-            </div>
-          </Link>
-          <Link href="/admin/diplomas" className="flex items-center gap-3 rounded-lg border border-gray-200 p-4 transition-colors hover:border-[#a90000] hover:bg-[#fdf6f6]">
-            <span className="text-xl">🎓</span>
-            <div>
-              <p className="text-sm font-medium text-[#2a2a2a]">Diploma&apos;s Beheren</p>
-              <p className="text-xs text-gray-500">Uitreiken en verifiëren</p>
-            </div>
-          </Link>
-        </div>
       </div>
     </div>
   )
 }
 
-function StatCard({ title, value, icon, href, subtitle }: { title: string; value: string | number; icon: string; href: string; subtitle: string }) {
+function Tegel({ title, value, sub, href, accent = '' }: { title: string; value: string | number; sub: string; href: string; accent?: string }) {
   return (
-    <Link href={href} className="group rounded-lg border border-gray-200 bg-white p-5 shadow-sm transition-colors hover:border-[#a90000]">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm font-medium text-gray-500">{title}</p>
-          <p className="mt-1 text-3xl font-bold text-[#2a2a2a]">{value}</p>
-          <p className="mt-1 text-xs text-gray-400">{subtitle}</p>
-        </div>
-        <span className="text-3xl opacity-60">{icon}</span>
-      </div>
+    <Link href={href} className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-[#a90000]">
+      <p className="text-xs font-medium uppercase tracking-wide text-gray-400">{title}</p>
+      <p className={`mt-1 text-2xl font-bold ${accent || 'text-[#2a2a2a]'}`}>{value}</p>
+      <p className="mt-0.5 text-xs text-gray-500">{sub}</p>
     </Link>
   )
-}
-
-function beltLabel(belt: string | null): string {
-  const labels: Record<string, string> = {
-    WIT: 'Wit', WIT_GEEL: 'Wit+Geel', GEEL: 'Geel', GEEL_ORANJE: 'Geel+Oranje',
-    ORANJE: 'Oranje', ORANJE_GROEN: 'Oranje+Groen', GROEN: 'Groen', GROEN_BLAUW: 'Groen+Blauw',
-    BLAUW: 'Blauw', BLAUW_BRUIN: 'Blauw+Bruin', BRUIN: 'Bruin',
-    ZWART_1: 'Zwart 1e Dan', ZWART_2: 'Zwart 2e Dan', ZWART_3: 'Zwart 3e Dan',
-    ZWART_4: 'Zwart 4e Dan', ZWART_5: 'Zwart 5e Dan', ZWART_6: 'Zwart 6e Dan',
-    ZWART_7: 'Zwart 7e Dan', ZWART_8: 'Zwart 8e Dan', ZWART_9: 'Zwart 9e Dan',
-    ZWART_10: 'Zwart 10e Dan',
-    // Legacy values
-    BRUIN_1: 'Bruin 1e Ke', BRUIN_2: 'Bruin 2e Ke', BRUIN_3: 'Bruin 3e Ke',
-    Zwart_1: 'Zwart 1e Dan', Zwart_2: 'Zwart 2e Dan', Zwart_3: 'Zwart 3e Dan',
-  }
-  return labels[belt || ''] || belt || 'Onbekend'
-}
-
-function statusBadge(status: ExamStatus): string {
-  switch (status) {
-    case 'COMPLETED_PASSED': return 'bg-green-100 text-green-800'
-    case 'COMPLETED_FAILED': return 'bg-red-100 text-red-800'
-    case 'SCHEDULED': return 'bg-yellow-100 text-yellow-800'
-    case 'CANCELLED': return 'bg-gray-100 text-gray-800'
-  }
-}
-
-function statusLabel(status: ExamStatus): string {
-  switch (status) {
-    case 'COMPLETED_PASSED': return 'Geslaagd'
-    case 'COMPLETED_FAILED': return 'Niet geslaagd'
-    case 'SCHEDULED': return 'Gepland'
-    case 'CANCELLED': return 'Geannuleerd'
-  }
 }
