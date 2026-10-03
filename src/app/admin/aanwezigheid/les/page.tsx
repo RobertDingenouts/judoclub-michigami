@@ -1,14 +1,21 @@
 import { db } from '@/lib/db'
 import { LesModus } from './LesModus'
 import { GROEPEN, GROEP_LABEL } from '@/lib/admin2'
+import { ensureUpcomingDays } from '@/lib/lessen'
 import type { TrainingDay } from '@prisma/client'
 
 export const dynamic = 'force-dynamic'
+
+// Volgorde van de vrijdaggroepen op één datum: 1e (18:45) → 2e (19:45) → 3e (20:45)
+const GROEP_TIJD: Record<string, number> = { WOENSDAG: 0, VRIJDAG_1E: 1, VRIJDAG_2E: 2, VRIJDAG_3E: 3 }
 
 export default async function LesModusPage({
   searchParams,
 }: { searchParams: Promise<{ dag?: string; datum?: string; groep?: string }> }) {
   const params = await searchParams
+
+  // Lesdagen volgens het vaste weekpatroon (woens/woens/vr) laten bestaan
+  await ensureUpcomingDays(10)
 
   // Gegeven dag, of anders de eerstvolgende les, of today+groep aanmaken op demand
   let day: TrainingDay | null = null
@@ -25,17 +32,19 @@ export default async function LesModusPage({
   if (!day) {
     day = await db.trainingDay.findFirst({
       where: { date: { gte: new Date(new Date().toISOString().slice(0, 10)) }, cancelled: false },
-      orderBy: { date: 'asc' },
+      orderBy: [{ date: 'asc' }, { group: 'asc' }],
     })
   }
 
-  // Beschikbare lessen voor snelle wissel (vandaag ± 3 dagen)
+  // Beschikbare lessen voor snelle wissel (vandaag ± 3 dagen), gesorteerd op datum + lestijd
   const nu = new Date()
   const van = new Date(nu.getTime() - 2 * 864e5), tot = new Date(nu.getTime() + 4 * 864e5)
-  const recenteDagen = await db.trainingDay.findMany({
+  const recenteDagenRaw = await db.trainingDay.findMany({
     where: { date: { gte: van, lte: tot } },
     orderBy: [{ date: 'asc' }, { group: 'asc' }],
   })
+  const recenteDagen = recenteDagenRaw.sort((a, b) =>
+    a.date.getTime() - b.date.getTime() || (GROEP_TIJD[a.group] ?? 9) - (GROEP_TIJD[b.group] ?? 9))
 
   if (!day) {
     // Nog geen lessen aangemaakt: toon groepskeuze; link per groep naar de volgende lesdag van die groep

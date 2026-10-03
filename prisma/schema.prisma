@@ -67,6 +67,7 @@ model Member {
   medicalNotes          String?
   bondsnummer           String?     @unique
   clubStatus            String      @default("LID") // LID | RESERVE | STOPPEND | GESTOPT
+  leaveDate             DateTime? // datum van uitschrijving (bij GESTOPT)
   createdAt             DateTime    @default(now())
   updatedAt             DateTime      @updatedAt
   courseProgress        CourseProgress[]
@@ -376,6 +377,7 @@ model Payment {
   status        PaymentStatus      @default(OPEN)
   dueDate       DateTime?          @db.Date
   invoiceNumber String?            @unique
+  items         String? // JSON: [{ omschrijving, bedrag }] — als gezet: factuurlijnen i.p.v. standaard contributielijn
   paidAt        DateTime?
   note          String?
   createdAt     DateTime           @default(now())

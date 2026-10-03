@@ -11,6 +11,7 @@ import type { BeltLevel } from '@prisma/client'
 type Row = {
   id: string; firstName: string; lastName: string; isActive: boolean
   clubStatus: string
+  leaveDate: string | null
   groep: string | null; band: string | null; bondsnummer: string | null
   dateOfBirth: string | null; email: string | null; phone: string | null; phone2: string | null
   address: string | null; postalCode: string | null; city: string | null; location: string | null
@@ -134,6 +135,7 @@ export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: 
 
 function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; onToggle: () => void; periodLabels: string[] }) {
   const router = useRouter()
+  const [leave, setLeave] = useState(r.leaveDate ?? '')
   const age = leeftijd(r.dateOfBirth)
   const youth = isYouth(r.dateOfBirth ? new Date(r.dateOfBirth) : null)
   const next = r.band ? getNextBelt(r.band as BeltLevel, youth) : (youth ? 'WIT' : null)
@@ -143,10 +145,10 @@ function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; on
   const perStatus = r.payments.find(p => p.label === laatstePer)
   const si = CLUB_STATUS_INFO[r.clubStatus] ?? CLUB_STATUS_INFO.LID
 
-  const zetStatus = async (s: string) => {
+  const zetStatus = async (s: string, leaveDate?: string) => {
     await fetch('/api/admin2/member-status', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ memberId: r.id, clubStatus: s }),
+      body: JSON.stringify({ memberId: r.id, clubStatus: s, leaveDate }),
     })
     router.refresh()
   }
@@ -204,13 +206,20 @@ function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; on
               <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-gray-400">Clubstatus</p>
               <div className="flex flex-wrap gap-1.5">
                 {(['LID', 'PROEF', 'RESERVE', 'STOPPEND', 'GESTOPT'] as const).map(s => (
-                  <button key={s} onClick={() => zetStatus(s)}
+                  <button key={s} onClick={() => zetStatus(s, s === 'GESTOPT' ? (leave || new Date().toISOString().slice(0, 10)) : undefined)}
                     className={`rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors ${
                       r.clubStatus === s ? `${CLUB_STATUS_INFO[s].klas} ring-1 ring-[#a90000]/40` : 'border-gray-200 bg-white text-gray-500 hover:border-[#a90000]/40'
                     }`}>
                     {CLUB_STATUS_INFO[s].label}
                   </button>
                 ))}
+              </div>
+              <div className="mt-2 flex items-center gap-2">
+                <label className="text-[11px] text-gray-500">Uitschrijven per:</label>
+                <input type="date" value={leave}
+                  onChange={e => { setLeave(e.target.value) }}
+                  className="rounded-lg border border-gray-300 px-2 py-1 text-xs" />
+                {leave && <button onClick={() => zetStatus('GESTOPT', leave)} className="rounded-full bg-gray-800 px-2.5 py-1 text-[11px] font-medium text-white">Opslaan (gestopt per {new Date(leave).toLocaleDateString('nl-NL')})</button>}
               </div>
             </div>
             {/* Gast samenvoegen met echt lidrecord */}

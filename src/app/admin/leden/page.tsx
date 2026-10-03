@@ -32,6 +32,7 @@ export default async function LedenPage({
     lastName: m.lastName,
     isActive: m.isActive,
     clubStatus: m.clubStatus,
+    leaveDate: m.leaveDate?.toISOString().slice(0, 10) ?? null,
     groep: m.primaryGroup,
     band: m.currentBelt,
     bondsnummer: m.bondsnummer,

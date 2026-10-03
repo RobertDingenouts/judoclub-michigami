@@ -29,9 +29,9 @@ export default async function AanwezigheidPage({
       orderBy: { date: 'asc' },
     }),
     db.member.findMany({
-      where: { isActive: true },
+      where: { isActive: true, clubStatus: { notIn: ['PROEF'] } },
       orderBy: [{ lastName: 'asc' }],
-      select: { id: true, firstName: true, lastName: true, primaryGroup: true },
+      select: { id: true, firstName: true, lastName: true, primaryGroup: true, clubStatus: true },
     }),
   ])
 
@@ -88,7 +88,7 @@ export default async function AanwezigheidPage({
       ) : (
         <KwartaalGrid
           dagen={grid.map(d => ({ id: d.id, datum: d.datum, cancelled: d.cancelled, activity: d.activity }))}
-          leden={groepLeden.map(m => ({ id: m.id, naam: `${m.firstName} ${m.lastName}` }))}
+          leden={groepLeden.map(m => ({ id: m.id, naam: `${m.firstName} ${m.lastName}`, clubStatus: m.clubStatus }))}
           cellen={Object.fromEntries(grid.flatMap(d => Object.entries(d.statussen).map(([mid, st]) => [`${mid}|${d.id}`, st as string])))}
         />
       )}

@@ -197,15 +197,27 @@ if (testRec) {
   await db.member.delete({ where: { id: testRec.id } })
   report.geslagen.push('testrecord Robas Test verwijderd')
 }
-// b) Typo-duplicaten samenvoegen: Dingehouts -> Dingenouts
-for (const [typo, correct] of [['Dingehouts','Dingenouts']]){
+// b) Typo-duplicaten samenvoegen: Dingehouts -> Dingenouts, Schavione -> Schiavone
+for (const [typo, correct] of [['Dingehouts','Dingenouts'], ['Schavione','Schiavone']]){
   const bad = await db.member.findMany({ where: { lastName: typo } })
   for (const b of bad){
     const good = await db.member.findFirst({ where: { firstName: b.firstName, lastName: correct } })
     if (good){
-      await db.attendance.deleteMany({ where: { memberId: b.id } })  // aanwezigheid van typo: goed record heeft eigen import
-      await db.payment.deleteMany({ where: { memberId: b.id } })
+      // aanwezigheid verplaatsen naar goed record (upsert; conflict op eigen aanwezigheid: goede wint)
+      const att = await db.attendance.findMany({ where: { memberId: b.id } })
+      for (const a of att) {
+        await db.attendance.upsert({ where: { memberId_trainingDayId: { memberId: good.id, trainingDayId: a.trainingDayId } }, create: { memberId: good.id, trainingDayId: a.trainingDayId, status: a.status, note: a.note }, update: {} })
+      }
+      await db.attendance.deleteMany({ where: { memberId: b.id } })
+      const bh = await db.bondHistory.findMany({ where: { memberId: b.id } })
+      for (const h of bh) {
+        await db.bondHistory.upsert({ where: { memberId_belt: { memberId: good.id, belt: h.belt } }, create: { memberId: good.id, belt: h.belt, awardedAt: h.awardedAt, source: h.source }, update: {} })
+      }
       await db.bondHistory.deleteMany({ where: { memberId: b.id } })
+      await db.payment.deleteMany({ where: { memberId: b.id } })  // worden opnieuw aangemaakt door backfill/cleanup
+      if (!good.primaryGroup && b.primaryGroup) {
+        await db.member.update({ where: { id: good.id }, data: { primaryGroup: b.primaryGroup } })
+      }
       await db.member.delete({ where: { id: b.id } })
       report.geslagen.push(`typo ${b.firstName} ${typo} samengevoegd met ${correct}`)
     }
@@ -224,7 +236,20 @@ for (const [typo, correct] of [['Dingehouts','Dingenouts']]){
   }
 }
 
-// d) Reserve-lijst: geen volwaardig lid maar af en toe op de mat
+// d) Payments die vóór de inschrijving vallen weghalen (bv. nieuw lid dat per ongeluk
+//    een payment in een verlopen periode heeft): periode eindigt vóór joinDate.
+{
+  const per = await db.contributionPeriod.findMany()
+  const leden = await db.member.findMany({ where: { joinDate: { gte: new Date(0) } }, select: { id: true, joinDate: true } })
+  for (const m of leden) {
+    const teEarly = per.filter(p => p.end < m.joinDate).map(p => p.id)
+    if (!teEarly.length) continue
+    const del = await db.payment.deleteMany({ where: { memberId: m.id, periodId: { in: teEarly }, status: { in: ['OPEN', 'HERINNERING1', 'HERINNERING2'] } } })
+    if (del.count) report.geslagen.push(`${del.count} payment(s) vóór inschrijving verwijderd (${m.id})`)
+  }
+}
+
+// e) Reserve-lijst: geen volwaardig lid maar af en toe op de mat
 const RESERVE = { 'chiem|geers': 'ex-lid, komt nog weleens meedoen', 'tessa|drogers': 'woonachtig Oud-Vossemeer, komt af en toe in Steenbergen' }
 for (const [k, reden] of Object.entries(RESERVE)){
   const m = memberByKey.get(k)

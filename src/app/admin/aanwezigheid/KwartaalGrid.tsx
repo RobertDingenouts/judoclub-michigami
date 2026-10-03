@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { STATUS_INFO } from '@/lib/admin2'
 
 type Dag = { id: string; datum: string; cancelled: boolean; activity: string | null }
-type LidRef = { id: string; naam: string }
+type LidRef = { id: string; naam: string; clubStatus: string }
 
 const CYCLE: (string | null)[] = ['AANWEZIG', 'AFGEMELD', 'ZIEK', 'NIET_AANWEZIG', null]
 
@@ -13,6 +13,15 @@ export function KwartaalGrid({ dagen, leden, cellen }: { dagen: Dag[]; leden: Li
   const router = useRouter()
   const [local, setLocal] = useState<Record<string, string | null>>({})
   const [busy, setBusy] = useState<string | null>(null)
+  const [statussen, setStatussen] = useState<Record<string, string>>(Object.fromEntries(leden.map(l => [l.id, l.clubStatus])))
+
+  async function vlag(mid: string, clubStatus: string) {
+    setStatussen(p => ({ ...p, [mid]: clubStatus }))
+    await fetch('/api/admin2/member-status', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ memberId: mid, clubStatus, leaveDate: new Date().toISOString().slice(0, 10) }),
+    })
+  }
 
   const get = (mid: string, dagId: string) => {
     const key = `${mid}|${dagId}`
@@ -68,7 +77,15 @@ export function KwartaalGrid({ dagen, leden, cellen }: { dagen: Dag[]; leden: Li
             }
             return (
               <tr key={l.id} className="border-b border-gray-100 last:border-0">
-                <td className="sticky left-0 z-10 whitespace-nowrap bg-white px-3 py-1.5 font-medium text-[#2a2a2a]">{l.naam}</td>
+                <td className="sticky left-0 z-10 bg-white px-3 py-1.5">
+                  <div className="flex items-center gap-2 whitespace-nowrap">
+                    <span className="font-medium text-[#2a2a2a]">{l.naam}</span>
+                    <button onClick={() => vlag(l.id, statussen[l.id] === 'STOPPEND' ? 'LID' : 'STOPPEND')} title="Markeren als stopt?"
+                      className={`rounded px-1 text-[11px] ${statussen[l.id] === 'STOPPEND' ? 'bg-amber-400 text-white' : 'text-gray-300 hover:text-amber-500'}`}>⚠️</button>
+                    <button onClick={() => vlag(l.id, statussen[l.id] === 'GESTOPT' ? 'LID' : 'GESTOPT')} title="Definitief gestopt (naar archief)"
+                      className={`rounded px-1 text-[11px] ${statussen[l.id] === 'GESTOPT' ? 'bg-gray-500 text-white' : 'text-gray-300 hover:text-gray-600'}`}>⛔</button>
+                  </div>
+                </td>
                 {dagen.map(d => {
                   const key = `${l.id}|${d.id}`
                   const s = get(l.id, d.id)

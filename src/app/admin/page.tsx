@@ -1,6 +1,7 @@
 import { db } from '@/lib/db'
 import Link from 'next/link'
 import { GROEP_LABEL, PAYMENT_INFO, kwartaalVan } from '@/lib/admin2'
+import { ensureUpcomingDays } from '@/lib/lessen'
 import { getBeltLabel, getNextBelt, isYouth } from '@/lib/belt-utils'
 import { BELT_COLORS } from '@/lib/student-progress-types'
 import type { BeltLevel } from '@prisma/client'
@@ -11,6 +12,7 @@ export default async function AdminStart() {
   const now = new Date()
   const todayIso = now.toISOString().slice(0, 10)
   const kw = kwartaalVan(now)
+  await ensureUpcomingDays(10)
 
   const [
     actieveLeden, pendingApps, openPayments,
