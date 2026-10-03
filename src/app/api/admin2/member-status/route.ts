@@ -4,13 +4,14 @@ import { isAdmin } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
 
-// POST { memberId, clubStatus, leaveDate? } — clubStatus: LID | RESERVE | STOPPEND | GESTOPT | PROEF
+// POST { memberId, clubStatus, leaveDate? } — clubStatus: LID | RESERVE | STOPPEND | GESTOPT | PROEF | VRIJGESTELD
 // GESTOPT => isActive=false + leaveDate (archief); terug naar LID => leaveDate leeg.
+// VRIJGESTELD => geen contributie: openstaande payments in lopende/toekomstige periodes -> VIJGESTELD.
 export async function POST(req: NextRequest) {
   if (!(await isAdmin())) return NextResponse.json({ error: 'Geen admin' }, { status: 403 })
   const { memberId, clubStatus, leaveDate } = await req.json()
   if (!memberId || !clubStatus) return NextResponse.json({ error: 'memberId + clubStatus nodig' }, { status: 400 })
-  const valid = ['LID', 'RESERVE', 'STOPPEND', 'GESTOPT', 'PROEF']
+  const valid = ['LID', 'RESERVE', 'STOPPEND', 'GESTOPT', 'PROEF', 'VRIJGESTELD']
   if (!valid.includes(clubStatus)) return NextResponse.json({ error: `Ongeldige status: ${clubStatus}` }, { status: 400 })
 
   const data: Record<string, unknown> = {
@@ -30,6 +31,29 @@ export async function POST(req: NextRequest) {
     if (future.length) {
       await db.payment.deleteMany({
         where: { memberId, periodId: { in: future.map(p => p.id) }, status: { in: ['OPEN', 'HERINNERING1', 'HERINNERING2'] } },
+      })
+    }
+  }
+
+  // Bij VRIJGESTELD: openstaande payments in lopende/toekomstige periodes op VIJGESTELD.
+  if (clubStatus === 'VRIJGESTELD') {
+    const nu = new Date(new Date().toISOString().slice(0, 10))
+    const periodes = await db.contributionPeriod.findMany({ where: { end: { gte: nu } }, select: { id: true } })
+    if (periodes.length) {
+      await db.payment.updateMany({
+        where: { memberId, periodId: { in: periodes.map(p => p.id) }, status: { in: ['OPEN', 'HERINNERING1', 'HERINNERING2'] } },
+        data: { status: 'VIJGESTELD' },
+      })
+    }
+  }
+  // Terug naar LID: eerdere vrijstellingen in lopende/toekomstige periodes weer openzetten.
+  if (clubStatus === 'LID') {
+    const nu = new Date(new Date().toISOString().slice(0, 10))
+    const periodes = await db.contributionPeriod.findMany({ where: { end: { gte: nu } }, select: { id: true } })
+    if (periodes.length) {
+      await db.payment.updateMany({
+        where: { memberId, periodId: { in: periodes.map(p => p.id) }, status: 'VIJGESTELD' },
+        data: { status: 'OPEN' },
       })
     }
   }

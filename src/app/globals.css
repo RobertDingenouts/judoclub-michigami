@@ -1245,3 +1245,35 @@
 nextjs-portal {
   display: none !important;
 }
+
+/* ===== Admin startdashboard: vrij indeelbare widgets (react-grid-layout) ===== */
+.dash-grid { margin: 0; }
+.w-card {
+  display: flex; flex-direction: column;
+  border-radius: 0.75rem; border: 1px solid #e5e5e5; background: #fff;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
+  overflow: hidden;
+}
+.w-drag {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.5rem 0.75rem; cursor: default;
+  border-bottom: 1px solid #f1f1f1; background: #fafafa;
+  flex-shrink: 0;
+}
+.w-edit .w-drag { cursor: grab; }
+.w-edit .w-drag:active { cursor: grabbing; }
+.w-titel { font-size: 0.8rem; font-weight: 600; color: #2a2a2a; }
+.w-grip { color: #bbb; font-size: 0.9rem; letter-spacing: 1px; }
+.w-body { flex: 1; min-height: 0; overflow: auto; padding: 0.6rem 0.75rem; }
+/* react-grid-layout states */
+.react-grid-item.react-draggable-dragging .w-card,
+.react-grid-item.react-draggable-dragging.w-card { box-shadow: 0 8px 24px rgb(0 0 0 / 0.15); border-color: #a90000; }
+.react-grid-item.resizing .w-card,
+.react-grid-item.resizing.w-card { border-color: #a90000; }
+.react-grid-item.cssTransforms { transition-property: transform, width, height; }
+.react-resizable-handle { z-index: 5; }
+.w-edit .react-resizable-handle::after {
+  content: ''; position: absolute; right: 3px; bottom: 3px;
+  width: 10px; height: 10px; border-right: 2px solid #a90000; border-bottom: 2px solid #a90000;
+  opacity: 0.7;
+}

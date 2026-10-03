@@ -157,6 +157,21 @@ async function importAttendance(sheets, locatie){
 await importAttendance(data.vrijdag2026, 'STEENBERGEN')
 await importAttendance(data.woensdag2026, 'OUD_VOSSEMEER')
 
+// 6b) Vrijgestelden: bestuur/instructeurs + gezin -> géén contributie.
+const VRIJGESTELD = ['robert|dingenouts', 'robin|van der gaag', 'pascal|hack', 'wendy|jansen', 'vive|dingenouts', 'mika|hack', 'luca|hack']
+const vrijIds = new Set()
+for (const k of VRIJGESTELD) {
+  const m = memberByKey.get(k)
+  if (m) { await db.member.update({ where: { id: m.id }, data: { clubStatus: 'VRIJGESTELD' } }); vrijIds.add(m.id) }
+}
+// bestaande OPEN payments in lopende/toekomstige periodes -> VIJGESTELD
+{
+  const nu = new Date(new Date().toISOString().slice(0, 10))
+  const per = await db.contributionPeriod.findMany({ where: { end: { gte: nu } }, select: { id: true } })
+  const upd = await db.payment.updateMany({ where: { memberId: { in: [...vrijIds] }, periodId: { in: per.map(p => p.id) }, status: { in: ['OPEN', 'HERINNERING1', 'HERINNERING2'] } }, data: { status: 'VIJGESTELD' } })
+  if (upd.count) report.geslagen.push(`${upd.count} payment(s) vrijgestelden op VIJGESTELD gezet`)
+}
+
 // 7) Contributieperiodes + payments uit betaald-vlaggen
 const PERIODE = { '2026-Q1': ['2026-01-01','2026-03-31'], '2026-Q2': ['2026-04-01','2026-06-30'], '2026-Q3': ['2026-07-01','2026-09-30'], '2026-Q4': ['2026-10-01','2026-12-31'] }
 for (const [label, [s, e]] of Object.entries(PERIODE)){
@@ -167,7 +182,7 @@ for (const [kw, sheet] of Object.entries(data.vrijdag2026)){
   const period = await db.contributionPeriod.findUnique({ where: { label: kw } })
   for (const blok of sheet.blokken) for (const mem of blok){
     const m = memberByKey.get(matchKey(mem.voornaam, mem.achternaam)); if (!m) continue
-    if (m.primaryGroup === 'SENIOREN') continue
+    if (m.primaryGroup === 'SENIOREN' || vrijIds.has(m.id)) continue
     await db.payment.upsert({
       where: { memberId_periodId: { memberId: m.id, periodId: period.id } },
       create: { memberId: m.id, periodId: period.id, amount: 42,
@@ -180,7 +195,7 @@ for (const [kw, sheet] of Object.entries(data.vrijdag2026)){
 // Q4: OPEN voor alle actieve jeugd (factuurknop kan direct)
 {
   const period = await db.contributionPeriod.findUnique({ where: { label: '2026-Q4' } })
-  const actieven = await db.member.findMany({ where: { isActive: true, primaryGroup: { notIn: ['SENIOREN'] } } })
+  const actieven = await db.member.findMany({ where: { isActive: true, clubStatus: { notIn: ['VRIJGESTELD'] }, primaryGroup: { notIn: ['SENIOREN'] } } })
   for (const m of actieven){
     await db.payment.upsert({ where: { memberId_periodId: { memberId: m.id, periodId: period.id } },
       create: { memberId: m.id, periodId: period.id, amount: 42, status: 'OPEN', dueDate: new Date('2026-10-01') }, update: {} })
