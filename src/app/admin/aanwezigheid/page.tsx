@@ -79,7 +79,11 @@ export default async function AanwezigheidPage({
           <h1 className="text-2xl font-bold text-[#2a2a2a]">Lessen & aanwezigheid</h1>
           <p className="mt-1 text-sm text-gray-500">klik een cel om te wisselen · klik een kolomkop voor de lesmodus van die les</p>
         </div>
-        <Link href="/admin/aanwezigheid/les" className="rounded-xl bg-[#a90000] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#8c0000]">✏️ Lesmodus</Link>
+        <div className="flex items-center gap-2">
+          <a href="/api/admin2/export?lijst=aanwezigheid"
+            className="rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 hover:border-[#a90000] hover:text-[#a90000]">⬇ Excel</a>
+          <Link href="/admin/aanwezigheid/les" className="rounded-xl bg-[#a90000] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#8c0000]">✏️ Lesmodus</Link>
+        </div>
       </div>
 
       {/* Periode tabs */}

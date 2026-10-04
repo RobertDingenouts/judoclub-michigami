@@ -15,6 +15,7 @@ import type { LayoutItem, ResponsiveLayouts } from 'react-grid-layout'
 import 'react-grid-layout/css/styles.css'
 import 'react-resizable/css/styles.css'
 import { GROEP_LABEL, STATUS_INFO, PAYMENT_INFO, groepNaam } from '@/lib/admin2'
+import { BeltVak } from '@/components/admin/BeltVak'
 import { usePropSync } from '@/lib/use-prop-sync'
 import { getBeltLabel } from '@/lib/belt-utils'
 import { BELT_COLORS } from '@/lib/student-progress-types'
@@ -128,6 +129,7 @@ export default function AdminDashboard({ d }: { d: DashData }) {
   const [edit, setEdit] = React.useState(false)
   const [menu, setMenu] = React.useState(false)
   const [zoek, setZoek] = React.useState('')
+  const [exportMenu, setExportMenu] = React.useState(false)
   const { width, mounted, containerRef } = useContainerWidth({ measureBeforeMount: true })
 
   React.useEffect(() => {
@@ -202,7 +204,20 @@ export default function AdminDashboard({ d }: { d: DashData }) {
               </div>
             </>
           )}
-          <Link href="/admin/aanwezigheid/les" className="rounded-xl bg-[#a90000] px-3.5 py-2 text-xs font-semibold text-white shadow-sm hover:bg-[#8c0000]">✏️ Les invullen</Link>
+          <div className="flex items-center gap-2">
+            <div className="relative">
+              <button onClick={() => setExportMenu(v => !v)} className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-600">⬇ Export ▾</button>
+              {exportMenu && (
+                <div className="absolute right-0 z-40 mt-1 w-56 rounded-xl border border-gray-200 bg-white p-1.5 shadow-xl">
+                  {([['leden', '📋 Volledige ledenlijst'], ['inschrijvingen', '📝 Nieuwe inschrijvingen'], ['contributie', '💶 Contributie (Q4)'], ['aanwezigheid', '📊 Aanwezigheid (90d)']] as [string, string][]).map(([k, lbl]) => (
+                    <a key={k} href={`/api/admin2/export?lijst=${k}`} onClick={() => setExportMenu(false)}
+                      className="block rounded-lg px-2.5 py-2 text-xs font-medium text-[#2a2a2a] hover:bg-[#fdf6f6]">{lbl}</a>
+                  ))}
+                </div>
+              )}
+            </div>
+            <Link href="/admin/aanwezigheid/les" className="rounded-xl bg-[#a90000] px-3.5 py-2 text-xs font-semibold text-white shadow-sm hover:bg-[#8c0000]">✏️ Les invullen</Link>
+          </div>
         </div>
       </div>
 
@@ -221,14 +236,14 @@ export default function AdminDashboard({ d }: { d: DashData }) {
       {/* Zoombalk */}
       <div className="relative mb-3">
         <input value={zoek} onChange={e => setZoek(e.target.value)} placeholder="Zoek lid… (2+ letters)"
-          className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none" />
+          className="w-full rounded-xl border border-white/70 bg-white/60 px-3 py-2 text-sm shadow-sm backdrop-blur-md focus:border-[#a90000] focus:outline-none" />
         {zoekLeden.length > 0 && (
           <div className="absolute left-0 right-0 z-40 mt-1 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl">
             {zoekLeden.map(l => (
               <Link key={l.id} href={`/admin/students/${l.id}`}
                 className="flex items-center justify-between border-b border-gray-50 px-3 py-2 text-sm last:border-0 hover:bg-[#fdf6f6]">
                 <span className="flex items-center gap-2">
-                  <span className="h-2.5 w-2.5 rounded-full border border-gray-300" style={{ background: beltKleur(l.belt) }} />
+                  <BeltVak belt={l.belt} />
                   <span className="font-medium text-[#2a2a2a]">{l.naam}</span>
                   <span className="text-xs text-gray-400">{groepNaam(l.groep)}</span>
                 </span>
@@ -296,7 +311,7 @@ export default function AdminDashboard({ d }: { d: DashData }) {
 
 function Kpi({ href, label, value, sub, accent = '' }: { href: string; label: string; value: string | number; sub?: string; accent?: string }) {
   return (
-    <Link href={href} className="rounded-lg border border-gray-200 bg-white px-2 py-1 hover:border-[#a90000]/40">
+    <Link href={href} className="rounded-xl border border-white/70 bg-white/55 px-2 py-1 backdrop-blur-md hover:border-[#a90000]/40">
       <p className="truncate text-[10px] font-medium uppercase tracking-wide text-gray-400">{label}</p>
       <p className={`text-base font-bold leading-tight ${accent || 'text-[#2a2a2a]'}`}>{value}{sub && <span className="ml-1 text-[10px] font-medium text-gray-400">{sub}</span>}</p>
     </Link>
@@ -324,7 +339,10 @@ function Leeg({ tekst }: { tekst: string }) {
   return <p className="grid h-full place-items-center py-4 text-center text-xs text-gray-400">{tekst}</p>
 }
 
-// ── LidCel: naam + band → volgende band + status-pill, hover = volledig wolkje ──
+// ── LidCel: schoon op eerste gezicht — klik op de naam vouwt details uit ────
+// De rij zelf toont alleen band + naam (+ statusvlag als die afwijkt van LID).
+// Alle knoppen (status, detailpagina) zitten in het uitgevouwen blok eronder,
+// zodat er niets per ongeluk aangeklikt wordt tijdens het aanmeldwerk.
 const STATUS_PILL: Record<string, { icon: string; klas: string; label: string }> = {
   LID: { icon: '●', klas: 'bg-gray-100 text-gray-400', label: 'lid' },
   RESERVE: { icon: '◐', klas: 'bg-sky-100 text-sky-700', label: 'reserve' },
@@ -341,92 +359,61 @@ const BETALING_PILL: Record<string, { klas: string; label: string }> = {
   GEEN: { klas: 'bg-gray-100 text-gray-400', label: 'geen regeling' },
 }
 
-function LidCel({ l, a, m, gestopt, status, zet }: {
-  l: AanwLid; a: number; m: number; gestopt: boolean
+function LidCel({ l, gestopt }: { l: AanwLid; gestopt: boolean }) {
+  const st = l.clubStatus
+  const pill = STATUS_PILL[st] ?? STATUS_PILL.LID
+  const bet = BETALING_PILL[l.betaling] ?? BETALING_PILL.GEEN
+  return (
+    <div className={`flex items-center gap-1.5 whitespace-nowrap ${gestopt ? 'opacity-75' : ''}`}>
+      <BeltVak belt={l.belt} />
+      <span className={`text-[11px] ${gestopt ? 'text-[#6b6b6b] line-through decoration-gray-400/70' : 'text-[#2a2a2a]'}`}>{l.naam}</span>
+      {/* Status alleen tonen als die afwijkt van gewoon lid — houdt de lijst rustig */}
+      {st !== 'LID' && (
+        <span className={`shrink-0 rounded-full px-1 text-[9px] font-bold leading-4 ${pill.klas}`} title={`Status: ${pill.label}`}>{pill.icon}</span>
+      )}
+      {/* Betaling alleen een icoon als er iets te zien is */}
+      {l.betaling !== 'BETAALD' && (
+        <span className={`shrink-0 rounded-full px-1 text-[9px] font-semibold leading-4 ${bet.klas}`} title={d_betaalLabel(l)}>
+          {l.betaling === 'VIJGESTELD' ? '€0' : l.betaling === 'GEEN' ? '€–' : '€!'}
+        </span>
+      )}
+    </div>
+  )
+}
+
+// Het uitgevouwen blok onder de rij: alle gegevens + de knoppen.
+function LidDetail({ l, a, m, status, zet }: {
+  l: AanwLid; a: number; m: number
   status: Record<string, string>
   zet: (lidId: string, s: string) => void
 }) {
-  const [open, setOpen] = React.useState(false)
-  const [pos, setPos] = React.useState<{ x: number; y: number } | null>(null)
   const st = status[l.id] ?? l.clubStatus
   const pill = STATUS_PILL[st] ?? STATUS_PILL.LID
-  const bet = BETALING_PILL[l.betaling] ?? BETALING_PILL.GEEN
-  const ref = React.useRef<HTMLDivElement>(null)
-
-  // Wolkje volgt de muis en kiest automatisch boven/onder zodat het zichtbaar blijft
-  function toon(e: React.MouseEvent) {
-    const x = e.clientX + 14
-    const onder = window.innerHeight - e.clientY > 220
-    setPos({ x: Math.min(x, window.innerWidth - 272), y: e.clientY + (onder ? 16 : -18) })
-    setOpen(true)
-  }
-
+  const opties: [string, string][] = [['LID', 'Lid'], ['RESERVE', 'Reserve'], ['STOPPEND', 'Stopt?'], ['GESTOPT', 'Gestopt'], ['VRIJGESTELD', 'Vrijgesteld']]
   return (
-    <div
-      ref={ref}
-      className="relative"
-      onMouseEnter={toon}
-      onMouseLeave={() => setOpen(false)}
-    >
-      <div className={`flex items-center gap-1 whitespace-nowrap ${gestopt ? 'opacity-55' : ''}`}>
-        {/* Band huidig → volgende (slip = ring) */}
-        <span className="flex shrink-0 items-center gap-px" title={l.volgendeBand ? `${l.belt ? getBeltLabel(l.belt as BeltLevel) : 'geen band'} → ${getBeltLabel(l.volgendeBand as BeltLevel)}` : 'geen band'}>
-          <span className="h-2.5 w-2.5 rounded-full border border-gray-300" style={{ background: beltKleur(l.belt) }} />
-          <span className={`h-2.5 w-2.5 rounded-full border border-gray-300 ${l.volgendeBandSlip ? 'ring-1 ring-[#a90000]/50' : ''}`}
-            style={{ background: l.volgendeBand ? beltKleur(l.volgendeBand) : '#eee' }} />
-        </span>
-        <Link href={`/admin/students/${l.id}`}
-          className={`text-[11px] hover:text-[#a90000] ${gestopt ? 'text-gray-400 line-through' : 'text-[#2a2a2a]'}`}>
-          {l.naam}
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 rounded-lg bg-[#fafafa]/80 px-2 py-1.5 text-[10px] text-gray-600">
+      <span className="flex items-center gap-1"><span className="text-gray-400">Leeftijd</span> <b className="text-[#2a2a2a]">{leeftijd(l.dob) || '—'}</b></span>
+      <span className="flex items-center gap-1"><span className="text-gray-400">Groep</span> <b className="text-[#2a2a2a]">{groepNaam(l.groep)}</b></span>
+      <span className="flex items-center gap-1"><span className="text-gray-400">Band</span> <BeltVak belt={l.belt} size={8} /> <b className="text-[#2a2a2a]">{l.belt ? getBeltLabel(l.belt as BeltLevel) : 'geen band'}</b>{l.volgendeBand && <span className="text-gray-400">→ {getBeltLabel(l.volgendeBand as BeltLevel)}</span>}</span>
+      <span className="flex items-center gap-1"><span className="text-gray-400">Contributie</span> <b className={l.betaling === 'BETAALD' ? 'text-green-700' : l.betaling === 'GEEN' ? 'text-gray-400' : 'text-red-700'}>{d_betaalLabel(l)}</b></span>
+      {l.laatsteBand && <span className="flex items-center gap-1"><span className="text-gray-400">Laatste band</span> <b className="text-[#2a2a2a]">{fmtMaand(l.laatsteBand)}</b></span>}
+      {l.laatsteExamen && <span className="flex items-center gap-1"><span className="text-gray-400">Examen</span> <b className="text-[#2a2a2a]">{fmtMaand(l.laatsteExamen)} ({geleden(l.laatsteExamen)})</b></span>}
+      {l.lidSinds && <span className="flex items-center gap-1"><span className="text-gray-400">Lid sinds</span> <b className="text-[#2a2a2a]">{fmtMaand(l.lidSinds)}</b></span>}
+      {l.cursusJapans && <span title="Cursus Japans diploma">🎓</span>}
+      <span className="flex items-center gap-1"><span className="text-gray-400">Opkomst</span> <b className="text-green-700">{m ? `${a}/${m}` : '—'}</b></span>
+
+      <span className="ml-auto flex items-center gap-1">
+        {opties.map(([s, lbl]) => (
+          <button key={s} onClick={e => { e.stopPropagation(); zet(l.id, s) }}
+            className={`rounded-full border px-2 py-0.5 text-[9px] font-semibold ${st === s ? 'border-[#2a2a2a] bg-[#2a2a2a] text-white' : 'border-gray-200 bg-white text-gray-500 hover:border-[#a90000]/50 hover:text-[#a90000]'}`}
+            title={`Status op ${lbl} zetten`}>{lbl}</button>
+        ))}
+        {/* Detailpagina alleen via deze expliciete knop — nooit per ongeluk */}
+        <Link href={`/admin/students/${l.id}`} onClick={e => e.stopPropagation()}
+          className="rounded-full border border-gray-200 bg-white px-2 py-0.5 text-[9px] font-semibold text-gray-500 hover:border-[#a90000] hover:text-[#a90000]">
+          Lidbijhouden →
         </Link>
-        {/* Status: klik = doorcyclen LID → reserve → stopt? → gestopt */}
-        <button onClick={() => zet(l.id, st === 'LID' ? 'RESERVE' : st === 'RESERVE' ? 'STOPPEND' : st === 'STOPPEND' ? 'GESTOPT' : 'LID')}
-          className={`shrink-0 rounded-full px-1 text-[9px] font-bold leading-4 ${pill.klas}`}
-          title={`Status: ${pill.label} — klik om te wijzigen`}>
-          {pill.icon}
-        </button>
-        {/* Betaald/open indicator */}
-        <span className={`shrink-0 rounded-full px-1 text-[9px] font-semibold leading-4 ${bet.klas}`} title={`${d_betaalLabel(l)}`}>
-          {l.betaling === 'BETAALD' ? '€✓' : l.betaling === 'VIJGESTELD' ? '€0' : l.betaling === 'GEEN' ? '€–' : '€!'}
-        </span>
-      </div>
-
-      {/* ── Hover-wolkje: alles over dit lid (portal zodat scroll/scherm niet knippen) ── */}
-      {open && pos && typeof document !== 'undefined' && createPortal(
-        <div style={{ left: pos.x, top: pos.y }}
-          className="pointer-events-none fixed z-[9999] w-64 rounded-xl border border-gray-200 bg-white p-3 text-left shadow-2xl">
-          <div className="mb-2 flex items-start justify-between gap-2 border-b border-gray-100 pb-2">
-            <div>
-              <p className="text-xs font-bold text-[#2a2a2a]">{l.naam}</p>
-              <p className="text-[10px] text-gray-400">
-                {leeftijd(l.dob) ? `${leeftijd(l.dob)} · ` : ''}{groepNaam(l.groep)}
-                {l.lidSinds ? ` · lid sinds ${fmtMaand(l.lidSinds)}` : ''}
-              </p>
-            </div>
-            <span className={`shrink-0 rounded-full px-1.5 py-0.5 text-[9px] font-bold ${pill.klas}`}>{pill.label}</span>
-          </div>
-
-          <div className="space-y-1 text-[10px] text-gray-600">
-            <WolkeRegel label="Band" value={l.belt ? getBeltLabel(l.belt as BeltLevel) : 'nog geen band'}
-              stip={beltKleur(l.belt)} />
-            {l.volgendeBand && (
-              <WolkeRegel label="Volgende" value={getBeltLabel(l.volgendeBand as BeltLevel)}
-                stip={beltKleur(l.volgendeBand)} />
-            )}
-            <WolkeRegel label="Contributie" value={d_betaalLabel(l)}
-              accent={l.betaling === 'BETAALD' ? 'text-green-700' : l.betaling === 'GEEN' ? 'text-gray-400' : 'text-red-700'} />
-            {l.laatsteBand && <WolkeRegel label="Laatste band" value={fmtMaand(l.laatsteBand)} />}
-            {l.laatsteExamen && (
-              <WolkeRegel label="Laatste examen"
-                value={`${fmtMaand(l.laatsteExamen)} (${geleden(l.laatsteExamen)})`} />
-            )}
-            {l.cursusJapans && <WolkeRegel label="Cursus Japans" value="diploma behaald" />}
-            {l.bondsnummer && <WolkeRegel label="Bondsnummer" value={l.bondsnummer} />}
-            <WolkeRegel label="Opkomst" value={m ? `${a} van ${m} lessen (${Math.round(a / m * 100)}%)` : 'geen data'} />
-          </div>
-        </div>,
-        document.body,
-      )}
+      </span>
     </div>
   )
 }
@@ -490,6 +477,7 @@ function WAanwezigheid({ d }: { d: DashData }) {
   const [local, setLocal] = React.useState<Record<string, string | null>>({})
   const [compact, setCompact] = React.useState(false)
   const [sorteer, setSorteer] = React.useState('naam')
+  const [openLid, setOpenLid] = React.useState<string | null>(null)
   const [status, zetStatus] = usePropSync(d.aanwezigheidLeden, 'clubStatus')
 
   async function zet(lidId: string, clubStatus: string) {
@@ -545,7 +533,7 @@ function WAanwezigheid({ d }: { d: DashData }) {
         <button onClick={() => setCompact(c => !c)} className="rounded border border-gray-200 px-2 py-1 text-[10px] font-medium text-gray-600 hover:border-[#a90000]">
           {compact ? '⬜ Groot' : '▦ Compact'}
         </button>
-        <span className="ml-auto text-[10px] text-gray-400">tik cel = wisselen · laatste 12 lessen per groep</span>
+        <span className="ml-auto text-[10px] text-gray-400">tik cel = wisselen · klik naam = details · laatste 12 lessen per groep</span>
       </div>
       {/* Legenda: één keer uitleggen wat alle symbolen betekenen */}
       <div className="flex flex-shrink-0 flex-wrap items-center gap-x-3 gap-y-1 text-[10px] text-gray-500">
@@ -604,10 +592,13 @@ function WAanwezigheid({ d }: { d: DashData }) {
                 {leden.map(l => {
                   const { a, m } = aant(l.id)
                   const gestopt = (status[l.id] ?? l.clubStatus) === 'GESTOPT'
+                  const uitgeklapt = openLid === l.id
                   return (
-                    <tr key={l.id} className={`group border-t border-gray-50 hover:bg-[#fdf6f6] ${gestopt ? 'bg-gray-100/60' : ''}`}>
-                      <td className="sticky left-0 z-10 bg-white px-2 py-0.5 group-hover:bg-[#fdf6f6]">
-                        <LidCel l={l} a={a} m={m} gestopt={gestopt} status={status} zet={zet} />
+                  <React.Fragment key={l.id}>
+                    <tr onClick={() => setOpenLid(uitgeklapt ? null : l.id)}
+                      className={`group cursor-pointer border-t border-gray-50 hover:bg-[#fdf6f6] ${uitgeklapt ? 'bg-[#fdf6f6]' : ''} ${gestopt ? 'bg-gray-100/60' : ''}`}>
+                      <td className={`sticky left-0 z-10 px-2 py-0.5 group-hover:bg-[#fdf6f6] ${uitgeklapt ? 'bg-[#fdf6f6]' : 'bg-white'}`}>
+                        <LidCel l={{ ...l, clubStatus: status[l.id] ?? l.clubStatus }} gestopt={gestopt} />
                       </td>
                       {g.dagen.map(dg => {
                         // Vakantiedag: doorlopende grijze balk, niet klikbaar — er is geen les gegeven
@@ -622,7 +613,7 @@ function WAanwezigheid({ d }: { d: DashData }) {
                         const info = s ? STATUS_INFO[s] : null
                         return (
                           <td key={dg.id} className="p-0.5 text-center">
-                            <button onClick={() => cycle(l.id, dg.id)} disabled={gestopt}
+                            <button onClick={e => { e.stopPropagation(); cycle(l.id, dg.id) }} disabled={gestopt}
                               className={`mx-auto flex ${cel} items-center justify-center rounded border ${gestopt ? 'cursor-not-allowed opacity-40' : ''} ${info ? info.klas : 'border-gray-100 bg-gray-50 text-gray-300'}`}
                               title={info ? info.label : 'leeg'}>
                               {info ? info.emoji : '·'}
@@ -632,6 +623,14 @@ function WAanwezigheid({ d }: { d: DashData }) {
                       })}
                       <td className="px-1.5 text-center text-[10px] font-semibold text-green-700">{m ? `${a}/${m}` : '—'}</td>
                     </tr>
+                    {uitgeklapt && (
+                      <tr>
+                        <td colSpan={g.dagen.length + 2} className="px-2 pb-1.5">
+                          <LidDetail l={l} a={a} m={m} status={status} zet={zet} />
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
                   )
                 })}
               </tbody>
@@ -766,7 +765,7 @@ function WLeden({ d }: { d: DashData }) {
               <tr key={l.id} className="border-b border-gray-50 hover:bg-[#fdf6f6]">
                 <td className="py-0.5">
                   <Link href={`/admin/students/${l.id}`} className="flex items-center gap-1.5 whitespace-nowrap text-[#2a2a2a] hover:text-[#a90000]">
-                    <span className="h-2 w-2 shrink-0 rounded-full border border-gray-300" style={{ background: beltKleur(l.belt) }} />
+                    <BeltVak belt={l.belt} size={8} />
                     <span className="font-medium">{l.naam}</span>
                     <span className="text-[9px] text-gray-400">{leeftijd(l.dob)}</span>
                   </Link>
@@ -840,7 +839,7 @@ function WExamens({ d }: { d: DashData }) {
         <p className="mb-1 text-[9px] font-semibold uppercase tracking-wide text-gray-400">Kandidaten</p>
         {d.examList.length === 0 ? <p className="text-xs text-gray-400">Niemand komt in aanmerking</p> : d.examList.map(e => (
           <Link key={e.id} href={`/admin/students/${e.id}`} className="flex items-center gap-1.5 rounded px-1 py-0.5 hover:bg-[#fdf6f6]">
-            <span className="h-2.5 w-2.5 shrink-0 rounded-full border border-gray-300" style={{ background: beltKleur(e.belt) }} />
+            <BeltVak belt={e.belt} />
             <span className="min-w-0 flex-1 truncate text-[11px] text-[#2a2a2a]">{e.naam}</span>
             <span className="shrink-0 text-[9px] text-gray-500">{e.next}</span>
             <span className="shrink-0 text-[9px] text-gray-400">{e.maanden ?? '?'}m</span>

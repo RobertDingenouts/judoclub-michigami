@@ -24,9 +24,13 @@ export default async function AdminInschrijvingenPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-[#2a2a2a]">Inschrijvingen</h1>
-        <p className="mt-1 text-sm text-gray-500">Beheer nieuwe lidmaatschapsaanvragen</p>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold text-[#2a2a2a]">Inschrijvingen</h1>
+          <p className="mt-1 text-sm text-gray-500">Beheer nieuwe lidmaatschapsaanvragen</p>
+        </div>
+        <a href="/api/admin2/export?lijst=inschrijvingen"
+          className="rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 hover:border-[#a90000] hover:text-[#a90000]">⬇ Excel</a>
       </div>
 
       {/* Stats */}

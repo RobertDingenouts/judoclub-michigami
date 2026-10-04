@@ -73,6 +73,8 @@ export default async function ContributiePage({
             {betaald.length} betaald · {open.length} open · €{open.reduce((s, d) => s + d.amount, 0).toFixed(0)} te goed
           </p>
         </div>
+        <a href={`/api/admin2/export?lijst=contributie&periode=${label}`}
+          className="rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 hover:border-[#a90000] hover:text-[#a90000]">⬇ Excel ({label})</a>
       </div>
 
       {/* Periode tabs */}

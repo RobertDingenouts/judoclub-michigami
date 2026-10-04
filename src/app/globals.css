@@ -1248,16 +1248,24 @@ nextjs-portal {
 
 /* ===== Admin startdashboard: vrij indeelbare widgets (react-grid-layout) ===== */
 .dash-grid { margin: 0; }
+/* ── Glassmorphism: frosted cards op een zachte, diepe achtergrond ────────
+   Alleen kaarten en balken krijgen blur (niet de hele pagina) — backdrop-
+   filter is duur op grote schermen, dus tabellen/cellen blijven plat. */
 .w-card {
   display: flex; flex-direction: column;
-  border-radius: 0.75rem; border: 1px solid #e5e5e5; background: #fff;
-  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
+  border-radius: 1rem;
+  border: 1px solid rgb(255 255 255 / 0.75);
+  background: rgb(255 255 255 / 0.55);
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  box-shadow: 0 1px 2px rgb(42 42 42 / 0.05), 0 14px 40px -18px rgb(42 42 42 / 0.18);
   overflow: hidden;
 }
 .w-drag {
   display: flex; align-items: center; justify-content: space-between;
   padding: 0.5rem 0.75rem; cursor: default;
-  border-bottom: 1px solid #f1f1f1; background: #fafafa;
+  border-bottom: 1px solid rgb(42 42 42 / 0.06);
+  background: linear-gradient(rgb(255 255 255 / 0.5), rgb(255 255 255 / 0.2));
   flex-shrink: 0;
 }
 .w-edit .w-drag { cursor: grab; }

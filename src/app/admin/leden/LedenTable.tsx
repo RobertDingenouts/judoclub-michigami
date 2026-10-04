@@ -109,6 +109,9 @@ export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: 
     <>
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-2">
+        <a href="/api/admin2/export?lijst=leden"
+          className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:border-[#a90000] hover:text-[#a90000]"
+          title="Volledige ledenlijst als Excel-bestand">⬇ Excel</a>
         <input
           value={q} onChange={e => setQ(e.target.value)}
           placeholder="Zoek naam of bondsnummer…"

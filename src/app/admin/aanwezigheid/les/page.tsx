@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { db } from '@/lib/db'
 import { LesModus } from './LesModus'
 import { GROEPEN, GROEP_LABEL } from '@/lib/admin2'
@@ -59,6 +60,7 @@ export default async function LesModusPage({
     }
     return (
       <div className="space-y-4">
+        <Link href="/admin/aanwezigheid" className="text-sm text-gray-500 hover:text-[#a90000]">← Terug naar lessen</Link>
         <h1 className="text-2xl font-bold text-[#2a2a2a]">Les invullen</h1>
         <div className="rounded-xl border border-gray-200 bg-white p-5">
           <p className="mb-3 text-sm text-gray-500">Nog geen lessen gepland rond vandaag. Kies een groep — de les wordt automatisch aangemaakt op de volgende lesdag van die groep:</p>
@@ -112,6 +114,8 @@ export default async function LesModusPage({
   for (const a of histAttendance) (histMap[a.memberId] ??= {})[a.trainingDayId] = a.status
 
   return (
+    <div className="space-y-3">
+    <Link href="/admin/aanwezigheid" className="inline-block text-sm text-gray-500 hover:text-[#a90000]">← Terug naar lessen</Link>
     <LesModus
       dag={{
         id: day.id, datum: day.date.toISOString(), groep: day.group,
@@ -139,5 +143,6 @@ export default async function LesModusPage({
         actief: d.id === day!.id,
       }))}
     />
+    </div>
   )
 }

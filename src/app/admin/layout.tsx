@@ -28,9 +28,13 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   }
 
   return (
-    <div className="flex min-h-screen bg-[#f5f5f0]">
+    <>
+      {/* Diepe, zachte achtergrond: de glas-effecten leven hiervan. Eén vaste
+          gradient op de layout — niet per element — voor de snelheid. */}
+      <div className="fixed inset-0 -z-10 bg-[#f3ede3] [background-image:radial-gradient(46rem_30rem_at_82%_-6%,rgba(169,0,0,0.16),transparent),radial-gradient(40rem_28rem_at_-6%_104%,rgba(196,148,60,0.20),transparent),radial-gradient(30rem_22rem_at_40%_18%,rgba(255,214,120,0.28),transparent),radial-gradient(26rem_20rem_at_62%_68%,rgba(169,0,0,0.08),transparent),radial-gradient(34rem_26rem_at_18%_46%,rgba(255,255,255,0.9),transparent)]" />
+      <div className="flex min-h-screen">
       {/* Sidebar (desktop) */}
-      <aside className="hidden w-[240px] shrink-0 flex-col border-r border-gray-200 bg-white lg:flex lg:sticky lg:top-0 lg:h-screen">
+      <aside className="hidden w-[240px] shrink-0 flex-col border-r border-white/60 bg-white/70 backdrop-blur-xl lg:flex lg:sticky lg:top-0 lg:h-screen">
         <div className="border-b border-gray-200 p-5">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#fdf6f6]">
@@ -58,7 +62,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       </aside>
 
       {/* Mobile header */}
-      <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between border-b border-gray-200 bg-white p-3 lg:hidden">
+      <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between border-b border-white/60 bg-white/70 p-3 backdrop-blur-xl lg:hidden">
         <div className="flex items-center gap-2">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#fdf6f6]">
             <img src="/logo-hd.png" alt="Michigami" className="h-7 w-7 object-contain" />
@@ -78,6 +82,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       {/* Mobile bottom tabbar */}
       <AdminMobileNav />
     </div>
+    </>
   )
 }
 
