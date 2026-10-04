@@ -15,6 +15,7 @@ import type { LayoutItem, ResponsiveLayouts } from 'react-grid-layout'
 import 'react-grid-layout/css/styles.css'
 import 'react-resizable/css/styles.css'
 import { GROEP_LABEL, STATUS_INFO, PAYMENT_INFO, groepNaam } from '@/lib/admin2'
+import { usePropSync } from '@/lib/use-prop-sync'
 import { getBeltLabel } from '@/lib/belt-utils'
 import { BELT_COLORS } from '@/lib/student-progress-types'
 import type { BeltLevel } from '@prisma/client'
@@ -489,17 +490,19 @@ function WAanwezigheid({ d }: { d: DashData }) {
   const [local, setLocal] = React.useState<Record<string, string | null>>({})
   const [compact, setCompact] = React.useState(false)
   const [sorteer, setSorteer] = React.useState('naam')
-  const [status, setStatus] = React.useState<Record<string, string>>(Object.fromEntries(d.aanwezigheidLeden.map(l => [l.id, l.clubStatus])))
+  const [status, zetStatus] = usePropSync(d.aanwezigheidLeden, 'clubStatus')
 
   async function zet(lidId: string, clubStatus: string) {
-    setStatus(p => ({ ...p, [lidId]: clubStatus }))
+    zetStatus(lidId, clubStatus)
     try {
       await fetch('/api/admin2/member-status', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ memberId: lidId, clubStatus, leaveDate: new Date().toISOString().slice(0, 10) }),
       })
       router.refresh()
-    } catch { /* rollback bij fout */ }
+    } catch {
+      /* rollback bij fout: server blijft leidend, effect ruimt de override op */
+    }
   }
 
   const get = (mid: string, dagId: string) => {
@@ -705,10 +708,10 @@ function WLeden({ d }: { d: DashData }) {
   const router = useRouter()
   const [q, setQ] = React.useState('')
   const [sorteer, setSorteer] = React.useState('naam')
-  const [status, setStatus] = React.useState<Record<string, string>>(Object.fromEntries(d.leden.map(l => [l.id, l.clubStatus])))
+  const [status, setClubStatusOpt] = usePropSync(d.leden, 'clubStatus')
 
   async function setClubStatus(lidId: string, clubStatus: string) {
-    setStatus(p => ({ ...p, [lidId]: clubStatus }))
+    setClubStatusOpt(lidId, clubStatus)
     await fetch('/api/admin2/member-status', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ memberId: lidId, clubStatus, leaveDate: new Date().toISOString().slice(0, 10) }),
@@ -793,9 +796,9 @@ function WLeden({ d }: { d: DashData }) {
 // ── Reserve & stoppend: status inline ──────────────────────────────────────
 function WVlaggen({ d }: { d: DashData }) {
   const router = useRouter()
-  const [status, setStatus] = React.useState<Record<string, string>>(Object.fromEntries(d.vlaggen.map(v => [v.id, v.status])))
+  const [vlagStatus, zetVlag] = usePropSync(d.vlaggen, 'status')
   async function zet(lidId: string, s: string) {
-    setStatus(p => ({ ...p, [lidId]: s }))
+    zetVlag(lidId, s)
     await fetch('/api/admin2/member-status', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ memberId: lidId, clubStatus: s, leaveDate: new Date().toISOString().slice(0, 10) }),
@@ -808,7 +811,7 @@ function WVlaggen({ d }: { d: DashData }) {
         <div key={v.id} className="flex items-center gap-1.5 rounded-lg border border-gray-100 px-2 py-1.5">
           <Link href={`/admin/students/${v.id}`} className="min-w-0 flex-1 truncate text-xs font-medium text-[#2a2a2a] hover:text-[#a90000]">{v.naam}</Link>
           <span className="shrink-0 text-[9px] text-gray-400">{groepNaam(v.groep)}</span>
-          <select value={status[v.id] ?? v.status} onChange={e => zet(v.id, e.target.value)}
+          <select value={vlagStatus[v.id] ?? v.status} onChange={e => zet(v.id, e.target.value)}
             className="shrink-0 rounded border border-gray-200 bg-white px-1 py-0.5 text-[10px] focus:border-[#a90000] focus:outline-none">
             <option value="RESERVE">reserve</option>
             <option value="STOPPEND">stopt?</option>

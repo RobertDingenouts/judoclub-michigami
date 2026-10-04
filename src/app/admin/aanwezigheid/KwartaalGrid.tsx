@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { GROEP_LABEL, STATUS_INFO } from '@/lib/admin2'
 import { getNextBelt, isSlipBelt, isYouth } from '@/lib/belt-utils'
 import { BELT_COLORS } from '@/lib/student-progress-types'
+import { usePropSync } from '@/lib/use-prop-sync'
 import type { BeltLevel } from '@prisma/client'
 
 export type DagCel = { id: string; datum: string; groep: string; locatie: string; cancelled: boolean; activity: string | null; vakantie?: boolean }
@@ -48,16 +49,16 @@ export function KwartaalGrid({ dagen, leden, cellen }: { dagen: DagCel[]; leden:
   const router = useRouter()
   const [local, setLocal] = useState<Record<string, string | null>>({})
   const [busy, setBusy] = useState<string | null>(null)
-  const [statussen, setStatussen] = useState<Record<string, string>>(Object.fromEntries(leden.map(l => [l.id, l.clubStatus])))
+  const [statussen, setStatussen] = usePropSync(leden, 'clubStatus')
   const [verwijderd, setVerwijderd] = useState<string[]>([])
-  const [activities, setActivities] = useState<Record<string, string | null>>(Object.fromEntries(dagen.map(d => [d.id, d.activity])))
+  const [activities, setActivities] = usePropSync(dagen, 'activity')
   const [editDag, setEditDag] = useState<string | null>(null)
   const [editVal, setEditVal] = useState('')
   const [sort, setSort] = useState<SortKey>('naam')
   const [compact, setCompact] = useState(false)
 
   async function vlag(mid: string, clubStatus: string) {
-    setStatussen(p => ({ ...p, [mid]: clubStatus }))
+    setStatussen(mid, clubStatus)
     await fetch('/api/admin2/member-status', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ memberId: mid, clubStatus, leaveDate: new Date().toISOString().slice(0, 10) }),
@@ -91,7 +92,7 @@ export function KwartaalGrid({ dagen, leden, cellen }: { dagen: DagCel[]; leden:
   }
 
   async function slaActivity(dagId: string) {
-    setActivities(p => ({ ...p, [dagId]: editVal || null }))
+    setActivities(dagId, editVal)
     setEditDag(null)
     await fetch('/api/admin2/trainingday', {
       method: 'PATCH', headers: { 'Content-Type': 'application/json' },
