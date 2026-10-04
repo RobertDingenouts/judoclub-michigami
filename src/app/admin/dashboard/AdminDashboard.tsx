@@ -664,6 +664,8 @@ function WAanwezigheid({ d }: { d: DashData }) {
 // ── Contributie: inline als betaald markeren ───────────────────────────────
 function WContributie({ d }: { d: DashData }) {
   const router = useRouter()
+  // Bewust lokale state: hier is een rollback nodig als de API faalt, dus de
+  // serverdata mag deze lijst niet meteen overschrijven.
   const [status, setStatus] = React.useState<Record<string, string>>(Object.fromEntries(d.openRekeningen.map(r => [r.paymentId, r.status])))
   const [verbergen, setVerbergen] = React.useState<string[]>([])
   const [busy, setBusy] = React.useState<string | null>(null)
@@ -864,26 +866,39 @@ function WExamens({ d }: { d: DashData }) {
 // ── Inschrijvingen: inline goedkeuren/afkeuren ──────────────────────────────
 function WInschrijvingen({ d }: { d: DashData }) {
   const router = useRouter()
-  const [lijst, setLijst] = React.useState(d.inschrijvingen)
-  const [busy, setBusy] = React.useState<string | null>(null)
+  // Lijst volgt de server: na `router.refresh()` verschijnen nieuwe aanvragen
+    // automatisch (een lokale `useState(d.inschrijvingen)` zou die negeren).
+    const [weggehaald, setWeggehaald] = React.useState<string[]>([])
+    const lijst = d.inschrijvingen.filter(a => !weggehaald.includes(a.id))
+    const [busy, setBusy] = React.useState<string | null>(null)
 
-  async function verwerk(id: string, action: 'APPROVE' | 'REJECT') {
-    setBusy(id)
-    try {
-      const res = await fetch(`/api/admin/inschrijvingen/${id}`, {
-        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action }),
-      })
-      if (!res.ok) throw new Error((await res.json()).error)
-      setLijst(p => p.filter(x => x.id !== id))
-      router.refresh()
-    } catch (e) {
+    async function verwerk(id: string, action: 'APPROVE' | 'REJECT') {
+      setBusy(id)
+      try {
+        const res = await fetch(`/api/admin/inschrijvingen/${id}`, {
+          method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action }),
+        })
+        if (!res.ok) throw new Error((await res.json()).error)
+        // Optimaist weghalen; de effect hieronder ruimt dit op zodra de server doorhaadt.
+        setWeggehaald(p => [...p, id])
+        router.refresh()
+      } catch (e) {
+        setBusy(null)
+        window.alert(`Fout: ${(e as Error).message}`)
+        return
+      }
       setBusy(null)
-      window.alert(`Fout: ${(e as Error).message}`)
-      return
     }
-    setBusy(null)
-  }
+
+    // Zodra een aanvraag niet meer in de serverdata staat, is de override overbodig.
+    React.useEffect(() => {
+      setWeggehaald(p => {
+        if (!p.length) return p
+        const volgende = p.filter(id => d.inschrijvingen.some(a => a.id === id))
+        return volgende.length === p.length ? p : volgende
+      })
+    }, [d.inschrijvingen])
 
   return (
     <div className="space-y-1">
