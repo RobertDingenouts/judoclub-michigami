@@ -14,7 +14,7 @@ import { ResponsiveGridLayout, useContainerWidth } from 'react-grid-layout'
 import type { LayoutItem, ResponsiveLayouts } from 'react-grid-layout'
 import 'react-grid-layout/css/styles.css'
 import 'react-resizable/css/styles.css'
-import { GROEP_LABEL, STATUS_INFO, PAYMENT_INFO } from '@/lib/admin2'
+import { GROEP_LABEL, STATUS_INFO, PAYMENT_INFO, groepNaam } from '@/lib/admin2'
 import { getBeltLabel } from '@/lib/belt-utils'
 import { BELT_COLORS } from '@/lib/student-progress-types'
 import type { BeltLevel } from '@prisma/client'
@@ -229,7 +229,7 @@ export default function AdminDashboard({ d }: { d: DashData }) {
                 <span className="flex items-center gap-2">
                   <span className="h-2.5 w-2.5 rounded-full border border-gray-300" style={{ background: beltKleur(l.belt) }} />
                   <span className="font-medium text-[#2a2a2a]">{l.naam}</span>
-                  <span className="text-xs text-gray-400">{GROEP_LABEL[l.groep] ?? l.groep}</span>
+                  <span className="text-xs text-gray-400">{groepNaam(l.groep)}</span>
                 </span>
                 <span className="text-xs text-gray-400">{l.betaling === 'BETAALD' ? '✅ betaald' : l.betaling === 'VIJGESTELD' ? '🔵 vrijgesteld' : '💶 open'}</span>
               </Link>
@@ -398,7 +398,7 @@ function LidCel({ l, a, m, gestopt, status, zet }: {
             <div>
               <p className="text-xs font-bold text-[#2a2a2a]">{l.naam}</p>
               <p className="text-[10px] text-gray-400">
-                {leeftijd(l.dob) ? `${leeftijd(l.dob)} · ` : ''}{GROEP_LABEL[l.groep] ?? l.groep}
+                {leeftijd(l.dob) ? `${leeftijd(l.dob)} · ` : ''}{groepNaam(l.groep)}
                 {l.lidSinds ? ` · lid sinds ${fmtMaand(l.lidSinds)}` : ''}
               </p>
             </div>
@@ -469,7 +469,7 @@ function WLessen({ d }: { d: DashData }) {
               <p className="truncate text-xs font-semibold text-[#2a2a2a]">
                 {vandaag && <span className="mr-1 text-[#a90000]">●</span>}
                 {dt.toLocaleDateString('nl-NL', { weekday: 'short', day: 'numeric', month: 'short' })}
-                <span className="ml-1.5 rounded bg-gray-100 px-1 py-0.5 text-[10px] font-medium text-gray-600">{GROEP_LABEL[l.groep] ?? l.groep}</span>
+                <span className="ml-1.5 rounded bg-gray-100 px-1 py-0.5 text-[10px] font-medium text-gray-600">{groepNaam(l.groep)}</span>
               </p>
               {l.activity && <p className="truncate text-[10px] text-gray-400">🎯 {l.activity}</p>}
             </div>
@@ -541,6 +541,15 @@ function WAanwezigheid({ d }: { d: DashData }) {
         </button>
         <span className="ml-auto text-[10px] text-gray-400">tik cel = wisselen · laatste 12 lessen per groep</span>
       </div>
+      {/* Legenda: één keer uitleggen wat alle symbolen betekenen */}
+      <div className="flex flex-shrink-0 flex-wrap items-center gap-x-3 gap-y-1 text-[10px] text-gray-500">
+        <span className="font-semibold uppercase tracking-wide text-gray-400">Legenda</span>
+        <span title="Aanwezig">✅ aanwezig</span>
+        <span title="Afgemeld">🅰 afgemeld</span>
+        <span title="Ziek">🤒 ziek</span>
+        <span title="Niet aanwezig">❌ niet aanwezig</span>
+        <span className="flex items-center gap-1 rounded bg-gray-100 px-1 py-0.5 text-gray-500" title="Geen les wegens vakantie — telt niet mee in het percentage">🏖 geen les (vakantie)</span>
+      </div>
       {/* Groepen vullen de widget: naast elkaar zodra de widget breed is */}
       <div className="grid min-h-0 flex-1 gap-2 [grid-template-columns:repeat(auto-fit,minmax(340px,1fr))]">
       {d.aanwezigheidGroepen.map(g => {
@@ -562,15 +571,15 @@ function WAanwezigheid({ d }: { d: DashData }) {
         if (sorteer === 'opkomstLaag') leden = [...leden].sort((x, y) => aant(x.id).p - aant(y.id).p)
         if (sorteer === 'opkomstHoog') leden = [...leden].sort((x, y) => aant(y.id).p - aant(x.id).p)
 
-        // Groep zonder afgeronde lessen: nette melding, geen lege tabel
-if (g.dagen.length === 0) {
+        // Groep zonder afgeronde lessen: compacte melding (geen volle tabel)
+        if (g.dagen.length === 0) {
           return (
-            <div key={g.groep} className="min-h-0 overflow-hidden rounded-lg border border-gray-100">
-              <div className="flex items-center justify-between border-b border-gray-100 bg-gray-50 px-2 py-1">
-                <span className="text-[11px] font-bold text-[#2a2a2a]">{GROEP_LABEL[g.groep] ?? g.groep}</span>
-                <span className="text-[10px] text-gray-400">{LOC_KORT[g.locatie] ?? g.locatie} · {leden.length} leden</span>
+            <div key={g.groep} className="self-start overflow-hidden rounded-lg border border-dashed border-gray-200">
+              <div className="flex items-center justify-between border-b border-dashed border-gray-200 bg-gray-50 px-2 py-1">
+                <span className="text-[11px] font-bold text-gray-400">{groepNaam(g.groep)}</span>
+                <span className="text-[10px] text-gray-300">{leden.length} leden</span>
               </div>
-              <p className="px-2 py-3 text-center text-[10px] text-gray-400">Nog geen afgeronde lessen in deze groep</p>
+              <p className="px-2 py-2 text-center text-[10px] text-gray-400">Nog geen afgeronde lessen</p>
             </div>
           )
         }
@@ -578,7 +587,7 @@ if (g.dagen.length === 0) {
         return (
           <div key={g.groep} className="min-h-0 overflow-hidden rounded-lg border border-gray-100">
             <div className="flex items-center justify-between border-b border-gray-100 bg-gray-50 px-2 py-1">
-              <span className="text-[11px] font-bold text-[#2a2a2a]">{GROEP_LABEL[g.groep] ?? g.groep}</span>
+              <span className="text-[11px] font-bold text-[#2a2a2a]">{groepNaam(g.groep)}</span>
               <span className="text-[10px] text-gray-400">{LOC_KORT[g.locatie] ?? g.locatie} · {leden.length} leden</span>
             </div>
             <div className="h-[calc(100%-1.75rem)] overflow-auto">
@@ -589,8 +598,8 @@ if (g.dagen.length === 0) {
                   {g.dagen.map(dg => {
                     const dt = new Date(dg.datum)
                     return <th key={dg.id}
-                    className={`px-0.5 py-1 text-center text-[9px] font-normal ${dg.vakantie ? 'bg-gray-100 text-gray-400' : 'text-gray-400'}`}
-                    title={`${dt.toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long' })}${dg.activity ? ` · ${dg.activity}` : ''}`}>
+                    className={`border-b-2 px-0.5 py-1 text-center text-[9px] font-normal ${dg.vakantie ? 'border-[#c3c8cf] bg-[#e7eaee] text-[#8a9099]' : 'border-transparent text-gray-400'}`}
+                    title={`${dt.toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long' })}${dg.vakantie ? ' · Geen les (vakantie) — telt niet mee in het percentage' : dg.activity ? ` · ${dg.activity}` : ''}`}>
                       {dg.vakantie ? '🏖' : `${dt.getDate()}/${dt.getMonth() + 1}`}
                     </th>
                   })}
@@ -607,10 +616,12 @@ if (g.dagen.length === 0) {
                         <LidCel l={l} a={a} m={m} gestopt={gestopt} status={status} zet={zet} />
                       </td>
                       {g.dagen.map(dg => {
-                        // Vakantiedag: grijs, 🏖, niet klikbaar — geen les gegeven
+                        // Vakantiedag: doorlopende grijze balk, niet klikbaar — er is geen les gegeven
                         if (dg.vakantie) {
                           return (
-                            <td key={dg.id} className="bg-gray-100/70 p-0.5 text-center text-[10px] text-gray-400" title={`Geen les · ${dg.activity ?? ''}`}>·</td>
+                            <td key={dg.id}
+                              className="border-l border-r border-[#e7eaee] bg-[#eef0f3] p-0.5 text-center text-[10px] text-[#b8bdc4]"
+                              title={`Geen les — vakantie · telt niet mee in het percentage`}>·</td>
                           )
                         }
                         const s = get(l.id, dg.id)
@@ -678,7 +689,7 @@ function WContributie({ d }: { d: DashData }) {
       {zichtbaar.length === 0 ? <Leeg tekst="Alles betaald of vrijgesteld ✅" /> : zichtbaar.map(r => (
         <div key={r.paymentId} className="flex items-center gap-2 rounded-lg border border-gray-100 px-2 py-1.5">
           <Link href={`/admin/students/${r.lidId}`} className="min-w-0 flex-1 truncate text-xs font-medium text-[#2a2a2a] hover:text-[#a90000]">{r.naam}</Link>
-          <span className="shrink-0 text-[10px] text-gray-400">{GROEP_LABEL[r.groep] ?? r.groep}</span>
+          <span className="shrink-0 text-[10px] text-gray-400">{groepNaam(r.groep)}</span>
           <span className="shrink-0 text-xs font-semibold">€{r.bedrag.toFixed(0)}</span>
           <button onClick={() => markeerBetaald(r.paymentId)} disabled={busy === r.paymentId} title="Markeer als betaald"
             className="shrink-0 rounded border border-green-300 bg-green-50 px-1.5 py-0.5 text-[10px] font-semibold text-green-700 hover:bg-green-100 disabled:opacity-40">✓</button>
@@ -749,7 +760,10 @@ function WLeden({ d }: { d: DashData }) {
                     <span className="text-[9px] text-gray-400">{leeftijd(l.dob)}</span>
                   </Link>
                 </td>
-                <td className="py-0.5 text-[10px] text-gray-500">{GROEP_LABEL[l.groep] ?? l.groep}</td>
+                <td className="py-0.5 text-[10px]">
+                  {l.groep ? <span className="text-gray-500">{groepNaam(l.groep)}</span>
+                    : <span className="rounded bg-amber-50 px-1 py-0.5 text-[9px] font-medium text-amber-700" title="Dit lid heeft nog geen groep toegewezen">groep ontbreekt</span>}
+                </td>
                 <td className="py-0.5 text-[10px] text-gray-500">{l.belt ? getBeltLabel(l.belt as BeltLevel) : <span className="text-[#7C3AED]">geen band</span>}</td>
                 <td className="py-0.5 text-center">
                   <span className={`rounded px-1 py-0.5 text-[9px] font-medium ${PAYMENT_INFO[l.betaling]?.klas ?? 'bg-gray-100 text-gray-500'}`}>
@@ -793,7 +807,7 @@ function WVlaggen({ d }: { d: DashData }) {
       {d.vlaggen.length === 0 ? <Leeg tekst="Niemand gevlagd ✅" /> : d.vlaggen.map(v => (
         <div key={v.id} className="flex items-center gap-1.5 rounded-lg border border-gray-100 px-2 py-1.5">
           <Link href={`/admin/students/${v.id}`} className="min-w-0 flex-1 truncate text-xs font-medium text-[#2a2a2a] hover:text-[#a90000]">{v.naam}</Link>
-          <span className="shrink-0 text-[9px] text-gray-400">{GROEP_LABEL[v.groep] ?? v.groep}</span>
+          <span className="shrink-0 text-[9px] text-gray-400">{groepNaam(v.groep)}</span>
           <select value={status[v.id] ?? v.status} onChange={e => zet(v.id, e.target.value)}
             className="shrink-0 rounded border border-gray-200 bg-white px-1 py-0.5 text-[10px] focus:border-[#a90000] focus:outline-none">
             <option value="RESERVE">reserve</option>

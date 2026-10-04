@@ -45,8 +45,14 @@ export default async function AdminStart() {
       orderBy: { date: 'asc' },
     }),
     db.attendance.groupBy({ by: ['status'], _count: true }),
+    // Let op: Prisma's `notIn`/`NOT` op een nullable kolom sluit in SQL ook de
+    // NULL-waarden uit. Leden zonder primaryGroup zouden daardoor stilletjes
+    // verdwijnen — vandaar de expliciete OR in plaats van een filter.
     db.member.findMany({
-      where: { isActive: true, clubStatus: { notIn: ['PROEF'] }, primaryGroup: { notIn: ['SENIOREN'] } },
+      where: {
+        isActive: true, clubStatus: { notIn: ['PROEF'] },
+        OR: [{ primaryGroup: null }, { primaryGroup: { not: 'SENIOREN' } }],
+      },
       orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }],
       select: {
         id: true, firstName: true, lastName: true, primaryGroup: true, clubStatus: true,
@@ -210,7 +216,8 @@ export default async function AdminStart() {
     trend,
     examList,
     aanwezigheidGroepen,
-    aanwezigheidLeden: rijkeLeden,
+    // Leden zonder groep horen niet in het lesrooster; ze blijven wel in de ledenwidget.
+    aanwezigheidLeden: rijkeLeden.filter(l => l.groep !== ''),
     cellen,
     leden: rijkeLeden,
     openRekeningen: openRekeningen.map(p => ({

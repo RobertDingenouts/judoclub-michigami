@@ -26,6 +26,11 @@ export const PAYMENT_INFO: Record<string, { label: string; klas: string }> = {
   VIJGESTELD:   { label: 'Vrijgesteld', klas: 'bg-blue-100 text-blue-800' },
 }
 
+export function groepNaam(g: string | null | undefined): string {
+  if (!g) return 'geen groep'
+  return GROEP_LABEL[g] ?? g
+}
+
 export function nlDatum(d: Date | string | null | undefined): string {
   if (!d) return '—'
   return new Date(d).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short', year: 'numeric' })
