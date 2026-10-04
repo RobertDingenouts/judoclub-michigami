@@ -527,7 +527,10 @@ function WAanwezigheid({ d }: { d: DashData }) {
 
   const cel = compact ? 'h-5 w-5 text-[10px]' : 'h-6 w-6 text-[11px]'
 
-  return (
+  const groepenMetData = d.aanwezigheidGroepen.filter(g => g.dagen.length > 0)
+      const groepenLeeg = d.aanwezigheidGroepen.filter(g => g.dagen.length === 0)
+
+      return (
     <div className="flex h-full flex-col gap-2">
       <div className="flex flex-shrink-0 items-center gap-2">
         <select value={sorteer} onChange={e => setSorteer(e.target.value)}
@@ -553,9 +556,10 @@ function WAanwezigheid({ d }: { d: DashData }) {
         <span title="Niet aanwezig">❌ niet aanwezig</span>
         <span className="flex items-center gap-1 rounded bg-gray-100 px-1 py-0.5 text-gray-500" title="Geen les wegens vakantie — telt niet mee in het percentage">🏖 geen les (vakantie)</span>
       </div>
-      {/* Groepen vullen de widget: naast elkaar zodra de widget breed is */}
+      {/* Groepen vullen de widget: naast elkaar zodra de widget breed is.
+          Groepen zonder lessen komen onderin, zodat ze geen kolom opslokken. */}
       <div className="grid min-h-0 flex-1 gap-2 [grid-template-columns:repeat(auto-fit,minmax(340px,1fr))]">
-      {d.aanwezigheidGroepen.map(g => {
+      {groepenMetData.map(g => {
         const aant = (lid: string) => {
           let a = 0, m = 0
           // Vakantiedagen tellen niet mee: anders daalt het percentage door lesvrije weken.
@@ -573,19 +577,6 @@ function WAanwezigheid({ d }: { d: DashData }) {
         if (sorteer === 'band') leden = [...leden].sort((x, y) => (x.belt ?? '').localeCompare(y.belt ?? ''))
         if (sorteer === 'opkomstLaag') leden = [...leden].sort((x, y) => aant(x.id).p - aant(y.id).p)
         if (sorteer === 'opkomstHoog') leden = [...leden].sort((x, y) => aant(y.id).p - aant(x.id).p)
-
-        // Groep zonder afgeronde lessen: compacte melding (geen volle tabel)
-        if (g.dagen.length === 0) {
-          return (
-            <div key={g.groep} className="self-start overflow-hidden rounded-lg border border-dashed border-gray-200">
-              <div className="flex items-center justify-between border-b border-dashed border-gray-200 bg-gray-50 px-2 py-1">
-                <span className="text-[11px] font-bold text-gray-400">{groepNaam(g.groep)}</span>
-                <span className="text-[10px] text-gray-300">{leden.length} leden</span>
-              </div>
-              <p className="px-2 py-2 text-center text-[10px] text-gray-400">Nog geen afgeronde lessen</p>
-            </div>
-          )
-        }
 
         return (
           <div key={g.groep} className="min-h-0 overflow-hidden rounded-lg border border-gray-100">
@@ -650,6 +641,21 @@ function WAanwezigheid({ d }: { d: DashData }) {
         )
       })}
       </div>
+      {/* Groepen zonder lessen: doorlopende strook onder het raster, onderdeel van de
+          kaart i.p.v. een losse chip die de kaartstructuur breekt. */}
+      {groepenLeeg.length > 0 && (
+        <div className="flex flex-shrink-0 items-center gap-3 border-t border-gray-200 bg-gray-50 px-2.5 py-1.5 text-[10px] text-gray-400">
+          <span className="font-semibold uppercase tracking-wide">Nog geen lessen</span>
+          <span className="h-3 w-px bg-gray-200" />
+          {groepenLeeg.map(g => (
+            <span key={g.groep} className="flex items-center gap-1">
+              <span className="h-1.5 w-1.5 rounded-full bg-gray-300" />
+              {groepNaam(g.groep)}
+              <span className="text-gray-300">· {d.aanwezigheidLeden.filter(l => l.groep === g.groep).length} leden</span>
+            </span>
+          ))}
+        </div>
+      )}
       {d.aanwezigheidGroepen.length === 0 && <Leeg tekst="Geen lessen gevonden." />}
     </div>
   )
