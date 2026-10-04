@@ -59,6 +59,11 @@ export default async function ContributiePage({
   const open = data.filter(d => ['OPEN', 'HERINNERING1', 'HERINNERING2'].includes(d.status))
   const betaald = data.filter(d => d.status === 'BETAALD')
 
+  // Bedrag dat de bulkknop bevestigt: alleen de echt openstaande facturen.
+  const totaalOpen = data
+    .filter(m => ['OPEN', 'HERINNERING1', 'HERINNERING2'].includes(m.status))
+    .reduce((s, m) => s + Number(m.amount), 0)
+
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -80,7 +85,7 @@ export default async function ContributiePage({
         ))}
       </div>
 
-      <ContributieBoard rows={data} periode={label} periodId={period?.id ?? ''} />
+      <ContributieBoard rows={data} periode={label} periodId={period?.id ?? ''} totaalOpen={totaalOpen} />
     </div>
   )
 }

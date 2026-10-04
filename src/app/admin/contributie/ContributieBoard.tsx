@@ -11,13 +11,29 @@ type Rij = {
   items: Item[] | null; clubStatus: string; leaveDate: string
 }
 
-export function ContributieBoard({ rows, periode, periodId }: { rows: Rij[]; periode: string; periodId: string }) {
+export function ContributieBoard({ rows, periode, periodId, totaalOpen }: { rows: Rij[]; periode: string; periodId: string; totaalOpen: number }) {
   const router = useRouter()
-  const [data, setData] = useState(rows)
+  // `useState(rows)` zou de props negeren: na `router.refresh()` (bv. na de
+  // bulkknop) blijft de lijst dan op de oude snapshot staan. Alleen de lokale
+  // statuswijzigingen worden bewaard, de serverdata is verder leidend.
+  const [lokaal, setLokaal] = useState<Record<string, string>>({})
+  const data = rows.map(r => (lokaal[r.paymentId ?? r.memberId] ? { ...r, status: lokaal[r.paymentId ?? r.memberId] } : r))
+  const setData = (updater: ((prev: Rij[]) => Rij[]) | Rij[]) => {
+    const prev = data
+    const next = typeof updater === 'function' ? updater(prev) : updater
+    const diff: Record<string, string> = { ...lokaal }
+    for (const r of next) {
+      const key = r.paymentId ?? r.memberId
+      const oud = prev.find(x => (x.paymentId ?? x.memberId) === key)
+      if (oud && oud.status !== r.status) diff[key] = r.status
+    }
+    setLokaal(diff)
+  }
   const [filter, setFilter] = useState<'alles' | 'open'>('open')
   const [busy, setBusy] = useState<string | null>(null)
   const [genereren, setGenereren] = useState(false)
   const [bewerken, setBewerken] = useState<string | null>(null)
+  const [bevestigBulk, setBevestigBulk] = useState(false)
 
   const openRows = data.filter(r => ['OPEN', 'HERINNERING1', 'HERINNERING2'].includes(r.status))
   const getToon = () => filter === 'open' ? openRows : data
@@ -49,6 +65,28 @@ export function ContributieBoard({ rows, periode, periodId }: { rows: Rij[]; per
     router.refresh()
   }
 
+  // Alle openstaande facturen van deze periode in één keer op betaald.
+  // Bevestiging met aantal + bedrag, anders is één klik op de verkeerde periode
+  // meteen een onomkeerbare bulkwijziging.
+  async function bulkBetaald() {
+    setGenereren(true)
+    try {
+      const res = await fetch('/api/admin2/payment-bulk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ periodId, status: 'BETAALD' }),
+      })
+      const j = await res.json()
+      if (!res.ok) throw new Error(j.error ?? 'Onbekende fout')
+      setBevestigBulk(false)
+      router.refresh()
+    } catch {
+      window.alert('Kon de betalingen niet opslaan. Er is niets gewijzigd.')
+    } finally {
+      setGenereren(false)
+    }
+  }
+
   function factuur(paymentId: string) {
     window.open(`/api/admin2/factuur?paymentId=${paymentId}`, '_blank')
   }
@@ -70,7 +108,40 @@ export function ContributieBoard({ rows, periode, periodId }: { rows: Rij[]; per
           className="rounded-xl bg-[#a90000] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#8c0000] disabled:opacity-40">
           🧾 Genereer facturen alle niet-betaalden ({openRows.length})
         </button>
+        {openRows.length > 0 && (
+          <button onClick={() => setBevestigBulk(true)} disabled={genereren}
+            className="rounded-xl border border-green-600 px-4 py-2.5 text-sm font-semibold text-green-700 hover:bg-green-50 disabled:opacity-40">
+            ✓ Alles betaald zetten ({openRows.length})
+          </button>
+        )}
       </div>
+
+      {bevestigBulk && (
+        <div className="rounded-xl border-2 border-green-600 bg-green-50 p-4">
+          <p className="text-sm font-semibold text-[#2a2a2a]">
+            {openRows.length} facturen in {periode} op betaald zetten?
+          </p>
+          <p className="mt-1 text-sm text-gray-600">
+            Totaal €{totaalOpen.toFixed(2).replace('.', ',')} — {periode} is dan volledig afgehandeld.
+          </p>
+          {openRows.some(r => r.clubStatus === 'GESTOPT') && (
+            <p className="mt-2 rounded-lg bg-amber-50 px-2 py-1 text-xs text-amber-800">
+              Let op: {openRows.filter(r => r.clubStatus === 'GESTOPT').length} van deze facturen horen bij
+              {' '}gestopte leden. Wil je die overslaan, laat het weten — dan zet ik ze op vrijgesteld.
+            </p>
+          )}
+          <div className="mt-3 flex gap-2">
+            <button onClick={bulkBetaald} disabled={genereren}
+              className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50">
+              {genereren ? 'Bezig…' : `Ja, ${openRows.length} facturen op betaald`}
+            </button>
+            <button onClick={() => setBevestigBulk(false)} disabled={genereren}
+              className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-50">
+              Annuleren
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="space-y-2">
         {getToon().map(r => (

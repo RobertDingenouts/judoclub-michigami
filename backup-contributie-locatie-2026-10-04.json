@@ -1,0 +1,684 @@
+{
+  "bij": "2026-10-04T07:24:43.286Z",
+  "trainingDays": [
+    {
+      "id": "cmus4b15002wkieftoyojp92l",
+      "date": "2026-01-07T00:00:00.000Z",
+      "group": "VRIJDAG_1E",
+      "location": "OUD_VOSSEMEER"
+    },
+    {
+      "id": "cmus4b1i202xfieftywfitrz8",
+      "date": "2026-01-14T00:00:00.000Z",
+      "group": "VRIJDAG_1E",
+      "location": "OUD_VOSSEMEER"
+    },
+    {
+      "id": "cmus4b1vc02yaieftfdhps0c7",
+      "date": "2026-01-21T00:00:00.000Z",
+      "group": "VRIJDAG_1E",
+      "location": "OUD_VOSSEMEER"
+    },
+    {
+      "id": "cmus4b28u02z5iefteq26j4y9",
+      "date": "2026-01-28T00:00:00.000Z",
+      "group": "VRIJDAG_1E",
+      "location": "OUD_VOSSEMEER"
+    },
+    {
+      "id": "cmus4b2ly0300ieftisv2gzdn",
+      "date": "2026-02-04T00:00:00.000Z",
+      "group": "VRIJDAG_1E",
+      "location": "OUD_VOSSEMEER"
+    },
+    {
+      "id": "cmus4b2z5030vieft9b8pb6z6",
+      "date": "2026-02-11T00:00:00.000Z",
+      "group": "VRIJDAG_1E",
+      "location": "OUD_VOSSEMEER"
+    },
+    {
+      "id": "cmus4b3ce031qiefthmfltdab",
+      "date": "2026-02-18T00:00:00.000Z",
+      "group": "VRIJDAG_1E",
+      "location": "OUD_VOSSEMEER"
+    },
+    {
+      "id": "cmus4b3pq032lieft6ee55yde",
+      "date": "2026-02-25T00:00:00.000Z",
+      "group": "VRIJDAG_1E",
+      "location": "OUD_VOSSEMEER"
+    },
+    {
+      "id": "cmus4b433033giefths3o6445",
+      "date": "2026-03-04T00:00:00.000Z",
+      "group": "VRIJDAG_1E",
+      "location": "OUD_VOSSEMEER"
+    },
+    {
+      "id": "cmus4b4ga034bieftihk0ssmy",
+      "date": "2026-03-11T00:00:00.000Z",
+      "group": "VRIJDAG_1E",
+      "location": "OUD_VOSSEMEER"
+    },
+    {
+      "id": "cmus4b4to0356ieftlf674evx",
+      "date": "2026-03-18T00:00:00.000Z",
+      "group": "VRIJDAG_1E",
+      "location": "OUD_VOSSEMEER"
+    },
+    {
+      "id": "cmus4b56q0361ieftt64mfg83",
+      "date": "2026-03-25T00:00:00.000Z",
+      "group": "VRIJDAG_1E",
+      "location": "OUD_VOSSEMEER"
+    },
+    {
+      "id": "cmus4b5ka036wieftwcmcyu3a",
+      "date": "2026-04-01T00:00:00.000Z",
+      "group": "VRIJDAG_1E",
+      "location": "OUD_VOSSEMEER"
+    },
+    {
+      "id": "cmus4b5y0037tieft8qvykcyp",
+      "date": "2026-04-08T00:00:00.000Z",
+      "group": "VRIJDAG_1E",
+      "location": "OUD_VOSSEMEER"
+    },
+    {
+      "id": "cmus4b6bw038qieft8py0w6oj",
+      "date": "2026-04-15T00:00:00.000Z",
+      "group": "VRIJDAG_1E",
+      "location": "OUD_VOSSEMEER"
+    },
+    {
+      "id": "cmus4b6pw039nieftzxgvuo6j",
+      "date": "2026-04-22T00:00:00.000Z",
+      "group": "VRIJDAG_1E",
+      "location": "OUD_VOSSEMEER"
+    },
+    {
+      "id": "cmus4b74103akieftdudk7wcx",
+      "date": "2026-04-29T00:00:00.000Z",
+      "group": "VRIJDAG_1E",
+      "location": "OUD_VOSSEMEER"
+    },
+    {
+      "id": "cmus4b7hu03bhieft0zcxxaor",
+      "date": "2026-05-06T00:00:00.000Z",
+      "group": "VRIJDAG_1E",
+      "location": "OUD_VOSSEMEER"
+    },
+    {
+      "id": "cmus4b81903ceieftic19usap",
+      "date": "2026-05-13T00:00:00.000Z",
+      "group": "VRIJDAG_1E",
+      "location": "OUD_VOSSEMEER"
+    },
+    {
+      "id": "cmus4b8f603dbiefthi5s9mdn",
+      "date": "2026-05-20T00:00:00.000Z",
+      "group": "VRIJDAG_1E",
+      "location": "OUD_VOSSEMEER"
+    },
+    {
+      "id": "cmus4b8t703e8ieft1op7xt5a",
+      "date": "2026-05-27T00:00:00.000Z",
+      "group": "VRIJDAG_1E",
+      "location": "OUD_VOSSEMEER"
+    },
+    {
+      "id": "cmus4b97403f5ieftwalw7512",
+      "date": "2026-06-03T00:00:00.000Z",
+      "group": "VRIJDAG_1E",
+      "location": "OUD_VOSSEMEER"
+    },
+    {
+      "id": "cmus4b9ld03g2ieft06mnk5am",
+      "date": "2026-06-10T00:00:00.000Z",
+      "group": "VRIJDAG_1E",
+      "location": "OUD_VOSSEMEER"
+    },
+    {
+      "id": "cmus4b9z703gzieftiozgempv",
+      "date": "2026-06-17T00:00:00.000Z",
+      "group": "VRIJDAG_1E",
+      "location": "OUD_VOSSEMEER"
+    }
+  ],
+  "payments": [
+    {
+      "id": "cmus4bcff03jnieft8g5dpsm0",
+      "status": "OPEN",
+      "paidAt": null,
+      "amount": "42",
+      "period": {
+        "label": "2026-Q1"
+      },
+      "member": {
+        "firstName": "Lucas",
+        "lastName": "Marien"
+      }
+    },
+    {
+      "id": "cmus4bchg03jtieftrzmtvobo",
+      "status": "OPEN",
+      "paidAt": null,
+      "amount": "42",
+      "period": {
+        "label": "2026-Q1"
+      },
+      "member": {
+        "firstName": "Niels",
+        "lastName": "van Eekelen"
+      }
+    },
+    {
+      "id": "cmus4bczt03l9ieft1zpfocpe",
+      "status": "OPEN",
+      "paidAt": "2026-06-30T00:00:00.000Z",
+      "amount": "42",
+      "period": {
+        "label": "2026-Q2"
+      },
+      "member": {
+        "firstName": "Joey",
+        "lastName": "Verhoek"
+      }
+    },
+    {
+      "id": "cmus4bdg203mjieftxgv5wiso",
+      "status": "OPEN",
+      "paidAt": null,
+      "amount": "42",
+      "period": {
+        "label": "2026-Q3"
+      },
+      "member": {
+        "firstName": "Aiden",
+        "lastName": "Verhoek"
+      }
+    },
+    {
+      "id": "cmus4bdmt03n3ieft7bww0fh8",
+      "status": "OPEN",
+      "paidAt": null,
+      "amount": "42",
+      "period": {
+        "label": "2026-Q3"
+      },
+      "member": {
+        "firstName": "Makar",
+        "lastName": "Hunko"
+      }
+    },
+    {
+      "id": "cmus4bdng03n5ieftvh1x271p",
+      "status": "OPEN",
+      "paidAt": null,
+      "amount": "42",
+      "period": {
+        "label": "2026-Q3"
+      },
+      "member": {
+        "firstName": "Ariel",
+        "lastName": "Ritsma"
+      }
+    },
+    {
+      "id": "cmus4bdq403ndieftipa1w7bi",
+      "status": "OPEN",
+      "paidAt": null,
+      "amount": "42",
+      "period": {
+        "label": "2026-Q3"
+      },
+      "member": {
+        "firstName": "Rayn",
+        "lastName": "Geers"
+      }
+    },
+    {
+      "id": "cmus4bdst03nliefti2duowko",
+      "status": "OPEN",
+      "paidAt": null,
+      "amount": "42",
+      "period": {
+        "label": "2026-Q3"
+      },
+      "member": {
+        "firstName": "Damian",
+        "lastName": "Vermeij"
+      }
+    },
+    {
+      "id": "cmus4bcwf03kzieftsybj0dgj",
+      "status": "OPEN",
+      "paidAt": "2026-06-30T00:00:00.000Z",
+      "amount": "42",
+      "period": {
+        "label": "2026-Q2"
+      },
+      "member": {
+        "firstName": "Manuel",
+        "lastName": "Van Hees"
+      }
+    },
+    {
+      "id": "cmus4ev1e03j0iep8r9aaymcn",
+      "status": "OPEN",
+      "paidAt": null,
+      "amount": "42",
+      "period": {
+        "label": "2026-Q3"
+      },
+      "member": {
+        "firstName": "Tycho",
+        "lastName": "Glandorf"
+      }
+    },
+    {
+      "id": "cmus4ev2103j2iep87lbd0wob",
+      "status": "OPEN",
+      "paidAt": null,
+      "amount": "42",
+      "period": {
+        "label": "2026-Q3"
+      },
+      "member": {
+        "firstName": "Kjeld",
+        "lastName": "Glandorf"
+      }
+    },
+    {
+      "id": "cmus4bclg03k3ieftv2f35b4g",
+      "status": "OPEN",
+      "paidAt": "2026-06-30T00:00:00.000Z",
+      "amount": "42",
+      "period": {
+        "label": "2026-Q2"
+      },
+      "member": {
+        "firstName": "Emily",
+        "lastName": "van Kasteele de"
+      }
+    },
+    {
+      "id": "cmus4bcm403k5ieft0nior7ao",
+      "status": "OPEN",
+      "paidAt": "2026-06-30T00:00:00.000Z",
+      "amount": "42",
+      "period": {
+        "label": "2026-Q2"
+      },
+      "member": {
+        "firstName": "Teun",
+        "lastName": "Nederkoorn"
+      }
+    },
+    {
+      "id": "cmus4bcmt03k7ieftlbp3pgyp",
+      "status": "OPEN",
+      "paidAt": "2026-06-30T00:00:00.000Z",
+      "amount": "42",
+      "period": {
+        "label": "2026-Q2"
+      },
+      "member": {
+        "firstName": "Jasper",
+        "lastName": "Michielsen"
+      }
+    },
+    {
+      "id": "cmus4bcni03k9ieft3m3cbg95",
+      "status": "OPEN",
+      "paidAt": "2026-06-30T00:00:00.000Z",
+      "amount": "42",
+      "period": {
+        "label": "2026-Q2"
+      },
+      "member": {
+        "firstName": "Hanna",
+        "lastName": "Kleefman"
+      }
+    },
+    {
+      "id": "cmus4bco603kbiefte2kd3220",
+      "status": "OPEN",
+      "paidAt": "2026-06-30T00:00:00.000Z",
+      "amount": "42",
+      "period": {
+        "label": "2026-Q2"
+      },
+      "member": {
+        "firstName": "Lola",
+        "lastName": "Ingels"
+      }
+    },
+    {
+      "id": "cmus4bcow03kdieftuwvmhpjy",
+      "status": "OPEN",
+      "paidAt": "2026-06-30T00:00:00.000Z",
+      "amount": "42",
+      "period": {
+        "label": "2026-Q2"
+      },
+      "member": {
+        "firstName": "Nino",
+        "lastName": "van Wagtendonk"
+      }
+    },
+    {
+      "id": "cmus4bcpk03kfieftb2fk3xvl",
+      "status": "OPEN",
+      "paidAt": "2026-06-30T00:00:00.000Z",
+      "amount": "42",
+      "period": {
+        "label": "2026-Q2"
+      },
+      "member": {
+        "firstName": "Mika",
+        "lastName": "Morice"
+      }
+    },
+    {
+      "id": "cmus4bcq803khieftj4mhwb8o",
+      "status": "OPEN",
+      "paidAt": "2026-06-30T00:00:00.000Z",
+      "amount": "42",
+      "period": {
+        "label": "2026-Q2"
+      },
+      "member": {
+        "firstName": "Aiden",
+        "lastName": "Verhoek"
+      }
+    },
+    {
+      "id": "cmus4bcqy03kjieftutv0cbse",
+      "status": "OPEN",
+      "paidAt": "2026-06-30T00:00:00.000Z",
+      "amount": "42",
+      "period": {
+        "label": "2026-Q2"
+      },
+      "member": {
+        "firstName": "Myla",
+        "lastName": "Geers"
+      }
+    },
+    {
+      "id": "cmus4bcrm03klieftl9nvvcfe",
+      "status": "OPEN",
+      "paidAt": "2026-06-30T00:00:00.000Z",
+      "amount": "42",
+      "period": {
+        "label": "2026-Q2"
+      },
+      "member": {
+        "firstName": "Benjamin",
+        "lastName": "Pelle"
+      }
+    },
+    {
+      "id": "cmus4bcse03knieft65xe1uz5",
+      "status": "OPEN",
+      "paidAt": "2026-06-30T00:00:00.000Z",
+      "amount": "42",
+      "period": {
+        "label": "2026-Q2"
+      },
+      "member": {
+        "firstName": "Yord",
+        "lastName": "Huiskamp"
+      }
+    },
+    {
+      "id": "cmus4bct303kpieftktjkl4hy",
+      "status": "OPEN",
+      "paidAt": "2026-06-30T00:00:00.000Z",
+      "amount": "42",
+      "period": {
+        "label": "2026-Q2"
+      },
+      "member": {
+        "firstName": "Matthijs",
+        "lastName": "Brouwers"
+      }
+    },
+    {
+      "id": "cmus4bcv303kvieftvnzapfkb",
+      "status": "OPEN",
+      "paidAt": "2026-06-30T00:00:00.000Z",
+      "amount": "42",
+      "period": {
+        "label": "2026-Q2"
+      },
+      "member": {
+        "firstName": "Lotte",
+        "lastName": "van Werf der"
+      }
+    },
+    {
+      "id": "cmus4bcvs03kxieftd3rayd8c",
+      "status": "OPEN",
+      "paidAt": "2026-06-30T00:00:00.000Z",
+      "amount": "42",
+      "period": {
+        "label": "2026-Q2"
+      },
+      "member": {
+        "firstName": "Deen",
+        "lastName": "Herselman"
+      }
+    },
+    {
+      "id": "cmus4bd0g03lbieftnng3qbiy",
+      "status": "OPEN",
+      "paidAt": "2026-06-30T00:00:00.000Z",
+      "amount": "42",
+      "period": {
+        "label": "2026-Q2"
+      },
+      "member": {
+        "firstName": "Rayn",
+        "lastName": "Geers"
+      }
+    },
+    {
+      "id": "cmus4bd1303ldieftm6dhryjg",
+      "status": "OPEN",
+      "paidAt": "2026-06-30T00:00:00.000Z",
+      "amount": "42",
+      "period": {
+        "label": "2026-Q2"
+      },
+      "member": {
+        "firstName": "Luuk",
+        "lastName": "Van Adrichem"
+      }
+    },
+    {
+      "id": "cmus4bd1r03lfieftgxqa9vuo",
+      "status": "OPEN",
+      "paidAt": "2026-06-30T00:00:00.000Z",
+      "amount": "42",
+      "period": {
+        "label": "2026-Q2"
+      },
+      "member": {
+        "firstName": "Marina",
+        "lastName": "Van Hees"
+      }
+    },
+    {
+      "id": "cmus4bd2f03lhieftaei27kwy",
+      "status": "OPEN",
+      "paidAt": "2026-06-30T00:00:00.000Z",
+      "amount": "42",
+      "period": {
+        "label": "2026-Q2"
+      },
+      "member": {
+        "firstName": "Bikkel",
+        "lastName": "Verweij"
+      }
+    },
+    {
+      "id": "cmus4bd3403ljieftlwqikqo1",
+      "status": "OPEN",
+      "paidAt": "2026-06-30T00:00:00.000Z",
+      "amount": "42",
+      "period": {
+        "label": "2026-Q2"
+      },
+      "member": {
+        "firstName": "Damian",
+        "lastName": "Vermeij"
+      }
+    },
+    {
+      "id": "cmus4bd3v03llieftedtz79x7",
+      "status": "OPEN",
+      "paidAt": "2026-06-30T00:00:00.000Z",
+      "amount": "42",
+      "period": {
+        "label": "2026-Q2"
+      },
+      "member": {
+        "firstName": "Ashley",
+        "lastName": "Koens"
+      }
+    },
+    {
+      "id": "cmus4bd4j03lniefthmowbci5",
+      "status": "OPEN",
+      "paidAt": "2026-06-30T00:00:00.000Z",
+      "amount": "42",
+      "period": {
+        "label": "2026-Q2"
+      },
+      "member": {
+        "firstName": "Pepijn",
+        "lastName": "Vortman"
+      }
+    },
+    {
+      "id": "cmus4bd5903lpieftv1zgr72j",
+      "status": "OPEN",
+      "paidAt": "2026-06-30T00:00:00.000Z",
+      "amount": "42",
+      "period": {
+        "label": "2026-Q2"
+      },
+      "member": {
+        "firstName": "Niels",
+        "lastName": "van Eekelen"
+      }
+    },
+    {
+      "id": "cmus4bd8003lxieftjbnr8dwt",
+      "status": "OPEN",
+      "paidAt": "2026-06-30T00:00:00.000Z",
+      "amount": "42",
+      "period": {
+        "label": "2026-Q2"
+      },
+      "member": {
+        "firstName": "Tycho",
+        "lastName": "Glandorf"
+      }
+    },
+    {
+      "id": "cmus4bdpg03nbieftco3fw1p7",
+      "status": "OPEN",
+      "paidAt": null,
+      "amount": "42",
+      "period": {
+        "label": "2026-Q3"
+      },
+      "member": {
+        "firstName": "Joey",
+        "lastName": "Verhoek"
+      }
+    },
+    {
+      "id": "cmus4bcx303l1ieftof76anhe",
+      "status": "OPEN",
+      "paidAt": "2026-06-30T00:00:00.000Z",
+      "amount": "42",
+      "period": {
+        "label": "2026-Q2"
+      },
+      "member": {
+        "firstName": "Makar",
+        "lastName": "Hunko"
+      }
+    },
+    {
+      "id": "cmus4bcxr03l3ieft45lr5fa3",
+      "status": "OPEN",
+      "paidAt": "2026-06-30T00:00:00.000Z",
+      "amount": "42",
+      "period": {
+        "label": "2026-Q2"
+      },
+      "member": {
+        "firstName": "Ariel",
+        "lastName": "Ritsma"
+      }
+    },
+    {
+      "id": "cmus4bcyf03l5iefttdswcd81",
+      "status": "OPEN",
+      "paidAt": "2026-06-30T00:00:00.000Z",
+      "amount": "42",
+      "period": {
+        "label": "2026-Q2"
+      },
+      "member": {
+        "firstName": "Jayden",
+        "lastName": "de Kok"
+      }
+    },
+    {
+      "id": "cmus4bcz403l7ieftd0nitwto",
+      "status": "OPEN",
+      "paidAt": "2026-06-30T00:00:00.000Z",
+      "amount": "42",
+      "period": {
+        "label": "2026-Q2"
+      },
+      "member": {
+        "firstName": "Tom",
+        "lastName": "van de Kasteele"
+      }
+    },
+    {
+      "id": "cmus4bd8o03lzieftfhniwpz3",
+      "status": "OPEN",
+      "paidAt": "2026-06-30T00:00:00.000Z",
+      "amount": "42",
+      "period": {
+        "label": "2026-Q2"
+      },
+      "member": {
+        "firstName": "Kjeld",
+        "lastName": "Glandorf"
+      }
+    },
+    {
+      "id": "cmus4bd9b03m1ieftyuj8be3a",
+      "status": "OPEN",
+      "paidAt": "2026-06-30T00:00:00.000Z",
+      "amount": "42",
+      "period": {
+        "label": "2026-Q2"
+      },
+      "member": {
+        "firstName": "Lucas",
+        "lastName": "Marien"
+      }
+    }
+  ]
+}
