@@ -14,8 +14,13 @@ export default async function ContributiePage({
 
   const [periodes, rows] = await Promise.all([
     db.contributionPeriod.findMany({ orderBy: { start: 'asc' } }),
+    // Let op: `notIn` op een nullable kolom sluit in SQL ook NULL uit → leden
+    // zonder primaryGroup zouden hiermee verdwijnen uit de contributie.
     db.member.findMany({
-      where: { clubStatus: { notIn: ['PROEF'] }, primaryGroup: { notIn: ['SENIOREN'] } },
+      where: {
+        clubStatus: { notIn: ['PROEF'] },
+        OR: [{ primaryGroup: null }, { primaryGroup: { not: 'SENIOREN' } }],
+      },
       orderBy: [{ primaryGroup: 'asc' }, { lastName: 'asc' }],
       include: { payments: { where: { period: { label } } } },
     }),

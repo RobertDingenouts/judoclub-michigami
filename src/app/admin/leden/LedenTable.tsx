@@ -65,10 +65,14 @@ export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: 
   const [sortKey, setSortKey] = useState<SortKey>('groep')
   const [open, setOpen] = useState<string | null>(null)
 
-  const filtered = useMemo(() => {
-    const ql = q.toLowerCase()
-    const out = rows.filter(r => {
-      if (status === 'actief' && !(r.clubStatus === 'LID' || r.clubStatus === 'STOPPEND')) return false
+  // "Actief" = iedereen die nog meedoet. RESERVE en VRIJGESTELD horen hier
+      // bij: eerder telden ze niet mee, waardoor de teller onder de echte
+      // standaard lag en leden in het overzicht ontbraken.
+      const isActief = (s: string) => s !== 'GESTOPT' && s !== 'PROEF'
+      const filtered = useMemo(() => {
+        const ql = q.toLowerCase()
+        const out = rows.filter(r => {
+          if (status === 'actief' && !isActief(r.clubStatus)) return false
       if (status === 'gestopt' && r.clubStatus !== 'GESTOPT') return false
       if (status === 'reserve' && r.clubStatus !== 'RESERVE') return false
       if (status === 'proef' && r.clubStatus !== 'PROEF') return false
@@ -93,7 +97,7 @@ export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: 
   }, [rows, q, groep, status, sortKey])
 
   const statusCount = (s: string) => rows.filter(r =>
-    s === 'actief' ? (r.clubStatus === 'LID' || r.clubStatus === 'STOPPEND') :
+    s === 'actief' ? isActief(r.clubStatus) :
     s === 'gestopt' ? r.clubStatus === 'GESTOPT' :
     s === 'reserve' ? r.clubStatus === 'RESERVE' :
     s === 'vrijgesteld' ? r.clubStatus === 'VRIJGESTELD' :
@@ -339,15 +343,25 @@ function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; on
             {next && <p className="mt-2 text-xs">Volgende examen: <b className="text-[#a90000]">{getBeltLabel(next)}</b></p>}
             {r.exams.length > 0 && (
               <div className="mt-2 space-y-1 border-t border-gray-100 pt-2">
-                {r.exams.map((e, i) => (
-                  <p key={i} className="text-xs text-gray-600">
+                {r.exams.map((e) => (
+                  <p key={`${e.belt}-${e.date ?? e.status}`} className="text-xs text-gray-600">
                     {e.date ? nlDatum(e.date) : '—'} · {getBeltLabel(e.belt as BeltLevel)} · {e.status === 'COMPLETED_PASSED' ? 'geslaagd' : e.status === 'SCHEDULED' ? 'gepland' : e.status === 'COMPLETED_FAILED' ? 'niet geslaagd' : e.status}
                     {e.score != null && ` · ${e.score}/100`}
                   </p>
                 ))}
               </div>
             )}
-            {r.jpDiolmas.length > 0 && <p className="mt-2 text-xs text-gray-500">Cursus Japans diploma t/m {getBeltLabel(r.jpDiolmas.sort((a, b) => BAND_VOLGORDE.indexOf(a as BeltLevel) - BAND_VOLGORDE.indexOf(b as BeltLevel)).at(-1)! as BeltLevel)}</p>}
+            {r.jpDiolmas.length > 0 && (() => {
+              // Kopie voor de sort: Array.sort muteert, en dit is een gedeelde
+              // props-array. Bepaal de hoogste band zonder de bron te raken.
+              const hoogste = [...r.jpDiolmas]
+                .sort((a, b) => BAND_VOLGORDE.indexOf(a as BeltLevel) - BAND_VOLGORDE.indexOf(b as BeltLevel))
+                .at(-1)
+              if (!hoogste || !BELT_ORDER.includes(hoogste as BeltLevel)) {
+                return <p className="mt-2 text-xs text-gray-500">Cursus Japans: {r.jpDiolmas.length} diploma&apos;s</p>
+              }
+              return <p className="mt-2 text-xs text-gray-500">Cursus Japans diploma t/m {getBeltLabel(hoogste as BeltLevel)}</p>
+            })()}
           </Section>
 
           {/* Contributie + wedstrijden */}

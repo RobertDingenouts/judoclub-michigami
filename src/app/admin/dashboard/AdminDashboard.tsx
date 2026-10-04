@@ -922,8 +922,9 @@ function WInschrijvingen({ d }: { d: DashData }) {
 function WTrend({ d }: { d: DashData }) {
   return (
     <div className="space-y-1.5">
-      {d.trend.length === 0 ? <Leeg tekst="Nog geen data" /> : d.trend.map((x, i) => (
-        <div key={i} className="flex items-center gap-2">
+      {d.trend.length === 0 ? <Leeg tekst="Nog geen data" /> : d.trend.map((x) => (
+        // key op het label (datum): stabiel als de lijst verschuift, key={i} niet
+        <div key={x.label} className="flex items-center gap-2">
           <span className="w-16 shrink-0 text-[9px] text-gray-500">{x.label}</span>
           <div className="h-2 flex-1 overflow-hidden rounded bg-gray-100">
             <div className="h-full rounded bg-[#a90000]" style={{ width: `${x.pct}%` }} />
@@ -953,8 +954,8 @@ function WGestopt({ d }: { d: DashData }) {
 function WRecentBetald({ d }: { d: DashData }) {
   return (
     <div className="space-y-1">
-      {d.recentBetald.length === 0 ? <Leeg tekst="Nog geen betalingen dit kwartaal" /> : d.recentBetald.map((p, i) => (
-        <div key={i} className="flex items-center justify-between rounded px-1 py-0.5 text-[11px]">
+      {d.recentBetald.length === 0 ? <Leeg tekst="Nog geen betalingen dit kwartaal" /> : d.recentBetald.map((p) => (
+        <div key={`${p.naam}-${p.datum}-${p.bedrag}`} className="flex items-center justify-between rounded px-1 py-0.5 text-[11px]">
           <span className="truncate text-[#2a2a2a]">{p.naam}</span>
           <span className="shrink-0 text-green-700">€{p.bedrag.toFixed(0)}</span>
         </div>

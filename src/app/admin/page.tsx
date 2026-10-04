@@ -64,6 +64,8 @@ export default async function AdminStart() {
       },
     }),
     db.member.findMany({
+      // Vlaggen-leden. `STOPPING` is legacy-spelling uit oude data; meenemen kost
+// niets en voorkomt dat zo'n lid nergens zichtbaar is.
       where: { clubStatus: { in: ['RESERVE', 'STOPPING', 'STOPPEND'] } },
       select: { id: true, firstName: true, lastName: true, clubStatus: true, primaryGroup: true },
       orderBy: { lastName: 'asc' }, take: 14,
@@ -123,7 +125,9 @@ export default async function AdminStart() {
     const dagen = perGroep.get(g) ?? []
     return {
       groep: g,
-      locatie: dagen[0]?.location ?? (g === 'WOENSDAG' ? 'OUD_VOSSEMEER' : 'STEENBERGEN'),
+      // De recentste les is de betrouwbare bron voor de locatie: historische
+      // rijen kunnen een onjuiste locatie hebben (zie vakanties.ts).
+      locatie: dagen[dagen.length - 1]?.location ?? (g === 'WOENSDAG' ? 'OUD_VOSSEMEER' : 'STEENBERGEN'),
       dagen: dagen.map(d => ({
         id: d.id,
         datum: d.date.toISOString().slice(0, 10),
@@ -159,7 +163,16 @@ export default async function AdminStart() {
       next: next ? getBeltLabel(next) : '—',
       maanden,
     }
-  }).filter(e => e.maanden === null || e.maanden >= 3).slice(0, 14)
+  }).filter(e => e.maanden === null || e.maanden >= 3)
+    // Sorteer op tijd in de vorige band vóór het afkappen. De bronquery sorteert
+    // op achternaam, dus zonder dit zag je 14 willekeurige namen in plaats van
+    // de leden die het langst op hun volgende band wachten.
+    .sort((a, b) => {
+      const am = a.maanden ?? 9999
+      const bm = b.maanden ?? 9999
+      return bm - am
+    })
+    .slice(0, 14)
 
   const attAanw = attTotal.find(g => g.status === 'AANWEZIG')?._count ?? 0
   const attAlle = attTotal.reduce((s, g) => s + g._count, 0)
