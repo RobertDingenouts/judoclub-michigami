@@ -2,6 +2,7 @@ import { db } from '@/lib/db'
 import { LesModus } from './LesModus'
 import { GROEPEN, GROEP_LABEL } from '@/lib/admin2'
 import { ensureUpcomingDays } from '@/lib/lessen'
+import { vakantieOp } from '@/data/vakanties'
 import { getNextBelt, getBeltColor, isSlipBelt, isYouth } from '@/lib/belt-utils'
 import type { TrainingDay, BeltLevel } from '@prisma/client'
 
@@ -112,7 +113,14 @@ export default async function LesModusPage({
 
   return (
     <LesModus
-      dag={{ id: day.id, datum: day.date.toISOString(), groep: day.group, groepLabel: GROEP_LABEL[day.group as keyof typeof GROEP_LABEL] ?? day.group, activity: day.activity, cancelled: day.cancelled }}
+      dag={{
+        id: day.id, datum: day.date.toISOString(), groep: day.group,
+        groepLabel: GROEP_LABEL[day.group as keyof typeof GROEP_LABEL] ?? day.group,
+        activity: day.activity,
+        // Vakantie op groep (rooster is autoritair), niet op de locatie in de DB
+        vakantie: vakantieOp(day.date.toISOString().slice(0, 10), day.group) !== null,
+        cancelled: day.cancelled,
+      }}
       leden={leden.map(m => ({
         id: m.id,
         naam: `${m.firstName} ${m.lastName}`,

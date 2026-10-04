@@ -7,7 +7,7 @@ import { getNextBelt, isSlipBelt, isYouth } from '@/lib/belt-utils'
 import { BELT_COLORS } from '@/lib/student-progress-types'
 import type { BeltLevel } from '@prisma/client'
 
-export type DagCel = { id: string; datum: string; groep: string; locatie: string; cancelled: boolean; activity: string | null }
+export type DagCel = { id: string; datum: string; groep: string; locatie: string; cancelled: boolean; activity: string | null; vakantie?: boolean }
 export type LidRef = { id: string; naam: string; clubStatus: string; groep: string; dateOfBirth: string | null; currentBelt: string | null }
 
 const CYCLE: (string | null)[] = ['AANWEZIG', 'AFGEMELD', 'ZIEK', 'NIET_AANWEZIG', null]
@@ -103,6 +103,8 @@ export function KwartaalGrid({ dagen, leden, cellen }: { dagen: DagCel[]; leden:
   const aantallen = (l: LidRef, gd: DagCel[]) => {
     let aanw = 0, meet = 0
     for (const d of gd) {
+      // Vakantiedagen tellen niet mee in het percentage
+      if (d.vakantie) continue
       const s = get(l.id, d.id)
       if (s && s !== 'VAKANTIE') { meet++; if (s === 'AANWEZIG') aanw++ }
     }
@@ -165,10 +167,13 @@ export function KwartaalGrid({ dagen, leden, cellen }: { dagen: DagCel[]; leden:
                     const dt = new Date(d.datum)
                     const act = activities[d.id]
                     return (
-                      <th key={d.id} className={`px-1 py-1.5 text-center align-top ${compact ? 'min-w-[34px]' : 'min-w-[46px]'}`}>
-                        <button onClick={() => router.push(`/admin/aanwezigheid/les?dag=${d.id}`)} className="block w-full hover:text-[#a90000]" title="Open deze les in de lesmodus">
+                      <th key={d.id}
+                        className={`px-1 py-1.5 text-center align-top ${d.vakantie ? 'bg-gray-100' : ''} ${compact ? 'min-w-[34px]' : 'min-w-[46px]'}`}>
+                        <button onClick={() => router.push(`/admin/aanwezigheid/les?dag=${d.id}`)} className="block w-full hover:text-[#a90000]" title={d.vakantie ? 'Geen les (vakantie) — klik voor de lesdetails' : 'Open deze les in de lesmodus'}>
                           <span className="block text-[10px] font-normal text-gray-400">{dt.toLocaleDateString('nl-NL', { weekday: 'short' })}</span>
-                          <span className="block font-semibold text-gray-700">{dt.toLocaleDateString('nl-NL', { day: 'numeric' })}/{dt.toLocaleDateString('nl-NL', { month: 'numeric' })}</span>
+                          <span className={`block font-semibold ${d.vakantie ? 'text-gray-400' : 'text-gray-700'}`}>
+                            {d.vakantie ? '🏖' : `${dt.toLocaleDateString('nl-NL', { day: 'numeric' })}/${dt.toLocaleDateString('nl-NL', { month: 'numeric' })}`}
+                          </span>
                         </button>
                         {!compact && (editDag === d.id ? (
                           <input autoFocus value={editVal} onChange={e => setEditVal(e.target.value)}
@@ -221,6 +226,12 @@ export function KwartaalGrid({ dagen, leden, cellen }: { dagen: DagCel[]; leden:
                         </div>
                       </td>
                       {gdagen.map(d => {
+                        // Vakantiedag: grijs, niet klikbaar — er is geen les gegeven
+                        if (d.vakantie) {
+                          return (
+                            <td key={d.id} className="bg-gray-100/70 p-0.5 text-center text-[10px] text-gray-300" title="Geen les — vakantie">·</td>
+                          )
+                        }
                         const key = `${l.id}|${d.id}`
                         const s = get(l.id, d.id)
                         const info = s ? STATUS_INFO[s] : null

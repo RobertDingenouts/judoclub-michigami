@@ -1,4 +1,5 @@
 import { db } from '@/lib/db'
+import { vakantieOp } from '@/data/vakanties'
 
 // Wekelijks lesrooster (autoritair: src/data/schedule.ts):
 // woensdag = algemene training De Vossenkuil; vrijdag = 1e/2e/3e groep De Knotwilg.
@@ -39,11 +40,45 @@ export async function planDaysFrom(van: Date, tot: Date): Promise<number> {
     let d = volgendeLesDatum(p.weekday, van)
     while (d <= tot) {
       if (!hebben.has(key(d, p.groep))) {
-        await db.trainingDay.create({ data: { date: d, group: p.groep, location: p.locatie } })
+        // Lesdagen in een vakantie worden wél gepland, maar als "Geen les" zodat
+        // ze in de aanwezigheidslijst zichtbaar zijn met de juiste reden.
+        const vak = vakantieOp(d.toISOString().slice(0, 10), p.groep)
+        await db.trainingDay.create({
+          data: {
+            date: d, group: p.groep, location: p.locatie,
+            activity: vak ? 'Geen les' : null,
+            notes: vak ?? null,
+          },
+        })
         gemaakt++
       }
       d = new Date(d.getTime() + 7 * 864e5)
     }
   }
   return gemaakt
+}
+
+// Markeer ALLE bestaande lesdagen die binnen een vakantie vallen als "Geen les".
+// Idempotent: ongewijzigde dagen worden niet geraakt. Draait bij het openen van
+// het dashboard, zodat zowel historie als toekomst automatisch klopt.
+export async function markeerVakantieDagen(): Promise<number> {
+  const alles = await db.trainingDay.findMany({
+    where: { cancelled: false },
+    select: { id: true, date: true, group: true, activity: true, notes: true },
+  })
+  const raak: { id: string; vak: string }[] = []
+  for (const d of alles) {
+    const iso = d.date.toISOString().slice(0, 10)
+    const vak = vakantieOp(iso, d.group)
+    if (vak && (d.activity !== 'Geen les' || d.notes !== vak)) {
+      raak.push({ id: d.id, vak })
+    }
+  }
+  // Bulk i.p.v. losse updates: 1 query i.p.v. N
+  if (raak.length > 0) {
+    await db.$transaction(
+      raak.map(r => db.trainingDay.update({ where: { id: r.id }, data: { activity: 'Geen les', notes: r.vak } })),
+    )
+  }
+  return raak.length
 }

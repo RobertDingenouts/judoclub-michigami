@@ -1,6 +1,7 @@
 import { db } from '@/lib/db'
 import { kwartaalVan } from '@/lib/admin2'
-import { ensureUpcomingDays } from '@/lib/lessen'
+import { ensureUpcomingDays, markeerVakantieDagen } from '@/lib/lessen'
+import { vakantieOp } from '@/data/vakanties'
 import { getBeltLabel, getNextBelt, isSlipBelt, isYouth } from '@/lib/belt-utils'
 import type { BeltLevel } from '@prisma/client'
 import AdminDashboard, { type DashData, type LedenRow } from './dashboard/AdminDashboard'
@@ -13,7 +14,9 @@ export default async function AdminStart() {
   const now = new Date()
   const todayIso = now.toISOString().slice(0, 10)
   const kw = kwartaalVan(now)
+  // Lesdagen aanvullen én bestaande dagen markeren die in een vakantie vallen.
   await ensureUpcomingDays(12)
+  await markeerVakantieDagen()
 
   const [
     actieveLeden, pendingApps, openPayments, allePeriodes,
@@ -72,7 +75,7 @@ export default async function AdminStart() {
         where: { date: { lte: now }, cancelled: false, group: g },
         orderBy: { date: 'desc' },
         take: 12,
-        select: { id: true, date: true, group: true, location: true, activity: true },
+        select: { id: true, date: true, group: true, location: true, activity: true, notes: true },
       })
     )).then(r => r.flat()),
     db.attendance.findMany({
@@ -115,7 +118,15 @@ export default async function AdminStart() {
     return {
       groep: g,
       locatie: dagen[0]?.location ?? (g === 'WOENSDAG' ? 'OUD_VOSSEMEER' : 'STEENBERGEN'),
-      dagen: dagen.map(d => ({ id: d.id, datum: d.date.toISOString().slice(0, 10), activity: d.activity })),
+      dagen: dagen.map(d => ({
+        id: d.id,
+        datum: d.date.toISOString().slice(0, 10),
+        activity: d.activity,
+        // Vakantiedagen tellen niet mee in de opkomstpercentage.
+        // Vakantie wordt op GROEP bepaald (rooster is autoritair); historische
+        // rijen kunnen een onjuiste locatie hebben.
+        vakantie: vakantieOp(d.date.toISOString().slice(0, 10), d.group) !== null,
+      })),
     }
   })
 

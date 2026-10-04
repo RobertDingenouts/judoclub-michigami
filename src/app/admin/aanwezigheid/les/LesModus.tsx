@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { STATUS_INFO } from '@/lib/admin2'
 
 type Lid = { id: string; naam: string; status: string | null; gast?: boolean; hist: Record<string, string>; band?: { huidig: string | null; huidigKleur: string; volgende: string | null; volgendeKleur: string; slip: boolean } }
-type DagInfo = { id: string; datum: string; groep: string; groepLabel: string; activity: string | null; cancelled: boolean }
+type DagInfo = { id: string; datum: string; groep: string; groepLabel: string; activity: string | null; vakantie?: boolean; cancelled: boolean }
 type DagTab = { id: string; label: string; actief: boolean }
 type HistDag = { id: string; label: string }
 
@@ -96,6 +96,7 @@ export function LesModus({ dag, leden: initLeden, recenteDagen, historie }: { da
         <div>
           <h1 className="text-xl font-bold text-[#2a2a2a]">
             {new Date(dag.datum).toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long' })}
+            {dag.vakantie && <span className="ml-2 align-middle rounded-full bg-gray-200 px-2 py-0.5 text-xs font-semibold text-gray-600">🏖 Geen les — vakantie</span>}
           </h1>
           <p className="text-sm text-gray-500">{dag.groepLabel} · {leden.length} leden</p>
         </div>

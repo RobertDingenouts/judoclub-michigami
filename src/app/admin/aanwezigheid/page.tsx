@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { KwartaalGrid } from './KwartaalGrid'
 import { GROEPEN, STATUS_INFO } from '@/lib/admin2'
 import { PlanBar } from './PlanBar'
+import { vakantieOp } from '@/data/vakanties'
 
 export const dynamic = 'force-dynamic'
 
@@ -60,6 +61,9 @@ export default async function AanwezigheidPage({
     statussen: Object.fromEntries(d.attendance.map(a => [a.memberId, a.status])),
     activity: d.activity,
     cancelled: d.cancelled,
+    // Vakantie bepaald op groep (rooster is autoritair) — niet op de locatie in
+    // de database, want historische rijen kunnen een onjuiste locatie hebben.
+    vakantie: vakantieOp(d.date.toISOString().slice(0, 10), d.group) !== null,
   }))
 
   const qs = (extra: Record<string, string>) => {

@@ -49,7 +49,7 @@ export type DashData = {
   komendeLessen: { id: string; datum: string; groep: string; activity: string | null; aanw: number; afg: number; ingevuld: boolean }[]
   trend: { label: string; pct: number; aanw: number; van: number }[]
   examList: { id: string; naam: string; belt: string; next: string; maanden: number | null }[]
-  aanwezigheidGroepen: { groep: string; locatie: string; dagen: { id: string; datum: string; activity: string | null }[] }[]
+  aanwezigheidGroepen: { groep: string; locatie: string; dagen: { id: string; datum: string; activity: string | null; vakantie?: boolean }[] }[]
   aanwezigheidLeden: AanwLid[]
   cellen: Record<string, string>
   leden: LedenRow[]
@@ -546,7 +546,12 @@ function WAanwezigheid({ d }: { d: DashData }) {
       {d.aanwezigheidGroepen.map(g => {
         const aant = (lid: string) => {
           let a = 0, m = 0
-          for (const dg of g.dagen) { const s = get(lid, dg.id); if (s && s !== 'VAKANTIE') { m++; if (s === 'AANWEZIG') a++ } }
+          // Vakantiedagen tellen niet mee: anders daalt het percentage door lesvrije weken.
+          for (const dg of g.dagen) {
+            if (dg.vakantie) continue
+            const s = get(lid, dg.id)
+            if (s && s !== 'VAKANTIE') { m++; if (s === 'AANWEZIG') a++ }
+          }
           return { a, m, p: m ? a / m : -1 }
         }
         let leden = d.aanwezigheidLeden.filter(l => l.groep === g.groep)
@@ -583,8 +588,10 @@ if (g.dagen.length === 0) {
                   <th className="sticky left-0 z-10 bg-gray-50 px-2 py-1 text-left text-[9px] font-semibold uppercase tracking-wide text-gray-400">Lid</th>
                   {g.dagen.map(dg => {
                     const dt = new Date(dg.datum)
-                    return <th key={dg.id} className="px-0.5 py-1 text-center text-[9px] font-normal text-gray-400" title={`${dt.toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long' })}${dg.activity ? ` · ${dg.activity}` : ''}`}>
-                      {dt.getDate()}/{dt.getMonth() + 1}
+                    return <th key={dg.id}
+                    className={`px-0.5 py-1 text-center text-[9px] font-normal ${dg.vakantie ? 'bg-gray-100 text-gray-400' : 'text-gray-400'}`}
+                    title={`${dt.toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long' })}${dg.activity ? ` · ${dg.activity}` : ''}`}>
+                      {dg.vakantie ? '🏖' : `${dt.getDate()}/${dt.getMonth() + 1}`}
                     </th>
                   })}
                   <th className="px-1.5 py-1 text-[9px] font-semibold text-gray-400">Aanw.</th>
@@ -600,6 +607,12 @@ if (g.dagen.length === 0) {
                         <LidCel l={l} a={a} m={m} gestopt={gestopt} status={status} zet={zet} />
                       </td>
                       {g.dagen.map(dg => {
+                        // Vakantiedag: grijs, 🏖, niet klikbaar — geen les gegeven
+                        if (dg.vakantie) {
+                          return (
+                            <td key={dg.id} className="bg-gray-100/70 p-0.5 text-center text-[10px] text-gray-400" title={`Geen les · ${dg.activity ?? ''}`}>·</td>
+                          )
+                        }
                         const s = get(l.id, dg.id)
                         const info = s ? STATUS_INFO[s] : null
                         return (
