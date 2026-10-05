@@ -5,6 +5,7 @@ import { db } from '@/lib/db'
 import { ensureUpcomingDays } from '@/lib/lessen'
 import { getNextBelt, getBeltColor, isSlipBelt, isYouth } from '@/lib/belt-utils'
 import { GROEP_LABEL } from '@/lib/admin2'
+import { BELT_ORDER } from '@/lib/student-progress-types'
 import { vakantieOp } from '@/data/vakanties'
 import type { BeltLevel, TrainingDay } from '@prisma/client'
 
@@ -86,7 +87,7 @@ export async function lesModusProps(day: TrainingDay): Promise<LesModusProps> {
       gast: m.clubStatus === 'PROEF',
       hist: histMap[m.id] ?? {},
       band: bandInfo(m),
-    })),
+    })).sort((a, b) => BELT_ORDER.indexOf((a.band?.huidig ?? '') as any) - BELT_ORDER.indexOf((b.band?.huidig ?? '') as any) || a.naam.localeCompare(b.naam)),
     historie: histDagen.map(d => ({ id: d.id, label: d.date.toLocaleDateString('nl-NL', { weekday: 'short', day: 'numeric', month: 'short' }) })),
     recenteDagen: recenteDagen.map(d => ({
       id: d.id,
