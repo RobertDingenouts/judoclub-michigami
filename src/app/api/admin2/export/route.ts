@@ -44,9 +44,9 @@ export async function GET(req: NextRequest) {
     // Wie hier PERMANENT is verwijderd staat niet meer in de DB en dus ook
     // niet in deze export; soft-verwijderden (isActive=false) filteren we weg.
     const leden = await db.member.findMany({
-      where: { isActive: true },
+      where: { isActive: true, clubStatus: { not: 'VRIJGESTELD' } },
       orderBy: [{ primaryGroup: 'asc' }, { lastName: 'asc' }, { firstName: 'asc' }],
-      include: { payments: { where: { status: { in: ['OPEN', 'HERINNERING1', 'HERINNERING2'] } } } },
+      include: { payments: { where: { status: { in: ['OPEN', 'HERINNERING1', 'HERINNERING2'] }, dueDate: { lt: new Date() } } } },
     })
     for (const m of leden) {
       const open = m.payments.reduce((s, p) => s + Number(p.amount), 0)

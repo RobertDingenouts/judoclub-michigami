@@ -15,7 +15,7 @@ export default async function ContributiePage({
   const toonGestopt = params.gestopt === '1'
 
   const { periodes, data, period, totaalOpen } = await contributieData(label, { toonGestopt })
-  const open = data.filter(d => ['OPEN', 'HERINNERING1', 'HERINNERING2'].includes(d.status))
+  const open = data.filter(d => d.vervald)
   const betaald = data.filter(d => d.status === 'BETAALD')
 
   return (

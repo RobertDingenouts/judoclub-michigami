@@ -29,7 +29,14 @@ export default async function AdminStart() {
     db.member.count({ where: { isActive: true } }),
     db.membershipApplication.findMany({ where: { status: 'PENDING' }, orderBy: { createdAt: 'desc' }, take: 10 }),
     db.payment.aggregate({
-      where: { status: { in: ['OPEN', 'HERINNERING1', 'HERINNERING2'] }, period: { label: kw } },
+      where: {
+        status: { in: ['OPEN', 'HERINNERING1', 'HERINNERING2'] },
+        period: { label: kw },
+        // Vrijgestelden zijn voorgoed buiten beeld, en een bedrag is pas schuld
+        // als de vervaldatum verstreken is.
+        member: { clubStatus: { not: 'VRIJGESTELD' } },
+        dueDate: { lt: now },
+      },
       _count: true, _sum: { amount: true },
     }),
     db.contributionPeriod.findMany({ orderBy: { start: 'asc' }, select: { label: true } }),
@@ -75,7 +82,12 @@ export default async function AdminStart() {
       orderBy: { leaveDate: 'desc' }, take: 8,
     }),
     db.payment.findMany({
-      where: { status: { in: ['OPEN', 'HERINNERING1', 'HERINNERING2'] }, period: { label: kw } },
+      where: {
+        status: { in: ['OPEN', 'HERINNERING1', 'HERINNERING2'] },
+        period: { label: kw },
+        member: { clubStatus: { not: 'VRIJGESTELD' } },
+        dueDate: { lt: now },
+      },
       include: { member: { select: { id: true, firstName: true, lastName: true, primaryGroup: true } } },
       orderBy: { amount: 'desc' }, take: 20,
     }),

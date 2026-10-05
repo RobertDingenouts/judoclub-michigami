@@ -9,6 +9,7 @@ export type ContribRij = {
   status: string; amount: number; note: string | null
   items: ContribItem[] | null; clubStatus: string; leaveDate: string
   paidAt: string; dueDate: string; invoiceNumber: string | null
+  vervald: boolean
 }
 
 function safeItems(s: string): ContribItem[] | null {
@@ -44,10 +45,16 @@ async function zorgVoorPeriode(label: string) {
       joinDate: { lte: range.end },
       OR: [{ leaveDate: null }, { leaveDate: { gte: range.start } }],
     },
-    select: { id: true },
+    select: { id: true, clubStatus: true },
   })
   await db.payment.createMany({
-    data: leden.map(m => ({ memberId: m.id, periodId: created.id, amount: created.amount, dueDate: range.start })),
+    data: leden.map(m => ({
+      memberId: m.id, periodId: created.id, amount: created.amount, dueDate: range.start,
+      // Vrijgestelden zijn voorgoed vrijgesteld: elke nieuwe periode krijgt
+      // meteen VIJGESTELD, nooit OPEN (anders staan trainers e.d. structureel
+      // 'schuldig' in het overzicht).
+      status: m.clubStatus === 'VRIJGESTELD' ? 'VIJGESTELD' : 'OPEN',
+    })),
     skipDuplicates: true,
   })
   return created
@@ -94,6 +101,12 @@ export async function contributieData(label: string, opts: { toonGestopt?: boole
     })
     .map(m => {
       const p = m.payments[0]
+      const unpaid = p ? ['OPEN', 'HERINNERING1', 'HERINNERING2'].includes(p.status) : false
+      // 'Open' = schuld is pas als de vervaldatum (of anders het periode-einde)
+      // verstreken is. Zolang de datum in de toekomst ligt is het bedrag nog
+      // niet verschuldigd en tonen we het niet als open.
+      const vervalDatum = p?.dueDate ?? period?.end
+      const vervald = unpaid && !!vervalDatum && vervalDatum < nu
       return {
         memberId: m.id,
         paymentId: p?.id ?? null,
@@ -108,11 +121,12 @@ export async function contributieData(label: string, opts: { toonGestopt?: boole
         paidAt: p?.paidAt?.toISOString().slice(0, 10) ?? '',
         dueDate: (p as any)?.dueDate?.toISOString().slice(0, 10) ?? '',
         invoiceNumber: (p as any)?.invoiceNumber ?? null,
+        vervald,
       }
     })
 
   const totaalOpen = data
-    .filter(m => ['OPEN', 'HERINNERING1', 'HERINNERING2'].includes(m.status))
+    .filter(m => m.vervald)
     .reduce((s, m) => s + Number(m.amount), 0)
 
   return { periodes, data, period, totaalOpen }

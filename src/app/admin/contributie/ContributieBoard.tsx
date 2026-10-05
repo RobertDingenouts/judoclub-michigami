@@ -10,6 +10,7 @@ type Rij = {
   status: string; amount: number; note: string | null
   items: Item[] | null; clubStatus: string; leaveDate: string
   paidAt: string; dueDate: string; invoiceNumber: string | null
+  vervald: boolean
 }
 
 export function ContributieBoard({ rows, periode, periodId, totaalOpen, toonGestopt }: { rows: Rij[]; periode: string; periodId: string; totaalOpen: number; toonGestopt: boolean }) {
@@ -37,7 +38,11 @@ export function ContributieBoard({ rows, periode, periodId, totaalOpen, toonGest
   const [bevestigBulk, setBevestigBulk] = useState(false)
   const [bulkDue, setBulkDue] = useState<string | null>(null)
 
-  const openRows = data.filter(r => ['OPEN', 'HERINNERING1', 'HERINNERING2'].includes(r.status))
+  // 'Open' telt pas als de factuur écht verschuldigd is (vervaldatum verstreken).
+  // Zolang die in de toekomst ligt is het nog geen schuld en tonen we de rij niet
+  // in 'Alleen open' — anders lijkt het alsof leden geld schuldig zijn terwijl de
+  // datum nog niet eens geweest is. Vrijgestelden zijn nooit open.
+  const openRows = data.filter(r => r.vervald)
   const getToon = () => filter === 'open' ? openRows : data
 
   async function zetStatus(paymentId: string, status: string) {
@@ -209,6 +214,7 @@ export function ContributieBoard({ rows, periode, periodId, totaalOpen, toonGest
                   {r.invoiceNumber && <span className="ml-1 text-[10px] text-gray-400">#{r.invoiceNumber}</span>}
                   {r.paidAt && <span className="ml-1 text-[10px] text-green-700">betaald {new Date(r.paidAt).toLocaleDateString('nl-NL')}</span>}
                   {!r.paidAt && r.dueDate && new Date(r.dueDate) < new Date() && <span className="ml-1 text-[10px] font-semibold text-red-600">verval {new Date(r.dueDate).toLocaleDateString('nl-NL')} — te laat</span>}
+                  {!r.paidAt && r.dueDate && new Date(r.dueDate) >= new Date() && <span className="ml-1 text-[10px] text-gray-400">vervalt {new Date(r.dueDate).toLocaleDateString('nl-NL')} — nog geen schuld</span>}
                 </p>
               </div>
               <div className="flex flex-wrap gap-1.5">
@@ -269,7 +275,7 @@ export function ContributieBoard({ rows, periode, periodId, totaalOpen, toonGest
         ))}
         {getToon().length === 0 && (
           <div className="rounded-xl border border-gray-200 bg-white p-8 text-center text-sm text-gray-400">
-            {filter === 'open' ? 'Niets open — alles betaald! 🎉' : 'Geen leden gevonden'}
+            {filter === 'open' ? (data.length > 0 ? `Niets open in ${periode} — vervaldatum nog niet geweest of alles betaald 🎉` : 'Geen leden gevonden') : 'Geen leden gevonden'}
           </div>
         )}
       </div>
