@@ -32,8 +32,8 @@ export default async function StudentDetailPage({
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-4">
-          <Link href="/admin/students" className="text-gray-400 hover:text-[#a90000]">
-            ← Terug
+          <Link href="/admin/leden" className="text-gray-400 hover:text-[#a90000]">
+            ← Terug naar Leden
           </Link>
           <div>
             <h1 className="text-2xl font-bold text-[#2a2a2a]">{member.firstName} {member.lastName}</h1>

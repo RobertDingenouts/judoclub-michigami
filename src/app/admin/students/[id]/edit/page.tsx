@@ -109,7 +109,7 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
   if (loading) return <div className="p-8 text-center text-gray-500">Laden...</div>
   if (error && !student) return (
     <div className="p-8">
-      <Link href="/admin/students" className="text-gray-400 hover:text-[#a90000] mb-4 inline-block">← Terug</Link>
+      <Link href="/admin/leden" className="text-gray-400 hover:text-[#a90000] mb-4 inline-block">← Terug naar Leden</Link>
       <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-center">
         <p className="text-red-700">{error}</p>
       </div>
@@ -176,8 +176,8 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center gap-4">
-        <Link href={`/admin/students/${student.id}`} className="text-gray-400 hover:text-[#a90000]">
-          ← Terug
+        <Link href="/admin/leden" className="text-gray-400 hover:text-[#a90000]">
+          ← Terug naar Leden
         </Link>
         <div>
           <h1 className="text-2xl font-bold text-[#2a2a2a]">Student Bewerken</h1>

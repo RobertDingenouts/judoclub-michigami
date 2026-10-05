@@ -14,6 +14,7 @@ import type { LayoutItem, ResponsiveLayouts } from 'react-grid-layout'
 import 'react-grid-layout/css/styles.css'
 import 'react-resizable/css/styles.css'
 import { GROEP_LABEL, STATUS_INFO, PAYMENT_INFO, groepNaam } from '@/lib/admin2'
+import { BELT_ORDER as BAND_VOLGORDE } from '@/lib/student-progress-types'
 import { BeltVak } from '@/components/admin/BeltVak'
 import { KwartaalGrid } from '../aanwezigheid/KwartaalGrid'
 import { LesModus } from '../aanwezigheid/les/LesModus'
@@ -436,7 +437,7 @@ function WContributieGrid({ d }: { d: DashData }) {
 function WLeden({ d }: { d: DashData }) {
   const router = useRouter()
   const [q, setQ] = React.useState('')
-  const [sorteer, setSorteer] = React.useState('naam')
+  const [sorteer, setSorteer] = React.useState('band')
   const [status, setClubStatusOpt] = usePropSync(d.leden, 'clubStatus')
 
   async function setClubStatus(lidId: string, clubStatus: string) {
@@ -450,10 +451,12 @@ function WLeden({ d }: { d: DashData }) {
 
   let leden = d.leden
   if (q.trim().length >= 2) leden = leden.filter(l => l.naam.toLowerCase().includes(q.toLowerCase()))
+  // zelfde standaard als de Leden-pagina: band (kleur), dan leeftijd, groep, lid sinds
+  if (sorteer === 'band') leden = [...leden].sort((a, b) => BAND_VOLGORDE.indexOf((a.belt ?? '') as any) - BAND_VOLGORDE.indexOf((b.belt ?? '') as any))
   if (sorteer === 'naam') leden = [...leden].sort((a, b) => a.naam.localeCompare(b.naam))
   if (sorteer === 'groep') leden = [...leden].sort((a, b) => a.groep.localeCompare(b.groep) || a.naam.localeCompare(b.naam))
-  if (sorteer === 'belt') leden = [...leden].sort((a, b) => (a.belt ?? '').localeCompare(b.belt ?? ''))
   if (sorteer === 'leeftijd') leden = [...leden].sort((a, b) => (b.dob ?? '').localeCompare(a.dob ?? ''))
+  if (sorteer === 'lidSinds') leden = [...leden].sort((a, b) => (b.lidSinds ?? '').localeCompare(a.lidSinds ?? ''))
   if (sorteer === 'open') leden = [...leden].sort((a, b) => (a.betaling === 'BETAALD' ? 1 : 0) - (b.betaling === 'BETAALD' ? 1 : 0))
 
   return (
@@ -463,10 +466,11 @@ function WLeden({ d }: { d: DashData }) {
           className="w-28 rounded border border-gray-200 px-2 py-1 text-[11px] focus:border-[#a90000] focus:outline-none" />
         <select value={sorteer} onChange={e => setSorteer(e.target.value)}
           className="rounded border border-gray-200 bg-white px-1.5 py-1 text-[10px] text-gray-600 focus:border-[#a90000] focus:outline-none">
-          <option value="naam">naam</option>
-          <option value="groep">groep</option>
-          <option value="belt">band</option>
+          <option value="band">band</option>
           <option value="leeftijd">leeftijd</option>
+          <option value="groep">groep</option>
+          <option value="lidSinds">lid sinds</option>
+          <option value="naam">naam</option>
           <option value="open">openstaand eerst</option>
         </select>
         <span className="ml-auto text-[10px] text-gray-400">{leden.length} van {d.leden.length}</span>

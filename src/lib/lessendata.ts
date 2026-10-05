@@ -8,7 +8,7 @@ import { GROEPEN } from '@/lib/admin2'
 import { vakantieOp } from '@/data/vakanties'
 
 export type DagCel = { id: string; datum: string; groep: string; locatie: string; cancelled: boolean; activity: string | null; vakantie?: boolean }
-export type LidRef = { id: string; naam: string; clubStatus: string; groep: string; dateOfBirth: string | null; currentBelt: string | null }
+export type LidRef = { id: string; naam: string; clubStatus: string; groep: string; dateOfBirth: string | null; currentBelt: string | null; joinDate: string | null }
 
 export function periodeRange(periode: string): [Date, Date] {
   const y = Number(periode.slice(0, 4))
@@ -48,7 +48,7 @@ export async function lessenGridData(opts: {
     db.member.findMany({
       where: { isActive: true, clubStatus: { notIn: ['PROEF'] }, primaryGroup: { in: groepen } },
       orderBy: [{ lastName: 'asc' }],
-      select: { id: true, firstName: true, lastName: true, primaryGroup: true, clubStatus: true, dateOfBirth: true, currentBelt: true },
+      select: { id: true, firstName: true, lastName: true, primaryGroup: true, clubStatus: true, dateOfBirth: true, currentBelt: true, joinDate: true },
     }),
   ])
 
@@ -74,7 +74,7 @@ export async function lessenGridData(opts: {
     groepen,
     alleLesGroepen,
     dagen: grid.map(({ statussen: _s, ...rest }) => rest),
-    leden: leden.map(m => ({ id: m.id, naam: `${m.firstName} ${m.lastName}`, clubStatus: m.clubStatus, groep: m.primaryGroup ?? '', dateOfBirth: m.dateOfBirth?.toISOString().slice(0, 10) ?? null, currentBelt: m.currentBelt })) as LidRef[],
+    leden: leden.map(m => ({ id: m.id, naam: `${m.firstName} ${m.lastName}`, clubStatus: m.clubStatus, groep: m.primaryGroup ?? '', dateOfBirth: m.dateOfBirth?.toISOString().slice(0, 10) ?? null, currentBelt: m.currentBelt, joinDate: m.joinDate?.toISOString().slice(0, 10) ?? null })) as LidRef[],
     cellen,
   }
 }

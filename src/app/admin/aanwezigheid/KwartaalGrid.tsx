@@ -9,18 +9,21 @@ import { usePropSync } from '@/lib/use-prop-sync'
 import type { BeltLevel } from '@prisma/client'
 
 export type DagCel = { id: string; datum: string; groep: string; locatie: string; cancelled: boolean; activity: string | null; vakantie?: boolean }
-export type LidRef = { id: string; naam: string; clubStatus: string; groep: string; dateOfBirth: string | null; currentBelt: string | null }
+export type LidRef = { id: string; naam: string; clubStatus: string; groep: string; dateOfBirth: string | null; currentBelt: string | null; joinDate?: string | null }
 
 const CYCLE: (string | null)[] = ['AANWEZIG', 'AFGEMELD', 'ZIEK', 'NIET_AANWEZIG', null]
 const LOC_KORT: Record<string, string> = { STEENBERGEN: 'Knotwilg', OUD_VOSSEMEER: 'Vossenkuil' }
 const BAND_VOLGORDE: string[] = ['WIT', 'WIT_GEEL', 'GEEL', 'GEEL_ORANJE', 'ORANJE', 'ORANJE_GROEN', 'GROEN', 'GROEN_BLAUW', 'BLAUW', 'BLAUW_BRUIN', 'BRUIN', 'ZWART_1']
 
-type SortKey = 'naam' | 'jong' | 'oud' | 'band' | 'bandOmlaag' | 'aanwezig' | 'aanwezigOmlaag'
+type SortKey = 'band' | 'jong' | 'lidSinds' | 'naam' | 'oud' | 'bandOmlaag' | 'aanwezig' | 'aanwezigOmlaag'
+// Standaard = band (kleur); daarna leeftijd, lid sinds — zelfde standaard als Leden.
+// (Groep staat hier niet: het rooster is al in groepen opgedeeld.)
 const SORTOPTIES: { key: SortKey; label: string }[] = [
-  { key: 'naam', label: 'Naam A→Z' },
+  { key: 'band', label: 'Band (kleur, licht→donker)' },
   { key: 'jong', label: 'Leeftijd jong→oud' },
+  { key: 'lidSinds', label: 'Lid sinds (nieuwst eerst)' },
+  { key: 'naam', label: 'Naam A→Z' },
   { key: 'oud', label: 'Leeftijd oud→jong' },
-  { key: 'band', label: 'Band laag→hoog' },
   { key: 'bandOmlaag', label: 'Band hoog→laag' },
   { key: 'aanwezig', label: 'Aanwezig % laag→hoog' },
   { key: 'aanwezigOmlaag', label: 'Aanwezig % hoog→laag' },
@@ -54,7 +57,7 @@ export function KwartaalGrid({ dagen, leden, cellen }: { dagen: DagCel[]; leden:
   const [activities, setActivities] = usePropSync(dagen, 'activity')
   const [editDag, setEditDag] = useState<string | null>(null)
   const [editVal, setEditVal] = useState('')
-  const [sort, setSort] = useState<SortKey>('naam')
+  const [sort, setSort] = useState<SortKey>('band')
   const [compact, setCompact] = useState(false)
 
   async function vlag(mid: string, clubStatus: string) {
@@ -120,6 +123,7 @@ export function KwartaalGrid({ dagen, leden, cellen }: { dagen: DagCel[]; leden:
       case 'oud': return c.sort((a, b) => (a.dateOfBirth ?? '9999').localeCompare(b.dateOfBirth ?? '9999'))
       case 'band': return c.sort((a, b) => BAND_VOLGORDE.indexOf(a.currentBelt ?? '') - BAND_VOLGORDE.indexOf(b.currentBelt ?? ''))
       case 'bandOmlaag': return c.sort((a, b) => BAND_VOLGORDE.indexOf(b.currentBelt ?? '') - BAND_VOLGORDE.indexOf(a.currentBelt ?? ''))
+      case 'lidSinds': return c.sort((a, b) => (b.joinDate ?? '').localeCompare(a.joinDate ?? ''))
       case 'aanwezig': return c.sort((a, b) => aantallen(a, gd).pct - aantallen(b, gd).pct)
       case 'aanwezigOmlaag': return c.sort((a, b) => aantallen(b, gd).pct - aantallen(a, gd).pct)
     }

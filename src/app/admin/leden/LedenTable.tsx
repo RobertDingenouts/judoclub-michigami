@@ -1,7 +1,6 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { GROEPEN, GROEP_LABEL, PAYMENT_INFO, nlDatum, leeftijd } from '@/lib/admin2'
@@ -28,16 +27,6 @@ type Row = {
 
 const BAND_VOLGORDE = [...BELT_ORDER]
 
-/** "3m geleden" / "1,2j geleden" — compacte tijdstring voor de wolkjes */
-function geledenText(iso: string): string {
-  const dagen = Math.floor((Date.now() - new Date(iso).getTime()) / 864e5)
-  if (dagen < 0) return 'gepland'
-  if (dagen === 0) return 'vandaag'
-  if (dagen < 31) return `${dagen}d geleden`
-  if (dagen < 365) return `${Math.round(dagen / 30.44)}m geleden`
-  return `${(dagen / 365).toFixed(1)}j geleden`
-}
-
 const CLUB_STATUS_INFO: Record<string, { label: string; klas: string }> = {
   LID: { label: 'Lid', klas: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
   PROEF: { label: 'Proefles', klas: 'bg-sky-50 text-sky-700 border-sky-300' },
@@ -48,13 +37,14 @@ const CLUB_STATUS_INFO: Record<string, { label: string; klas: string }> = {
 }
 
 type SortKey = 'groep' | 'naam' | 'leeftijd' | 'grootste' | 'band' | 'lidSinds' | 'contributie'
+// Standaard = band (kleur van licht naar donker); daarna leeftijd, groep, lid sinds.
 const SORTOPTIES: { key: SortKey; label: string }[] = [
-  { key: 'groep', label: 'Groep' },
-  { key: 'naam', label: 'Achternaam A→Z' },
+  { key: 'band', label: 'Band (kleur, licht→donker)' },
   { key: 'leeftijd', label: 'Leeftijd jong→oud' },
-  { key: 'grootste', label: 'Leeftijd oud→jong' },
-  { key: 'band', label: 'Band laag→hoog' },
+  { key: 'groep', label: 'Groep' },
   { key: 'lidSinds', label: 'Lid sinds (nieuwst eerst)' },
+  { key: 'naam', label: 'Achternaam A→Z' },
+  { key: 'grootste', label: 'Leeftijd oud→jong' },
   { key: 'contributie', label: 'Contributie (open eerst)' },
 ]
 
@@ -62,8 +52,10 @@ export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: 
   const [q, setQ] = useState('')
   const [groep, setGroep] = useState('')
   const [status, setStatus] = useState('actief')
-  const [sortKey, setSortKey] = useState<SortKey>('groep')
+  const [sortKey, setSortKey] = useState<SortKey>('band')
   const [open, setOpen] = useState<string | null>(null)
+  // mobiel: alle filterknoppen opgeklapt in één menu, niet een muur van chips
+  const [filtersOpen, setFiltersOpen] = useState(false)
 
   // "Actief" = iedereen die nog meedoet. RESERVE en VRIJGESTELD horen hier
       // bij: eerder telden ze niet mee, waardoor de teller onder de echte
@@ -107,24 +99,29 @@ export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: 
 
   return (
     <>
-      {/* Filters */}
+      {/* Filters: op mobiel achter één uitklapknop, op desktop altijd zichtbaar */}
       <div className="flex flex-wrap items-center gap-2">
-        <a href="/api/admin2/export?lijst=leden"
-          className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:border-[#a90000] hover:text-[#a90000]"
-          title="Volledige ledenlijst als Excel-bestand">⬇ Excel</a>
         <input
           value={q} onChange={e => setQ(e.target.value)}
           placeholder="Zoek naam of bondsnummer…"
           className="min-w-[180px] flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none"
         />
+        <button onClick={() => setFiltersOpen(o => !o)}
+          className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 sm:hidden"
+          aria-expanded={filtersOpen}>
+          ⚙️ Filters {filtersOpen ? '▲' : '▼'}
+        </button>
+        <a href="/api/admin2/export?lijst=leden"
+          className={`rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:border-[#a90000] hover:text-[#a90000] ${filtersOpen ? '' : 'hidden'} sm:inline-block`}
+          title="Volledige ledenlijst als Excel-bestand">⬇ Excel</a>
         <select
           value={sortKey} onChange={e => setSortKey(e.target.value as SortKey)}
-          className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 focus:border-[#a90000] focus:outline-none"
+          className={`rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 focus:border-[#a90000] focus:outline-none ${filtersOpen ? '' : 'hidden'} sm:block`}
           aria-label="Sorteren"
         >
           {SORTOPTIES.map(o => <option key={o.key} value={o.key}>↕ {o.label}</option>)}
         </select>
-        <div className="flex flex-wrap gap-1.5">
+        <div className={`flex w-full flex-wrap gap-1.5 ${filtersOpen ? '' : 'hidden'} sm:flex`}>
           <Chip active={status === 'actief'} onClick={() => setStatus('actief')}>Actief ({statusCount('actief')})</Chip>
           <Chip active={status === 'proef'} onClick={() => setStatus('proef')}>Proefles ({statusCount('proef')})</Chip>
           <Chip active={status === 'reserve'} onClick={() => setStatus('reserve')}>Reserve ({statusCount('reserve')})</Chip>
@@ -133,7 +130,7 @@ export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: 
           <Chip active={status === ''} onClick={() => setStatus('')}>Alle</Chip>
         </div>
       </div>
-      <div className="flex flex-wrap gap-1.5">
+      <div className={`flex flex-wrap gap-1.5 ${filtersOpen ? '' : 'hidden'} sm:flex`}>
         <Chip active={groep === ''} onClick={() => setGroep('')}>Alle groepen ({filtered.length})</Chip>
         {GROEPEN.map(g => (
           <Chip key={g.value} active={groep === g.value} onClick={() => setGroep(g.value)}>
@@ -158,7 +155,6 @@ export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: 
 function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; onToggle: () => void; periodLabels: string[] }) {
   const router = useRouter()
   const [leave, setLeave] = useState(r.leaveDate ?? '')
-  const [wolkje, setWolke] = useState<{ x: number; y: number } | null>(null)
   const age = leeftijd(r.dateOfBirth)
   const youth = isYouth(r.dateOfBirth ? new Date(r.dateOfBirth) : null)
   const next = r.band ? getNextBelt(r.band as BeltLevel, youth) : (youth ? 'WIT' : null)
@@ -180,11 +176,6 @@ function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; on
     <div className={`relative rounded-xl border bg-white transition-colors ${open ? 'border-[#a90000]/40' : 'border-gray-200'}`}>
       <button
         onClick={onToggle}
-        onMouseMove={(e) => {
-          const onder = window.innerHeight - e.clientY > 260
-          setWolke({ x: Math.min(e.clientX + 14, window.innerWidth - 290), y: e.clientY + (onder ? 16 : -18) })
-        }}
-        onMouseLeave={() => setWolke(null)}
         className="flex w-full items-center gap-3 p-3 text-left sm:gap-4"
       >
         <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-gray-300 text-xs font-bold"
@@ -218,79 +209,6 @@ function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; on
         </div>
         <span className={`shrink-0 text-gray-300 transition-transform ${open ? 'rotate-180' : ''}`}>▾</span>
       </button>
-
-      {/* ── Hover-wolkje: alles van dit lid in één oogopslag ── */}
-      {wolkje && typeof document !== 'undefined' && createPortal(
-        <div style={{ left: wolkje.x, top: wolkje.y }}
-          className="pointer-events-none fixed z-[9999] w-72 rounded-xl border border-gray-200 bg-white p-3 text-left shadow-2xl">
-          <div className="mb-2 flex items-start justify-between gap-2 border-b border-gray-100 pb-2">
-            <div>
-              <p className="text-xs font-bold text-[#2a2a2a]">{r.firstName} {r.lastName}</p>
-              <p className="text-[10px] text-gray-400">
-                {age !== null && `${age} jr · `}{r.groep ? (GROEP_LABEL[r.groep as keyof typeof GROEP_LABEL] ?? r.groep) : 'geen groep'}
-                {r.joinDate && ` · lid sinds ${new Date(r.joinDate).toLocaleDateString('nl-NL', { month: 'short', year: 'numeric' })}`}
-              </p>
-            </div>
-            <span className={`shrink-0 rounded border px-1.5 py-0.5 text-[9px] font-bold ${si.klas}`}>{si.label}</span>
-          </div>
-          <div className="space-y-1 text-[10px] text-gray-600">
-            <div className="flex items-center justify-between gap-2">
-              <span className="shrink-0 text-gray-400">Band</span>
-              <span className="flex items-center gap-1 font-medium text-[#2a2a2a]">
-                <span className="h-2 w-2 rounded-full border border-gray-300" style={{ backgroundColor: r.band ? BELT_COLORS[r.band as BeltLevel] : '#7C3AED' }} />
-                {r.band ? getBeltLabel(r.band as BeltLevel) : 'nog geen band'}
-              </span>
-            </div>
-            {next && (
-              <div className="flex items-center justify-between gap-2">
-                <span className="shrink-0 text-gray-400">Volgende</span>
-                <span className="flex items-center gap-1 font-medium text-[#2a2a2a]">
-                  <span className="h-2 w-2 rounded-full border border-gray-300" style={{ backgroundColor: BELT_COLORS[next as BeltLevel] }} />
-                  {getBeltLabel(next)}
-                </span>
-              </div>
-            )}
-            <div className="flex items-center justify-between gap-2">
-              <span className="shrink-0 text-gray-400">Contributie</span>
-              <span className={`font-medium ${perStatus?.status === 'BETAALD' ? 'text-green-700' : 'text-red-700'}`}>
-                {perStatus ? (PAYMENT_INFO[perStatus.status]?.label ?? perStatus.status) : 'geen regeling'}
-                {openBet.length > 0 && ` · €${openBet.reduce((s, p) => s + p.amount, 0)} open`}
-              </span>
-            </div>
-            {laatsteBand && (
-              <div className="flex items-center justify-between gap-2">
-                <span className="shrink-0 text-gray-400">Laatste band</span>
-                <span className="font-medium text-[#2a2a2a]">{nlDatum(laatsteBand.at)}</span>
-              </div>
-            )}
-            {r.exams[0]?.date && (
-              <div className="flex items-center justify-between gap-2">
-                <span className="shrink-0 text-gray-400">Laatste examen</span>
-                <span className="font-medium text-[#2a2a2a]">{geledenText(r.exams[0].date)}</span>
-              </div>
-            )}
-            {r.jpDiolmas.length > 0 && (
-              <div className="flex items-center justify-between gap-2">
-                <span className="shrink-0 text-gray-400">Cursus Japans</span>
-                <span className="font-medium text-[#2a2a2a]">{r.jpDiolmas.length} diploma('s)</span>
-              </div>
-            )}
-            {r.competitions.length > 0 && (
-              <div className="flex items-center justify-between gap-2">
-                <span className="shrink-0 text-gray-400">Laatste toernooi</span>
-                <span className="font-medium text-[#2a2a2a]">{geledenText(r.competitions[0].date)}</span>
-              </div>
-            )}
-            {r.bondsnummer && (
-              <div className="flex items-center justify-between gap-2">
-                <span className="shrink-0 text-gray-400">Bondsnummer</span>
-                <span className="font-medium text-[#2a2a2a]">{r.bondsnummer}</span>
-              </div>
-            )}
-          </div>
-        </div>,
-        document.body,
-      )}
 
       {open && (
         <div className="grid gap-4 border-t border-gray-100 p-4 text-sm md:grid-cols-2 lg:grid-cols-3">
@@ -387,7 +305,8 @@ function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; on
               ))}
             </div>
             <div className="mt-3 flex gap-2">
-              <Link href={`/admin/students/${r.id}`} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium hover:border-[#a90000] hover:text-[#a90000]">Bewerken</Link>
+              <Link href={`/admin/students/${r.id}/edit`} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium hover:border-[#a90000] hover:text-[#a90000]">✏️ Bewerken</Link>
+              <Link href={`/admin/students/${r.id}`} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium hover:border-[#a90000] hover:text-[#a90000]">Volledig dossier</Link>
               <Link href={`/admin/contributie?lid=${r.id}`} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium hover:border-[#a90000] hover:text-[#a90000]">Factuur</Link>
             </div>
           </Section>
