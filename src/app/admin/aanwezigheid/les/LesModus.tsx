@@ -27,6 +27,33 @@ export function LesModus({ dag, leden: initLeden, recenteDagen, historie }: { da
   const [busy, setBusy] = useState<string | null>(null)
   const [gastNaam, setGastNaam] = useState<string | null>(null)
   const [gastBusy, setGastBusy] = useState(false)
+  const [isVakantie, setIsVakantie] = useState(!!dag.vakantie)
+  const [vakBusy, setVakBusy] = useState(false)
+
+  // Vakantie afzetten: de dag wordt 'Geen les' en iedereen in de groep krijgt
+  // status VAKANTIE (ook gasten die er al staan). Uitzetten haalt alleen de
+  // VAKANTIE-regels weer weg.
+  async function zetVakantie(next: boolean) {
+    setVakBusy(true)
+    setIsVakantie(next)
+    setLeden(prev => next
+      ? prev.map(l => ({ ...l, status: 'VAKANTIE' }))
+      : prev.map(l => (l.status === 'VAKANTIE' ? { ...l, status: null } : l)))
+    try {
+      const res = await fetch('/api/admin2/les-vakantie', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ trainingDayId: dag.id, vakantie: next }),
+      })
+      if (!res.ok) throw new Error((await res.json()).error)
+      setOpgeslagen(next ? 'Vakantie gezet — iedereen op 🏖' : 'Vakantie uitgezet')
+      router.refresh()
+    } catch (e) {
+      setIsVakantie(!next)
+      setOpgeslagen(`Fout: ${(e as Error).message}`)
+    } finally {
+      setVakBusy(false)
+    }
+  }
 
   async function voegGastToe() {
     if (!gastNaam?.trim() || gastBusy) return
@@ -111,6 +138,11 @@ export function LesModus({ dag, leden: initLeden, recenteDagen, historie }: { da
           <p className="text-sm text-gray-500">{dag.groepLabel} · {leden.length} leden</p>
         </div>
         <div className="flex items-center gap-2 text-xs">
+          <button onClick={() => zetVakantie(!isVakantie)} disabled={vakBusy}
+            title="Zet deze les op vakantie: iedereen in de groep wordt als vakantie geregistreerd"
+            className={`rounded-full border px-3 py-1.5 font-semibold transition-colors ${isVakantie ? 'border-sky-500 bg-sky-500 text-white' : 'border-gray-300 bg-white text-gray-600 hover:border-sky-400 hover:text-sky-600'}`}>
+            🏖 {isVakantie ? 'Vakantie — uit zetten?' : 'Vakantie deze les'}
+          </button>
           <span className="rounded-full bg-green-100 px-2.5 py-1 text-green-800">{tellen('AANWEZIG')} ✅</span>
           <span className="rounded-full bg-amber-100 px-2.5 py-1 text-amber-800">{tellen('AFGEMELD')} 🅰</span>
           <span className="rounded-full bg-red-100 px-2.5 py-1 text-red-800">{tellen('NIET_AANWEZIG')} ❌</span>

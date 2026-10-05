@@ -2,7 +2,7 @@
 // Zowel /admin/aanwezigheid/les als het startscherm-dashboard gebruiken dit,
 // zodat er maar één where-en-include van is en beide exact dezelfde lijst tonen.
 import { db } from '@/lib/db'
-import { ensureUpcomingDays } from '@/lib/lessen'
+import { ensureUpcomingDays, VAKANTIE_HANDMATIG } from '@/lib/lessen'
 import { getNextBelt, getBeltColor, isSlipBelt, isYouth } from '@/lib/belt-utils'
 import { GROEP_LABEL } from '@/lib/admin2'
 import { BELT_ORDER } from '@/lib/student-progress-types'
@@ -77,7 +77,7 @@ export async function lesModusProps(day: TrainingDay): Promise<LesModusProps> {
       id: day.id, datum: day.date.toISOString(), groep: day.group,
       groepLabel: GROEP_LABEL[day.group as keyof typeof GROEP_LABEL] ?? day.group,
       activity: day.activity,
-      vakantie: vakantieOp(day.date.toISOString().slice(0, 10), day.group) !== null,
+      vakantie: vakantieOp(day.date.toISOString().slice(0, 10), day.group) !== null || day.notes === VAKANTIE_HANDMATIG,
       cancelled: day.cancelled,
     },
     leden: leden.map(m => ({

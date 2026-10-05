@@ -10,6 +10,11 @@ const PATROON: { groep: string; weekday: number; locatie: string }[] = [
   { groep: 'VRIJDAG_3E', weekday: 5, locatie: 'STEENBERGEN' },
 ]
 
+// Notitie die een handmatig op "vakantie" gezette les krijgt (zie
+// /api/admin2/les-vakantie). Buiten de officiële vakanties laat
+// markeerVakantieDagen deze met rust.
+export const VAKANTIE_HANDMATIG = 'Vakantie (handmatig)'
+
 // Datum (lokale middag) van de eerstvolgende lesdag van een groep op/na `from`
 export function volgendeLesDatum(weekday: number, from: Date): Date {
   const d = new Date(from.getFullYear(), from.getMonth(), from.getDate(), 12, 0, 0)
