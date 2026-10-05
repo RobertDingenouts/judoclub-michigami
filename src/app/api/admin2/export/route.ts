@@ -39,8 +39,12 @@ export async function GET(req: NextRequest) {
 
   if (lijst === 'leden') {
     const ws = wb.addWorksheet('Ledenlijst')
-    ws.addRows([['Naam', 'Groep', 'Band', 'Status', 'Geboren', 'Lid sinds', 'Bondsnummer', 'E-mail', 'Telefoon', 'Open bedrag']])
+    ws.addRows([['Naam', 'Groep', 'Band', 'Status', 'Geboren', 'Lid sinds', 'Gestopt per', 'Bondsnummer', 'E-mail', 'Telefoon', 'Telefoon 2', 'Adres', 'Postcode', 'Woonplaats', 'Geslacht', 'Noodcontact', 'Noodcontact tel.', 'Medisch', 'Opmerkingen', 'Open bedrag']])
+    // Actieve leden + gestopte leden (die horen in een archief-overzicht).
+    // Wie hier PERMANENT is verwijderd staat niet meer in de DB en dus ook
+    // niet in deze export; soft-verwijderden (isActive=false) filteren we weg.
     const leden = await db.member.findMany({
+      where: { isActive: true },
       orderBy: [{ primaryGroup: 'asc' }, { lastName: 'asc' }, { firstName: 'asc' }],
       include: { payments: { where: { status: { in: ['OPEN', 'HERINNERING1', 'HERINNERING2'] } } } },
     })
@@ -53,24 +57,47 @@ export async function GET(req: NextRequest) {
         m.clubStatus,
         m.dateOfBirth ? m.dateOfBirth.toLocaleDateString('nl-NL') : '',
         m.joinDate ? m.joinDate.toLocaleDateString('nl-NL') : '',
+        m.leaveDate ? m.leaveDate.toLocaleDateString('nl-NL') : '',
         m.bondsnummer ?? '',
         m.email ?? '',
         m.phone ?? '',
+        m.phone2 ?? '',
+        m.address ?? '',
+        m.postalCode ?? '',
+        m.city ?? '',
+        m.gender ?? '',
+        m.emergencyContactName ?? '',
+        m.emergencyContactPhone ?? '',
+        m.medicalNotes ?? '',
+        m.remarks ?? '',
         open ? Number(open.toFixed(2)) : 0,
       ])
     }
     stijl(ws)
   } else if (lijst === 'inschrijvingen') {
+    // Alles wat het ingeschreven persoon heeft ingevuld — verwijderde aanvragen
+    // ontbreken vanzelf, want dit leest live uit de database.
     const ws = wb.addWorksheet('Inschrijvingen')
-    ws.addRows([['Naam', 'E-mail', 'Groep', 'Datum', 'Status', 'Telefoon', 'Adres']])
+    ws.addRows([['Naam', 'E-mail', 'Telefoon', 'Geboren', 'Geslacht', 'Adres', 'Postcode', 'Woonplaats', 'Locatie', 'Gewenste groep', 'Kind?', 'Ouder', 'Ouder e-mail', 'Ouder telefoon', 'Medisch', 'Noodcontact', 'Status', 'Verzonden op', 'Behandeld op', 'Reden afwijzing', 'Notitie', 'Kosten akkoord', 'Privacy akkoord', 'Voorwaarden akkoord', 'Gedragscode akkoord', 'Portretrecht', 'Naam vermelden']])
     const apps = await db.membershipApplication.findMany({ orderBy: { createdAt: 'desc' } })
     for (const a of apps) {
       ws.addRow([
-        `${a.firstName ?? ''} ${a.lastName ?? ''}`.trim(),
-        a.email ?? '', a.preferredGroup ?? '',
+        `${a.firstName} ${a.lastName}`.trim(),
+        a.email ?? '', a.phone ?? '',
+        a.dateOfBirth ? a.dateOfBirth.toLocaleDateString('nl-NL') : '',
+        a.gender ?? '',
+        a.address ?? '', a.postalCode ?? '', a.city ?? '',
+        a.location ?? '', a.preferredGroup ?? '',
+        a.isChild ? 'ja' : 'nee',
+        a.parentName ?? '', a.parentEmail ?? '', a.parentPhone ?? '',
+        a.medicalNotes ?? '', a.emergencyContact ?? '',
+        a.status,
         a.createdAt.toLocaleDateString('nl-NL'),
-        a.status, a.phone ?? '',
-        [a.address, a.postalCode, a.city].filter(Boolean).join(' ') ?? '',
+        (a.approvedAt ?? a.rejectedAt) ? (a.approvedAt ?? a.rejectedAt)!.toLocaleDateString('nl-NL') : '',
+        a.rejectionReason ?? '', a.adminNotes ?? '',
+        a.costAgreed ? 'ja' : 'nee', a.privacyAgreed ? 'ja' : 'nee', a.termsAgreed ? 'ja' : 'nee', a.codeOfConduct ? 'ja' : 'nee',
+        a.portraitRights === null ? '' : a.portraitRights ? 'ja' : 'nee',
+        a.nameMention === null ? '' : a.nameMention ? 'ja' : 'nee',
       ])
     }
     stijl(ws)

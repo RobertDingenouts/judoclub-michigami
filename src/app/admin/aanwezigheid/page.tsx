@@ -1,70 +1,25 @@
-import { db } from '@/lib/db'
 import Link from 'next/link'
+import { lessenGridData } from '@/lib/lessendata'
 import { KwartaalGrid } from './KwartaalGrid'
 import { GROEPEN, STATUS_INFO } from '@/lib/admin2'
 import { PlanBar } from './PlanBar'
-import { vakantieOp } from '@/data/vakanties'
 
 export const dynamic = 'force-dynamic'
 
-function periodeRange(periode: string): [Date, Date] {
-  const y = Number(periode.slice(0, 4))
-  const q = Number(periode.slice(-1))
-  const start = new Date(`${y}-${String((q - 1) * 3 + 1).padStart(2, '0')}-01`)
-  const end = q === 4 ? new Date(`${y + 1}-01-01`) : new Date(`${y}-${String(q * 3 + 1).padStart(2, '0')}-01`)
-  return [start, end]
-}
-
+// De data komt uit src/lib/lessendata.ts — exact dezelfde bron als de
+// lessenwidget op het startscherm. Eén soort aanwezigheidslijst, geen twee.
 export default async function AanwezigheidPage({
   searchParams,
 }: { searchParams: Promise<{ periode?: string; groepen?: string; van?: string; tot?: string }> }) {
   const params = await searchParams
+  const g = await lessenGridData({
+    periode: params.periode,
+    van: params.van,
+    tot: params.tot,
+    groepen: params.groepen ? params.groepen.split(',').filter(Boolean) : undefined,
+  })
+  const { periodes, periode, rangeLabel, groepen, alleLesGroepen, dagen, leden, cellen } = g
   const nu = new Date()
-  const defaultPeriode = `${nu.getFullYear()}-Q${Math.floor(nu.getMonth() / 3) + 1}`
-  const periode = params.periode || defaultPeriode
-
-  // Bereik: expliciete datums (van/tot) winnen, anders kwartaal
-  let rangeStart: Date, rangeEnd: Date, rangeLabel: string
-  if (params.van && params.tot) {
-    rangeStart = new Date(params.van)
-    rangeEnd = new Date(params.tot)
-    rangeLabel = `${params.van} → ${params.tot}`
-  } else {
-    ;[rangeStart, rangeEnd] = periodeRange(periode)
-    rangeLabel = periode
-  }
-
-  // Groepen: comma-gescheiden selectie; standaard alle lessen-groepen
-  const alleLesGroepen = GROEPEN.filter(g => g.value !== 'SENIOREN').map(g => g.value)
-  const groepen = (params.groepen ? params.groepen.split(',').filter(Boolean) : alleLesGroepen)
-    .filter(g => alleLesGroepen.includes(g as never))
-
-  const [periodes, dagen, leden] = await Promise.all([
-    db.contributionPeriod.findMany({ orderBy: { start: 'asc' } }),
-    db.trainingDay.findMany({
-      where: { date: { gte: rangeStart, lt: rangeEnd }, group: { in: groepen } },
-      include: { attendance: true },
-      orderBy: [{ date: 'asc' }, { group: 'asc' }],
-    }),
-    db.member.findMany({
-      where: { isActive: true, clubStatus: { notIn: ['PROEF'] }, primaryGroup: { in: groepen } },
-      orderBy: [{ lastName: 'asc' }],
-      select: { id: true, firstName: true, lastName: true, primaryGroup: true, clubStatus: true, dateOfBirth: true, currentBelt: true },
-    }),
-  ])
-
-  const grid = dagen.map(d => ({
-    id: d.id,
-    datum: d.date.toISOString(),
-    groep: d.group,
-    locatie: d.location,
-    statussen: Object.fromEntries(d.attendance.map(a => [a.memberId, a.status])),
-    activity: d.activity,
-    cancelled: d.cancelled,
-    // Vakantie bepaald op groep (rooster is autoritair) — niet op de locatie in
-    // de database, want historische rijen kunnen een onjuiste locatie hebben.
-    vakantie: vakantieOp(d.date.toISOString().slice(0, 10), d.group) !== null,
-  }))
 
   const qs = (extra: Record<string, string>) => {
     const p = new URLSearchParams({ periode, groepen: groepen.join(','), ...extra })
@@ -100,14 +55,13 @@ export default async function AanwezigheidPage({
 
       {/* Groepen: aan/uit + alles selecteren */}
       <div className="flex flex-wrap items-center gap-1.5">
-        <button form="groepenForm" type="submit" className="hidden" />
-        {GROEPEN.filter(g => g.value !== 'SENIOREN').map(g => {
-          const aan = groepen.includes(g.value)
-          const next = aan ? groepen.filter(x => x !== g.value) : [...groepen, g.value]
+        {GROEPEN.filter(g => g.value !== 'SENIOREN').map(gr => {
+          const aan = groepen.includes(gr.value)
+          const next = aan ? groepen.filter(x => x !== gr.value) : [...groepen, gr.value]
           return (
-            <a key={g.value} href={qs({ groepen: next.join(',') || 'GEEN' })}
+            <a key={gr.value} href={qs({ groepen: next.join(',') || 'GEEN' })}
               className={`rounded-full border px-3.5 py-1.5 text-xs font-medium ${aan ? 'border-[#2a2a2a] bg-[#2a2a2a] text-white' : 'border-gray-300 bg-white text-gray-400'}`}>
-              {aan ? '✓ ' : ''}{g.label}
+              {aan ? '✓ ' : ''}{gr.label}
             </a>
           )
         })}
@@ -127,16 +81,12 @@ export default async function AanwezigheidPage({
         <span className="rounded-full border border-[#a90000]/30 bg-[#fdf6f6] px-2.5 py-1 text-[#a90000]">🎯 = activiteit/onderwerp</span>
       </div>
 
-      {groepen.length === 0 || grid.length === 0 ? (
+      {groepen.length === 0 || dagen.length === 0 ? (
         <div className="rounded-xl border border-gray-200 bg-white p-8 text-center text-sm text-gray-400">
           {groepen.length === 0 ? 'Geen groep geselecteerd — klik hierboven een groep.' : `Geen lessen in ${rangeLabel}. Gebruik "📅 Plannen" om het vooruit te plannen.`}
         </div>
       ) : (
-        <KwartaalGrid
-          dagen={grid}
-          leden={leden.map(m => ({ id: m.id, naam: `${m.firstName} ${m.lastName}`, clubStatus: m.clubStatus, groep: m.primaryGroup ?? '', dateOfBirth: m.dateOfBirth?.toISOString().slice(0, 10) ?? null, currentBelt: m.currentBelt }))}
-          cellen={Object.fromEntries(grid.flatMap(d => Object.entries(d.statussen).map(([mid, st]) => [`${mid}|${d.id}`, st as string])))}
-        />
+        <KwartaalGrid dagen={dagen} leden={leden} cellen={cellen} />
       )}
     </div>
   )

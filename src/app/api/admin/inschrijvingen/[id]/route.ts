@@ -138,3 +138,28 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     return NextResponse.json({ error: 'Er is een fout opgetreden: ' + error.message }, { status: 500 })
   }
 }
+
+// DELETE — inschrijving definitief verwijderen (tests / per ongeluk ingeschreven).
+// Vereist expliciete bevestiging in de body; de UI toont eerst een waarschuwing.
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    const adminSession = await requireAdmin()
+    if (!adminSession) return NextResponse.json({ error: 'Not authorized' }, { status: 403 })
+
+    const { id } = await params
+    const body = await request.json().catch(() => ({}))
+    if (body.bevestig !== true) {
+      return NextResponse.json({ error: 'Verwijderen vereist expliciete bevestiging' }, { status: 400 })
+    }
+
+    const application = await db.membershipApplication.findUnique({ where: { id } })
+    if (!application) return NextResponse.json({ error: 'Inschrijving niet gevonden' }, { status: 404 })
+
+    await db.membershipApplication.delete({ where: { id } })
+    console.log(`[INSCHRIJVING] Definitief verwijderd door admin ${adminSession.userId}: ${application.firstName} ${application.lastName} (${application.email}, status ${application.status})`)
+    return NextResponse.json({ success: true, message: 'Inschrijving definitief verwijderd' })
+  } catch (error: any) {
+    console.error('[ADMIN/INSCHRIJVINGEN] DELETE error:', error)
+    return NextResponse.json({ error: 'Er is een fout opgetreden: ' + error.message }, { status: 500 })
+  }
+}

@@ -7,7 +7,6 @@
 // (DashData), dus je hoeft niet tussen bladen te navigeren om iets te doen.
 // ═══════════════════════════════════════════════════════════════════════════
 import * as React from 'react'
-import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { ResponsiveGridLayout, useContainerWidth } from 'react-grid-layout'
@@ -16,6 +15,12 @@ import 'react-grid-layout/css/styles.css'
 import 'react-resizable/css/styles.css'
 import { GROEP_LABEL, STATUS_INFO, PAYMENT_INFO, groepNaam } from '@/lib/admin2'
 import { BeltVak } from '@/components/admin/BeltVak'
+import { KwartaalGrid } from '../aanwezigheid/KwartaalGrid'
+import { LesModus } from '../aanwezigheid/les/LesModus'
+import { ContributieBoard } from '../contributie/ContributieBoard'
+import type { DagCel, LidRef } from '@/lib/lessendata'
+import type { ContribRij } from '@/lib/contributiedata'
+import type { LesModusProps } from '@/lib/lesdata'
 import { usePropSync } from '@/lib/use-prop-sync'
 import { getBeltLabel } from '@/lib/belt-utils'
 import { BELT_COLORS } from '@/lib/student-progress-types'
@@ -51,9 +56,11 @@ export type DashData = {
   komendeLessen: { id: string; datum: string; groep: string; activity: string | null; aanw: number; afg: number; ingevuld: boolean }[]
   trend: { label: string; pct: number; aanw: number; van: number }[]
   examList: { id: string; naam: string; belt: string; next: string; maanden: number | null }[]
-  aanwezigheidGroepen: { groep: string; locatie: string; dagen: { id: string; datum: string; activity: string | null; vakantie?: boolean }[] }[]
-  aanwezigheidLeden: AanwLid[]
-  cellen: Record<string, string>
+  // Lessen/lesmodus/contributie: exact de datasets van de losse pagina-libs,
+  // dus de widget toont identical hetzelfde als de eigen pagina.
+  lessen: { dagen: DagCel[]; leden: LidRef[]; cellen: Record<string, string> }
+  lesmodus: LesModusProps | null
+  contributie: { rows: ContribRij[]; periode: string; periodId: string; totaalOpen: number }
   leden: LedenRow[]
   openRekeningen: { paymentId: string; lidId: string; naam: string; groep: string; bedrag: number; status: string }[]
   recentBetald: { naam: string; bedrag: number; datum: string }[]
@@ -63,13 +70,7 @@ export type DashData = {
   recentGestopt: { id: string; naam: string; leaveDate: string | null }[]
 }
 
-const LOC_KORT: Record<string, string> = { STEENBERGEN: 'Knotwilg', OUD_VOSSEMEER: 'Vossenkuil' }
-const CYCLE: (string | null)[] = ['AANWEZIG', 'AFGEMELD', 'ZIEK', 'NIET_AANWEZIG', null]
 
-function beltKleur(belt: string | null): string {
-  if (!belt) return '#7C3AED' // paars = nog geen band
-  return (BELT_COLORS as Record<string, string>)[belt] ?? '#ccc'
-}
 function leeftijd(dob: string | null): string {
   if (!dob) return ''
   const d = new Date(dob), n = new Date()
@@ -83,22 +84,26 @@ type WDef = { i: string; titel: string; def: Omit<LayoutItem, 'i'> }
 
 // Hoofdwidget: aanwezigheid vult standaard het hele scherm op grote schermen.
 // De rest staan er compact naast/onder, zodat niets weggedrukt wordt.
+// De grote widgets zijn de pagina-zelf (KwartaalGrid / LesModus / ContributieBoard),
+// naast en onder elkaar op de pc. De layout-key is ge-bumpt: de oude widgetset
+// (met de eigen, afwijkende aanwezigheidslijst) bestaat niet meer.
 const WIDGETS: WDef[] = [
-  { i: 'aanwezigheid', titel: '📊 Aanwezigheid (12 lessen)', def: { x: 0, y: 0, w: 17, h: 15, minW: 6, minH: 6 } },
-  { i: 'lessen', titel: '📅 Lessen', def: { x: 17, y: 0, w: 7, h: 8, minW: 3, minH: 3 } },
-  { i: 'leden', titel: '👥 Leden', def: { x: 17, y: 8, w: 7, h: 15, minW: 4, minH: 4 } },
-  { i: 'contributie', titel: '💶 Contributie', def: { x: 0, y: 15, w: 5, h: 8, minW: 3, minH: 3 } },
-  { i: 'vlaggen', titel: '⚠️ Reserve & stoppend', def: { x: 5, y: 15, w: 5, h: 8, minW: 2, minH: 2 } },
-  { i: 'examens', titel: '🥋 Examens', def: { x: 10, y: 15, w: 4, h: 8, minW: 2, minH: 2 } },
-  { i: 'inschrijvingen', titel: '📝 Inschrijvingen', def: { x: 14, y: 15, w: 3, h: 5, minW: 2, minH: 2 } },
-  { i: 'trend', titel: '📈 Trend 7 dagen', def: { x: 14, y: 20, w: 3, h: 3, minW: 2, minH: 2 } },
-  { i: 'gestopt', titel: '🚪 Recent gestopt', def: { x: 0, y: 23, w: 5, h: 4, minW: 2, minH: 2 } },
-  { i: 'betald', titel: '✅ Recent betaald', def: { x: 5, y: 23, w: 5, h: 4, minW: 2, minH: 2 } },
-  { i: 'snel', titel: '⚡ Snel naar', def: { x: 10, y: 23, w: 7, h: 4, minW: 2, minH: 2 } },
+  { i: 'lessen', titel: '📊 Lessen & aanwezigheid', def: { x: 0, y: 0, w: 12, h: 15, minW: 6, minH: 6 } },
+  { i: 'lesmodus', titel: '✏️ Les invullen', def: { x: 12, y: 0, w: 7, h: 15, minW: 4, minH: 6 } },
+  { i: 'leden', titel: '👥 Leden', def: { x: 19, y: 0, w: 5, h: 15, minW: 4, minH: 4 } },
+  { i: 'contributie', titel: '💶 Contributie', def: { x: 0, y: 15, w: 8, h: 9, minW: 3, minH: 3 } },
+  { i: 'komende', titel: '📅 Komende lessen', def: { x: 8, y: 15, w: 4, h: 9, minW: 3, minH: 3 } },
+  { i: 'vlaggen', titel: '⚠️ Reserve & stoppend', def: { x: 12, y: 15, w: 4, h: 9, minW: 2, minH: 2 } },
+  { i: 'examens', titel: '🥋 Examens', def: { x: 16, y: 15, w: 4, h: 9, minW: 2, minH: 2 } },
+  { i: 'inschrijvingen', titel: '📝 Inschrijvingen', def: { x: 20, y: 15, w: 4, h: 5, minW: 2, minH: 2 } },
+  { i: 'trend', titel: '📈 Trend 7 dagen', def: { x: 20, y: 20, w: 4, h: 4, minW: 2, minH: 2 } },
+  { i: 'gestopt', titel: '🚪 Recent gestopt', def: { x: 0, y: 24, w: 5, h: 4, minW: 2, minH: 2 } },
+  { i: 'betald', titel: '✅ Recent betaald', def: { x: 5, y: 24, w: 5, h: 4, minW: 2, minH: 2 } },
+  { i: 'snel', titel: '⚡ Snel naar', def: { x: 10, y: 24, w: 7, h: 4, minW: 2, minH: 2 } },
 ]
 
-const LS_LAYOUT = 'mj-dash-layout-v5'
-const LS_HIDDEN = 'mj-dash-hidden-v5'
+const LS_LAYOUT = 'mj-dash-layout-v7'
+const LS_HIDDEN = 'mj-dash-hidden-v7'
 const BPS = ['xxl', 'xl', 'lg', 'md', 'sm'] as const
 const COLS: Record<(typeof BPS)[number], number> = { xxl: 24, xl: 18, lg: 12, md: 8, sm: 4 }
 
@@ -117,7 +122,34 @@ function baseLayout(bp: (typeof BPS)[number]): LayoutItem[] {
     })
   }
   const f = SCALE[bp]
-  return WIDGETS.map(w => ({ i: w.i, ...w.def, w: Math.max(2, Math.min(COLS[bp], Math.round(w.def.w * f))) }))
+  const items = WIDGETS.map(w => ({
+    i: w.i, x: w.def.x, y: w.def.y, w: Math.max(2, Math.round(w.def.w * f)),
+    h: w.def.h, minW: w.def.minW, minH: w.def.minH, origX: w.def.x,
+  }))
+  // Per rij: schaaf breedtes af en her-verdeel x cumulatief, zodat rijen exact
+  // COLS vullen zonder overlap (anders duwt RGL widgets naar beneden = gaten).
+  const perRij = new Map<number, typeof items>()
+  for (const it of items) {
+    const arr = perRij.get(it.y) ?? []
+    arr.push(it)
+    perRij.set(it.y, arr)
+  }
+  for (const arr of perRij.values()) {
+    arr.sort((a, b) => a.origX - b.origX)
+    let totaal = arr.reduce((s, it) => s + it.w, 0)
+    // Krimp de breedste widgets totdat de rij past
+    while (totaal > COLS[bp]) {
+      const breedste = arr.reduce((m, it) => (it.w > 2 && it.w > m.w ? it : m), arr[0])
+      if (breedste.w <= 2) break
+      breedste.w--; totaal--
+    }
+    let x = 0
+    for (const it of arr) { it.x = x; x += it.w }
+    const laatste = arr[arr.length - 1]
+    if (laatste && x < COLS[bp]) laatste.w += COLS[bp] - x
+  }
+  for (const it of items) delete (it as any).origX
+  return items
 }
 
 // ── Hoofdcomponent ─────────────────────────────────────────────────────────
@@ -265,20 +297,7 @@ export default function AdminDashboard({ d }: { d: DashData }) {
         {!mounted ? (
           <div className="h-64 animate-pulse rounded-xl bg-gray-100" />
         ) : mobiel ? (
-          <div className="space-y-3">
-            {zichtbaar.map(w => (
-              <div key={w.i} className="w-card">
-                <div className="w-drag">
-                  <span className="w-titel">{w.titel}</span>
-                  <button onClick={() => toggle(w.i)} className="w-x" aria-label={`${w.titel} sluiten`}>✕</button>
-                </div>
-                <div className="w-body"><Widget id={w.i} d={d} /></div>
-              </div>
-            ))}
-            {hidden.length > 0 && (
-              <button onClick={reset} className="w-full rounded-lg bg-gray-100 px-2 py-2 text-xs font-semibold text-gray-600">↺ Verborgen widgets terugzetten</button>
-            )}
-          </div>
+          <TegelStart d={d} />
         ) : (
           <ResponsiveGridLayout
             className="dash-grid"
@@ -309,6 +328,37 @@ export default function AdminDashboard({ d }: { d: DashData }) {
   )
 }
 
+// ── Mobiel: tegel-startscherm ──────────────────────────────────────────────
+// Op de telefoon géén stapeling van alle widgets: één startscherm met grote
+// tegels (emoji + kleine metrics). Pas bij klik ga je naar de echte pagina.
+function TegelStart({ d }: { d: DashData }) {
+  const t = d.tiles
+  const vandaag = d.komendeLessen.filter(l => l.datum === d.nowIso.slice(0, 10))
+  const tegels: { emoji: string; titel: string; href: string; metric: string; sub: string; accent?: string }[] = [
+    { emoji: '✏️', titel: 'Les invullen', href: '/admin/aanwezigheid/les', metric: vandaag.length ? `${vandaag.length} vandaag` : 'geen vandaag', sub: d.lesmodus ? `${d.lesmodus.leden.length} leden · ${d.lesmodus.dag.groep}` : 'kies een les', accent: vandaag.length ? 'text-[#a90000]' : '' },
+    { emoji: '📊', titel: 'Lessen & aanwezigheid', href: '/admin/aanwezigheid', metric: `${t.aanwPct}%`, sub: `aanwezig ${t.aanwVan}/${t.aanwNoem} (90d)` },
+    { emoji: '💶', titel: 'Contributie', href: '/admin/contributie', metric: t.contributieOpen ? `${t.contributieOpen} open` : 'alles betaald', sub: t.contributieOpen ? `€${t.contributieSom.toFixed(0)} totaal` : `Q${d.contributie.periode} · ${d.contributie.rows.length} leden`, accent: t.contributieOpen ? 'text-red-700' : 'text-green-700' },
+    { emoji: '👥', titel: 'Leden', href: '/admin/leden', metric: `${t.actieveLeden}`, sub: 'actieve leden' },
+    { emoji: '📝', titel: 'Inschrijvingen', href: '/admin/inschrijvingen', metric: t.inschrijvingen ? `${t.inschrijvingen} nieuw` : 'geen nieuw', sub: 'openstaande aanvragen', accent: t.inschrijvingen ? 'text-[#a90000]' : '' },
+    { emoji: '⚠️', titel: 'Reserve & stoppend', href: '/admin/leden', metric: `${d.vlaggen.length}`, sub: d.vlaggen.length ? d.vlaggen.slice(0, 2).map(v => v.naam.split(' ')[0]).join(', ') : 'niemands', accent: d.vlaggen.length ? 'text-amber-600' : '' },
+    { emoji: '🥋', titel: 'Examens', href: '/admin/exams', metric: `${t.examensGepland}`, sub: 'gepland' },
+    { emoji: '🎓', titel: "Diploma's", href: '/admin/diplomas', metric: `${t.diplomaRecent}`, sub: 'laatste 6 maanden' },
+  ]
+  return (
+    <div className="grid grid-cols-2 gap-2.5 pb-24">
+      {tegels.map(tg => (
+        <Link key={tg.href + tg.titel} href={tg.href}
+          className="flex flex-col gap-1 rounded-2xl border border-white/70 bg-white/60 p-3.5 shadow-sm backdrop-blur-md active:scale-[0.98] hover:border-[#a90000]/40">
+          <span className="text-2xl leading-none">{tg.emoji}</span>
+          <span className="mt-1 text-[13px] font-bold leading-tight text-[#2a2a2a]">{tg.titel}</span>
+          <span className={`text-lg font-extrabold leading-tight ${tg.accent || 'text-[#2a2a2a]'}`}>{tg.metric}</span>
+          <span className="line-clamp-1 text-[11px] text-gray-500">{tg.sub}</span>
+        </Link>
+      ))}
+    </div>
+  )
+}
+
 function Kpi({ href, label, value, sub, accent = '' }: { href: string; label: string; value: string | number; sub?: string; accent?: string }) {
   return (
     <Link href={href} className="rounded-xl border border-white/70 bg-white/55 px-2 py-1 backdrop-blur-md hover:border-[#a90000]/40">
@@ -320,9 +370,10 @@ function Kpi({ href, label, value, sub, accent = '' }: { href: string; label: st
 
 function Widget({ id, d }: { id: string; d: DashData }) {
   switch (id) {
-    case 'lessen': return <WLessen d={d} />
-    case 'aanwezigheid': return <WAanwezigheid d={d} />
-    case 'contributie': return <WContributie d={d} />
+    case 'lessen': return <WLessenGrid d={d} />
+    case 'lesmodus': return <WLesModus d={d} />
+    case 'contributie': return <WContributieGrid d={d} />
+    case 'komende': return <WLessen d={d} />
     case 'leden': return <WLeden d={d} />
     case 'vlaggen': return <WVlaggen d={d} />
     case 'examens': return <WExamens d={d} />
@@ -337,110 +388,6 @@ function Widget({ id, d }: { id: string; d: DashData }) {
 
 function Leeg({ tekst }: { tekst: string }) {
   return <p className="grid h-full place-items-center py-4 text-center text-xs text-gray-400">{tekst}</p>
-}
-
-// ── LidCel: schoon op eerste gezicht — klik op de naam vouwt details uit ────
-// De rij zelf toont alleen band + naam (+ statusvlag als die afwijkt van LID).
-// Alle knoppen (status, detailpagina) zitten in het uitgevouwen blok eronder,
-// zodat er niets per ongeluk aangeklikt wordt tijdens het aanmeldwerk.
-const STATUS_PILL: Record<string, { icon: string; klas: string; label: string }> = {
-  LID: { icon: '●', klas: 'bg-gray-100 text-gray-400', label: 'lid' },
-  RESERVE: { icon: '◐', klas: 'bg-sky-100 text-sky-700', label: 'reserve' },
-  STOPPEND: { icon: '⚑', klas: 'bg-amber-100 text-amber-700', label: 'stopt?' },
-  GESTOPT: { icon: '⛔', klas: 'bg-gray-200 text-gray-500', label: 'gestopt' },
-  VRIJGESTELD: { icon: '🔵', klas: 'bg-blue-100 text-blue-700', label: 'vrijgesteld' },
-}
-const BETALING_PILL: Record<string, { klas: string; label: string }> = {
-  BETAALD: { klas: 'bg-green-100 text-green-700', label: '✅ betaald' },
-  OPEN: { klas: 'bg-red-100 text-red-700', label: '💶 open' },
-  HERINNERING1: { klas: 'bg-amber-100 text-amber-800', label: '🟡 1e herinnering' },
-  HERINNERING2: { klas: 'bg-orange-100 text-orange-800', label: '🟠 2e herinnering' },
-  VIJGESTELD: { klas: 'bg-blue-100 text-blue-700', label: '🔵 vrijgesteld' },
-  GEEN: { klas: 'bg-gray-100 text-gray-400', label: 'geen regeling' },
-}
-
-function LidCel({ l, gestopt }: { l: AanwLid; gestopt: boolean }) {
-  const st = l.clubStatus
-  const pill = STATUS_PILL[st] ?? STATUS_PILL.LID
-  const bet = BETALING_PILL[l.betaling] ?? BETALING_PILL.GEEN
-  return (
-    <div className={`flex items-center gap-1.5 whitespace-nowrap ${gestopt ? 'opacity-75' : ''}`}>
-      <BeltVak belt={l.belt} />
-      <span className={`text-[11px] ${gestopt ? 'text-[#6b6b6b] line-through decoration-gray-400/70' : 'text-[#2a2a2a]'}`}>{l.naam}</span>
-      {/* Status alleen tonen als die afwijkt van gewoon lid — houdt de lijst rustig */}
-      {st !== 'LID' && (
-        <span className={`shrink-0 rounded-full px-1 text-[9px] font-bold leading-4 ${pill.klas}`} title={`Status: ${pill.label}`}>{pill.icon}</span>
-      )}
-      {/* Betaling alleen een icoon als er iets te zien is */}
-      {l.betaling !== 'BETAALD' && (
-        <span className={`shrink-0 rounded-full px-1 text-[9px] font-semibold leading-4 ${bet.klas}`} title={d_betaalLabel(l)}>
-          {l.betaling === 'VIJGESTELD' ? '€0' : l.betaling === 'GEEN' ? '€–' : '€!'}
-        </span>
-      )}
-    </div>
-  )
-}
-
-// Het uitgevouwen blok onder de rij: alle gegevens + de knoppen.
-function LidDetail({ l, a, m, status, zet }: {
-  l: AanwLid; a: number; m: number
-  status: Record<string, string>
-  zet: (lidId: string, s: string) => void
-}) {
-  const st = status[l.id] ?? l.clubStatus
-  const pill = STATUS_PILL[st] ?? STATUS_PILL.LID
-  const opties: [string, string][] = [['LID', 'Lid'], ['RESERVE', 'Reserve'], ['STOPPEND', 'Stopt?'], ['GESTOPT', 'Gestopt'], ['VRIJGESTELD', 'Vrijgesteld']]
-  return (
-    <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 rounded-lg bg-[#fafafa]/80 px-2 py-1.5 text-[10px] text-gray-600">
-      <span className="flex items-center gap-1"><span className="text-gray-400">Leeftijd</span> <b className="text-[#2a2a2a]">{leeftijd(l.dob) || '—'}</b></span>
-      <span className="flex items-center gap-1"><span className="text-gray-400">Groep</span> <b className="text-[#2a2a2a]">{groepNaam(l.groep)}</b></span>
-      <span className="flex items-center gap-1"><span className="text-gray-400">Band</span> <BeltVak belt={l.belt} size={8} /> <b className="text-[#2a2a2a]">{l.belt ? getBeltLabel(l.belt as BeltLevel) : 'geen band'}</b>{l.volgendeBand && <span className="text-gray-400">→ {getBeltLabel(l.volgendeBand as BeltLevel)}</span>}</span>
-      <span className="flex items-center gap-1"><span className="text-gray-400">Contributie</span> <b className={l.betaling === 'BETAALD' ? 'text-green-700' : l.betaling === 'GEEN' ? 'text-gray-400' : 'text-red-700'}>{d_betaalLabel(l)}</b></span>
-      {l.laatsteBand && <span className="flex items-center gap-1"><span className="text-gray-400">Laatste band</span> <b className="text-[#2a2a2a]">{fmtMaand(l.laatsteBand)}</b></span>}
-      {l.laatsteExamen && <span className="flex items-center gap-1"><span className="text-gray-400">Examen</span> <b className="text-[#2a2a2a]">{fmtMaand(l.laatsteExamen)} ({geleden(l.laatsteExamen)})</b></span>}
-      {l.lidSinds && <span className="flex items-center gap-1"><span className="text-gray-400">Lid sinds</span> <b className="text-[#2a2a2a]">{fmtMaand(l.lidSinds)}</b></span>}
-      {l.cursusJapans && <span title="Cursus Japans diploma">🎓</span>}
-      <span className="flex items-center gap-1"><span className="text-gray-400">Opkomst</span> <b className="text-green-700">{m ? `${a}/${m}` : '—'}</b></span>
-
-      <span className="ml-auto flex items-center gap-1">
-        {opties.map(([s, lbl]) => (
-          <button key={s} onClick={e => { e.stopPropagation(); zet(l.id, s) }}
-            className={`rounded-full border px-2 py-0.5 text-[9px] font-semibold ${st === s ? 'border-[#2a2a2a] bg-[#2a2a2a] text-white' : 'border-gray-200 bg-white text-gray-500 hover:border-[#a90000]/50 hover:text-[#a90000]'}`}
-            title={`Status op ${lbl} zetten`}>{lbl}</button>
-        ))}
-        {/* Detailpagina alleen via deze expliciete knop — nooit per ongeluk */}
-        <Link href={`/admin/students/${l.id}`} onClick={e => e.stopPropagation()}
-          className="rounded-full border border-gray-200 bg-white px-2 py-0.5 text-[9px] font-semibold text-gray-500 hover:border-[#a90000] hover:text-[#a90000]">
-          Lidbijhouden →
-        </Link>
-      </span>
-    </div>
-  )
-}
-
-function d_betaalLabel(l: AanwLid): string {
-  const bet = BETALING_PILL[l.betaling] ?? BETALING_PILL.GEEN
-  return l.bedrag ? `${bet.label} · €${l.bedrag.toFixed(0)}` : bet.label
-}
-function WolkeRegel({ label, value, stip, accent = '' }: { label: string; value: string; stip?: string; accent?: string }) {
-  return (
-    <p className="flex items-center justify-between gap-2">
-      <span className="shrink-0 text-gray-400">{label}</span>
-      <span className={`flex items-center gap-1 text-right font-medium ${accent || 'text-[#2a2a2a]'}`}>
-        {stip && <span className="h-2 w-2 shrink-0 rounded-full border border-gray-300" style={{ background: stip }} />}
-        {value}
-      </span>
-    </p>
-  )
-}
-function fmtMaand(iso: string): string {
-  return new Date(iso).toLocaleDateString('nl-NL', { month: 'short', year: 'numeric' })
-}
-function geleden(iso: string): string {
-  const dagen = Math.floor((Date.now() - new Date(iso).getTime()) / 864e5)
-  if (dagen < 31) return `${dagen}d geleden`
-  if (dagen < 365) return `${Math.round(dagen / 30.44)}m geleden`
-  return `${(dagen / 365).toFixed(1)}j geleden`
 }
 
 // ── Lessen: inline doorlinken naar invullen ────────────────────────────────
@@ -471,243 +418,18 @@ function WLessen({ d }: { d: DashData }) {
   )
 }
 
-// ── Aanwezigheid: mini-grid, klikbaar ─────────────────────────────────────
-function WAanwezigheid({ d }: { d: DashData }) {
-  const router = useRouter()
-  const [local, setLocal] = React.useState<Record<string, string | null>>({})
-  const [compact, setCompact] = React.useState(false)
-  const [sorteer, setSorteer] = React.useState('naam')
-  const [openLid, setOpenLid] = React.useState<string | null>(null)
-  const [status, zetStatus] = usePropSync(d.aanwezigheidLeden, 'clubStatus')
-
-  async function zet(lidId: string, clubStatus: string) {
-    zetStatus(lidId, clubStatus)
-    try {
-      await fetch('/api/admin2/member-status', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ memberId: lidId, clubStatus, leaveDate: new Date().toISOString().slice(0, 10) }),
-      })
-      router.refresh()
-    } catch {
-      /* rollback bij fout: server blijft leidend, effect ruimt de override op */
-    }
-  }
-
-  const get = (mid: string, dagId: string) => {
-    const k = `${mid}|${dagId}`
-    return k in local ? local[k] : (d.cellen[k] ?? null)
-  }
-  async function cycle(mid: string, dagId: string) {
-    const k = `${mid}|${dagId}`
-    const cur = get(mid, dagId)
-    const next = CYCLE[(CYCLE.indexOf(cur ?? null) + 1) % CYCLE.length]
-    setLocal(p => ({ ...p, [k]: next }))
-    try {
-      const res = await fetch('/api/admin2/attendance', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ memberId: mid, trainingDayId: dagId, status: next }),
-      })
-      if (!res.ok) setLocal(p => ({ ...p, [k]: cur }))
-    } catch {
-      setLocal(p => ({ ...p, [k]: cur }))
-    }
-  }
-
-  const cel = compact ? 'h-5 w-5 text-[10px]' : 'h-6 w-6 text-[11px]'
-
-  const groepenMetData = d.aanwezigheidGroepen.filter(g => g.dagen.length > 0)
-      const groepenLeeg = d.aanwezigheidGroepen.filter(g => g.dagen.length === 0)
-
-      return (
-    <div className="flex h-full flex-col gap-2">
-      <div className="flex flex-shrink-0 items-center gap-2">
-        <select value={sorteer} onChange={e => setSorteer(e.target.value)}
-          className="rounded border border-gray-200 bg-white px-1.5 py-1 text-[10px] text-gray-600 focus:border-[#a90000] focus:outline-none">
-          <option value="naam">naam A→Z</option>
-          <option value="jong">leeftijd jong→oud</option>
-          <option value="oud">leeftijd oud→jong</option>
-          <option value="band">band laag→hoog</option>
-          <option value="opkomstLaag">opkomst laag→hoog</option>
-          <option value="opkomstHoog">opkomst hoog→laag</option>
-        </select>
-        <button onClick={() => setCompact(c => !c)} className="rounded border border-gray-200 px-2 py-1 text-[10px] font-medium text-gray-600 hover:border-[#a90000]">
-          {compact ? '⬜ Groot' : '▦ Compact'}
-        </button>
-        <span className="ml-auto text-[10px] text-gray-400">tik cel = wisselen · klik naam = details · laatste 12 lessen per groep</span>
-      </div>
-      {/* Legenda: één keer uitleggen wat alle symbolen betekenen */}
-      <div className="flex flex-shrink-0 flex-wrap items-center gap-x-3 gap-y-1 text-[10px] text-gray-500">
-        <span className="font-semibold uppercase tracking-wide text-gray-400">Legenda</span>
-        <span title="Aanwezig">✅ aanwezig</span>
-        <span title="Afgemeld">🅰 afgemeld</span>
-        <span title="Ziek">🤒 ziek</span>
-        <span title="Niet aanwezig">❌ niet aanwezig</span>
-        <span className="flex items-center gap-1 rounded bg-gray-100 px-1 py-0.5 text-gray-500" title="Geen les wegens vakantie — telt niet mee in het percentage">🏖 geen les (vakantie)</span>
-      </div>
-      {/* Groepen vullen de widget: naast elkaar zodra de widget breed is.
-          Groepen zonder lessen komen onderin, zodat ze geen kolom opslokken. */}
-      <div className="grid min-h-0 flex-1 gap-2 [grid-template-columns:repeat(auto-fit,minmax(340px,1fr))]">
-      {groepenMetData.map(g => {
-        const aant = (lid: string) => {
-          let a = 0, m = 0
-          // Vakantiedagen tellen niet mee: anders daalt het percentage door lesvrije weken.
-          for (const dg of g.dagen) {
-            if (dg.vakantie) continue
-            const s = get(lid, dg.id)
-            if (s && s !== 'VAKANTIE') { m++; if (s === 'AANWEZIG') a++ }
-          }
-          return { a, m, p: m ? a / m : -1 }
-        }
-        let leden = d.aanwezigheidLeden.filter(l => l.groep === g.groep)
-        if (sorteer === 'naam') leden = [...leden].sort((x, y) => x.naam.localeCompare(y.naam))
-        if (sorteer === 'jong') leden = [...leden].sort((x, y) => (y.dob ?? '').localeCompare(x.dob ?? ''))
-        if (sorteer === 'oud') leden = [...leden].sort((x, y) => (x.dob ?? '').localeCompare(y.dob ?? ''))
-        if (sorteer === 'band') leden = [...leden].sort((x, y) => (x.belt ?? '').localeCompare(y.belt ?? ''))
-        if (sorteer === 'opkomstLaag') leden = [...leden].sort((x, y) => aant(x.id).p - aant(y.id).p)
-        if (sorteer === 'opkomstHoog') leden = [...leden].sort((x, y) => aant(y.id).p - aant(x.id).p)
-
-        return (
-          <div key={g.groep} className="min-h-0 overflow-hidden rounded-lg border border-gray-100">
-            <div className="flex items-center justify-between border-b border-gray-100 bg-gray-50 px-2 py-1">
-              <span className="text-[11px] font-bold text-[#2a2a2a]">{groepNaam(g.groep)}</span>
-              <span className="text-[10px] text-gray-400">{LOC_KORT[g.locatie] ?? g.locatie} · {leden.length} leden</span>
-            </div>
-            <div className="h-[calc(100%-1.75rem)] overflow-auto">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr>
-                  <th className="sticky left-0 z-10 bg-gray-50 px-2 py-1 text-left text-[9px] font-semibold uppercase tracking-wide text-gray-400">Lid</th>
-                  {g.dagen.map(dg => {
-                    const dt = new Date(dg.datum)
-                    return <th key={dg.id}
-                    className={`border-b-2 px-0.5 py-1 text-center text-[9px] font-normal ${dg.vakantie ? 'border-[#c3c8cf] bg-[#e7eaee] text-[#8a9099]' : 'border-transparent text-gray-400'}`}
-                    title={`${dt.toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long' })}${dg.vakantie ? ' · Geen les (vakantie) — telt niet mee in het percentage' : dg.activity ? ` · ${dg.activity}` : ''}`}>
-                      {dg.vakantie ? '🏖' : `${dt.getDate()}/${dt.getMonth() + 1}`}
-                    </th>
-                  })}
-                  <th className="px-1.5 py-1 text-[9px] font-semibold text-gray-400">Aanw.</th>
-                </tr>
-              </thead>
-              <tbody>
-                {leden.map(l => {
-                  const { a, m } = aant(l.id)
-                  const gestopt = (status[l.id] ?? l.clubStatus) === 'GESTOPT'
-                  const uitgeklapt = openLid === l.id
-                  return (
-                  <React.Fragment key={l.id}>
-                    <tr onClick={() => setOpenLid(uitgeklapt ? null : l.id)}
-                      className={`group cursor-pointer border-t border-gray-50 hover:bg-[#fdf6f6] ${uitgeklapt ? 'bg-[#fdf6f6]' : ''} ${gestopt ? 'bg-gray-100/60' : ''}`}>
-                      <td className={`sticky left-0 z-10 px-2 py-0.5 group-hover:bg-[#fdf6f6] ${uitgeklapt ? 'bg-[#fdf6f6]' : 'bg-white'}`}>
-                        <LidCel l={{ ...l, clubStatus: status[l.id] ?? l.clubStatus }} gestopt={gestopt} />
-                      </td>
-                      {g.dagen.map(dg => {
-                        // Vakantiedag: doorlopende grijze balk, niet klikbaar — er is geen les gegeven
-                        if (dg.vakantie) {
-                          return (
-                            <td key={dg.id}
-                              className="border-l border-r border-[#e7eaee] bg-[#eef0f3] p-0.5 text-center text-[10px] text-[#b8bdc4]"
-                              title={`Geen les — vakantie · telt niet mee in het percentage`}>·</td>
-                          )
-                        }
-                        const s = get(l.id, dg.id)
-                        const info = s ? STATUS_INFO[s] : null
-                        return (
-                          <td key={dg.id} className="p-0.5 text-center">
-                            <button onClick={e => { e.stopPropagation(); cycle(l.id, dg.id) }} disabled={gestopt}
-                              className={`mx-auto flex ${cel} items-center justify-center rounded border ${gestopt ? 'cursor-not-allowed opacity-40' : ''} ${info ? info.klas : 'border-gray-100 bg-gray-50 text-gray-300'}`}
-                              title={info ? info.label : 'leeg'}>
-                              {info ? info.emoji : '·'}
-                            </button>
-                          </td>
-                        )
-                      })}
-                      <td className="px-1.5 text-center text-[10px] font-semibold text-green-700">{m ? `${a}/${m}` : '—'}</td>
-                    </tr>
-                    {uitgeklapt && (
-                      <tr>
-                        <td colSpan={g.dagen.length + 2} className="px-2 pb-1.5">
-                          <LidDetail l={l} a={a} m={m} status={status} zet={zet} />
-                        </td>
-                      </tr>
-                    )}
-                  </React.Fragment>
-                  )
-                })}
-              </tbody>
-            </table>
-            </div>
-          </div>
-        )
-      })}
-      </div>
-      {/* Groepen zonder lessen: doorlopende strook onder het raster, onderdeel van de
-          kaart i.p.v. een losse chip die de kaartstructuur breekt. */}
-      {groepenLeeg.length > 0 && (
-        <div className="flex flex-shrink-0 items-center gap-3 border-t border-gray-200 bg-gray-50 px-2.5 py-1.5 text-[10px] text-gray-400">
-          <span className="font-semibold uppercase tracking-wide">Nog geen lessen</span>
-          <span className="h-3 w-px bg-gray-200" />
-          {groepenLeeg.map(g => (
-            <span key={g.groep} className="flex items-center gap-1">
-              <span className="h-1.5 w-1.5 rounded-full bg-gray-300" />
-              {groepNaam(g.groep)}
-              <span className="text-gray-300">· {d.aanwezigheidLeden.filter(l => l.groep === g.groep).length} leden</span>
-            </span>
-          ))}
-        </div>
-      )}
-      {d.aanwezigheidGroepen.length === 0 && <Leeg tekst="Geen lessen gevonden." />}
-    </div>
-  )
+// ── Page-widgets: exact dezelfde component + data als de losse pagina's ───
+// De widget IS de pagina (KwartaalGrid / LesModus / ContributieBoard), dus er
+// bestaat maar één soort aanwezigheidslijst en je hoeft op de pc nergens heen.
+function WLessenGrid({ d }: { d: DashData }) {
+  return <KwartaalGrid dagen={d.lessen.dagen} leden={d.lessen.leden} cellen={d.lessen.cellen} />
 }
-
-// ── Contributie: inline als betaald markeren ───────────────────────────────
-function WContributie({ d }: { d: DashData }) {
-  const router = useRouter()
-  // Bewust lokale state: hier is een rollback nodig als de API faalt, dus de
-  // serverdata mag deze lijst niet meteen overschrijven.
-  const [status, setStatus] = React.useState<Record<string, string>>(Object.fromEntries(d.openRekeningen.map(r => [r.paymentId, r.status])))
-  const [verbergen, setVerbergen] = React.useState<string[]>([])
-  const [busy, setBusy] = React.useState<string | null>(null)
-
-  async function markeerBetaald(paymentId: string) {
-    const was = status[paymentId] ?? 'OPEN'
-    setBusy(paymentId)
-    setStatus(p => ({ ...p, [paymentId]: 'BETAALD' }))
-    setVerbergen(v => [...v, paymentId])
-    try {
-      const res = await fetch('/api/admin2/payment', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ paymentId, status: 'BETAALD' }),
-      })
-      if (!res.ok) throw new Error()
-      router.refresh()
-    } catch {
-      setStatus(p => ({ ...p, [paymentId]: was }))
-      setVerbergen(v => v.filter(x => x !== paymentId))
-    } finally {
-      setBusy(null)
-    }
-  }
-
-  const zichtbaar = d.openRekeningen.filter(r => !verbergen.includes(r.paymentId))
-  return (
-    <div className="space-y-1">
-      <div className="flex items-center justify-between text-[10px] text-gray-400">
-        <span>{d.tiles.contributieOpen} open · €{d.tiles.contributieSom.toFixed(0)} ({d.kwLabel})</span>
-        <Link href="/admin/contributie" className="text-[#a90000] hover:underline">alles →</Link>
-      </div>
-      {zichtbaar.length === 0 ? <Leeg tekst="Alles betaald of vrijgesteld ✅" /> : zichtbaar.map(r => (
-        <div key={r.paymentId} className="flex items-center gap-2 rounded-lg border border-gray-100 px-2 py-1.5">
-          <Link href={`/admin/students/${r.lidId}`} className="min-w-0 flex-1 truncate text-xs font-medium text-[#2a2a2a] hover:text-[#a90000]">{r.naam}</Link>
-          <span className="shrink-0 text-[10px] text-gray-400">{groepNaam(r.groep)}</span>
-          <span className="shrink-0 text-xs font-semibold">€{r.bedrag.toFixed(0)}</span>
-          <button onClick={() => markeerBetaald(r.paymentId)} disabled={busy === r.paymentId} title="Markeer als betaald"
-            className="shrink-0 rounded border border-green-300 bg-green-50 px-1.5 py-0.5 text-[10px] font-semibold text-green-700 hover:bg-green-100 disabled:opacity-40">✓</button>
-        </div>
-      ))}
-      {d.openRekeningen.length > 0 && <p className="pt-1 text-[10px] text-gray-400">tik ✓ = als betaald markeren</p>}
-    </div>
-  )
+function WLesModus({ d }: { d: DashData }) {
+  if (!d.lesmodus) return <Leeg tekst="Nog geen les gepland." />
+  return <LesModus {...d.lesmodus} />
+}
+function WContributieGrid({ d }: { d: DashData }) {
+  return <ContributieBoard rows={d.contributie.rows} periode={d.contributie.periode} periodId={d.contributie.periodId} totaalOpen={d.contributie.totaalOpen} />
 }
 
 // ── Leden: zoeken, sorteren, status inline ─────────────────────────────────

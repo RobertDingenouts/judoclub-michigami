@@ -1,14 +1,14 @@
 import { db } from '@/lib/db'
 import { kwartaalVan } from '@/lib/admin2'
 import { ensureUpcomingDays, markeerVakantieDagen } from '@/lib/lessen'
-import { vakantieOp } from '@/data/vakanties'
 import { getBeltLabel, getNextBelt, isSlipBelt, isYouth } from '@/lib/belt-utils'
+import { lessenGridData } from '@/lib/lessendata'
+import { contributieData } from '@/lib/contributiedata'
+import { findLesDag, lesModusProps, type LesModusProps } from '@/lib/lesdata'
 import type { BeltLevel } from '@prisma/client'
 import AdminDashboard, { type DashData, type LedenRow } from './dashboard/AdminDashboard'
 
 export const dynamic = 'force-dynamic'
-
-const HIST_LESSEN = 12 // aantal lessen per groep in de aanwezigheidswidget
 
 export default async function AdminStart() {
   const now = new Date()
@@ -23,7 +23,6 @@ export default async function AdminStart() {
     komendeDagen, dagenWeek,
     attTotal,
     ledenVoorExamen, gevlagden, recentGestopt,
-    historieDagen, historieAtt,
     openRekeningen, recentBetald,
     examOpen, diplomaRecent,
   ] = await Promise.all([
@@ -65,7 +64,7 @@ export default async function AdminStart() {
     }),
     db.member.findMany({
       // Vlaggen-leden. `STOPPING` is legacy-spelling uit oude data; meenemen kost
-// niets en voorkomt dat zo'n lid nergens zichtbaar is.
+      // niets en voorkomt dat zo'n lid nergens zichtbaar is.
       where: { clubStatus: { in: ['RESERVE', 'STOPPING', 'STOPPEND'] } },
       select: { id: true, firstName: true, lastName: true, clubStatus: true, primaryGroup: true },
       orderBy: { lastName: 'asc' }, take: 14,
@@ -74,21 +73,6 @@ export default async function AdminStart() {
       where: { clubStatus: 'GESTOPT' },
       select: { id: true, firstName: true, lastName: true, leaveDate: true },
       orderBy: { leaveDate: 'desc' }, take: 8,
-    }),
-    // Historie voor de aanwezigheidswidget: per groep de laatste lessen.
-// Per groep apart ophalen zodat elke groep zeker zijn volledige reeks krijgt
-// (een globale take verdeelt de groepen ongelijk).
-    Promise.all(['VRIJDAG_1E', 'VRIJDAG_2E', 'VRIJDAG_3E', 'WOENSDAG'].map(g =>
-      db.trainingDay.findMany({
-        where: { date: { lte: now }, cancelled: false, group: g },
-        orderBy: { date: 'desc' },
-        take: 12,
-        select: { id: true, date: true, group: true, location: true, activity: true, notes: true },
-      })
-    )).then(r => r.flat()),
-    db.attendance.findMany({
-      where: { trainingDay: { date: { gte: new Date(now.getTime() - 90 * 864e5) }, group: { in: ['VRIJDAG_1E', 'VRIJDAG_2E', 'VRIJDAG_3E', 'WOENSDAG'] } } },
-      select: { memberId: true, trainingDayId: true, status: true },
     }),
     db.payment.findMany({
       where: { status: { in: ['OPEN', 'HERINNERING1', 'HERINNERING2'] }, period: { label: kw } },
@@ -108,37 +92,14 @@ export default async function AdminStart() {
     db.diploma.count({ where: { awardedAt: { gte: new Date(now.getTime() - 180 * 864e5) } } }),
   ])
 
-  // ---- Aanwezigheidswidget: per groep de laatste HIST_LESSEN lessen
-  const groepen = ['VRIJDAG_1E', 'VRIJDAG_2E', 'VRIJDAG_3E', 'WOENSDAG']
-  const perGroep = new Map<string, typeof historieDagen>()
-  for (const g of groepen) perGroep.set(g, [])
-  for (const d of historieDagen) {
-    const lijst = perGroep.get(d.group)
-    if (lijst && lijst.length < HIST_LESSEN) lijst.push(d)
-  }
-  for (const lijst of perGroep.values()) lijst.reverse() // oud → nieuw
-  const dagIds = new Set([...perGroep.values()].flat().map(d => d.id))
-  const cellen: Record<string, string> = {}
-  for (const a of historieAtt) if (dagIds.has(a.trainingDayId)) cellen[`${a.memberId}|${a.trainingDayId}`] = a.status
-
-  const aanwezigheidGroepen = groepen.map(g => {
-    const dagen = perGroep.get(g) ?? []
-    return {
-      groep: g,
-      // De recentste les is de betrouwbare bron voor de locatie: historische
-      // rijen kunnen een onjuiste locatie hebben (zie vakanties.ts).
-      locatie: dagen[dagen.length - 1]?.location ?? (g === 'WOENSDAG' ? 'OUD_VOSSEMEER' : 'STEENBERGEN'),
-      dagen: dagen.map(d => ({
-        id: d.id,
-        datum: d.date.toISOString().slice(0, 10),
-        activity: d.activity,
-        // Vakantiedagen tellen niet mee in de opkomstpercentage.
-        // Vakantie wordt op GROEP bepaald (rooster is autoritair); historische
-        // rijen kunnen een onjuiste locatie hebben.
-        vakantie: vakantieOp(d.date.toISOString().slice(0, 10), d.group) !== null,
-      })),
-    }
-  })
+  // ── De drie "pagina-als-widget" datasets: exact dezelfde libs als de
+  //    losse pagina's, dus startscherm en pagina tonen identical content. ──
+  const [lessen, contributie, lesDag] = await Promise.all([
+    lessenGridData({ periode: kw }),
+    contributieData(kw),
+    findLesDag(),
+  ])
+  const lesmodus: LesModusProps | null = lesDag ? await lesModusProps(lesDag) : null
 
   // ---- Trend laatste 7 dagen
   const trend = dagenWeek.map(d => {
@@ -177,7 +138,7 @@ export default async function AdminStart() {
   const attAanw = attTotal.find(g => g.status === 'AANWEZIG')?._count ?? 0
   const attAlle = attTotal.reduce((s, g) => s + g._count, 0)
 
-  // ── Leden-verrijking (gedeeld door ledenwidget + aanwezigheid-wolkje) ──────
+  // ── Leden-verrijking (ledenwidget + examenwidget) ─────────────────────────
   const rijkeLeden: LedenRow[] = ledenVoorExamen.map(m => {
     const youth = isYouth(m.dateOfBirth)
     const volgende = getNextBelt(m.currentBelt as BeltLevel, youth)
@@ -228,10 +189,10 @@ export default async function AdminStart() {
     })),
     trend,
     examList,
-    aanwezigheidGroepen,
-    // Leden zonder groep horen niet in het lesrooster; ze blijven wel in de ledenwidget.
-    aanwezigheidLeden: rijkeLeden.filter(l => l.groep !== ''),
-    cellen,
+    // Lessen & contributie: dezelfde datasets als de losse pagina's.
+    lessen: { dagen: lessen.dagen, leden: lessen.leden, cellen: lessen.cellen },
+    lesmodus,
+    contributie: { rows: contributie.data, periode: kw, periodId: contributie.period?.id ?? '', totaalOpen: contributie.totaalOpen },
     leden: rijkeLeden,
     openRekeningen: openRekeningen.map(p => ({
       paymentId: p.id, lidId: p.member.id, naam: `${p.member.firstName} ${p.member.lastName}`,

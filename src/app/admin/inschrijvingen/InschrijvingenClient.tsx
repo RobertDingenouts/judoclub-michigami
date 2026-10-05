@@ -43,7 +43,10 @@ interface InschrijvingenClientProps {
 }
 
 export default function InschrijvingenClient({ applications }: InschrijvingenClientProps) {
-  const [filter, setFilter] = useState<'ALL' | 'PENDING' | 'APPROVED' | 'REJECTED'>('PENDING')
+  // Start met ALLE inschrijvingen — zo zie je bij binnenkomst meteen alles.
+  const [filter, setFilter] = useState<'ALL' | 'PENDING' | 'APPROVED' | 'REJECTED'>('ALL')
+  const [verwijderModal, setVerwijderModal] = useState<Application | null>(null)
+  const [verwijderBusy, setVerwijderBusy] = useState(false)
   const [selectedApp, setSelectedApp] = useState<Application | null>(null)
   const [actionModal, setActionModal] = useState<'APPROVE' | 'REJECT' | null>(null)
   const [adminNotes, setAdminNotes] = useState('')
@@ -90,6 +93,28 @@ export default function InschrijvingenClient({ applications }: InschrijvingenCli
       setResult({ type: 'error', message: err.message || 'Er is een fout opgetreden' })
     } finally {
       setProcessing(false)
+    }
+  }
+
+  // Definitief verwijderen (tests / per ongeluk ingeschreven). Komt nooit zonder
+  // de bevestigingsmodal met prullenbak-icoon — API weigert ook zonder bevestiging.
+  const verwijderPermanent = async () => {
+    if (!verwijderModal) return
+    setVerwijderBusy(true)
+    try {
+      const res = await fetch(`/api/admin/inschrijvingen/${verwijderModal.id}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bevestig: true }),
+      })
+      const data = await res.json()
+      if (!data.success) { setResult({ type: 'error', message: data.error || 'Verwijderen mislukt' }); return }
+      setVerwijderModal(null)
+      window.location.reload()
+    } catch (err: any) {
+      setResult({ type: 'error', message: err.message || 'Er is een fout opgetreden' })
+    } finally {
+      setVerwijderBusy(false)
     }
   }
 
@@ -155,7 +180,9 @@ export default function InschrijvingenClient({ applications }: InschrijvingenCli
       ) : (
         <div className="space-y-3">
           {filtered.map(app => (
-            <div key={app.id} className={`rounded-lg border p-4 shadow-sm ${
+            <div key={app.id} role="button" tabIndex={0} onClick={() => setSelectedApp(app)}
+              onKeyDown={e => { if (e.key === 'Enter') setSelectedApp(app) }}
+              className={`cursor-pointer rounded-lg border p-4 shadow-sm transition hover:border-[#a90000]/40 hover:shadow-md ${
               app.status === 'PENDING' ? 'border-yellow-200 bg-yellow-50/30' : 'border-gray-200 bg-white'
             }`}>
               <div className="flex items-start justify-between gap-4">
@@ -182,10 +209,14 @@ export default function InschrijvingenClient({ applications }: InschrijvingenCli
                     Verzonden op {formatDateTime(app.createdAt)}
                   </div>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2" onClick={e => e.stopPropagation()}>
                   <button onClick={() => { setSelectedApp(app); }}
                     className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50">
                     Details
+                  </button>
+                  <button onClick={() => setVerwijderModal(app)} title="Deze inschrijving definitief verwijderen"
+                    className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-400 hover:border-red-400 hover:text-red-600">
+                    🗑
                   </button>
                   {app.status === 'PENDING' && (
                     <>
@@ -203,6 +234,43 @@ export default function InschrijvingenClient({ applications }: InschrijvingenCli
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Verwijder-bevestiging: expliciete waarschuwing, kan niet per ongeluk */}
+      {verwijderModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
+            <div className="mb-3 flex items-center gap-3">
+              <span className="flex h-11 w-11 items-center justify-center rounded-full bg-red-100 text-xl">🗑</span>
+              <h2 className="text-lg font-bold text-[#2a2a2a]">Definitief verwijderen?</h2>
+            </div>
+            <p className="text-sm text-gray-600">
+              <b>{verwijderModal.firstName} {verwijderModal.lastName}</b> ({verwijderModal.email}) wordt
+              <b> voorgoed</b> verwijderd. Dit kan niet ongedaan worden — bedoeld voor tests en per ongeluk
+              ingeschreven aanvragen. Een <b>goedgekeurde</b> inschrijving hoort hier niet te staan: die heeft
+              al een ledenrecord, dat verwijder je via Leden.
+            </p>
+            {verwijderModal.status === 'APPROVED' && (
+              <p className="mt-3 rounded-lg border border-amber-300 bg-amber-50 p-2 text-xs font-semibold text-amber-800">
+                ⚠️ Deze inschrijving is goedgekeurd — er bestaat een account/lidrecord bij. Verwijderen van de
+                aanvraag raakt dat record niet, maar wees je ervan bewust.
+              </p>
+            )}
+            {result && result.type === 'error' && (
+              <p className="mt-3 rounded-lg border border-red-200 bg-red-50 p-2 text-sm text-red-700">{result.message}</p>
+            )}
+            <div className="mt-5 flex gap-3">
+              <button onClick={() => { setVerwijderModal(null); setResult(null) }}
+                className="flex-1 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                Annuleren
+              </button>
+              <button onClick={verwijderPermanent} disabled={verwijderBusy}
+                className="flex-1 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50">
+                {verwijderBusy ? 'Bezig…' : '🗑 Ja, definitief'}
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
