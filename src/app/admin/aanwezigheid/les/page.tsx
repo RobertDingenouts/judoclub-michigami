@@ -48,7 +48,9 @@ export default async function LesModusPage({
   return (
     <div className="space-y-3">
       <Link href="/admin/aanwezigheid" className="inline-block text-sm text-gray-500 hover:text-[#a90000]">← Terug naar lessen</Link>
-      <LesModus {...props} />
+      {/* key: bij dagwissel (alleen query-param verandert) remount de component; */}
+      {/* zonder blijft de lokale state de leden van de vorige dag tonen. */}
+      <LesModus key={props.dag.id} {...props} />
     </div>
   )
 }

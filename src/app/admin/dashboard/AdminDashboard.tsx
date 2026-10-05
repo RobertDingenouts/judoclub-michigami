@@ -427,7 +427,7 @@ function WLessenGrid({ d }: { d: DashData }) {
 }
 function WLesModus({ d }: { d: DashData }) {
   if (!d.lesmodus) return <Leeg tekst="Nog geen les gepland." />
-  return <LesModus {...d.lesmodus} />
+  return <LesModus key={d.lesmodus.dag.id} {...d.lesmodus} />
 }
 function WContributieGrid({ d }: { d: DashData }) {
   return <ContributieBoard rows={d.contributie.rows} periode={d.contributie.periode} periodId={d.contributie.periodId} totaalOpen={d.contributie.totaalOpen} />
