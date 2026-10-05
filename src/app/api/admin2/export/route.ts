@@ -104,7 +104,7 @@ export async function GET(req: NextRequest) {
   } else if (lijst === 'contributie') {
     const label = sp.get('periode') ?? '2026-Q4'
     const ws = wb.addWorksheet(`Contributie ${label}`)
-    ws.addRows([['Naam', 'Groep', 'Status', 'Bedrag', 'Betaald op']])
+    ws.addRows([['Naam', 'Groep', 'Status', 'Bedrag', 'Betaald op', 'Factuurnr.', 'Vervaldatum']])
     const p = await db.contributionPeriod.findUnique({ where: { label } })
     if (p) {
       const ps = await db.payment.findMany({
@@ -118,6 +118,8 @@ export async function GET(req: NextRequest) {
           x.member.primaryGroup ? (GROEP_LABEL[x.member.primaryGroup] ?? x.member.primaryGroup) : '',
           x.status, Number(x.amount),
           x.paidAt ? x.paidAt.toLocaleDateString('nl-NL') : '',
+          x.invoiceNumber ?? '',
+          x.dueDate ? x.dueDate.toLocaleDateString('nl-NL') : '',
         ])
       }
     }

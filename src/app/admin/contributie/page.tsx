@@ -7,12 +7,13 @@ export const dynamic = 'force-dynamic'
 // contributiewidget op het startscherm. Eén lijst, geen twee.
 export default async function ContributiePage({
   searchParams,
-}: { searchParams: Promise<{ periode?: string }> }) {
+}: { searchParams: Promise<{ periode?: string; gestopt?: string }> }) {
   const params = await searchParams
   const nu = new Date()
   const label = params.periode || `${nu.getFullYear()}-Q${Math.floor(nu.getMonth() / 3) + 1}`
+  const toonGestopt = params.gestopt === '1'
 
-  const { periodes, data, period, totaalOpen } = await contributieData(label)
+  const { periodes, data, period, totaalOpen } = await contributieData(label, { toonGestopt })
   const open = data.filter(d => ['OPEN', 'HERINNERING1', 'HERINNERING2'].includes(d.status))
   const betaald = data.filter(d => d.status === 'BETAALD')
 
@@ -39,7 +40,7 @@ export default async function ContributiePage({
         ))}
       </div>
 
-      <ContributieBoard rows={data} periode={label} periodId={period?.id ?? ''} totaalOpen={totaalOpen} />
+      <ContributieBoard rows={data} periode={label} periodId={period?.id ?? ''} totaalOpen={totaalOpen} toonGestopt={toonGestopt} />
     </div>
   )
 }

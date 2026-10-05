@@ -8,6 +8,7 @@ export type ContribRij = {
   memberId: string; paymentId: string | null; naam: string; groep: string | null
   status: string; amount: number; note: string | null
   items: ContribItem[] | null; clubStatus: string; leaveDate: string
+  paidAt: string; dueDate: string; invoiceNumber: string | null
 }
 
 function safeItems(s: string): ContribItem[] | null {
@@ -17,7 +18,7 @@ function safeItems(s: string): ContribItem[] | null {
   } catch { return null }
 }
 
-export async function contributieData(label: string) {
+export async function contributieData(label: string, opts: { toonGestopt?: boolean } = {}) {
   const nu = new Date()
   const [periodes, rows] = await Promise.all([
     db.contributionPeriod.findMany({ orderBy: { start: 'asc' } }),
@@ -39,6 +40,9 @@ export async function contributieData(label: string) {
   // en (nog niet uitgeschreven OF pas uitgeschreven ná periode-start).
   const data: ContribRij[] = rows
     .filter(m => {
+      // Gestopte leden standaard niet in beeld (betalingen blijven gewoon in de
+      // database en in de Excel-export; ?gestopt=1 toont ze weer).
+      if (!opts.toonGestopt && m.clubStatus === 'GESTOPT') return false
       if (period) {
         if (m.joinDate && m.joinDate > period.end) return false
         if (m.leaveDate && m.leaveDate < period.start) return false
@@ -60,6 +64,9 @@ export async function contributieData(label: string) {
         items: (p as any)?.items ? safeItems((p as any).items) : null,
         clubStatus: m.clubStatus,
         leaveDate: m.leaveDate?.toISOString().slice(0, 10) ?? '',
+        paidAt: p?.paidAt?.toISOString().slice(0, 10) ?? '',
+        dueDate: (p as any)?.dueDate?.toISOString().slice(0, 10) ?? '',
+        invoiceNumber: (p as any)?.invoiceNumber ?? null,
       }
     })
 

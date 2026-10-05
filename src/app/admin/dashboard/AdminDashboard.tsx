@@ -430,7 +430,7 @@ function WLesModus({ d }: { d: DashData }) {
   return <LesModus key={d.lesmodus.dag.id} {...d.lesmodus} />
 }
 function WContributieGrid({ d }: { d: DashData }) {
-  return <ContributieBoard rows={d.contributie.rows} periode={d.contributie.periode} periodId={d.contributie.periodId} totaalOpen={d.contributie.totaalOpen} />
+  return <ContributieBoard rows={d.contributie.rows} periode={d.contributie.periode} periodId={d.contributie.periodId} totaalOpen={d.contributie.totaalOpen} toonGestopt={false} />
 }
 
 // ── Leden: zoeken, sorteren, status inline ─────────────────────────────────

@@ -9,9 +9,10 @@ type Rij = {
   memberId: string; paymentId: string | null; naam: string; groep: string | null
   status: string; amount: number; note: string | null
   items: Item[] | null; clubStatus: string; leaveDate: string
+  paidAt: string; dueDate: string; invoiceNumber: string | null
 }
 
-export function ContributieBoard({ rows, periode, periodId, totaalOpen }: { rows: Rij[]; periode: string; periodId: string; totaalOpen: number }) {
+export function ContributieBoard({ rows, periode, periodId, totaalOpen, toonGestopt }: { rows: Rij[]; periode: string; periodId: string; totaalOpen: number; toonGestopt: boolean }) {
   const router = useRouter()
   // `useState(rows)` zou de props negeren: na `router.refresh()` (bv. na de
   // bulkknop) blijft de lijst dan op de oude snapshot staan. Alleen de lokale
@@ -34,6 +35,7 @@ export function ContributieBoard({ rows, periode, periodId, totaalOpen }: { rows
   const [genereren, setGenereren] = useState(false)
   const [bewerken, setBewerken] = useState<string | null>(null)
   const [bevestigBulk, setBevestigBulk] = useState(false)
+  const [bulkDue, setBulkDue] = useState<string | null>(null)
 
   const openRows = data.filter(r => ['OPEN', 'HERINNERING1', 'HERINNERING2'].includes(r.status))
   const getToon = () => filter === 'open' ? openRows : data
@@ -56,6 +58,23 @@ export function ContributieBoard({ rows, periode, periodId, totaalOpen }: { rows
     }
   }
 
+  // Betaaldatum individueel: invullen = betaald, leeghalen = weer open.
+  async function zetBetaaldatum(paymentId: string, paidAt: string) {
+    setBusy(paymentId)
+    try {
+      const res = await fetch('/api/admin2/payment-edit', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ paymentId, paidAt: paidAt || null }),
+      })
+      if (!res.ok) throw new Error((await res.json()).error)
+      router.refresh()
+    } catch (e) {
+      window.alert((e as Error).message || 'Opslaan mislukt')
+    } finally {
+      setBusy(null)
+    }
+  }
+
   async function vlag(memberId: string, clubStatus: string) {
     const leaveDate = clubStatus === 'GESTOPT' ? new Date().toISOString().slice(0, 10) : ''
     await fetch('/api/admin2/member-status', {
@@ -65,20 +84,22 @@ export function ContributieBoard({ rows, periode, periodId, totaalOpen }: { rows
     router.refresh()
   }
 
-  // Alle openstaande facturen van deze periode in één keer op betaald.
-  // Bevestiging met aantal + bedrag, anders is één klik op de verkeerde periode
-  // meteen een onomkeerbare bulkwijziging.
-  async function bulkBetaald() {
+  // Alle openstaande facturen van deze periode in één keer op een status
+  // (betaald / 1e herinnering / 2e herinnering), of de vervaldatum voor
+  // allemaal zetten. Bevestiging met aantal + bedrag, anders is één klik op de
+  // verkeerde periode meteen een onomkeerbare bulkwijziging.
+  async function bulkActie(body: Record<string, unknown>) {
     setGenereren(true)
     try {
       const res = await fetch('/api/admin2/payment-bulk', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ periodId, status: 'BETAALD' }),
+        body: JSON.stringify({ periodId, ...body }),
       })
       const j = await res.json()
       if (!res.ok) throw new Error(j.error ?? 'Onbekende fout')
       setBevestigBulk(false)
+      setBulkDue(null)
       router.refresh()
     } catch {
       window.alert('Kon de betalingen niet opslaan. Er is niets gewijzigd.')
@@ -86,6 +107,8 @@ export function ContributieBoard({ rows, periode, periodId, totaalOpen }: { rows
       setGenereren(false)
     }
   }
+  const bulkBetaald = () => bulkActie({ status: 'BETAALD' })
+  const bulkHerinnering = (s: 'HERINNERING1' | 'HERINNERING2') => bulkActie({ status: s })
 
   function factuur(paymentId: string) {
     window.open(`/api/admin2/factuur?paymentId=${paymentId}`, '_blank')
@@ -114,6 +137,33 @@ export function ContributieBoard({ rows, periode, periodId, totaalOpen }: { rows
             ✓ Alles betaald zetten ({openRows.length})
           </button>
         )}
+        {openRows.length > 0 && (
+          <>
+            <button onClick={() => bulkHerinnering('HERINNERING1')} disabled={genereren}
+              className="rounded-xl border border-amber-500 px-4 py-2.5 text-sm font-semibold text-amber-700 hover:bg-amber-50 disabled:opacity-40"
+              title={`Alle ${openRows.length} openstaande facturen op 1e herinnering`}>
+              🔔 1e herinnering → allemaal ({openRows.length})
+            </button>
+            <button onClick={() => bulkHerinnering('HERINNERING2')} disabled={genereren}
+              className="rounded-xl border border-orange-600 px-4 py-2.5 text-sm font-semibold text-orange-700 hover:bg-orange-50 disabled:opacity-40"
+              title={`Alle ${openRows.length} openstaande facturen op 2e herinnering`}>
+              🔔 2e herinnering → allemaal ({openRows.length})
+            </button>
+          </>
+        )}
+        <label className="flex items-center gap-1.5 text-xs text-gray-600">
+          <span className="font-medium">Vervaldatum allemaal:</span>
+          <input type="date" value={bulkDue ?? ''} onChange={e => setBulkDue(e.target.value || null)}
+            className="rounded-lg border border-gray-300 px-2 py-1.5 text-xs focus:border-[#a90000] focus:outline-none" />
+          <button onClick={() => bulkDue && bulkActie({ dueDate: bulkDue })} disabled={!bulkDue || genereren}
+            className="rounded-lg bg-gray-800 px-3 py-1.5 text-xs font-semibold text-white hover:bg-gray-700 disabled:opacity-40">
+            ✓ Setten
+          </button>
+        </label>
+        <a href={`/admin/contributie?periode=${periode}${toonGestopt ? '' : '&gestopt=1'}`}
+          className={`rounded-full border px-3.5 py-1.5 text-xs font-medium ${toonGestopt ? 'border-gray-800 bg-gray-800 text-white' : 'border-gray-300 bg-white text-gray-600'}`}>
+          {toonGestopt ? 'Gestopten: tonen ✓' : 'Gestopten: verbergen'}
+        </a>
       </div>
 
       {bevestigBulk && (
@@ -156,6 +206,9 @@ export function ContributieBoard({ rows, periode, periodId, totaalOpen }: { rows
                 <p className="text-xs text-gray-500">
                   {r.groep ? (GROEP_LABEL[r.groep as keyof typeof GROEP_LABEL] ?? r.groep) : ''} · €{r.amount.toFixed(2)}
                   {r.items && r.items.length > 1 && <span className="ml-1 text-[10px] text-gray-400">({r.items.length} regels)</span>}
+                  {r.invoiceNumber && <span className="ml-1 text-[10px] text-gray-400">#{r.invoiceNumber}</span>}
+                  {r.paidAt && <span className="ml-1 text-[10px] text-green-700">betaald {new Date(r.paidAt).toLocaleDateString('nl-NL')}</span>}
+                  {!r.paidAt && r.dueDate && new Date(r.dueDate) < new Date() && <span className="ml-1 text-[10px] font-semibold text-red-600">verval {new Date(r.dueDate).toLocaleDateString('nl-NL')} — te laat</span>}
                 </p>
               </div>
               <div className="flex flex-wrap gap-1.5">
@@ -166,6 +219,13 @@ export function ContributieBoard({ rows, periode, periodId, totaalOpen }: { rows
                 <StatusKnop label="Open" klas="bg-red-600" actief={r.status === 'OPEN'} onClick={() => r.paymentId && zetStatus(r.paymentId, 'OPEN')} />
               </div>
               <div className="flex shrink-0 gap-1.5">
+                {r.paymentId && (
+                  <label className="flex items-center gap-1 rounded-lg border border-gray-300 px-2 py-1 text-[11px] text-gray-600" title="Betaaldatum individueel instellen; invullen = automatisch op betaald, leeghalen = weer open">
+                    💳 <input type="date" defaultValue={r.paidAt}
+                      onChange={e => r.paymentId && zetBetaaldatum(r.paymentId, e.target.value)}
+                      className="w-[110px] bg-transparent text-[11px] focus:outline-none" />
+                  </label>
+                )}
                 {r.paymentId && (
                   <button onClick={() => setBewerken(bewerken === r.paymentId ? null : r.paymentId)}
                     className="rounded-lg border border-gray-300 px-3 py-2 text-xs font-semibold text-gray-600 hover:border-[#a90000] hover:text-[#a90000]">
