@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { BeltVak } from '@/components/admin/BeltVak'
 import { GROEP_LABEL, STATUS_INFO } from '@/lib/admin2'
 import { getNextBelt, isSlipBelt, isYouth } from '@/lib/belt-utils'
 import { BELT_COLORS } from '@/lib/student-progress-types'
@@ -28,17 +29,6 @@ const SORTOPTIES: { key: SortKey; label: string }[] = [
   { key: 'aanwezig', label: 'Aanwezig % laag→hoog' },
   { key: 'aanwezigOmlaag', label: 'Aanwezig % hoog→laag' },
 ]
-
-function bandStippen(l: LidRef) {
-  const jeugd = isYouth(l.dateOfBirth ? new Date(l.dateOfBirth) : null)
-  const volgende = getNextBelt(l.currentBelt as BeltLevel | null, jeugd)
-  return {
-    huidigKleur: l.currentBelt ? (BELT_COLORS as Record<string, string>)[l.currentBelt] ?? '#ccc' : '#7C3AED',
-    volgendeKleur: volgende ? (BELT_COLORS as Record<string, string>)[volgende] ?? '#ccc' : '#eee',
-    slip: volgende ? isSlipBelt(volgende) : false,
-    volgende: volgende as string | null,
-  }
-}
 
 function leeftijd(dob: string | null): number | null {
   if (!dob) return null
@@ -203,15 +193,13 @@ export function KwartaalGrid({ dagen, leden, cellen }: { dagen: DagCel[]; leden:
                 {gleden.map(l => {
                   const { aanw, meet } = aantallen(l, gdagen)
                   const gestopt = statussen[l.id] === 'GESTOPT'
-                  const b = bandStippen(l)
                   const dob = leeftijd(l.dateOfBirth)
                   return (
                     <tr key={l.id} className={`group border-b border-gray-100 last:border-0 ${gestopt ? 'bg-gray-100/70' : ''}`}>
                       <td className="sticky left-0 z-10 bg-white px-3 py-1.5 group-hover:bg-gray-50">
                         <div className={`flex items-center gap-2 whitespace-nowrap ${gestopt ? 'opacity-50' : ''}`}>
-                          <span className="flex items-center gap-0.5" title={`Band: ${l.currentBelt ?? 'nog geen'} → volgende: ${b.volgende ?? '—'}${b.slip ? ' (met slip)' : ''}`}>
-                            <span className="h-2.5 w-2.5 rounded-full border border-gray-300" style={{ background: b.huidigKleur }} />
-                            <span className={`h-2.5 w-2.5 rounded-full border border-gray-300 ${b.slip ? 'ring-1 ring-[#a90000]/40' : ''}`} style={{ background: b.volgendeKleur }} />
+                          <span title={`Band: ${l.currentBelt ?? 'nog geen'}`}>
+                            <BeltVak belt={l.currentBelt} size={10} />
                           </span>
                           <span className={`font-medium ${gestopt ? 'text-gray-400 line-through' : 'text-[#2a2a2a]'}`}>{l.naam}</span>
                           {dob !== null && <span className="text-[10px] text-gray-400">{dob}jr</span>}
