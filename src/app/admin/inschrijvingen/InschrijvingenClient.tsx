@@ -34,6 +34,7 @@ interface Application {
   approvedAt: Date | null
   rejectedAt: Date | null
   rejectionReason: string | null
+  memberId: string | null
   createdAt: Date
   updatedAt: Date
 }
@@ -47,6 +48,8 @@ export default function InschrijvingenClient({ applications }: InschrijvingenCli
   const [filter, setFilter] = useState<'ALL' | 'PENDING' | 'APPROVED' | 'REJECTED'>('ALL')
   const [verwijderModal, setVerwijderModal] = useState<Application | null>(null)
   const [verwijderBusy, setVerwijderBusy] = useState(false)
+  // bij goedgekeurde inschrijvingen: óók account + alle gegevens (cascade) weg?
+  const [verwijderAlles, setVerwijderAlles] = useState(false)
   const [selectedApp, setSelectedApp] = useState<Application | null>(null)
   const [actionModal, setActionModal] = useState<'APPROVE' | 'REJECT' | null>(null)
   const [adminNotes, setAdminNotes] = useState('')
@@ -105,7 +108,7 @@ export default function InschrijvingenClient({ applications }: InschrijvingenCli
       const res = await fetch(`/api/admin/inschrijvingen/${verwijderModal.id}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ bevestig: true }),
+        body: JSON.stringify({ bevestig: true, alles: verwijderAlles }),
       })
       const data = await res.json()
       if (!data.success) { setResult({ type: 'error', message: data.error || 'Verwijderen mislukt' }); return }
@@ -214,7 +217,7 @@ export default function InschrijvingenClient({ applications }: InschrijvingenCli
                     className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50">
                     Details
                   </button>
-                  <button onClick={() => setVerwijderModal(app)} title="Deze inschrijving definitief verwijderen"
+                  <button onClick={() => { setVerwijderModal(app); setVerwijderAlles(false) }} title="Deze inschrijving definitief verwijderen"
                     className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-400 hover:border-red-400 hover:text-red-600">
                     🗑
                   </button>
@@ -252,16 +255,23 @@ export default function InschrijvingenClient({ applications }: InschrijvingenCli
               al een ledenrecord, dat verwijder je via Leden.
             </p>
             {verwijderModal.status === 'APPROVED' && (
-              <p className="mt-3 rounded-lg border border-amber-300 bg-amber-50 p-2 text-xs font-semibold text-amber-800">
-                ⚠️ Deze inschrijving is goedgekeurd — er bestaat een account/lidrecord bij. Verwijderen van de
-                aanvraag raakt dat record niet, maar wees je ervan bewust.
-              </p>
+              <div className="mt-3 rounded-lg border border-amber-300 bg-amber-50 p-3 text-xs text-amber-900">
+                <p className="font-semibold">⚠️ Deze inschrijving is goedgekeurd — er is een account en
+                ledenrecord aangemaakt.</p>
+                <label className="mt-2 flex cursor-pointer items-start gap-2">
+                  <input type="checkbox" className="mt-0.5" checked={verwijderAlles}
+                    onChange={e => setVerwijderAlles(e.target.checked)} />
+                  <span><b>Alles verwijderen:</b> account, lidrecord en álle bijbehorende gegevens
+                  (aanwezigheid, betalingen, bandgeschiedenis) gaan ook weg. Het e-mailadres is dan weer
+                  vrij om opnieuw in te schrijven.</span>
+                </label>
+              </div>
             )}
             {result && result.type === 'error' && (
               <p className="mt-3 rounded-lg border border-red-200 bg-red-50 p-2 text-sm text-red-700">{result.message}</p>
             )}
             <div className="mt-5 flex gap-3">
-              <button onClick={() => { setVerwijderModal(null); setResult(null) }}
+              <button onClick={() => { setVerwijderModal(null); setResult(null); setVerwijderAlles(false) }}
                 className="flex-1 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
                 Annuleren
               </button>

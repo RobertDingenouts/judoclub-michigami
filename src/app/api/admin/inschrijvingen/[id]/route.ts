@@ -141,6 +141,10 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 
 // DELETE — inschrijving definitief verwijderen (tests / per ongeluk ingeschreven).
 // Vereist expliciete bevestiging in de body; de UI toont eerst een waarschuwing.
+// Bij een goedgekeurde inschrijving kan de admin met "alles: true" de hele ketting
+// meenemen: account (User), lidrecord (Member) én alle gegevens (aanwezigheid,
+// betalingen, bandgeschiedenis, examens, diploma's, cursus) — zodat het e-mailadres
+// weer helemaal vrij is om opnieuw in te schrijven.
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const adminSession = await requireAdmin()
@@ -155,9 +159,42 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     const application = await db.membershipApplication.findUnique({ where: { id } })
     if (!application) return NextResponse.json({ error: 'Inschrijving niet gevonden' }, { status: 404 })
 
+    // application.memberId bevat het User-id dat bij goedkeuring is aangemaakt
+    const userId = application.memberId
+    const alles = body.alles === true
+
+    if (userId && alles) {
+      const user = await db.user.findUnique({ where: { id: userId }, include: { member: true } })
+      if (user) {
+        const memberId = user.member?.id
+        await db.$transaction([
+          ...(memberId ? [
+            db.attendance.deleteMany({ where: { memberId } }),
+            db.payment.deleteMany({ where: { memberId } }),
+            db.bondHistory.deleteMany({ where: { memberId } }),
+            db.competition.deleteMany({ where: { memberId } }),
+            db.examAttempt.deleteMany({ where: { memberId } }),
+            db.courseProgress.deleteMany({ where: { memberId } }),
+            db.diploma.deleteMany({ where: { recipientId: memberId } }),
+            db.member.deleteMany({ where: { id: memberId } }),
+          ] : []),
+          db.diploma.deleteMany({ where: { userId } }),
+          db.examAttempt.deleteMany({ where: { userId } }),
+          db.courseProgress.deleteMany({ where: { userId } }),
+          db.user.deleteMany({ where: { id: userId } }),
+        ])
+      }
+    }
+    // Goedgekeurd zónder "alles": alleen de aanvraag weg, account blijft bestaan.
+
     await db.membershipApplication.delete({ where: { id } })
-    console.log(`[INSCHRIJVING] Definitief verwijderd door admin ${adminSession.userId}: ${application.firstName} ${application.lastName} (${application.email}, status ${application.status})`)
-    return NextResponse.json({ success: true, message: 'Inschrijving definitief verwijderd' })
+    console.log(`[INSCHRIJVING] Definitief verwijderd door admin ${adminSession.userId}: ${application.firstName} ${application.lastName} (${application.email}, status ${application.status}${alles && userId ? ' + account/lidrecord/cascade' : ''})`)
+    return NextResponse.json({
+      success: true,
+      message: alles && userId
+        ? 'Inschrijving + account + alle gegevens verwijderd — e-mailadres is weer vrij'
+        : 'Inschrijving definitief verwijderd',
+    })
   } catch (error: any) {
     console.error('[ADMIN/INSCHRIJVINGEN] DELETE error:', error)
     return NextResponse.json({ error: 'Er is een fout opgetreden: ' + error.message }, { status: 500 })
