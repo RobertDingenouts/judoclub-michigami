@@ -18,23 +18,64 @@ function safeItems(s: string): ContribItem[] | null {
   } catch { return null }
 }
 
+export function kwartaalLabel(d: Date): string {
+  return `${d.getFullYear()}-Q${Math.floor(d.getMonth() / 3) + 1}`
+}
+
+function kwartaalRange(label: string): { start: Date; end: Date } | null {
+  const m = label.match(/^(\d{4})-Q([1-4])$/)
+  if (!m) return null
+  const y = Number(m[1]), q = Number(m[2])
+  return { start: new Date(Date.UTC(y, (q - 1) * 3, 1)), end: new Date(Date.UTC(y, q * 3, 0)) }
+}
+
+// Zet het volgende kwartaal klaar zodra het in beeld komt: periode + facturen
+// voor iedereen die aan het begin van die periode lid is. Idempotent — bestaande
+// periodes/facturen worden nooit aangeraakt.
+async function zorgVoorPeriode(label: string) {
+  const range = kwartaalRange(label)
+  if (!range) return null
+  const bestaand = await db.contributionPeriod.findUnique({ where: { label } })
+  if (bestaand) return bestaand
+  const created = await db.contributionPeriod.create({ data: { label, start: range.start, end: range.end } })
+  const leden = await db.member.findMany({
+    where: {
+      clubStatus: { notIn: ['PROEF'] },
+      joinDate: { lte: range.end },
+      OR: [{ leaveDate: null }, { leaveDate: { gte: range.start } }],
+    },
+    select: { id: true },
+  })
+  await db.payment.createMany({
+    data: leden.map(m => ({ memberId: m.id, periodId: created.id, amount: created.amount, dueDate: range.start })),
+    skipDuplicates: true,
+  })
+  return created
+}
+
 export async function contributieData(label: string, opts: { toonGestopt?: boolean } = {}) {
   const nu = new Date()
-  const [periodes, rows] = await Promise.all([
+  // Toon altijd één kwartaal vooruit: het kwartaal ná het huidige bestaat nog,
+  // maar kun je nu al inzien (en eraan werken).
+  const volgende = kwartaalLabel(new Date(nu.getTime() + 91 * 864e5))
+  const [bestaande, period] = await Promise.all([
     db.contributionPeriod.findMany({ orderBy: { start: 'asc' } }),
-    // Let op: `notIn` op een nullable kolom sluit in SQL ook NULL uit → leden
-    // zonder primaryGroup zouden hiermee verdwijnen uit de contributie.
-    db.member.findMany({
-      where: {
-        clubStatus: { notIn: ['PROEF'] },
-        OR: [{ primaryGroup: null }, { primaryGroup: { not: 'SENIOREN' } }],
-      },
-      orderBy: [{ primaryGroup: 'asc' }, { lastName: 'asc' }],
-      include: { payments: { where: { period: { label } } } },
-    }),
+    zorgVoorPeriode(label),
   ])
+  const periodes = bestaande.map(p => ({ label: p.label }))
+  if (!periodes.some(p => p.label === volgende)) periodes.push({ label: volgende })
+  // Let op: `notIn` op een nullable kolom sluit in SQL ook NULL uit → leden
+  // zonder primaryGroup zouden hiermee verdwijnen uit de contributie.
+  const rows = await db.member.findMany({
+    where: {
+      clubStatus: { notIn: ['PROEF'] },
+      OR: [{ primaryGroup: null }, { primaryGroup: { not: 'SENIOREN' } }],
+    },
+    orderBy: [{ primaryGroup: 'asc' }, { lastName: 'asc' }],
+    include: { payments: { where: { period: { label } } } },
+  })
 
-  const period = periodes.find(p => p.label === label)
+  if (!period) return { periodes, data: [] as ContribRij[], period, totaalOpen: 0 }
 
   // Toon alleen leden die in deze periode lid waren: ingeschreven vóór periode-einde
   // en (nog niet uitgeschreven OF pas uitgeschreven ná periode-start).

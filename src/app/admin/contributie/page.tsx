@@ -1,5 +1,6 @@
 import { contributieData } from '@/lib/contributiedata'
 import { ContributieBoard } from './ContributieBoard'
+import { PeriodeSelect } from './PeriodeSelect'
 
 export const dynamic = 'force-dynamic'
 
@@ -30,14 +31,11 @@ export default async function ContributiePage({
           className="rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 hover:border-[#a90000] hover:text-[#a90000]">⬇ Excel ({label})</a>
       </div>
 
-      {/* Periode tabs */}
-      <div className="flex flex-wrap gap-1.5">
-        {periodes.map(p => (
-          <a key={p.label} href={`/admin/contributie?periode=${p.label}`}
-            className={`rounded-full border px-3.5 py-1.5 text-xs font-medium ${p.label === label ? 'border-[#a90000] bg-[#a90000] text-white' : 'border-gray-300 bg-white text-gray-600'}`}>
-            {p.label}
-          </a>
-        ))}
+      {/* Periode-selectie: ingeklapt in één dropdown, ook op de telefoon compact */}
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-xs font-semibold uppercase tracking-wide text-gray-500">Periode</span>
+        <PeriodeSelect periodes={periodes.map(p => p.label)} huidige={label} gestopt={toonGestopt} />
+        <span className="text-xs text-gray-400">volgend kwartaal verschijnt automatisch</span>
       </div>
 
       <ContributieBoard rows={data} periode={label} periodId={period?.id ?? ''} totaalOpen={totaalOpen} toonGestopt={toonGestopt} />
