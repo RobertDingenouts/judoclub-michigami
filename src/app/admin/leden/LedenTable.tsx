@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { GROEPEN, GROEP_LABEL, PAYMENT_INFO, nlDatum, leeftijd } from '@/lib/admin2'
 import { getBeltLabel, getNextBelt, isYouth } from '@/lib/belt-utils'
 import { BELT_COLORS, BELT_ORDER } from '@/lib/student-progress-types'
+import { BeltVak } from '@/components/admin/BeltVak'
 import type { BeltLevel } from '@prisma/client'
 
 type Row = {
@@ -190,7 +191,7 @@ function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; on
           <p className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-gray-500">
             {r.groep && <span className="rounded bg-[#fdf6f6] px-1.5 py-0.5 font-medium text-[#a90000]">{GROEP_LABEL[r.groep as keyof typeof GROEP_LABEL] ?? r.groep}</span>}
             {age !== null && <span>{age} jr</span>}
-            {r.band ? <span className="flex items-center gap-1"><span className="h-2.5 w-2.5 rounded-full border border-gray-300" style={{ backgroundColor: BELT_COLORS[r.band as BeltLevel] }} />{getBeltLabel(r.band as BeltLevel)}</span> : <span className="flex items-center gap-1 text-gray-400"><span className="h-2.5 w-2.5 rounded-full border border-gray-300" style={{ backgroundColor: '#7C3AED' }} />nog geen band</span>}
+            {r.band ? <span className="flex items-center gap-1.5"><BeltVak belt={r.band} size={10} />{getBeltLabel(r.band as BeltLevel)}</span> : <span className="flex items-center gap-1.5 text-gray-400"><BeltVak belt={null} size={10} />nog geen band</span>}
             {r.bondsnummer && <span>#nr {r.bondsnummer}</span>}
             {r.city && <span className="hidden sm:inline">{r.city}</span>}
           </p>
@@ -254,7 +255,7 @@ function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; on
               <div className="space-y-1">
                 {r.bandHistory.map(b => (
                   <div key={b.belt} className="flex items-center gap-2 text-xs">
-                    <span className="h-3 w-3 rounded-full border border-gray-300" style={{ backgroundColor: BELT_COLORS[b.belt as BeltLevel] ?? '#ccc' }} />
+                    <BeltVak belt={b.belt} size={10} />
                     <span className="w-24">{getBeltLabel(b.belt as BeltLevel)}</span>
                     <span className="text-gray-500">{nlDatum(b.at)}</span>
                   </div>
