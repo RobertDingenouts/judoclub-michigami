@@ -1,28 +1,50 @@
 import { db } from '@/lib/db'
-import Link from 'next/link'
 import { BELT_LABELS_NL, BELT_COLORS } from '@/lib/student-progress-types'
 import type { BeltLevel, DiplomaType } from '@prisma/client'
 import UploadDiplomaForm from '@/components/admin/UploadDiplomaForm'
 import CopyButton from './CopyCodeButton'
+import { DiplomaFilters, type DiplomaFilterState } from './DiplomaFilters'
 
 export const dynamic = 'force-dynamic'
 
 export default async function DiplomasPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ type?: string; verify?: string }>
+  searchParams?: Promise<{ type?: string; verify?: string; band?: string; jaar?: string; q?: string; sort?: string }>
 }) {
   const params = await searchParams
-  const typeFilter = params?.type || ''
+  const state: DiplomaFilterState = {
+    type: params?.type || '',
+    band: params?.band || '',
+    jaar: params?.jaar || '',
+    q: params?.q || '',
+    sort: params?.sort || '',
+  }
   const verifyCode = params?.verify || ''
 
   const where: any = {}
-  if (typeFilter) where.type = typeFilter as DiplomaType
+  if (state.type) where.type = state.type as DiplomaType
+  if (state.band) where.beltLevel = state.band as BeltLevel
+  if (state.jaar) where.awardedAt = { gte: new Date(`${state.jaar}-01-01`), lt: new Date(`${Number(state.jaar) + 1}-01-01`) }
+  if (state.q) {
+    where.OR = [
+      { title: { contains: state.q, mode: 'insensitive' } },
+      { member: { firstName: { contains: state.q, mode: 'insensitive' } } },
+      { member: { lastName: { contains: state.q, mode: 'insensitive' } } },
+    ]
+  }
+
+  const order =
+    state.sort === 'oud' ? { awardedAt: 'asc' as const } :
+    state.sort === 'naam' ? { title: 'asc' as const } :
+    state.sort === 'lid' ? { member: { lastName: 'asc' as const } } :
+    { awardedAt: 'desc' as const }
 
   let verifiedDiploma: any = null
   let diplomas: any[] = []
   let totalDiplomas = 0
   let typeCounts: Record<string, number> = {}
+  let jaren: string[] = []
   let error: string | null = null
 
   try {
@@ -33,17 +55,18 @@ export default async function DiplomasPage({
       })
     }
 
-    const [results, count, byType] = await Promise.all([
+    const [results, count, byType, alle] = await Promise.all([
       db.diploma.findMany({
         where,
-        orderBy: { awardedAt: 'desc' },
+        orderBy: order,
         include: {
           member: { select: { firstName: true, lastName: true, currentBelt: true } },
         },
-        take: 100,
+        take: 200,
       }),
       db.diploma.count({ where }),
       db.diploma.groupBy({ by: ['type'], _count: { type: true } }),
+      db.diploma.findMany({ select: { awardedAt: true }, take: 500 }),
     ])
 
     diplomas = results
@@ -52,6 +75,7 @@ export default async function DiplomasPage({
       acc[item.type] = item._count.type
       return acc
     }, {})
+    jaren = [...new Set(alle.map(d => String(d.awardedAt.getFullYear())))].sort((a, b) => b.localeCompare(a))
   } catch (e: any) {
     error = `Database fout: ${e.message || 'Onbekende fout bij ophalen diploma\'s'}`
     console.error('Diplomas page error:', e)
@@ -62,9 +86,10 @@ export default async function DiplomasPage({
     COURSE_JAPANESE: 'Cursus Japans',
     ACHIEVEMENT: 'Bijzonderheid',
   }
+  const banden = [...new Set(diplomas.map(d => d.beltLevel).filter(Boolean))] as string[]
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -147,23 +172,17 @@ export default async function DiplomasPage({
         )}
       </div>
 
-      {/* Filter */}
+      {/* Filter + sorteren, ingeklapt in één balk */}
       {!error && (
-        <form className="flex gap-3">
-          <select name="type" defaultValue={typeFilter} className="rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none">
-            <option value="">Alle types</option>
-            {Object.entries(typeLabels).map(([key, label]) => (
-              <option key={key} value={key}>{label}</option>
-            ))}
-          </select>
-        </form>
+        <DiplomaFilters state={state} types={typeLabels} banden={banden} jaren={jaren}
+          totaal={Object.values(typeCounts).reduce((s, n) => s + n, 0)} />
       )}
 
-      {/* Diploma list */}
+      {/* Diploma list — compacte rijen */}
       {!error && (
-        <div className="space-y-3">
+        <div className="space-y-1.5">
           {diplomas.length > 0 ? diplomas.map((diploma) => (
-            <DiplomaCard key={diploma.id} diploma={diploma} typeLabels={typeLabels} />
+            <DiplomaRij key={diploma.id} diploma={diploma} />
           )) : (
             <div className="rounded-lg border border-gray-200 bg-white p-12 text-center shadow-sm">
               <p className="text-lg font-medium text-gray-400">Geen diploma&apos;s gevonden</p>
@@ -175,49 +194,29 @@ export default async function DiplomasPage({
   )
 }
 
-function DiplomaCard({ diploma, typeLabels }: { diploma: any; typeLabels: Record<string, string> }) {
+// Compacte rij: naam + titel op één regel, band/datum/code rechts. De lange
+// "Hierbij wordt bevestigd dat…"-beschrijving valt weg — die staat op het
+// diploma zelf, niet in het overzicht.
+function DiplomaRij({ diploma }: { diploma: any }) {
+  const icoon = diploma.type === 'BELT_EXAM' ? '🎯' : diploma.type === 'COURSE_JAPANESE' ? '🇯🇵' : '🏆'
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-4">
-          <div className={`flex h-12 w-12 items-center justify-center rounded-lg text-xl ${
-            diploma.type === 'BELT_EXAM' ? 'bg-[#a90000]/10' :
-            diploma.type === 'COURSE_JAPANESE' ? 'bg-blue-100' :
-            'bg-yellow-100'
-          }`}>
-            {diploma.type === 'BELT_EXAM' ? '🎯' : diploma.type === 'COURSE_JAPANESE' ? '🇯🇵' : '🏆'}
-          </div>
-
-          <div>
-            <h3 className="text-sm font-semibold text-[#2a2a2a]">{diploma.title}</h3>
-            <p className="text-xs text-gray-500 mt-0.5">
-              {diploma.member?.firstName} {diploma.member?.lastName}
-              {diploma.beltLevel && (
-                <>
-                  {' '}•{' '}
-                  <span className="inline-flex items-center gap-1">
-                    <span className="inline-flex h-2.5 w-2.5 rounded-lg border border-gray-300" style={{ backgroundColor: BELT_COLORS[diploma.beltLevel as BeltLevel] || '#ccc' }} />
-                    {BELT_LABELS_NL[diploma.beltLevel as BeltLevel]}
-                  </span>
-                </>
-              )}
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-4">
-          <div className="text-right">
-            <p className="text-xs text-gray-500">{new Date(diploma.awardedAt).toLocaleDateString('nl-NL')}</p>
-            <p className="font-mono text-xs text-gray-400">{diploma.verificationCode}</p>
-          </div>
-
-          <CopyButton code={diploma.verificationCode} />
-        </div>
+    <div className="flex items-center gap-3 rounded-lg border border-gray-200 bg-white px-3 py-2">
+      <span className="shrink-0 text-base">{icoon}</span>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm text-[#2a2a2a]">
+          <span className="font-semibold">{diploma.member?.firstName} {diploma.member?.lastName}</span>
+          <span className="ml-2 text-gray-500">{diploma.title}</span>
+        </p>
       </div>
-
-      {diploma.description && (
-        <p className="mt-3 border-t border-gray-100 pt-3 text-xs text-gray-500">{diploma.description}</p>
+      {diploma.beltLevel && (
+        <span className="hidden items-center gap-1 text-xs text-gray-500 sm:flex" title={BELT_LABELS_NL[diploma.beltLevel as BeltLevel]}>
+          <span className="inline-flex h-2.5 w-2.5 rounded border border-gray-300" style={{ backgroundColor: BELT_COLORS[diploma.beltLevel as BeltLevel] || '#ccc' }} />
+          {BELT_LABELS_NL[diploma.beltLevel as BeltLevel]}
+        </span>
       )}
+      <span className="shrink-0 text-xs text-gray-500">{new Date(diploma.awardedAt).toLocaleDateString('nl-NL')}</span>
+      <span className="hidden shrink-0 font-mono text-[11px] text-gray-400 md:inline">{diploma.verificationCode}</span>
+      <CopyButton code={diploma.verificationCode} />
     </div>
   )
 }

@@ -81,6 +81,15 @@ export function LesModus({ dag, leden: initLeden, recenteDagen, historie }: { da
   const aantalAanwezig = (l: Lid) => Object.values(l.hist).filter(s => s === 'AANWEZIG').length
   const aantalMetData = (l: Lid) => Object.values(l.hist).filter(s => s && s !== 'VAKANTIE').length
 
+  // Groepsmetrics: vandaag + gemiddelde over de verlopen lessen in beeld.
+  const verlopen = historie.length
+  const dagAanwezig = tellen('AANWEZIG')
+  const dagGemeld = leden.filter(l => l.status && l.status !== 'VAKANTIE').length
+  const histTotaalAanwezig = leden.reduce((s, l) => s + aantalAanwezig(l), 0)
+  const histTotaalGemeld = leden.reduce((s, l) => s + aantalMetData(l), 0)
+  const pct = (a: number, b: number) => (b > 0 ? Math.round((a / b) * 100) : null)
+  const gemPerLes = verlopen > 0 ? (histTotaalAanwezig / verlopen).toFixed(1).replace('.', ',') : null
+
   return (
     <div className="space-y-4">
       {/* Dagwissel */}
@@ -107,6 +116,16 @@ export function LesModus({ dag, leden: initLeden, recenteDagen, historie }: { da
           <span className="rounded-full bg-red-100 px-2.5 py-1 text-red-800">{tellen('NIET_AANWEZIG')} ❌</span>
           {opgeslagen && <span className="text-gray-400">{opgeslagen}</span>}
         </div>
+      </div>
+
+      {/* Metrics: vandaag vs. gemiddelde van de verlopen lessen */}
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 rounded-xl border border-gray-200 bg-white px-3 py-2 text-xs text-gray-600">
+        <span className="font-semibold uppercase tracking-wide text-gray-400">📊</span>
+        <span>Vandaag: <b>{dagAanwezig}/{dagGemeld || leden.length}</b> aanwezig{pct(dagAanwezig, dagGemeld) !== null && <> · <b>{pct(dagAanwezig, dagGemeld)}%</b></>}</span>
+        {verlopen > 0 && <>
+          <span>Gemiddelde laatste {verlopen} lessen: <b>{gemPerLes}</b> aanwezig per les</span>
+          <span>{pct(histTotaalAanwezig, histTotaalGemeld) !== null && <>opkomst <b>{pct(histTotaalAanwezig, histTotaalGemeld)}%</b></>}</span>
+        </>}
       </div>
 
       {/* Lesonderwerp */}
