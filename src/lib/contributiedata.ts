@@ -9,7 +9,7 @@ export type ContribRij = {
   status: string; amount: number; note: string | null
   items: ContribItem[] | null; clubStatus: string; leaveDate: string
   paidAt: string; dueDate: string; invoiceNumber: string | null
-  vervald: boolean
+  vervald: boolean; nietBetaald: boolean
 }
 
 function safeItems(s: string): ContribItem[] | null {
@@ -41,7 +41,7 @@ async function zorgVoorPeriode(label: string) {
   const created = await db.contributionPeriod.create({ data: { label, start: range.start, end: range.end } })
   const leden = await db.member.findMany({
     where: {
-      clubStatus: { notIn: ['PROEF'] },
+      clubStatus: { notIn: ['PROEF', 'GESTOPT'] },
       joinDate: { lte: range.end },
       OR: [{ leaveDate: null }, { leaveDate: { gte: range.start } }],
     },
@@ -50,10 +50,10 @@ async function zorgVoorPeriode(label: string) {
   await db.payment.createMany({
     data: leden.map(m => ({
       memberId: m.id, periodId: created.id, amount: created.amount, dueDate: range.start,
-      // Vrijgestelden zijn voorgoed vrijgesteld: elke nieuwe periode krijgt
-      // meteen VIJGESTELD, nooit OPEN (anders staan trainers e.d. structureel
-      // 'schuldig' in het overzicht).
-      status: m.clubStatus === 'VRIJGESTELD' ? 'VIJGESTELD' : 'OPEN',
+      // Vrijgestelden én reserves zijn voorgoed vrijgesteld: elke nieuwe periode
+      // krijgt meteen VIJGESTELD, nooit OPEN (anders staan trainers e.d.
+      // structureel 'schuldig' in het overzicht).
+      status: (m.clubStatus === 'VRIJGESTELD' || m.clubStatus === 'RESERVE') ? 'VIJGESTELD' : 'OPEN',
     })),
     skipDuplicates: true,
   })
@@ -107,6 +107,11 @@ export async function contributieData(label: string, opts: { toonGestopt?: boole
       // niet verschuldigd en tonen we het niet als open.
       const vervalDatum = p?.dueDate ?? period?.end
       const vervald = unpaid && !!vervalDatum && vervalDatum < nu
+      // 'Niet betaald' = factuur nog openstaande (ongeacht datum) → daar maak je
+      // facturen voor aan en kun je meewerken. 'Vervald/schuldig' = de officiële
+      // betaaldatum is verstreken → pas dan is er sprake van schuld en mogen er
+      // herinneringen uit.
+      const nietBetaald = unpaid
       return {
         memberId: m.id,
         paymentId: p?.id ?? null,
@@ -122,6 +127,7 @@ export async function contributieData(label: string, opts: { toonGestopt?: boole
         dueDate: (p as any)?.dueDate?.toISOString().slice(0, 10) ?? '',
         invoiceNumber: (p as any)?.invoiceNumber ?? null,
         vervald,
+        nietBetaald,
       }
     })
 

@@ -60,7 +60,7 @@ export async function lessenGridData(opts: {
     statussen: Object.fromEntries(d.attendance.map(a => [a.memberId, a.status])),
     activity: d.activity,
     cancelled: d.cancelled,
-    vakantie: vakantieOp(d.date.toISOString().slice(0, 10), d.group) !== null,
+    vakantie: vakantieOp(d.date.toISOString().slice(0, 10), d.group) !== null || (d.notes ?? '').startsWith('Vakantie (handmatig)'),
   }))
 
   const cellen: Record<string, string> = Object.fromEntries(

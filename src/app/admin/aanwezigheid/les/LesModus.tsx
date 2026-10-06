@@ -34,6 +34,14 @@ export function LesModus({ dag, leden: initLeden, recenteDagen, historie }: { da
   // status VAKANTIE (ook gasten die er al staan). Uitzetten haalt alleen de
   // VAKANTIE-regels weer weg.
   async function zetVakantie(next: boolean) {
+    // Vraag om een reden (bv. Zomervakantie) — die komt in de website-agenda.
+    // Annuleren (null) breekt af; leeg = vakantie zonder agendabericht.
+    let reden: string | undefined
+    if (next) {
+      const ingetypt = window.prompt('Reden van de vakantie? (bv. Zomervakantie, dichte zaal) — dit verschijnt in de agenda', '')
+      if (ingetypt === null) return
+      reden = ingetypt.trim() || undefined
+    }
     setVakBusy(true)
     setIsVakantie(next)
     setLeden(prev => next
@@ -42,7 +50,7 @@ export function LesModus({ dag, leden: initLeden, recenteDagen, historie }: { da
     try {
       const res = await fetch('/api/admin2/les-vakantie', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ trainingDayId: dag.id, vakantie: next }),
+        body: JSON.stringify({ trainingDayId: dag.id, vakantie: next, ...(reden ? { reden } : {}) }),
       })
       if (!res.ok) throw new Error((await res.json()).error)
       setOpgeslagen(next ? 'Vakantie gezet — iedereen op 🏖' : 'Vakantie uitgezet')

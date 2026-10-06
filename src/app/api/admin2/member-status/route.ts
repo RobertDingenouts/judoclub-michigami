@@ -35,8 +35,9 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // Bij VRIJGESTELD: openstaande payments in lopende/toekomstige periodes op VIJGESTELD.
-  if (clubStatus === 'VRIJGESTELD') {
+  // Bij VRIJGESTELD of RESERVE: openstaande payments in lopende/toekomstige
+  // periodes op VIJGESTELD — reserves betalen geen contributie.
+  if (clubStatus === 'VRIJGESTELD' || clubStatus === 'RESERVE') {
     const nu = new Date(new Date().toISOString().slice(0, 10))
     const periodes = await db.contributionPeriod.findMany({ where: { end: { gte: nu } }, select: { id: true } })
     if (periodes.length) {

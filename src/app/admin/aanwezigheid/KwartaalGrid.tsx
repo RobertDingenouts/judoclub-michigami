@@ -94,6 +94,20 @@ export function KwartaalGrid({ dagen, leden, cellen }: { dagen: DagCel[]; leden:
     router.refresh()
   }
 
+  // Vakantie van een hele les: iedereen in de groep op 🏖 + optionele reden
+  // (bv. 'Zomervakantie'), die automatisch in de website-agenda verschijnt.
+  const [vakDag, setVakDag] = useState<string | null>(null)
+  const [vakReden, setVakReden] = useState('')
+  async function zetVakantie(dagId: string, vakantie: boolean) {
+    setVakDag(null)
+    await fetch('/api/admin2/les-vakantie', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ trainingDayId: dagId, vakantie, reden: vakReden || undefined }),
+    })
+    setVakReden('')
+    router.refresh()
+  }
+
   const aantallen = (l: LidRef, gd: DagCel[]) => {
     let aanw = 0, meet = 0
     for (const d of gd) {
@@ -163,7 +177,7 @@ export function KwartaalGrid({ dagen, leden, cellen }: { dagen: DagCel[]; leden:
                     const act = activities[d.id]
                     return (
                       <th key={d.id}
-                        className={`px-1 py-1.5 text-center align-top ${d.vakantie ? 'bg-gray-100' : ''} ${compact ? 'min-w-[34px]' : 'min-w-[46px]'}`}>
+                        className={`relative px-1 py-1.5 text-center align-top ${d.vakantie ? 'bg-gray-100' : ''} ${compact ? 'min-w-[34px]' : 'min-w-[46px]'}`}>
                         <button onClick={() => router.push(`/admin/aanwezigheid/les?dag=${d.id}`)} className="block w-full hover:text-[#a90000]" title={d.vakantie ? 'Geen les (vakantie) — klik voor de lesdetails' : 'Open deze les in de lesmodus'}>
                           <span className="block text-[10px] font-normal text-gray-400">{dt.toLocaleDateString('nl-NL', { weekday: 'short' })}</span>
                           <span className={`block font-semibold ${d.vakantie ? 'text-gray-400' : 'text-gray-700'}`}>
@@ -183,6 +197,29 @@ export function KwartaalGrid({ dagen, leden, cellen }: { dagen: DagCel[]; leden:
                           </button>
                         ))}
                         {d.cancelled && <span className="mt-0.5 block text-[10px] font-semibold text-red-600">GEANN. (verzet)</span>}
+                        {vakDag === d.id ? (
+                          <div className="absolute left-1/2 top-full z-30 mt-1 w-44 -translate-x-1/2 rounded-lg border border-sky-400 bg-white p-2 text-left shadow-lg" onClick={e => e.stopPropagation()}>
+                            <p className="mb-1 text-[10px] font-semibold text-sky-700">Vakantie — reden?</p>
+                            <input autoFocus value={vakReden} onChange={e => setVakReden(e.target.value)}
+                              onKeyDown={e => { if (e.key === 'Enter') zetVakantie(d.id, true); if (e.key === 'Escape') setVakDag(null) }}
+                              placeholder="bv. Zomervakantie"
+                              className="w-full rounded border border-gray-300 px-1.5 py-1 text-[11px] focus:border-sky-500 focus:outline-none" />
+                            <div className="mt-1.5 flex gap-1">
+                              <button onClick={() => zetVakantie(d.id, true)} className="flex-1 rounded bg-sky-600 px-2 py-1 text-[10px] font-semibold text-white">🏖 Vakantie</button>
+                              <button onClick={() => setVakDag(null)} className="rounded border border-gray-300 px-2 py-1 text-[10px] text-gray-500">✕</button>
+                            </div>
+                            <p className="mt-1 text-[9px] leading-tight text-gray-400">Iedereen in deze groep wordt als vakantie geregistreerd en het verschijnt in de agenda.</p>
+                          </div>
+                        ) : (
+                          <button onClick={() => { setVakDag(d.id); setVakReden('') }}
+                            className={`mt-0.5 block w-full rounded px-1 py-0.5 text-[10px] ${d.vakantie ? 'bg-sky-100 text-sky-700 font-semibold' : 'text-gray-300 hover:bg-sky-50 hover:text-sky-600'}`}
+                            title={d.vakantie ? 'Vakantie — klik om uit te zetten of de reden te zien' : 'Deze les op vakantie zetten (iedereen in de groep)'}>
+                            {d.vakantie ? '🏖 uit?' : '🏖'}
+                          </button>
+                        )}
+                        {d.vakantie && vakDag !== d.id && (
+                          <button onClick={() => zetVakantie(d.id, false)} className="mt-0.5 block w-full text-[9px] text-sky-600 hover:underline" title="Vakantie van deze les uitzetten">terug</button>
+                        )}
                       </th>
                     )
                   })}

@@ -5,14 +5,15 @@ import { VAKANTIE_HANDMATIG } from '@/lib/lessen'
 
 export const dynamic = 'force-dynamic'
 
-// POST { trainingDayId, vakantie: boolean }
-// Vakantie afzetten voor een les: de dag wordt gemarkeerd ('Geen les' + handmatige
-// vakantienotitie) en ALLE leden van die groep — inclusief gasten die al ingeschreven
-// staan — krijgen status VAKANTIE. Uitzetten (vakantie=false) verwijdert alleen de
+// POST { trainingDayId, vakantie: boolean, reden? }
+// Vakantie afzetten voor een les: de dag wordt gemarkeerd ('Geen les' +
+// vakantienotitie, optioneel met eigen reden zoals 'Zomervakantie') en ALLE
+// leden van die groep — inclusief gasten die al ingeschreven staan — krijgen
+// status VAKANTIE. Uitzetten (vakantie=false) verwijdert alleen de
 // VAKANTIE-aanwezigheid van die dag; echte registraties blijven intact.
 export async function POST(req: NextRequest) {
   if (!(await isAdmin())) return NextResponse.json({ error: 'Geen admin' }, { status: 403 })
-  const { trainingDayId, vakantie } = await req.json()
+  const { trainingDayId, vakantie, reden } = await req.json()
   if (!trainingDayId || typeof vakantie !== 'boolean')
     return NextResponse.json({ error: 'trainingDayId + vakantie nodig' }, { status: 400 })
 
@@ -20,9 +21,10 @@ export async function POST(req: NextRequest) {
   if (!day) return NextResponse.json({ error: 'Lesdag niet gevonden' }, { status: 404 })
 
   if (vakantie) {
+    const notitie = (reden ?? '').trim() ? `Vakantie (handmatig): ${String(reden).trim()}` : VAKANTIE_HANDMATIG
     await db.trainingDay.update({
       where: { id: trainingDayId },
-      data: { activity: 'Geen les', notes: VAKANTIE_HANDMATIG },
+      data: { activity: 'Geen les', notes: notitie },
     })
     const [bestaand, leden] = await Promise.all([
       db.attendance.findMany({ where: { trainingDayId }, select: { memberId: true } }),

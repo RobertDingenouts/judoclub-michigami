@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { Calendar, Sparkles, Swords, Target, Users, Clock, BookOpen, Mail, MapPin, Music2 } from 'lucide-react';
 import { HeroSlider } from './HeroSlider';
 import { NewsSlider } from './NewsSlider';
@@ -46,7 +47,14 @@ export function HomeSection({ onNavigate }: { onNavigate: (s: Section) => void }
   const isMobile = useIsMobile();
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const upcomingEvents = agendaItems.filter(i => !i.cancelled && new Date(i.compareDate) >= today).slice(0, 3);
+  const [lesvrij, setLesvrij] = useState<typeof agendaItems>([]);
+  useEffect(() => {
+    fetch('/api/agenda/lesvrij').then(r => (r.ok ? r.json() : { items: [] }))
+      .then(j => setLesvrij(j.items ?? [])).catch(() => {});
+  }, []);
+  const upcomingEvents = [...agendaItems, ...lesvrij]
+    .filter(i => !i.cancelled && new Date(i.compareDate) >= today)
+    .sort((a, b) => a.compareDate.localeCompare(b.compareDate)).slice(0, 3);
 
   const latestNews: NewsArticle[] = [];
   for (const year of newsArchive) {

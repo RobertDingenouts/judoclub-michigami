@@ -2,6 +2,7 @@ import { db } from '@/lib/db'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { BELT_LABELS_NL, BELT_COLORS, LOCATION_LABELS_NL } from '@/lib/student-progress-types'
+import { GROEP_LABEL, STATUS_INFO } from '@/lib/admin2'
 import type { BeltLevel, ExamStatus } from '@prisma/client'
 
 export const dynamic = 'force-dynamic'
@@ -20,6 +21,10 @@ export default async function StudentDetailPage({
       examAttempts: { include: { results: true }, orderBy: { examDate: 'desc' } },
       courseProgress: { orderBy: { beltLevel: 'asc' } },
       diplomas: { orderBy: { awardedAt: 'desc' } },
+      payments: { include: { period: true }, orderBy: { period: { start: 'desc' } } },
+      attendance: { include: { trainingDay: { select: { date: true, group: true } } }, orderBy: { trainingDay: { date: 'desc' } } },
+      bondHistory: { orderBy: { awardedAt: 'asc' } },
+      competitions: { orderBy: { date: 'desc' } },
     },
   })
 
@@ -95,6 +100,14 @@ export default async function StudentDetailPage({
             <DetailRow label="Noodcontact" value={member.emergencyContactName || '-'} />
             <DetailRow label="Noodtel" value={member.emergencyContactPhone || '-'} />
             <DetailRow label="Gebruikersnaam" value={member.user.name || '-'} />
+            <DetailRow label="Telefoon 2" value={member.phone2 || '-'} />
+            <DetailRow label="Adres" value={[member.address, member.postalCode, member.city].filter(Boolean).join(' · ') || '-'} />
+            <DetailRow label="Geslacht" value={member.gender || '-'} />
+            <DetailRow label="Groep" value={member.primaryGroup ? (GROEP_LABEL[member.primaryGroup as keyof typeof GROEP_LABEL] ?? member.primaryGroup) : '-'} />
+            <DetailRow label="Bondsnummer" value={member.bondsnummer || '-'} />
+            <DetailRow label="Clubstatus" value={member.clubStatus} />
+            {member.leaveDate && <DetailRow label="Gestopt per" value={new Date(member.leaveDate).toLocaleDateString('nl-NL')} />}
+            {member.remarks && <DetailRow label="Opmerkingen" value={member.remarks} />}
           </div>
         </div>
 
@@ -205,6 +218,80 @@ export default async function StudentDetailPage({
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* Contributie */}
+      {member.payments.length > 0 && (
+        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+          <h2 className="mb-4 text-lg font-semibold text-[#2a2a2a]">Contributie ({member.payments.length})</h2>
+          <div className="space-y-2">
+            {member.payments.map(p => (
+              <div key={p.id} className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-gray-100 px-4 py-2 text-sm">
+                <span className="font-medium">{p.period.label}</span>
+                <span className="text-gray-500">€{Number(p.amount).toFixed(2)}</span>
+                {p.invoiceNumber && <span className="text-xs text-gray-400">#{p.invoiceNumber}</span>}
+                {p.paidAt && <span className="text-xs text-green-700">betaald {new Date(p.paidAt).toLocaleDateString('nl-NL')}</span>}
+                <span className={`rounded px-2 py-0.5 text-xs font-medium ${p.status === 'BETAALD' ? 'bg-green-100 text-green-800' : p.status === 'VIJGESTELD' ? 'bg-blue-100 text-blue-800' : 'bg-red-100 text-red-800'}`}>{p.status}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Aanwezigheid (samenvatting per jaar) */}
+      {member.attendance.length > 0 && (() => {
+        const perJaar: Record<string, { aanw: number; totaal: number }> = {}
+        for (const a of member.attendance) {
+          const y = String(new Date(a.trainingDay.date).getFullYear())
+          perJaar[y] = perJaar[y] ?? { aanw: 0, totaal: 0 }
+          perJaar[y].totaal++
+          if (a.status === 'AANWEZIG') perJaar[y].aanw++
+        }
+        return (
+          <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+            <h2 className="mb-4 text-lg font-semibold text-[#2a2a2a]">Aanwezigheid ({member.attendance.length} registraties)</h2>
+            <div className="flex flex-wrap gap-3">
+              {Object.entries(perJaar).sort().map(([y, v]) => (
+                <div key={y} className="rounded-lg bg-gray-50 px-4 py-2 text-sm">
+                  <span className="font-semibold">{y}</span>
+                  <span className="ml-2 text-gray-500">{v.aanw}/{v.totaal} aanwezig</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )
+      })()}
+
+      {/* Bondshistorie + toernooien */}
+      {(member.bondHistory.length > 0 || member.competitions.length > 0) && (
+        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+          {member.bondHistory.length > 0 && (
+            <>
+              <h2 className="mb-3 text-lg font-semibold text-[#2a2a2a]">Bondshistorie</h2>
+              <div className="mb-4 flex flex-wrap gap-2">
+                {member.bondHistory.map(b => (
+                  <span key={b.id} className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-1 text-xs">
+                    <span className="inline-block h-3 w-3 rounded-sm border border-gray-300" style={{ backgroundColor: BELT_COLORS[b.belt as BeltLevel] || '#ccc' }} />
+                    {BELT_LABELS_NL[b.belt as BeltLevel] ?? b.belt} · {new Date(b.awardedAt).toLocaleDateString('nl-NL')}
+                  </span>
+                ))}
+              </div>
+            </>
+          )}
+          {member.competitions.length > 0 && (
+            <>
+              <h2 className="mb-3 text-lg font-semibold text-[#2a2a2a]">Toernooien</h2>
+              <div className="space-y-2">
+                {member.competitions.map(c => (
+                  <div key={c.id} className="flex items-center justify-between rounded-lg border border-gray-100 px-4 py-2 text-sm">
+                    <span>{c.name}</span>
+                    <span className="text-xs text-gray-500">{new Date(c.date).toLocaleDateString('nl-NL')}{c.result ? ` · ${c.result}` : ''}</span>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       )}
     </div>

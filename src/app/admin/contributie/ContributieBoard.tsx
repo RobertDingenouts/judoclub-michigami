@@ -10,7 +10,7 @@ type Rij = {
   status: string; amount: number; note: string | null
   items: Item[] | null; clubStatus: string; leaveDate: string
   paidAt: string; dueDate: string; invoiceNumber: string | null
-  vervald: boolean
+  vervald: boolean; nietBetaald: boolean
 }
 
 export function ContributieBoard({ rows, periode, periodId, totaalOpen, toonGestopt }: { rows: Rij[]; periode: string; periodId: string; totaalOpen: number; toonGestopt: boolean }) {
@@ -31,19 +31,46 @@ export function ContributieBoard({ rows, periode, periodId, totaalOpen, toonGest
     }
     setLokaal(diff)
   }
-  const [filter, setFilter] = useState<'alles' | 'open'>('open')
+  const [filter, setFilter] = useState<'alles' | 'open' | 'schuldig' | 'betaald' | 'vrij'>('open')
+  const [zoek, setZoek] = useState('')
+  const [sorteer, setSorteer] = useState<'naam' | 'bedrag' | 'verval' | 'status'>('naam')
   const [busy, setBusy] = useState<string | null>(null)
   const [genereren, setGenereren] = useState(false)
   const [bewerken, setBewerken] = useState<string | null>(null)
   const [bevestigBulk, setBevestigBulk] = useState(false)
   const [bulkDue, setBulkDue] = useState<string | null>(null)
 
-  // 'Open' telt pas als de factuur écht verschuldigd is (vervaldatum verstreken).
-  // Zolang die in de toekomst ligt is het nog geen schuld en tonen we de rij niet
-  // in 'Alleen open' — anders lijkt het alsof leden geld schuldig zijn terwijl de
-  // datum nog niet eens geweest is. Vrijgestelden zijn nooit open.
-  const openRows = data.filter(r => r.vervald)
-  const getToon = () => filter === 'open' ? openRows : data
+  // Twee niveaus, bewust gescheiden:
+  //  - openRows  = facturen die nog BETAALD MOETEN WORDEN (niet betaald, welke
+  //    datum dan ook) → daar genereer je facturen voor en zet je op betaald.
+  //  - schuldigRows = waarvan de officiële betaaldatum verstreken is → pas dán is
+  //    er sprake van schuld en mogen herinneringen af. Vrijgestelden/reserves
+  //    zijn nooit schuldig.
+  const openRows = data.filter(r => r.nietBetaald)
+  const schuldigRows = data.filter(r => r.vervald)
+  const betaaldRows = data.filter(r => r.status === 'BETAALD')
+  const vrijRows = data.filter(r => r.status === 'VIJGESTELD')
+  const getToon = () => {
+    // Zoeken zoekt altijd in ALLE rijen — anders vind je een lid niet omdat ie
+    // net buiten het actieve filter valt.
+    let r: Rij[]
+    if (zoek.trim()) {
+      const q = zoek.trim().toLowerCase()
+      r = data.filter(x => x.naam.toLowerCase().includes(q) || (x.invoiceNumber ?? '').toLowerCase().includes(q))
+    } else {
+      r = filter === 'open' ? openRows
+        : filter === 'schuldig' ? schuldigRows
+        : filter === 'betaald' ? betaaldRows
+        : filter === 'vrij' ? vrijRows
+        : data
+    }
+    switch (sorteer) {
+      case 'bedrag': return [...r].sort((a, b) => b.amount - a.amount)
+      case 'verval': return [...r].sort((a, b) => (a.dueDate || '9999').localeCompare(b.dueDate || '9999'))
+      case 'status': return [...r].sort((a, b) => a.status.localeCompare(b.status) || a.naam.localeCompare(b.naam))
+      default: return r
+    }
+  }
 
   async function zetStatus(paymentId: string, status: string) {
     setBusy(paymentId)
@@ -113,7 +140,9 @@ export function ContributieBoard({ rows, periode, periodId, totaalOpen, toonGest
     }
   }
   const bulkBetaald = () => bulkActie({ status: 'BETAALD' })
-  const bulkHerinnering = (s: 'HERINNERING1' | 'HERINNERING2') => bulkActie({ status: s })
+  // Herinneringen hebben alleen zin voor wie écht schuldig is (vervaldatum
+  // verstreken) — de API filtert met onlyPastDue extra op de datum.
+  const bulkHerinnering = (s: 'HERINNERING1' | 'HERINNERING2') => bulkActie({ status: s, onlyPastDue: true })
 
   function factuur(paymentId: string) {
     window.open(`/api/admin2/factuur?paymentId=${paymentId}`, '_blank')
@@ -128,13 +157,31 @@ export function ContributieBoard({ rows, periode, periodId, totaalOpen, toonGest
   return (
     <>
       <div className="flex flex-wrap items-center gap-2">
-        <button onClick={() => setFilter(filter === 'alles' ? 'open' : 'alles')}
-          className={`rounded-full border px-3.5 py-1.5 text-xs font-medium ${filter === 'open' ? 'border-red-600 bg-red-600 text-white' : 'border-gray-300 bg-white text-gray-600'}`}>
-          {filter === 'open' ? `Alleen open (${openRows.length})` : `Alle leden (${data.length})`}
-        </button>
+        {([
+          ['open', `Nog te betalen (${openRows.length})`],
+          ['schuldig', `Schuldig (${schuldigRows.length})`],
+          ['betaald', `Betaald (${betaaldRows.length})`],
+          ['vrij', `Vrijgesteld (${vrijRows.length})`],
+          ['alles', `Allemaal (${data.length})`],
+        ] as const).map(([k, lbl]) => (
+          <button key={k} onClick={() => setFilter(k)}
+            className={`rounded-full border px-3 py-1.5 text-xs font-medium ${filter === k ? 'border-[#a90000] bg-[#a90000] text-white' : 'border-gray-300 bg-white text-gray-600 hover:border-[#a90000]'}`}>
+            {lbl}
+          </button>
+        ))}
+        <input value={zoek} onChange={e => setZoek(e.target.value)} placeholder="🔍 naam of factuurnr…"
+          className="rounded-full border border-gray-300 px-3 py-1.5 text-xs focus:border-[#a90000] focus:outline-none" />
+        <select value={sorteer} onChange={e => setSorteer(e.target.value as any)}
+          className="rounded-full border border-gray-300 bg-white px-2 py-1.5 text-xs text-gray-600 focus:border-[#a90000] focus:outline-none" title="Sorteren">
+          <option value="naam">Sorteer: naam</option>
+          <option value="bedrag">Sorteer: bedrag</option>
+          <option value="verval">Sorteer: vervaldatum</option>
+          <option value="status">Sorteer: status</option>
+        </select>
         <button onClick={facturenBulk} disabled={genereren || openRows.length === 0}
-          className="rounded-xl bg-[#a90000] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#8c0000] disabled:opacity-40">
-          🧾 Genereer facturen alle niet-betaalden ({openRows.length})
+          className="rounded-xl bg-[#a90000] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#8c0000] disabled:opacity-40"
+          title="Genereer PDF-facturen voor iedereen die nog niet betaald heeft — ook vóór de betaaldatum">
+          🧾 Genereer facturen alle nog-niet-betaalden ({openRows.length})
         </button>
         {openRows.length > 0 && (
           <button onClick={() => setBevestigBulk(true)} disabled={genereren}
@@ -142,17 +189,17 @@ export function ContributieBoard({ rows, periode, periodId, totaalOpen, toonGest
             ✓ Alles betaald zetten ({openRows.length})
           </button>
         )}
-        {openRows.length > 0 && (
+        {schuldigRows.length > 0 && (
           <>
             <button onClick={() => bulkHerinnering('HERINNERING1')} disabled={genereren}
               className="rounded-xl border border-amber-500 px-4 py-2.5 text-sm font-semibold text-amber-700 hover:bg-amber-50 disabled:opacity-40"
-              title={`Alle ${openRows.length} openstaande facturen op 1e herinnering`}>
-              🔔 1e herinnering → allemaal ({openRows.length})
+              title={`Alle ${schuldigRows.length} schuldige facturen (vervaldatum verstreken) op 1e herinnering`}>
+              🔔 1e herinnering → schuldigen ({schuldigRows.length})
             </button>
             <button onClick={() => bulkHerinnering('HERINNERING2')} disabled={genereren}
               className="rounded-xl border border-orange-600 px-4 py-2.5 text-sm font-semibold text-orange-700 hover:bg-orange-50 disabled:opacity-40"
-              title={`Alle ${openRows.length} openstaande facturen op 2e herinnering`}>
-              🔔 2e herinnering → allemaal ({openRows.length})
+              title={`Alle ${schuldigRows.length} schuldige facturen (vervaldatum verstreken) op 2e herinnering`}>
+              🔔 2e herinnering → schuldigen ({schuldigRows.length})
             </button>
           </>
         )}
@@ -244,11 +291,19 @@ export function ContributieBoard({ rows, periode, periodId, totaalOpen, toonGest
                     🧾 Factuur
                   </button>
                 )}
+                <a href={`/admin/students/${r.memberId}`}
+                  className="rounded-lg border border-gray-300 px-3 py-2 text-xs font-semibold text-gray-600 hover:border-[#a90000] hover:text-[#a90000]"
+                  title="Volledig dossier van dit lid">👤 Lid</a>
               </div>
             </div>
 
             {/* Vlaggen: stopt? / definitief gestopt */}
             <div className="mt-2 flex flex-wrap gap-1.5 border-t border-gray-100 pt-2">
+              <button onClick={() => vlag(r.memberId, r.clubStatus === 'RESERVE' ? 'LID' : 'RESERVE')}
+                className={`rounded-full px-2.5 py-1 text-[11px] font-medium ${r.clubStatus === 'RESERVE' ? 'bg-sky-600 text-white' : 'bg-gray-100 text-gray-500 hover:bg-sky-100'}`}
+                title="Reserve: geen contributie in lopende en toekomstige periodes">
+                🅾️ Reserve{r.clubStatus === 'RESERVE' ? ' ✓' : ''}
+              </button>
               <button onClick={() => vlag(r.memberId, r.clubStatus === 'STOPPEND' ? 'LID' : 'STOPPEND')}
                 className={`rounded-full px-2.5 py-1 text-[11px] font-medium ${r.clubStatus === 'STOPPEND' ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-500 hover:bg-amber-100'}`}>
                 ⚠️ Stopt?

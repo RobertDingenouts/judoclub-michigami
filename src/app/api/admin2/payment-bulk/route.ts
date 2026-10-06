@@ -5,8 +5,11 @@ import type { Prisma } from '@prisma/client'
 
 export const dynamic = 'force-dynamic'
 
-// POST { periodId, status, dueDate?, exceptMemberIds? } — zet ALLE openstaande facturen
-// van een periode in één keer op een status en/of vervaldatum.
+// POST { periodId, status, dueDate?, exceptMemberIds?, onlyPastDue? } — zet ALLE openstaande
+// facturen van een periode in één keer op een status en/of vervaldatum.
+// onlyPastDue: alleen facturen waarvan de vervaldatum verstreken is (schuldig).
+// Herinneringen hebben alleen zin voor schuldigen — de officiële betaaldatum
+// ligt vóór de kwartaalstart, dus zolang die niet geweest is is er niets te herinneren.
 //
 // Let op: `status` en `paidAt` gaan altijd samen. Eerder was er een bulkactie
 // die alleen `paidAt` zette en de status op OPEN liet: 31 betaalde facturen
@@ -15,7 +18,7 @@ export const dynamic = 'force-dynamic'
 export async function POST(req: NextRequest) {
   if (!(await isAdmin())) return NextResponse.json({ error: 'Geen admin' }, { status: 403 })
 
-  const { periodId, status, dueDate, exceptMemberIds } = await req.json()
+  const { periodId, status, dueDate, exceptMemberIds, onlyPastDue } = await req.json()
   const valid = ['OPEN', 'BETAALD', 'HERINNERING1', 'HERINNERING2', 'VIJGESTELD']
   if (!periodId) return NextResponse.json({ error: 'periodId nodig' }, { status: 400 })
   if (status && !valid.includes(status)) return NextResponse.json({ error: `Ongeldige status: ${status}` }, { status: 400 })
@@ -29,6 +32,7 @@ export async function POST(req: NextRequest) {
     ...(Array.isArray(exceptMemberIds) && exceptMemberIds.length
       ? { memberId: { notIn: exceptMemberIds } }
       : {}),
+    ...(onlyPastDue ? { dueDate: { lt: new Date(new Date().toISOString().slice(0, 10)) } } : {}),
   }
 
   // Eerst tellen voor de bevestiging in de UI.

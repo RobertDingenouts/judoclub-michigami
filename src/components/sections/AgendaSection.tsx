@@ -5,6 +5,24 @@ import { Calendar, Flame, MapPin, Clock, ArrowRight, Ban, Trophy, XCircle, Circl
 import { Badge } from '@/components/ui/badge';
 import { agendaItems } from '@/data/agenda';
 
+// Handmatige vakanties vanuit de admin (api/agenda/lesvrij) meenemen in de
+// agenda: "Geen lessen i.v.m. <reden>" verschijnt automatisch zodra een les op
+// vakantie gezet is.
+function useLesvrijItems() {
+  const [extra, setExtra] = useState<typeof agendaItems>([]);
+  useEffect(() => {
+    fetch('/api/agenda/lesvrij')
+      .then(r => (r.ok ? r.json() : { items: [] }))
+      .then(j => {
+        const statisch = new Set(agendaItems.map(i => i.compareDate + '|' + i.location));
+        const nieuw = (j.items ?? []).filter((i: any) => !statisch.has(i.compareDate + '|' + i.location));
+        setExtra(nieuw);
+      })
+      .catch(() => {});
+  }, []);
+  return [...agendaItems, ...extra].sort((a, b) => a.compareDate.localeCompare(b.compareDate));
+}
+
 interface Weegtijd {
   time: string;
   age: string;
@@ -160,14 +178,15 @@ export function AgendaSection() {
   const desktopFirstFutureRef = useRef<HTMLTableRowElement>(null);
   const mobileFirstFutureRef = useRef<HTMLDivElement>(null);
   const [confettiActive, setConfettiActive] = useState(false);
+  const items = useLesvrijItems();
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
   // Jaartal(en) voor de header: berekend uit de agenda-data (dynamisch)
-  const years = [...new Set(agendaItems.map(i => new Date(i.compareDate).getFullYear()))].sort();
+  const years = [...new Set(items.map(i => new Date(i.compareDate).getFullYear()))].sort();
   const yearLabel = years.length === 1 ? `${years[0]}` : `${years[0]}/${years[years.length - 1]}`;
 
-  const firstFutureIdx = agendaItems.findIndex(i => !i.cancelled && new Date(i.compareDate) >= today);
+  const firstFutureIdx = items.findIndex(i => !i.cancelled && new Date(i.compareDate) >= today);
 
   const triggerConfetti = () => {
     setConfettiActive(true);
@@ -238,7 +257,7 @@ export function AgendaSection() {
             </tr>
           </thead>
           <tbody>
-            {agendaItems.map((item, idx) => {
+            {items.map((item, idx) => {
               const eventDate = new Date(item.compareDate);
               eventDate.setHours(0, 0, 0, 0);
               const isPast = !item.cancelled && eventDate < today;
@@ -290,7 +309,7 @@ export function AgendaSection() {
 
       {/* Mobile Card Layout */}
       <div className="md:hidden space-y-3.5">
-        {agendaItems.map((item, idx) => {
+        {items.map((item, idx) => {
           const eventDate = new Date(item.compareDate);
           eventDate.setHours(0, 0, 0, 0);
           const isPast = !item.cancelled && eventDate < today;
