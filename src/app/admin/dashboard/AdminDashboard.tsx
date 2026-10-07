@@ -64,6 +64,7 @@ export type DashData = {
   lesmodus: LesModusProps | null
   contributie: { rows: ContribRij[]; periode: string; periodId: string; totaalOpen: number }
   leden: LedenRow[]
+  zoekAlle: { id: string; naam: string; groep: string; belt: string | null; inactief: boolean }[]
   openRekeningen: { paymentId: string; lidId: string; naam: string; groep: string; bedrag: number; status: string }[]
   recentBetald: { naam: string; bedrag: number; datum: string }[]
   inschrijvingen: { id: string; naam: string; email: string; groep: string; datum: string }[]
@@ -200,7 +201,7 @@ export default function AdminDashboard({ d }: { d: DashData }) {
   const mobiel = mounted && width > 0 && width < 640
   const t = d.tiles
   const zoekLeden = zoek.trim().length >= 2
-    ? d.leden.filter(l => l.naam.toLowerCase().includes(zoek.toLowerCase())).slice(0, 8)
+    ? d.zoekAlle.filter(l => l.naam.toLowerCase().includes(zoek.toLowerCase())).slice(0, 8)
     : []
 
   return (
@@ -278,11 +279,10 @@ export default function AdminDashboard({ d }: { d: DashData }) {
               <Link key={l.id} href={`/admin/students/${l.id}`}
                 className="flex items-center justify-between border-b border-gray-50 px-3 py-2 text-sm last:border-0 hover:bg-[#fdf6f6]">
                 <span className="flex items-center gap-2">
-                  <BeltVak belt={l.belt} />
+                  <BeltVak belt={l.belt as any} />
                   <span className="font-medium text-[#2a2a2a]">{l.naam}</span>
-                  <span className="text-xs text-gray-400">{groepNaam(l.groep)}</span>
+                  <span className="text-xs text-gray-400">{groepNaam(l.groep)}{l.inactief ? ' · 🗑 archief' : ''}</span>
                 </span>
-                <span className="text-xs text-gray-400">{l.betaling === 'BETAALD' ? '✅ betaald' : l.betaling === 'VIJGESTELD' ? '🔵 vrijgesteld' : '💶 open'}</span>
               </Link>
             ))}
           </div>

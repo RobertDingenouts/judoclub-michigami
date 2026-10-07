@@ -22,7 +22,7 @@ export default async function AdminStart() {
     actieveLeden, pendingApps, openPayments, nogTeBetalen, allePeriodes,
     komendeDagen, dagenWeek,
     attTotal,
-    ledenVoorExamen, gevlagden, recentGestopt,
+    ledenVoorExamen, gevlagden, recentGestopt, zoekAlle,
     openRekeningen, recentBetald,
     examOpen, diplomaRecent,
   ] = await Promise.all([
@@ -91,6 +91,13 @@ export default async function AdminStart() {
       where: { clubStatus: 'GESTOPT' },
       select: { id: true, firstName: true, lastName: true, leaveDate: true },
       orderBy: { leaveDate: 'desc' }, take: 8,
+    }),
+    // Zoekdataset startpagina: WERKELIJK iedereen (ook senioren, trainers,
+    // vrijgestelden, gearchiveerden) — de examenlijst laat die groepen weg,
+    // waardoor zoeken op bijv. "Pascal" of "Robin" niets opleverde.
+    db.member.findMany({
+      select: { id: true, firstName: true, lastName: true, primaryGroup: true, currentBelt: true, isActive: true, clubStatus: true },
+      orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }],
     }),
     db.payment.findMany({
       where: {
@@ -219,6 +226,7 @@ export default async function AdminStart() {
     lesmodus,
     contributie: { rows: contributie.data, periode: kw, periodId: contributie.period?.id ?? '', totaalOpen: contributie.totaalOpen },
     leden: rijkeLeden,
+    zoekAlle: zoekAlle.map(m => ({ id: m.id, naam: `${m.firstName} ${m.lastName}`, groep: m.primaryGroup ?? '', belt: m.currentBelt, inactief: !m.isActive })),
     openRekeningen: openRekeningen.map(p => ({
       paymentId: p.id, lidId: p.member.id, naam: `${p.member.firstName} ${p.member.lastName}`,
       groep: p.member.primaryGroup ?? '', bedrag: Number(p.amount), status: p.status,
