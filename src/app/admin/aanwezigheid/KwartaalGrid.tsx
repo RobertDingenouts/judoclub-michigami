@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { BeltVak } from '@/components/admin/BeltVak'
 import { GROEP_LABEL, STATUS_INFO } from '@/lib/admin2'
 import { getNextBelt, isSlipBelt, isYouth } from '@/lib/belt-utils'
@@ -49,7 +49,12 @@ export function KwartaalGrid({ dagen, leden, cellen }: { dagen: DagCel[]; leden:
   const [editDag, setEditDag] = useState<string | null>(null)
   const [editVal, setEditVal] = useState('')
   const [sort, setSort] = useState<SortKey>('band')
-  const [compact, setCompact] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768)
+  // Compact start níét uit window.innerWidth (server rendert zonder window ->
+  // hydration-mismatch). Eerst false, dan in useEffect op mobiel aanzetten.
+  const [compact, setCompact] = useState(false)
+  useEffect(() => {
+    if (window.innerWidth < 768) setCompact(true)
+  }, [])
   const [openLid, setOpenLid] = useState<string | null>(null)
   const [undoStapel, setUndoStapel] = useState<{ mid: string; naam: string; prev: string }[]>([])
 
