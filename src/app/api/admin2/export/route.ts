@@ -39,7 +39,7 @@ export async function GET(req: NextRequest) {
 
   if (lijst === 'leden') {
     const ws = wb.addWorksheet('Ledenlijst')
-    ws.addRows([['Naam', 'Groep', 'Band', 'Status', 'Geboren', 'Lid sinds', 'Gestopt per', 'Bondsnummer', 'E-mail', 'Telefoon', 'Telefoon 2', 'Adres', 'Postcode', 'Woonplaats', 'Geslacht', 'Noodcontact', 'Noodcontact tel.', 'Medisch', 'Opmerkingen', 'Open bedrag']])
+    ws.addRows([['Naam', 'Groep', 'Band', 'Status', 'Geboren', 'Lid sinds', 'Gestopt per', 'E-mail', 'Telefoon', 'Telefoon 2', 'Adres', 'Postcode', 'Woonplaats', 'Geslacht', 'Noodcontact', 'Noodcontact tel.', 'Medisch', 'Opmerkingen', 'Open bedrag']])
     // Actieve leden + gestopte leden (die horen in een archief-overzicht).
     // Wie hier PERMANENT is verwijderd staat niet meer in de DB en dus ook
     // niet in deze export; soft-verwijderden (isActive=false) filteren we weg.
@@ -58,7 +58,6 @@ export async function GET(req: NextRequest) {
         m.dateOfBirth ? m.dateOfBirth.toLocaleDateString('nl-NL') : '',
         m.joinDate ? m.joinDate.toLocaleDateString('nl-NL') : '',
         m.leaveDate ? m.leaveDate.toLocaleDateString('nl-NL') : '',
-        m.bondsnummer ?? '',
         m.email ?? '',
         m.phone ?? '',
         m.phone2 ?? '',

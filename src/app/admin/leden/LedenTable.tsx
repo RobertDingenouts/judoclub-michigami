@@ -74,7 +74,7 @@ export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: 
       if (status === 'proef' && r.clubStatus !== 'PROEF') return false
       if (status === 'vrijgesteld' && r.clubStatus !== 'VRIJGESTELD') return false
       if (groep && r.groep !== groep) return false
-      if (ql && !(`${r.firstName} ${r.lastName} ${r.bondsnummer ?? ''}`.toLowerCase().includes(ql))) return false
+      if (ql && !(`${r.firstName} ${r.lastName}`.toLowerCase().includes(ql))) return false
       return true
     })
     // "Open" = de periode is al (deels) ingegaan en er is nog niet betaald.
@@ -113,7 +113,7 @@ export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: 
       <div className="flex flex-wrap items-center gap-2">
         <input
           value={q} onChange={e => setQ(e.target.value)}
-          placeholder="Zoek naam of bondsnummer…"
+          placeholder="Zoek naam…"
           className="min-w-[180px] flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none"
         />
         <button onClick={() => setFiltersOpen(o => !o)}
@@ -209,7 +209,6 @@ function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; on
             {r.groep && <span className="rounded bg-[#fdf6f6] px-1.5 py-0.5 font-medium text-[#a90000]">{GROEP_LABEL[r.groep as keyof typeof GROEP_LABEL] ?? r.groep}</span>}
             {age !== null && <span>{age} jr</span>}
             {r.band ? <span className="flex items-center gap-1.5"><BeltVak belt={r.band} size={10} />{getBeltLabel(r.band as BeltLevel)}</span> : <span className="flex items-center gap-1.5 text-gray-400"><BeltVak belt={null} size={10} />nog geen band</span>}
-            {r.bondsnummer && <span>#nr {r.bondsnummer}</span>}
             {r.city && <span className="hidden sm:inline">{r.city}</span>}
           </p>
         </div>
@@ -399,7 +398,7 @@ function MergeBox({ r }: { r: Row }) {
             <button key={k.id} onClick={() => merge(k.id)} disabled={busy}
               className="flex w-full items-center justify-between rounded-lg border border-gray-200 bg-white px-3 py-2 text-left text-xs hover:border-[#a90000]/50 disabled:opacity-50">
               <span className="font-medium text-[#2a2a2a]">{k.firstName} {k.lastName}</span>
-              <span className="text-gray-400">{CLUB_STATUS_INFO[k.clubStatus]?.label ?? k.clubStatus} · {nlDatum(k.joinDate)}{k.bondsnummer ? ` · #${k.bondsnummer}` : ''}</span>
+              <span className="text-gray-400">{CLUB_STATUS_INFO[k.clubStatus]?.label ?? k.clubStatus} · {nlDatum(k.joinDate)}</span>
             </button>
           ))}
         </div>

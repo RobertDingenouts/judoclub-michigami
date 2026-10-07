@@ -104,7 +104,6 @@ export default async function StudentDetailPage({
             <DetailRow label="Adres" value={[member.address, member.postalCode, member.city].filter(Boolean).join(' · ') || '-'} />
             <DetailRow label="Geslacht" value={member.gender || '-'} />
             <DetailRow label="Groep" value={member.primaryGroup ? (GROEP_LABEL[member.primaryGroup as keyof typeof GROEP_LABEL] ?? member.primaryGroup) : '-'} />
-            <DetailRow label="Bondsnummer" value={member.bondsnummer || '-'} />
             <DetailRow label="Clubstatus" value={member.clubStatus} />
             {member.leaveDate && <DetailRow label="Gestopt per" value={new Date(member.leaveDate).toLocaleDateString('nl-NL')} />}
             {member.remarks && <DetailRow label="Opmerkingen" value={member.remarks} />}
