@@ -215,7 +215,7 @@ export default async function AdminStart() {
     trend,
     examList,
     // Lessen & contributie: dezelfde datasets als de losse pagina's.
-    lessen: { dagen: lessen.dagen, leden: lessen.leden, cellen: lessen.cellen },
+    lessen: { dagen: lessen.dagen, leden: lessen.leden, trainers: lessen.trainers, cellen: lessen.cellen },
     lesmodus,
     contributie: { rows: contributie.data, periode: kw, periodId: contributie.period?.id ?? '', totaalOpen: contributie.totaalOpen },
     leden: rijkeLeden,

@@ -7,7 +7,6 @@ const PATROON: { groep: string; weekday: number; locatie: string }[] = [
   { groep: 'WOENSDAG', weekday: 3, locatie: 'OUD_VOSSEMEER' },
   { groep: 'VRIJDAG_1E', weekday: 5, locatie: 'STEENBERGEN' },
   { groep: 'VRIJDAG_2E', weekday: 5, locatie: 'STEENBERGEN' },
-  { groep: 'VRIJDAG_3E', weekday: 5, locatie: 'STEENBERGEN' },
 ]
 
 // Notitie die een handmatig op "vakantie" gezette les krijgt (zie

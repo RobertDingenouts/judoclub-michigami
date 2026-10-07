@@ -18,7 +18,7 @@ export default async function AanwezigheidPage({
     tot: params.tot,
     groepen: params.groepen ? params.groepen.split(',').filter(Boolean) : undefined,
   })
-  const { periodes, periode, rangeLabel, groepen, alleLesGroepen, dagen, leden, cellen } = g
+  const { periodes, periode, rangeLabel, groepen, alleLesGroepen, dagen, leden, trainers, cellen } = g
   const nu = new Date()
 
   const qs = (extra: Record<string, string>) => {
@@ -89,7 +89,7 @@ export default async function AanwezigheidPage({
           {groepen.length === 0 ? 'Geen groep geselecteerd — klik hierboven een groep.' : `Geen lessen in ${rangeLabel}. Gebruik "📅 Plannen" om het vooruit te plannen.`}
         </div>
       ) : (
-        <KwartaalGrid dagen={dagen} leden={leden} cellen={cellen} />
+        <KwartaalGrid dagen={dagen} leden={leden} trainers={trainers} cellen={cellen} />
       )}
     </div>
   )

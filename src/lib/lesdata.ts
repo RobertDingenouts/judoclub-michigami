@@ -17,7 +17,7 @@ export type LesModusProps = {
 }
 
 // Volgorde van de vrijdaggroepen op één datum: 1e (18:45) → 2e (19:45) → 3e (20:45)
-const GROEP_TIJD: Record<string, number> = { WOENSDAG: 0, VRIJDAG_1E: 1, VRIJDAG_2E: 2, VRIJDAG_3E: 3 }
+const GROEP_TIJD: Record<string, number> = { WOENSDAG: 0, VRIJDAG_1E: 1, VRIJDAG_2E: 2 }
 
 export async function findLesDag(dagId?: string, datum?: string, groep?: string): Promise<TrainingDay | null> {
   await ensureUpcomingDays(10)
@@ -43,11 +43,12 @@ export async function lesModusProps(day: TrainingDay): Promise<LesModusProps> {
     db.trainingDay.findMany({ where: { date: { gte: van, lte: tot } }, orderBy: [{ date: 'asc' }, { group: 'asc' }] }),
     db.member.findMany({
       // Gestopten/verwijderden alleen op deze dag als ze hier aanwezigheid hebben.
+      // Trainers horen er altijd bij: onderaan kruisbaar bij elke les.
       where: {
-        primaryGroup: day.group,
         OR: [
-          { isActive: true, clubStatus: { not: 'GESTOPT' } },
-          { attendance: { some: { trainingDayId: day.id } } },
+          { primaryGroup: day.group, isActive: true, clubStatus: { not: 'GESTOPT' }, isTrainer: false },
+          { primaryGroup: day.group, attendance: { some: { trainingDayId: day.id } }, isTrainer: false },
+          { isTrainer: true, clubStatus: { notIn: ['GESTOPT'] } },
         ],
       },
       orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }],
@@ -92,9 +93,10 @@ export async function lesModusProps(day: TrainingDay): Promise<LesModusProps> {
       naam: `${m.firstName} ${m.lastName}`,
       status: m.attendance[0]?.status ?? null,
       gast: m.clubStatus === 'PROEF',
+      trainer: m.isTrainer,
       hist: histMap[m.id] ?? {},
       band: bandInfo(m),
-    })).sort((a, b) => BELT_ORDER.indexOf((a.band?.huidig ?? '') as any) - BELT_ORDER.indexOf((b.band?.huidig ?? '') as any) || a.naam.localeCompare(b.naam)),
+    })).sort((a, b) => Number(!!a.trainer) - Number(!!b.trainer) || BELT_ORDER.indexOf((a.band?.huidig ?? '') as any) - BELT_ORDER.indexOf((b.band?.huidig ?? '') as any) || a.naam.localeCompare(b.naam)),
     historie: histDagen.map(d => ({ id: d.id, label: d.date.toLocaleDateString('nl-NL', { weekday: 'short', day: 'numeric', month: 'short' }) })),
     recenteDagen: recenteDagen.map(d => ({
       id: d.id,

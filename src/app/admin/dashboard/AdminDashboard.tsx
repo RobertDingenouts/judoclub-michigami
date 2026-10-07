@@ -60,7 +60,7 @@ export type DashData = {
   examList: { id: string; naam: string; belt: string; next: string; maanden: number | null }[]
   // Lessen/lesmodus/contributie: exact de datasets van de losse pagina-libs,
   // dus de widget toont identical hetzelfde als de eigen pagina.
-  lessen: { dagen: DagCel[]; leden: LidRef[]; cellen: Record<string, string> }
+  lessen: { dagen: DagCel[]; leden: LidRef[]; trainers: LidRef[]; cellen: Record<string, string> }
   lesmodus: LesModusProps | null
   contributie: { rows: ContribRij[]; periode: string; periodId: string; totaalOpen: number }
   leden: LedenRow[]
@@ -425,7 +425,7 @@ function WLessen({ d }: { d: DashData }) {
 // De widget IS de pagina (KwartaalGrid / LesModus / ContributieBoard), dus er
 // bestaat maar één soort aanwezigheidslijst en je hoeft op de pc nergens heen.
 function WLessenGrid({ d }: { d: DashData }) {
-  return <KwartaalGrid dagen={d.lessen.dagen} leden={d.lessen.leden} cellen={d.lessen.cellen} />
+  return <KwartaalGrid dagen={d.lessen.dagen} leden={d.lessen.leden} trainers={d.lessen.trainers} cellen={d.lessen.cellen} />
 }
 function WLesModus({ d }: { d: DashData }) {
   if (!d.lesmodus) return <Leeg tekst="Nog geen les gepland." />

@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { STATUS_INFO } from '@/lib/admin2'
 import { BeltVak } from '@/components/admin/BeltVak'
 
-type Lid = { id: string; naam: string; status: string | null; gast?: boolean; hist: Record<string, string>; band?: { huidig: string | null; huidigKleur: string; volgende: string | null; volgendeKleur: string; slip: boolean } }
+type Lid = { id: string; naam: string; status: string | null; gast?: boolean; trainer?: boolean; hist: Record<string, string>; band?: { huidig: string | null; huidigKleur: string; volgende: string | null; volgendeKleur: string; slip: boolean } }
 type DagInfo = { id: string; datum: string; groep: string; groepLabel: string; activity: string | null; vakantie?: boolean; cancelled: boolean }
 type DagTab = { id: string; label: string; actief: boolean }
 type HistDag = { id: string; label: string }
@@ -112,16 +112,18 @@ export function LesModus({ dag, leden: initLeden, recenteDagen, historie }: { da
     } catch { /* stil */ }
   }
 
-  const tellen = (s: string) => leden.filter(l => l.status === s).length
+  const tellen = (s: string) => leden.filter(l => l.status === s && !l.trainer).length
   const aantalAanwezig = (l: Lid) => Object.values(l.hist).filter(s => s === 'AANWEZIG').length
   const aantalMetData = (l: Lid) => Object.values(l.hist).filter(s => s && s !== 'VAKANTIE').length
 
   // Groepsmetrics: vandaag + gemiddelde over de verlopen lessen in beeld.
+  // Trainers meeten we niet mee in de opkomst — dat blijft een ledengetal.
+  const ledenZonderTrainers = leden.filter(l => !l.trainer)
   const verlopen = historie.length
   const dagAanwezig = tellen('AANWEZIG')
-  const dagGemeld = leden.filter(l => l.status && l.status !== 'VAKANTIE').length
-  const histTotaalAanwezig = leden.reduce((s, l) => s + aantalAanwezig(l), 0)
-  const histTotaalGemeld = leden.reduce((s, l) => s + aantalMetData(l), 0)
+  const dagGemeld = ledenZonderTrainers.filter(l => l.status && l.status !== 'VAKANTIE').length
+  const histTotaalAanwezig = ledenZonderTrainers.reduce((s, l) => s + aantalAanwezig(l), 0)
+  const histTotaalGemeld = ledenZonderTrainers.reduce((s, l) => s + aantalMetData(l), 0)
   const pct = (a: number, b: number) => (b > 0 ? Math.round((a / b) * 100) : null)
   const gemPerLes = verlopen > 0 ? (histTotaalAanwezig / verlopen).toFixed(1).replace('.', ',') : null
 
@@ -143,7 +145,7 @@ export function LesModus({ dag, leden: initLeden, recenteDagen, historie }: { da
             {new Date(dag.datum).toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long' })}
             {dag.vakantie && <span className="ml-2 align-middle rounded-full bg-gray-200 px-2 py-0.5 text-xs font-semibold text-gray-600">🏖 Geen les — vakantie</span>}
           </h1>
-          <p className="text-sm text-gray-500">{dag.groepLabel} · {leden.length} leden</p>
+          <p className="text-sm text-gray-500">{dag.groepLabel} · {leden.filter(l => !l.trainer).length} leden{leden.some(l => l.trainer) ? ` + ${leden.filter(l => l.trainer).length} trainer(s)` : ''}</p>
         </div>
         <div className="flex items-center gap-2 text-xs">
           <button onClick={() => zetVakantie(!isVakantie)} disabled={vakBusy}
@@ -161,7 +163,7 @@ export function LesModus({ dag, leden: initLeden, recenteDagen, historie }: { da
       {/* Metrics: vandaag vs. gemiddelde van de verlopen lessen */}
       <div className="flex flex-wrap items-center gap-x-4 gap-y-1 rounded-xl border border-gray-200 bg-white px-3 py-2 text-xs text-gray-600">
         <span className="font-semibold uppercase tracking-wide text-gray-400">📊</span>
-        <span>Vandaag: <b>{dagAanwezig}/{dagGemeld || leden.length}</b> aanwezig{pct(dagAanwezig, dagGemeld) !== null && <> · <b>{pct(dagAanwezig, dagGemeld)}%</b></>}</span>
+        <span>Vandaag: <b>{dagAanwezig}/{dagGemeld || ledenZonderTrainers.length}</b> aanwezig{pct(dagAanwezig, dagGemeld) !== null && <> · <b>{pct(dagAanwezig, dagGemeld)}%</b></>}</span>
         {verlopen > 0 && <>
           <span>Gemiddelde laatste {verlopen} lessen: <b>{gemPerLes}</b> aanwezig per les</span>
           <span>{pct(histTotaalAanwezig, histTotaalGemeld) !== null && <>opkomst <b>{pct(histTotaalAanwezig, histTotaalGemeld)}%</b></>}</span>
@@ -209,6 +211,7 @@ export function LesModus({ dag, leden: initLeden, recenteDagen, historie }: { da
                   </span>
                 )}
                 {l.gast && <span className="rounded border border-sky-300 bg-sky-50 px-1.5 py-0.5 text-[10px] font-medium text-sky-700">gast</span>}
+                {l.trainer && <span className="rounded bg-[#2a2a2a] px-1.5 py-0.5 text-[10px] font-semibold text-white">trainer</span>}
               </p>
               <div className="flex items-center gap-2">
                 {historie.length > 0 && (

@@ -42,7 +42,6 @@ const GROEP_LOCATIE: Record<string, 'STEENBERGEN' | 'OUD_VOSSEMEER'> = {
   WOENSDAG: 'OUD_VOSSEMEER',
   VRIJDAG_1E: 'STEENBERGEN',
   VRIJDAG_2E: 'STEENBERGEN',
-  VRIJDAG_3E: 'STEENBERGEN',
   SENIOREN: 'STEENBERGEN',
 }
 export function locatieVoorGroep(groep: string): string {

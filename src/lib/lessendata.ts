@@ -8,7 +8,7 @@ import { GROEPEN } from '@/lib/admin2'
 import { vakantieOp } from '@/data/vakanties'
 
 export type DagCel = { id: string; datum: string; groep: string; locatie: string; cancelled: boolean; activity: string | null; vakantie?: boolean }
-export type LidRef = { id: string; naam: string; clubStatus: string; groep: string; dateOfBirth: string | null; currentBelt: string | null; joinDate: string | null }
+export type LidRef = { id: string; naam: string; clubStatus: string; groep: string; dateOfBirth: string | null; currentBelt: string | null; joinDate: string | null; trainer?: boolean }
 
 export function periodeRange(periode: string): [Date, Date] {
   const y = Number(periode.slice(0, 4))
@@ -38,7 +38,7 @@ export async function lessenGridData(opts: {
     ;[rangeStart, rangeEnd] = periodeRange(periode); rangeLabel = periode
   }
 
-  const [periodes, dagen, leden] = await Promise.all([
+  const [periodes, dagen, leden, trainers] = await Promise.all([
     db.contributionPeriod.findMany({ orderBy: { start: 'asc' } }),
     db.trainingDay.findMany({
       where: { date: { gte: rangeStart, lt: rangeEnd }, group: { in: groepen } },
@@ -53,10 +53,16 @@ export async function lessenGridData(opts: {
         clubStatus: { notIn: ['PROEF'] },
         primaryGroup: { in: groepen },
         OR: [
-          { isActive: true, clubStatus: { not: 'GESTOPT' } },
-          { attendance: { some: { trainingDay: { date: { gte: rangeStart, lt: rangeEnd } } } } },
+          { isActive: true, clubStatus: { not: 'GESTOPT' }, isTrainer: false },
+          { attendance: { some: { trainingDay: { date: { gte: rangeStart, lt: rangeEnd } } } }, isTrainer: false },
         ],
       },
+      orderBy: [{ lastName: 'asc' }],
+      select: { id: true, firstName: true, lastName: true, primaryGroup: true, clubStatus: true, dateOfBirth: true, currentBelt: true, joinDate: true },
+    }),
+    // Trainers/instructeurs: onderaan elke lesgroep kruisbaar, ongeacht hun eigen groep.
+    db.member.findMany({
+      where: { isTrainer: true, clubStatus: { notIn: ['GESTOPT'] } },
       orderBy: [{ lastName: 'asc' }],
       select: { id: true, firstName: true, lastName: true, primaryGroup: true, clubStatus: true, dateOfBirth: true, currentBelt: true, joinDate: true },
     }),
@@ -85,6 +91,7 @@ export async function lessenGridData(opts: {
     alleLesGroepen,
     dagen: grid.map(({ statussen: _s, ...rest }) => rest),
     leden: leden.map(m => ({ id: m.id, naam: `${m.firstName} ${m.lastName}`, clubStatus: m.clubStatus, groep: m.primaryGroup ?? '', dateOfBirth: m.dateOfBirth?.toISOString().slice(0, 10) ?? null, currentBelt: m.currentBelt, joinDate: m.joinDate?.toISOString().slice(0, 10) ?? null })) as LidRef[],
+    trainers: trainers.map(t => ({ id: t.id, naam: `${t.firstName} ${t.lastName}`, clubStatus: t.clubStatus, groep: t.primaryGroup ?? '', dateOfBirth: t.dateOfBirth?.toISOString().slice(0, 10) ?? null, currentBelt: t.currentBelt, joinDate: t.joinDate?.toISOString().slice(0, 10) ?? null, trainer: true })) as LidRef[],
     cellen,
   }
 }

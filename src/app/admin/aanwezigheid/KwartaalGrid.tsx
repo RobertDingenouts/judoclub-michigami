@@ -40,7 +40,7 @@ function leeftijd(dob: string | null): number | null {
   return a
 }
 
-export function KwartaalGrid({ dagen, leden, cellen }: { dagen: DagCel[]; leden: LidRef[]; cellen: Record<string, string> }) {
+export function KwartaalGrid({ dagen, leden, trainers = [], cellen }: { dagen: DagCel[]; leden: LidRef[]; trainers?: LidRef[]; cellen: Record<string, string> }) {
   const router = useRouter()
   const [local, setLocal] = useState<Record<string, string | null>>({})
   const [busy, setBusy] = useState<string | null>(null)
@@ -159,7 +159,7 @@ export function KwartaalGrid({ dagen, leden, cellen }: { dagen: DagCel[]; leden:
 
   // Eén blok per groep (volgorde zoals GROEPEN), alleen groepen met lessen
   const groepen = [...new Set(dagen.map(d => d.groep))]
-  const volgorde = ['VRIJDAG_1E', 'VRIJDAG_2E', 'VRIJDAG_3E', 'WOENSDAG']
+  const volgorde = ['VRIJDAG_1E', 'VRIJDAG_2E', 'WOENSDAG']
   groepen.sort((a, b) => volgorde.indexOf(a) - volgorde.indexOf(b))
 
   const celKlas = compact ? 'h-5 w-5 text-[10px]' : 'h-8 w-8 text-sm'
@@ -323,6 +323,37 @@ export function KwartaalGrid({ dagen, leden, cellen }: { dagen: DagCel[]; leden:
                 {gleden.length === 0 && (
                   <tr><td colSpan={gdagen.length + 2} className="px-3 py-4 text-center text-gray-400">Geen leden met deze groep als hoofdgroep</td></tr>
                 )}
+                {/* Trainers/instructeurs: altijd onderaan, kruisbaar bij elke les */}
+                {trainers.map(t => {
+                  const { aanw, meet } = aantallen(t, gdagen)
+                  return (
+                    <tr key={t.id} className="border-t border-gray-200 bg-[#f6f3ee]">
+                      <td className={`sticky left-0 z-10 px-2 py-1 ${compact ? 'bg-[#f6f3ee]/85 backdrop-blur-sm' : 'bg-[#f6f3ee]'}`}>
+                        <div className="flex items-center gap-1.5 whitespace-nowrap">
+                          <span title={`Band: ${t.currentBelt ?? 'nog geen'}`}><BeltVak belt={t.currentBelt} size={10} /></span>
+                          <span className="font-medium text-[#2a2a2a]">{t.naam}</span>
+                          <span className="rounded bg-[#2a2a2a] px-1 text-[9px] font-semibold text-white">trainer</span>
+                        </div>
+                      </td>
+                      {gdagen.map(d => {
+                        if (d.vakantie) return <td key={d.id} className="bg-gray-100/70 p-0.5 text-center text-[10px] text-gray-300" title="Geen les — vakantie">·</td>
+                        const key = `${t.id}|${d.id}`
+                        const s = get(t.id, d.id)
+                        const info = s ? STATUS_INFO[s] : null
+                        return (
+                          <td key={d.id} className="p-0.5 text-center">
+                            <button onClick={() => cycle(t.id, d.id)}
+                              className={`mx-auto flex ${celKlas} items-center justify-center rounded-md border transition-all ${busy === key ? 'opacity-50' : ''} ${info ? info.klas : 'border-gray-200 bg-white text-gray-300'}`}
+                              title={info ? info.label : 'leeg'}>
+                              {info ? info.emoji : '·'}
+                            </button>
+                          </td>
+                        )
+                      })}
+                      <td className="px-2 text-center font-semibold whitespace-nowrap">{meet ? <span><span className="text-green-700">{aanw}</span><span className="text-gray-400">/</span>{meet}</span> : '—'}</td>
+                    </tr>
+                  )
+                })}
               </tbody>
               <tfoot>
                 <tr className="border-t border-gray-200 bg-gray-50">

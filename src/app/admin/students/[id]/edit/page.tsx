@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { TRAINING_GROUPS, GROUP_LABELS_NL } from '@/lib/student-progress-types'
+import { TRAINING_GROUPS } from '@/lib/student-progress-types'
+import { GROEPEN } from '@/lib/admin2'
 import type { TrainingGroupValue } from '@/lib/student-progress-types'
 
 interface StudentData {
@@ -298,8 +299,8 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
                 className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
               >
                 <option value="">Selecteer hoofdgroep...</option>
-                {TRAINING_GROUPS.filter(g => (student.trainingGroups || []).includes(g.value)).map(g => (
-                  <option key={g.value} value={g.value}>{GROUP_LABELS_NL[g.value]}</option>
+                {GROEPEN.map(g => (
+                  <option key={g.value} value={g.value}>{g.label} — {g.dag || 'o.a. trainers'}</option>
                 ))}
               </select>
             </div>

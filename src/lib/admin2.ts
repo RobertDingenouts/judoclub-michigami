@@ -2,7 +2,6 @@
 export const GROEPEN = [
   { value: 'VRIJDAG_1E', label: '1e groep', dag: 'Vrijdag 18:45', locatie: 'De Knotwilg, Steenbergen' },
   { value: 'VRIJDAG_2E', label: '2e groep', dag: 'Vrijdag 19:45', locatie: 'De Knotwilg, Steenbergen' },
-  { value: 'VRIJDAG_3E', label: '3e groep', dag: 'Vrijdag 20:45', locatie: 'De Knotwilg, Steenbergen' },
   { value: 'WOENSDAG', label: 'Woensdag', dag: 'Woensdag 19:00', locatie: 'De Vossenkuil, Oud-Vossemeer' },
   { value: 'SENIOREN', label: 'Senioren & trainers', dag: '', locatie: '' },
 ] as const

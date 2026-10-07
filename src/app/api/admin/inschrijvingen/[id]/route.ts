@@ -62,6 +62,15 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
           postalCode: application.postalCode || null,
           city: application.city || null,
           location: application.location,
+          // Voorkeursgroep direct overnemen als hoofdgroep — anders valt het
+          // nieuwe lid uit elke lessenlijst (primaryGroup null). De legacy
+          // waarden uit het inschrijfformaal worden vertaald naar de echte
+          // lessenrooster-groepen.
+          primaryGroup: (() => {
+            const MAP: Record<string, string> = { VRI_OUD: 'VRIJDAG_2E', VRI_JONG: 'VRIJDAG_1E', WOEN: 'WOENSDAG' }
+            const pg = application.preferredGroup ?? ''
+            return MAP[pg] ?? (['VRIJDAG_1E', 'VRIJDAG_2E', 'WOENSDAG', 'SENIOREN'].includes(pg) ? pg : null)
+          })(),
           joinDate: new Date(),
           currentBelt: 'WIT' as any,
           isActive: true,

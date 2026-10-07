@@ -17,7 +17,7 @@ export default async function LesModusPage({
 
   if (!day) {
     // Nog geen lessen aangemaakt: toon groepskeuze; link per groep naar de volgende lesdag van die groep
-    const dagVanGroep: Record<string, number> = { VRIJDAG_1E: 5, VRIJDAG_2E: 5, VRIJDAG_3E: 5, WOENSDAG: 3 } // 0=zo,3=wo,5=vr
+    const dagVanGroep: Record<string, number> = { VRIJDAG_1E: 5, VRIJDAG_2E: 5, WOENSDAG: 3 } // 0=zo,3=wo,5=vr
     const volgende = (weekday: number) => {
       const d = new Date()
       const diff = (weekday - d.getDay() + 7) % 7
