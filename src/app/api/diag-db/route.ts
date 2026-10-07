@@ -1,16 +1,18 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import * as bcrypt from 'bcryptjs'
 export const dynamic = 'force-dynamic'
 export async function GET() {
-  const url = process.env.DATABASE_URL || ''
-  const host = (url.match(/@([^/?]+)/) || [])[1] || 'GEEN DATABASE_URL'
-  let leden = -1
-  let hash = ''
+  const out: Record<string, unknown> = {}
   try {
-    const r = (await db.$queryRawUnsafe(`SELECT COUNT(*)::int n FROM "Member"`)) as { n: number }[]
-    leden = r[0].n
-    const h = (await db.$queryRawUnsafe(`SELECT substring("passwordHash" for 7) h FROM "User" WHERE email='robertdingenouts@gmail.com'`)) as { h: string }[]
-    hash = h[0]?.h || 'GEEN ADMIN'
-  } catch (e) { hash = 'FOUT: ' + String((e as Error).message).slice(0, 60) }
-  return NextResponse.json({ host, leden, hash })
+    const user = await db.user.findUnique({ where: { email: 'robertdingenouts@gmail.com' } })
+    out.gevonden = !!user
+    out.rol = user?.role
+    out.hash_prefix = user?.passwordHash?.slice(0, 7)
+    out.is_active = user?.is_active
+    out.bcrypt_ok = user?.passwordHash ? await bcrypt.compare('admin123', user.passwordHash) : null
+  } catch (e) {
+    out.fout = String((e as Error).message).slice(0, 200)
+  }
+  return NextResponse.json(out)
 }
