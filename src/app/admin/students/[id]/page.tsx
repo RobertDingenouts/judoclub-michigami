@@ -29,7 +29,7 @@ export default async function StudentDetailPage({
   })
 
   if (!member) {
-    redirect('/admin/students')
+    redirect('/admin/leden')
   }
 
   return (

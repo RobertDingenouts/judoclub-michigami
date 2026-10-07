@@ -17,7 +17,7 @@ const MEER = [
   { href: '/admin/exams', icon: '🎯', label: 'Examens' },
   { href: '/admin/diplomas', icon: '🏆', label: "Diploma's" },
   { href: '/diploma/verifieren', icon: '🔍', label: 'Diploma verifiëren' },
-  { href: '/admin/students', icon: '🗂️', label: 'Alle leden (archief)' },
+
 ]
 
 export function AdminMobileNav() {

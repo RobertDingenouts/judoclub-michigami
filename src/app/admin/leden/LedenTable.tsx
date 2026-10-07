@@ -65,6 +65,9 @@ export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: 
       const filtered = useMemo(() => {
         const ql = q.toLowerCase()
         const out = rows.filter(r => {
+          // Inactief (prullenbak) is een eigen status: die valt buiten alle andere filters.
+          if (status === 'archief') { if (r.isActive) return false }
+          else if (!r.isActive) return false
           if (status === 'actief' && !isActief(r.clubStatus)) return false
       if (status === 'gestopt' && r.clubStatus !== 'GESTOPT') return false
       if (status === 'reserve' && r.clubStatus !== 'RESERVE') return false
@@ -94,6 +97,8 @@ export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: 
   }, [rows, q, groep, status, sortKey])
 
   const statusCount = (s: string) => rows.filter(r =>
+    s === 'archief' ? !r.isActive :
+    !r.isActive ? false :
     s === 'actief' ? isActief(r.clubStatus) :
     s === 'gestopt' ? r.clubStatus === 'GESTOPT' :
     s === 'reserve' ? r.clubStatus === 'RESERVE' :
@@ -132,6 +137,7 @@ export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: 
           <Chip active={status === 'reserve'} onClick={() => setStatus('reserve')}>Reserve ({statusCount('reserve')})</Chip>
           <Chip active={status === 'vrijgesteld'} onClick={() => setStatus('vrijgesteld')}>Vrijgesteld ({statusCount('vrijgesteld')})</Chip>
           <Chip active={status === 'gestopt'} onClick={() => setStatus('gestopt')}>Gestopt ({statusCount('gestopt')})</Chip>
+          <Chip active={status === 'archief'} onClick={() => setStatus('archief')}>🗑 Archief ({statusCount('archief')})</Chip>
           <Chip active={status === ''} onClick={() => setStatus('')}>Alle</Chip>
         </div>
       </div>
@@ -320,11 +326,27 @@ function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; on
               <Link href={`/admin/students/${r.id}/edit`} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium hover:border-[#a90000] hover:text-[#a90000]">✏️ Bewerken</Link>
               <Link href={`/admin/students/${r.id}`} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium hover:border-[#a90000] hover:text-[#a90000]">Volledig dossier</Link>
               <Link href={`/admin/contributie?lid=${r.id}`} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium hover:border-[#a90000] hover:text-[#a90000]">Factuur</Link>
-              <button onClick={async () => {
-                if (!confirm(`${r.firstName} ${r.lastName} naar de prullenbak? Het record verdwijnt uit de actieve lijsten (via Alle leden (archief) terug te zetten).`)) return
-                await fetch(`/api/admin/students/${r.id}`, { method: 'DELETE' })
-                router.refresh()
-              }} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-500 hover:border-red-300 hover:text-red-600">🗑 Prullenbak</button>
+              {r.isActive ? (
+                <button onClick={async () => {
+                  if (!confirm(`${r.firstName} ${r.lastName} naar de prullenbak? Het record verdwijnt uit de actieve lijsten (terug te zetten via het Archief-filter).`)) return
+                  await fetch(`/api/admin/students/${r.id}`, { method: 'DELETE' })
+                  router.refresh()
+                }} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-500 hover:border-red-300 hover:text-red-600">🗑 Prullenbak</button>
+              ) : (
+                <>
+                  <button onClick={async () => {
+                    if (!confirm(`${r.firstName} ${r.lastName} herstellen als actief lid?`)) return
+                    await fetch(`/api/admin/students/${r.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ isActive: true }) })
+                    router.refresh()
+                  }} className="rounded-lg border border-green-300 bg-green-50 px-3 py-1.5 text-xs font-medium text-green-700 hover:bg-green-100">♻️ Herstel</button>
+                  <button onClick={async () => {
+                    if (!confirm(`${r.firstName} ${r.lastName} DEFINITIEF verwijderen? Dit kan niet ongedaan worden.`)) return
+                    const res = await fetch(`/api/admin/students/${r.id}?permanent=true`, { method: 'DELETE' })
+                    if (!res.ok) { alert(`Verwijderen mislukt: ${(await res.json().catch(() => ({}))).error || 'Onbekende fout'}`); return }
+                    router.refresh()
+                  }} className="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50">🗑 Definitief</button>
+                </>
+              )}
             </div>
           </Section>
         </div>

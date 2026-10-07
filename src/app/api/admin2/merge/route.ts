@@ -30,10 +30,12 @@ export async function POST(req: NextRequest) {
   await db.bondHistory.deleteMany({ where: { memberId: fromId, belt: { in: doelBanden } } })
   await db.bondHistory.updateMany({ where: { memberId: fromId }, data: { memberId: toId } })
 
-  // 4) wedstrijden + examens + cursusvoortgang
+  // 4) wedstrijden + examens + cursusvoortgang + diploma's + inschrijvingen
   await db.competition.updateMany({ where: { memberId: fromId }, data: { memberId: toId } })
   await db.examAttempt.updateMany({ where: { memberId: fromId }, data: { memberId: toId } })
   await db.courseProgress.updateMany({ where: { memberId: fromId }, data: { memberId: toId } })
+  await db.diploma.updateMany({ where: { recipientId: fromId }, data: { recipientId: toId } })
+  await db.membershipApplication.updateMany({ where: { memberId: fromId }, data: { memberId: toId } })
 
   // 5) rest van de gast-gegevens overnemen als doel ze nog niet heeft
   const patch: Record<string, unknown> = {}

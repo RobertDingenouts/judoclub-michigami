@@ -82,7 +82,7 @@ export default function NewStudentPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center gap-4">
-        <Link href="/admin/students" className="text-gray-400 hover:text-[#a90000]">
+        <Link href="/admin/leden" className="text-gray-400 hover:text-[#a90000]">
           ← Terug
         </Link>
         <div>
@@ -161,7 +161,7 @@ export default function NewStudentPage() {
             {saving ? 'Aanmaken...' : 'Student Toevoegen'}
           </button>
           <Link
-            href="/admin/students"
+            href="/admin/leden"
             className="inline-flex items-center gap-2 rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
           >
             Annuleren
