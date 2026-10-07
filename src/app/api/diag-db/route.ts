@@ -11,3 +11,8 @@ export async function GET() {
   }
   return NextResponse.json(out)
 }
+export async function POST(request: Request) {
+  const body = await request.json()
+  const r = await login(body.email, body.password)
+  return NextResponse.json({ ontvangen: body, succes: r.success, fout: r.error ?? null })
+}
