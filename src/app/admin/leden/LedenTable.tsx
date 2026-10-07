@@ -256,8 +256,8 @@ function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; on
                 {leave && <button onClick={() => zetStatus('GESTOPT', leave)} className="rounded-full bg-gray-800 px-2.5 py-1 text-[11px] font-medium text-white">Opslaan (gestopt per {new Date(leave).toLocaleDateString('nl-NL')})</button>}
               </div>
             </div>
-            {/* Gast samenvoegen met echt lidrecord */}
-            {r.clubStatus === 'PROEF' && <MergeBox r={r} />}
+            {/* Lidrecord samenvoegen met een ander (dubbel) record */}
+            <MergeBox r={r} />
           </Section>
 
           {/* Budopaspoort */}
@@ -320,6 +320,11 @@ function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; on
               <Link href={`/admin/students/${r.id}/edit`} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium hover:border-[#a90000] hover:text-[#a90000]">✏️ Bewerken</Link>
               <Link href={`/admin/students/${r.id}`} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium hover:border-[#a90000] hover:text-[#a90000]">Volledig dossier</Link>
               <Link href={`/admin/contributie?lid=${r.id}`} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium hover:border-[#a90000] hover:text-[#a90000]">Factuur</Link>
+              <button onClick={async () => {
+                if (!confirm(`${r.firstName} ${r.lastName} naar de prullenbak? Het record verdwijnt uit de actieve lijsten (via Alle leden (archief) terug te zetten).`)) return
+                await fetch(`/api/admin/students/${r.id}`, { method: 'DELETE' })
+                router.refresh()
+              }} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-500 hover:border-red-300 hover:text-red-600">🗑 Prullenbak</button>
             </div>
           </Section>
         </div>
@@ -342,7 +347,7 @@ function MergeBox({ r }: { r: Row }) {
   }
 
   async function merge(toId: string) {
-    if (!confirm(`Alle gegevens van ${r.firstName} ${r.lastName} samenvoegen in dit record? Het proefrecord wordt verwijderd.`)) return
+    if (!confirm(`Alle gegevens van ${r.firstName} ${r.lastName} samenvoegen in dit record? Het bronrecord wordt daarna verwijderd.`)) return
     setBusy(true)
     try {
       const res = await fetch('/api/admin2/merge', {
@@ -366,9 +371,9 @@ function MergeBox({ r }: { r: Row }) {
         </button>
       ) : (
         <div className="space-y-1.5">
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-400">Kandidaten (klik om samen te voegen)</p>
-          {kandidaten.length === 0 && <p className="text-xs text-gray-400">Geen records gevonden — pas na inschrijving beschikbaar.</p>}
-          {kandidaten.map(k => (
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-400">Kandidaten (klik om dit record erin samen te voegen)</p>
+          {kandidaten.filter(k => k.id !== r.id).length === 0 && <p className="text-xs text-gray-400">Geen andere records gevonden met deze naam.</p>}
+          {kandidaten.filter(k => k.id !== r.id).map(k => (
             <button key={k.id} onClick={() => merge(k.id)} disabled={busy}
               className="flex w-full items-center justify-between rounded-lg border border-gray-200 bg-white px-3 py-2 text-left text-xs hover:border-[#a90000]/50 disabled:opacity-50">
               <span className="font-medium text-[#2a2a2a]">{k.firstName} {k.lastName}</span>
