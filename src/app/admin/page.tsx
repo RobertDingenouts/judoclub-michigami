@@ -19,7 +19,7 @@ export default async function AdminStart() {
   await markeerVakantieDagen()
 
   const [
-    actieveLeden, pendingApps, openPayments, allePeriodes,
+    actieveLeden, pendingApps, openPayments, nogTeBetalen, allePeriodes,
     komendeDagen, dagenWeek,
     attTotal,
     ledenVoorExamen, gevlagden, recentGestopt,
@@ -36,6 +36,17 @@ export default async function AdminStart() {
         // als de vervaldatum verstreken is.
         member: { clubStatus: { not: 'VRIJGESTELD' } },
         dueDate: { lt: now },
+      },
+      _count: true, _sum: { amount: true },
+    }),
+    // "Nog te betalen": alle openstaande facturen van deze periode, óók die nog
+    // niet vervallen zijn. De startpagina laat zien hoeveel er nog INKOMEND is,
+    // niet alleen de schuld.
+    db.payment.aggregate({
+      where: {
+        status: { in: ['OPEN', 'HERINNERING1', 'HERINNERING2'] },
+        period: { label: kw },
+        member: { clubStatus: { notIn: ['VRIJGESTELD', 'RESERVE'] } },
       },
       _count: true, _sum: { amount: true },
     }),
@@ -184,6 +195,8 @@ export default async function AdminStart() {
       actieveLeden,
       contributieOpen: openPayments._count ?? 0,
       contributieSom: Number(openPayments._sum.amount ?? 0),
+      contributieNog: nogTeBetalen._count ?? 0,
+      contributieNogSom: Number(nogTeBetalen._sum.amount ?? 0),
       inschrijvingen: pendingApps.length,
       aanwPct: attAlle ? Math.round((attAanw / attAlle) * 100) : 0,
       aanwVan: attAanw, aanwNoem: attAlle,

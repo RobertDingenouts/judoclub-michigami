@@ -23,7 +23,10 @@ export default async function AanwezigheidPage({
 
   const qs = (extra: Record<string, string>) => {
     const p = new URLSearchParams({ periode, groepen: groepen.join(','), ...extra })
-    if (params.van && params.tot && !extra.van) { p.set('van', params.van); p.set('tot', params.tot) }
+    // Belangrijk: bij een expliciete periodeswitch (Q4, Q3, …) de vrij-reeks
+    // (van/tot van "heel <jaar>") NIET meenemen — anders blijft de pagina in
+    // die reeks hangen en "kun je niet meer op Q4/Q3 klikken".
+    if (params.van && params.tot && extra.periode === undefined) { p.set('van', params.van); p.set('tot', params.tot) }
     return `/admin/aanwezigheid?${p.toString()}`
   }
 

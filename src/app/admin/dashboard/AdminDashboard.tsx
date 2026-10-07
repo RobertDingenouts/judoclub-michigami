@@ -50,6 +50,7 @@ export type DashData = {
   tiles: {
     actieveLeden: number
     contributieOpen: number; contributieSom: number
+    contributieNog: number; contributieNogSom: number
     inschrijvingen: number
     aanwPct: number; aanwVan: number; aanwNoem: number
     examensGepland: number; diplomaRecent: number
@@ -257,7 +258,8 @@ export default function AdminDashboard({ d }: { d: DashData }) {
       {/* KPI-rijen: altijd zichtbaar, compact, klikbaar */}
       <div className="mb-3 grid grid-cols-4 gap-1.5 md:grid-cols-6 xl:grid-cols-8">
         <Kpi href="/admin/leden" label="Leden" value={t.actieveLeden} />
-        <Kpi href="/admin/contributie" label="Openstaand" value={t.contributieOpen} sub={`€${t.contributieSom.toFixed(0)}`} accent={t.contributieOpen > 0 ? 'text-red-700' : 'text-green-700'} />
+        <Kpi href="/admin/contributie" label="Nog te betalen" value={t.contributieNog} sub={`€${t.contributieNogSom.toFixed(0)}`} accent={t.contributieNog > 0 ? 'text-amber-600' : 'text-green-700'} />
+        <Kpi href="/admin/contributie" label="Schuldig" value={t.contributieOpen} sub={`€${t.contributieSom.toFixed(0)}`} accent={t.contributieOpen > 0 ? 'text-red-700' : 'text-green-700'} />
         <Kpi href="/admin/contributie" label="Recent betaald" value={d.recentBetald.length} />
         <Kpi href="/admin/aanwezigheid" label="Aanwezig" value={`${t.aanwPct}%`} sub={`${t.aanwVan}/${t.aanwNoem}`} />
         <Kpi href="/admin/inschrijvingen" label="Nieuw" value={t.inschrijvingen} accent={t.inschrijvingen > 0 ? 'text-[#a90000]' : ''} />
@@ -338,7 +340,7 @@ function TegelStart({ d }: { d: DashData }) {
   const tegels: { emoji: string; titel: string; href: string; metric: string; sub: string; accent?: string }[] = [
     { emoji: '✏️', titel: 'Les invullen', href: '/admin/aanwezigheid/les', metric: vandaag.length ? `${vandaag.length} vandaag` : 'geen vandaag', sub: d.lesmodus ? `${d.lesmodus.leden.length} leden · ${d.lesmodus.dag.groep}` : 'kies een les', accent: vandaag.length ? 'text-[#a90000]' : '' },
     { emoji: '📊', titel: 'Lessen & aanwezigheid', href: '/admin/aanwezigheid', metric: `${t.aanwPct}%`, sub: `aanwezig ${t.aanwVan}/${t.aanwNoem} (90d)` },
-    { emoji: '💶', titel: 'Contributie', href: '/admin/contributie', metric: t.contributieOpen ? `${t.contributieOpen} open` : 'alles betaald', sub: t.contributieOpen ? `€${t.contributieSom.toFixed(0)} totaal` : `Q${d.contributie.periode} · ${d.contributie.rows.length} leden`, accent: t.contributieOpen ? 'text-red-700' : 'text-green-700' },
+    { emoji: '💶', titel: 'Contributie', href: '/admin/contributie', metric: t.contributieNog ? `${t.contributieNog} te betalen` : 'alles betaald', sub: t.contributieNog ? `€${t.contributieNogSom.toFixed(0)} · ${t.contributieOpen} schuldig` : `Q${d.contributie.periode} · ${d.contributie.rows.length} leden`, accent: t.contributieOpen ? 'text-red-700' : t.contributieNog ? 'text-amber-600' : 'text-green-700' },
     { emoji: '👥', titel: 'Leden', href: '/admin/leden', metric: `${t.actieveLeden}`, sub: 'actieve leden' },
     { emoji: '📝', titel: 'Inschrijvingen', href: '/admin/inschrijvingen', metric: t.inschrijvingen ? `${t.inschrijvingen} nieuw` : 'geen nieuw', sub: 'openstaande aanvragen', accent: t.inschrijvingen ? 'text-[#a90000]' : '' },
     { emoji: '⚠️', titel: 'Reserve & stoppend', href: '/admin/leden', metric: `${d.vlaggen.length}`, sub: d.vlaggen.length ? d.vlaggen.slice(0, 2).map(v => v.naam.split(' ')[0]).join(', ') : 'niemands', accent: d.vlaggen.length ? 'text-amber-600' : '' },

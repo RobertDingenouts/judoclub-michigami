@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { BeltVak } from '@/components/admin/BeltVak'
@@ -14,6 +15,7 @@ export type LidRef = { id: string; naam: string; clubStatus: string; groep: stri
 
 const CYCLE: (string | null)[] = ['AANWEZIG', 'AFGEMELD', 'ZIEK', 'NIET_AANWEZIG', null]
 const LOC_KORT: Record<string, string> = { STEENBERGEN: 'Knotwilg', OUD_VOSSEMEER: 'Vossenkuil' }
+const CLUBSTATUS_LABEL: Record<string, string> = { LID: 'Lid', RESERVE: 'Reserve', STOPPEND: 'Stopt binnenkort', GESTOPT: 'Gestopt', PROEF: 'Proeflid', VRIJGESTELD: 'Vrijgesteld' }
 const BAND_VOLGORDE: string[] = ['WIT', 'WIT_GEEL', 'GEEL', 'GEEL_ORANJE', 'ORANJE', 'ORANJE_GROEN', 'GROEN', 'GROEN_BLAUW', 'BLAUW', 'BLAUW_BRUIN', 'BRUIN', 'ZWART_1']
 
 type SortKey = 'band' | 'jong' | 'lidSinds' | 'naam' | 'oud' | 'bandOmlaag' | 'aanwezig' | 'aanwezigOmlaag'
@@ -43,20 +45,37 @@ export function KwartaalGrid({ dagen, leden, cellen }: { dagen: DagCel[]; leden:
   const [local, setLocal] = useState<Record<string, string | null>>({})
   const [busy, setBusy] = useState<string | null>(null)
   const [statussen, setStatussen] = usePropSync(leden, 'clubStatus')
-  const [verwijderd, setVerwijderd] = useState<string[]>([])
   const [activities, setActivities] = usePropSync(dagen, 'activity')
   const [editDag, setEditDag] = useState<string | null>(null)
   const [editVal, setEditVal] = useState('')
   const [sort, setSort] = useState<SortKey>('band')
-  const [compact, setCompact] = useState(false)
+  const [compact, setCompact] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768)
+  const [openLid, setOpenLid] = useState<string | null>(null)
+  const [undoStapel, setUndoStapel] = useState<{ mid: string; naam: string; prev: string }[]>([])
 
-  async function vlag(mid: string, clubStatus: string) {
+  async function vlag(mid: string, clubStatus: string, naam: string, wasGestopt: boolean) {
+    const prev = statussen[mid] ?? 'LID'
+    setUndoStapel(p => [...p, { mid, naam, prev }])
     setStatussen(mid, clubStatus)
     await fetch('/api/admin2/member-status', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ memberId: mid, clubStatus, leaveDate: new Date().toISOString().slice(0, 10) }),
+      // Een al gestopt lid houdt zijn echte stopdatum; alleen bij een verse
+      // stopzetten zetten we de datum van nu.
+      body: JSON.stringify({ memberId: mid, clubStatus, leaveDate: wasGestopt ? undefined : new Date().toISOString().slice(0, 10) }),
     })
     if (clubStatus === 'GESTOPT') router.refresh()
+  }
+
+  async function undo() {
+    const last = undoStapel[undoStapel.length - 1]
+    if (!last) return
+    setUndoStapel(p => p.slice(0, -1))
+    setStatussen(last.mid, last.prev)
+    await fetch('/api/admin2/member-status', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ memberId: last.mid, clubStatus: last.prev }),
+    })
+    router.refresh()
   }
 
   const get = (mid: string, dagId: string) => {
@@ -138,7 +157,7 @@ export function KwartaalGrid({ dagen, leden, cellen }: { dagen: DagCel[]; leden:
   const volgorde = ['VRIJDAG_1E', 'VRIJDAG_2E', 'VRIJDAG_3E', 'WOENSDAG']
   groepen.sort((a, b) => volgorde.indexOf(a) - volgorde.indexOf(b))
 
-  const celKlas = compact ? 'h-6 w-6 text-[11px]' : 'h-8 w-8 text-sm'
+  const celKlas = compact ? 'h-5 w-5 text-[10px]' : 'h-8 w-8 text-sm'
 
   return (
     <div className="space-y-5">
@@ -150,6 +169,12 @@ export function KwartaalGrid({ dagen, leden, cellen }: { dagen: DagCel[]; leden:
           {SORTOPTIES.map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
         </select>
         <div className="ml-auto flex items-center gap-1.5">
+          {undoStapel.length > 0 && (
+            <button onClick={undo} className="rounded-lg border border-green-400 bg-green-50 px-3 py-1.5 text-xs font-semibold text-green-700 hover:bg-green-100"
+              title={`Laatste wijziging ongedaan maken: ${undoStapel[undoStapel.length - 1].naam} → ${CLUBSTATUS_LABEL[undoStapel[undoStapel.length - 1].prev] ?? undoStapel[undoStapel.length - 1].prev}`}>
+              ↩ {undoStapel[undoStapel.length - 1].naam.split(' ')[0]} terugdraaien
+            </button>
+          )}
           <button onClick={() => setCompact(c => !c)}
             className={`rounded-lg border px-3 py-1.5 text-xs font-medium ${compact ? 'border-[#a90000] bg-[#fdf6f6] text-[#a90000]' : 'border-gray-300 bg-white text-gray-600'}`}>
             {compact ? '▦ Ingeklapt' : '⬜ Groot'}
@@ -159,7 +184,7 @@ export function KwartaalGrid({ dagen, leden, cellen }: { dagen: DagCel[]; leden:
 
       {groepen.map(g => {
         const gdagen = dagen.filter(d => d.groep === g)
-        const gleden = sorteer(leden.filter(l => l.groep === g && !verwijderd.includes(l.id)), gdagen)
+        const gleden = sorteer(leden.filter(l => l.groep === g), gdagen)
         return (
           <div key={g} className="overflow-x-auto rounded-xl border border-gray-200 bg-white">
             <div className="flex items-center justify-between border-b border-gray-100 px-3 py-2">
@@ -177,7 +202,7 @@ export function KwartaalGrid({ dagen, leden, cellen }: { dagen: DagCel[]; leden:
                     const act = activities[d.id]
                     return (
                       <th key={d.id}
-                        className={`relative px-1 py-1.5 text-center align-top ${d.vakantie ? 'bg-gray-100' : ''} ${compact ? 'min-w-[34px]' : 'min-w-[46px]'}`}>
+                        className={`relative px-0.5 py-1 text-center align-top ${d.vakantie ? 'bg-gray-100' : ''} ${compact ? 'min-w-[26px]' : 'min-w-[46px]'}`}>
                         <button onClick={() => router.push(`/admin/aanwezigheid/les?dag=${d.id}`)} className="block w-full hover:text-[#a90000]" title={d.vakantie ? 'Geen les (vakantie) — klik voor de lesdetails' : 'Open deze les in de lesmodus'}>
                           <span className="block text-[10px] font-normal text-gray-400">{dt.toLocaleDateString('nl-NL', { weekday: 'short' })}</span>
                           <span className={`block font-semibold ${d.vakantie ? 'text-gray-400' : 'text-gray-700'}`}>
@@ -231,29 +256,18 @@ export function KwartaalGrid({ dagen, leden, cellen }: { dagen: DagCel[]; leden:
                   const { aanw, meet } = aantallen(l, gdagen)
                   const gestopt = statussen[l.id] === 'GESTOPT'
                   const dob = leeftijd(l.dateOfBirth)
-                  return (
+                  const open = openLid === l.id
+                  return [
                     <tr key={l.id} className={`group border-b border-gray-100 last:border-0 ${gestopt ? 'bg-gray-100/70' : ''}`}>
-                      <td className="sticky left-0 z-10 bg-white px-3 py-1.5 group-hover:bg-gray-50">
-                        <div className={`flex items-center gap-2 whitespace-nowrap ${gestopt ? 'opacity-50' : ''}`}>
-                          <span title={`Band: ${l.currentBelt ?? 'nog geen'}`}>
-                            <BeltVak belt={l.currentBelt} size={10} />
-                          </span>
-                          <span className={`font-medium ${gestopt ? 'text-gray-400 line-through' : 'text-[#2a2a2a]'}`}>{l.naam}</span>
-                          {dob !== null && <span className="text-[10px] text-gray-400">{dob}jr</span>}
+                      <td className={`sticky left-0 z-10 px-2 py-1 group-hover:bg-gray-50 ${compact ? 'bg-white/80 backdrop-blur-sm' : 'bg-white'}`}>
+                        <button onClick={() => setOpenLid(open ? null : l.id)} className={`flex w-full items-center gap-1.5 whitespace-nowrap text-left ${gestopt ? 'opacity-50' : ''}`} title="Klik voor alle gegevens en knoppen van dit lid">
+                          <span title={`Band: ${l.currentBelt ?? 'nog geen'}`}><BeltVak belt={l.currentBelt} size={10} /></span>
+                          <span className={`truncate font-medium ${compact ? 'max-w-[104px]' : ''} ${gestopt ? 'text-gray-400 line-through' : 'text-[#2a2a2a]'}`}>{l.naam}</span>
+                          {!compact && dob !== null && <span className="text-[10px] text-gray-400">{dob}jr</span>}
                           {statussen[l.id] === 'STOPPEND' && <span className="rounded bg-amber-100 px-1 text-[9px] font-semibold text-amber-700">stopt?</span>}
                           {statussen[l.id] === 'RESERVE' && <span className="rounded bg-sky-100 px-1 text-[9px] font-semibold text-sky-700">reserve</span>}
-                          {/* Subtiele vlagknoppen: pas zichtbaar bij hover */}
-                          {!gestopt && (
-                            <span className="flex items-center gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
-                              <button onClick={() => vlag(l.id, 'STOPPEND')} title="Markeren als stopt?" className="rounded px-1 text-[11px] text-gray-300 hover:text-amber-500">⚑</button>
-                              <button onClick={() => vlag(l.id, 'GESTOPT')} title="Definitief gestopt — rij wordt grijs, daarna uit de lijst halen" className="rounded px-1 text-[11px] text-gray-300 hover:text-gray-600">⛔</button>
-                            </span>
-                          )}
-                          {gestopt && (
-                            <button onClick={() => setVerwijderd(p => [...p, l.id])} title="Uit dit overzicht halen (archief blijft behouden)"
-                              className="rounded border border-gray-300 bg-white px-1.5 py-0.5 text-[10px] font-semibold text-gray-500 hover:border-red-400 hover:text-red-600">✕ uit lijst</button>
-                          )}
-                        </div>
+                          <span className={`ml-auto text-[10px] text-gray-300 ${open ? 'rotate-180' : ''}`}>▾</span>
+                        </button>
                       </td>
                       {gdagen.map(d => {
                         // Vakantiedag: grijs, niet klikbaar — er is geen les gegeven
@@ -278,8 +292,28 @@ export function KwartaalGrid({ dagen, leden, cellen }: { dagen: DagCel[]; leden:
                         )
                       })}
                       <td className="px-2 text-center font-semibold whitespace-nowrap">{meet ? <span className={gestopt ? 'text-gray-400' : ''}><span className="text-green-700">{aanw}</span><span className="text-gray-400">/</span>{meet}</span> : '—'}</td>
-                    </tr>
-                  )
+                    </tr>,
+                    open && (
+                      <tr key={l.id + 'detail'} className="border-b border-gray-100 bg-[#fdfaf7]">
+                        <td colSpan={gdagen.length + 2} className="px-3 py-2">
+                          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-gray-600">
+                            <span className="font-semibold text-[#2a2a2a]">{l.naam}</span>
+                            {dob !== null && <span>{dob} jaar</span>}
+                            <span>lid sinds {l.joinDate ? new Date(l.joinDate).toLocaleDateString('nl-NL', { month: 'short', year: 'numeric' }) : '—'}</span>
+                            <span>{GROEP_LABEL[l.groep] ?? l.groep}</span>
+                            <span>aanwezig: {meet ? `${aanw}/${meet}` : 'nog geen lessen'}</span>
+                            <span className={gestopt ? 'font-semibold text-gray-500' : ''}>status: {CLUBSTATUS_LABEL[l.clubStatus] ?? l.clubStatus}</span>
+                            <span className="ml-auto flex items-center gap-1.5">
+                              <Link href={`/admin/students/${l.id}`} className="rounded border border-gray-300 bg-white px-2 py-1 font-semibold text-gray-600 hover:border-[#a90000] hover:text-[#a90000]">👤 Dossier</Link>
+                              {!gestopt && <button onClick={() => vlag(l.id, 'STOPPEND', l.naam, false)} className="rounded border border-amber-300 bg-white px-2 py-1 font-semibold text-amber-600 hover:bg-amber-50">⚑ stopt?</button>}
+                              {!gestopt && <button onClick={() => vlag(l.id, 'GESTOPT', l.naam, false)} className="rounded border border-gray-300 bg-white px-2 py-1 font-semibold text-gray-500 hover:border-red-400 hover:text-red-600">⛔ gestopt</button>}
+                              {gestopt && <button onClick={() => vlag(l.id, 'LID', l.naam, true)} className="rounded border border-green-300 bg-white px-2 py-1 font-semibold text-green-700 hover:bg-green-50">↩ weer lid</button>}
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                    ),
+                  ]
                 })}
                 {gleden.length === 0 && (
                   <tr><td colSpan={gdagen.length + 2} className="px-3 py-4 text-center text-gray-400">Geen leden met deze groep als hoofdgroep</td></tr>
@@ -304,7 +338,7 @@ export function KwartaalGrid({ dagen, leden, cellen }: { dagen: DagCel[]; leden:
         )
       })}
       <p className="text-[11px] text-gray-400">
-        Cel: tik om te wisselen ✅ → 🅰 → 🤒 → ❌ → leeg · kolomkop boven = lesmodus · “+” onder de datum = activiteit van die les · zweef over een naam voor de vlagknoppen (⚑ stopt? · ⛔ gestopt → rij grijs, ✕ haalt uit lijst)
+        Cel: tik om te wisselen ✅ → 🅰 → 🤒 → ❌ → leeg · kolomkop boven = lesmodus · “+” onder de datum = activiteit van die les · klik een naam = uitklappen (leeftijd, lid sinds, statusknoppen, dossier) · per ongeluk gestopt? ↩-knop bovenaan draait het direct terug
       </p>
     </div>
   )

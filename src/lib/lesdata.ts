@@ -42,7 +42,14 @@ export async function lesModusProps(day: TrainingDay): Promise<LesModusProps> {
   const [recenteDagenRaw, leden, histDagenRaw] = await Promise.all([
     db.trainingDay.findMany({ where: { date: { gte: van, lte: tot } }, orderBy: [{ date: 'asc' }, { group: 'asc' }] }),
     db.member.findMany({
-      where: { isActive: true, primaryGroup: day.group },
+      // Gestopten/verwijderden alleen op deze dag als ze hier aanwezigheid hebben.
+      where: {
+        primaryGroup: day.group,
+        OR: [
+          { isActive: true, clubStatus: { not: 'GESTOPT' } },
+          { attendance: { some: { trainingDayId: day.id } } },
+        ],
+      },
       orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }],
       include: { attendance: { where: { trainingDayId: day.id } } },
     }),

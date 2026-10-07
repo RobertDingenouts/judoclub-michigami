@@ -46,7 +46,17 @@ export async function lessenGridData(opts: {
       orderBy: [{ date: 'asc' }, { group: 'asc' }],
     }),
     db.member.findMany({
-      where: { isActive: true, clubStatus: { notIn: ['PROEF'] }, primaryGroup: { in: groepen } },
+      // Gestopte/verwijderde leden (zoals Hanna Kleefman) doken in élk nieuw
+      // kwartaal weer op. Regel: normale leden altijd; gestopten/verwijderden
+      // ALLEEN in periodes waar ze daadwerkelijk aanwezigheid hebben.
+      where: {
+        clubStatus: { notIn: ['PROEF'] },
+        primaryGroup: { in: groepen },
+        OR: [
+          { isActive: true, clubStatus: { not: 'GESTOPT' } },
+          { attendance: { some: { trainingDay: { date: { gte: rangeStart, lt: rangeEnd } } } } },
+        ],
+      },
       orderBy: [{ lastName: 'asc' }],
       select: { id: true, firstName: true, lastName: true, primaryGroup: true, clubStatus: true, dateOfBirth: true, currentBelt: true, joinDate: true },
     }),
