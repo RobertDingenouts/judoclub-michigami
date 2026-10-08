@@ -58,10 +58,10 @@ export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: 
   // mobiel: alle filterknoppen opgeklapt in één menu, niet een muur van chips
   const [filtersOpen, setFiltersOpen] = useState(false)
 
-  // "Actief" = iedereen die nog meedoet. RESERVE en VRIJGESTELD horen hier
-      // bij: eerder telden ze niet mee, waardoor de teller onder de echte
-      // standaard lag en leden in het overzicht ontbraken.
-      const isActief = (s: string) => s !== 'GESTOPT' && s !== 'PROEF'
+  // "Actief" = iedereen die nog meedoet. RESERVE, VRIJGESTELD en PROEFLES
+  // horen hier bij: gasten met proeflessen moeten direct zichtbaar zijn in
+  // de ledenlijst (eigen badge), het Proefles-chip filtert naar alleen hen.
+  const isActief = (s: string) => s !== 'GESTOPT'
       const filtered = useMemo(() => {
         const ql = q.toLowerCase()
         const out = rows.filter(r => {
