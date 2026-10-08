@@ -16,6 +16,7 @@ export default async function LedenPage({
     db.member.findMany({
       orderBy: [{ primaryGroup: 'asc' }, { lastName: 'asc' }, { firstName: 'asc' }],
       include: {
+        user: { select: { role: true } },
         bondHistory: { orderBy: { awardedAt: 'asc' } },
         payments: { include: { period: true } },
         examAttempts: { orderBy: { examDate: 'desc' }, take: 5 },
@@ -32,6 +33,8 @@ export default async function LedenPage({
     lastName: m.lastName,
     isActive: m.isActive,
     clubStatus: m.clubStatus,
+    role: m.user?.role ?? 'MEMBER',
+    isTrainer: m.isTrainer,
     leaveDate: m.leaveDate?.toISOString().slice(0, 10) ?? null,
     groep: m.primaryGroup,
     band: m.currentBelt,

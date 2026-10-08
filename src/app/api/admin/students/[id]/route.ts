@@ -56,6 +56,15 @@ export async function PATCH(
       ...(body.currentBelt !== undefined && body.currentBelt !== '' && { currentBelt: body.currentBelt as BeltLevel }),
       ...(body.currentBelt === '' && { currentBelt: null }),
       ...(body.location !== undefined && { location: body.location || null }),
+      ...(body.gender !== undefined && { gender: body.gender || null }),
+      ...(body.phone2 !== undefined && { phone2: body.phone2 || null }),
+      ...(body.address !== undefined && { address: body.address || null }),
+      ...(body.postalCode !== undefined && { postalCode: body.postalCode || null }),
+      ...(body.city !== undefined && { city: body.city || null }),
+      ...(body.remarks !== undefined && { remarks: body.remarks || null }),
+      ...(body.clubStatus !== undefined && body.clubStatus && { clubStatus: body.clubStatus }),
+      ...(body.isTrainer !== undefined && { isTrainer: body.isTrainer }),
+      ...(body.portraitRights !== undefined && { portraitRights: body.portraitRights }),
       ...(body.joinDate !== undefined && { joinDate: body.joinDate ? new Date(body.joinDate) : undefined }),
       ...(body.isActive !== undefined && { isActive: body.isActive }),
       ...(body.trainingGroups !== undefined && { trainingGroups: body.trainingGroups }),
@@ -153,11 +162,22 @@ export async function DELETE(
       if (!member) {
         return NextResponse.json({ error: 'Student niet gevonden' }, { status: 404 })
       }
+      // Alle FK-tabellen op Member opschonen (schema-check 2026-10: Attendance,
+      // BondHistory, Competition, CourseProgress, Diploma, ExamAttempt, Payment).
+      // Ontbraken van Attendance/Payment/BondHistory/Competition gaven P2003
+      // ("Fout bij verwijderen student") bij definitief verwijderen uit archief.
+      // MembershipApplication.memberId bevat het User-id (geen FK, dus geen
+      // P2003), maar netjes op null zetten houdt de inschrijvingen consistent.
+      await db.membershipApplication.updateMany({ where: { memberId: member.userId }, data: { memberId: null } })
       await db.$transaction([
         db.examResult.deleteMany({ where: { attempt: { memberId: id } } }),
         db.examAttempt.deleteMany({ where: { memberId: id } }),
         db.diploma.deleteMany({ where: { recipientId: id } }),
         db.courseProgress.deleteMany({ where: { memberId: id } }),
+        db.attendance.deleteMany({ where: { memberId: id } }),
+        db.payment.deleteMany({ where: { memberId: id } }),
+        db.bondHistory.deleteMany({ where: { memberId: id } }),
+        db.competition.deleteMany({ where: { memberId: id } }),
         db.member.delete({ where: { id } }),
         db.user.delete({ where: { id: member.userId } }),
       ])

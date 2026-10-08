@@ -1,12 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { STATUS_INFO } from '@/lib/admin2'
+import { GROEP_LABEL, STATUS_INFO } from '@/lib/admin2'
 import { BeltVak } from '@/components/admin/BeltVak'
 
-type Lid = { id: string; naam: string; status: string | null; gast?: boolean; trainer?: boolean; hist: Record<string, string>; band?: { huidig: string | null; huidigKleur: string; volgende: string | null; volgendeKleur: string; slip: boolean } }
+type Lid = { id: string; naam: string; status: string | null; gast?: boolean; trainer?: boolean; tijdelijk?: boolean; groep?: string; hist: Record<string, string>; band?: { huidig: string | null; huidigKleur: string; volgende: string | null; volgendeKleur: string; slip: boolean } }
 type DagInfo = { id: string; datum: string; groep: string; groepLabel: string; activity: string | null; vakantie?: boolean; cancelled: boolean }
 type DagTab = { id: string; label: string; actief: boolean }
 type HistDag = { id: string; label: string }
@@ -28,6 +28,12 @@ export function LesModus({ dag, leden: initLeden, recenteDagen, historie }: { da
   const [busy, setBusy] = useState<string | null>(null)
   const [gastNaam, setGastNaam] = useState<string | null>(null)
   const [gastBusy, setGastBusy] = useState(false)
+  // Leden zoeken om tijdelijk aan DEZE les toe te voegen (lid uit andere groep,
+  // oud-lid, andere locatie). Alleen een attendance-rij voor deze dag — de
+  // hoofdgroep van het lid blijft onaangeroerd.
+  const [zoekQ, setZoekQ] = useState('')
+  const [zoekResult, setZoekResult] = useState<{ id: string; naam: string; clubStatus: string; actief: boolean; groep: string | null; alOpDag: boolean; trainer: boolean; band: NonNullable<Lid['band']> }[]>([])
+  const [zoekBusy, setZoekBusy] = useState(false)
   const [isVakantie, setIsVakantie] = useState(!!dag.vakantie)
   const [vakBusy, setVakBusy] = useState(false)
 
@@ -62,6 +68,31 @@ export function LesModus({ dag, leden: initLeden, recenteDagen, historie }: { da
     } finally {
       setVakBusy(false)
     }
+  }
+
+  // Zoeken op naam (debounce) voor tijdelijk toevoegen aan deze les
+  useEffect(() => {
+    if (zoekQ.trim().length < 2) { setZoekResult([]); return }
+    const t = setTimeout(async () => {
+      setZoekBusy(true)
+      try {
+        const res = await fetch(`/api/admin2/les-zoeken?q=${encodeURIComponent(zoekQ.trim())}&dag=${dag.id}`)
+        const j = await res.json()
+        setZoekResult(j.resultaten ?? [])
+      } catch { setZoekResult([]) } finally { setZoekBusy(false) }
+    }, 300)
+    return () => clearTimeout(t)
+  }, [zoekQ, dag.id])
+
+  async function voegLidToe(s: { id: string; naam: string; groep: string | null; band: NonNullable<Lid['band']> }) {
+    setZoekBusy(true)
+    try {
+      // Alleen een attendance-rij voor deze dag: het lid blijft in zijn eigen groep.
+      setLeden(prev => prev.some(l => l.id === s.id) ? prev : [...prev, { id: s.id, naam: s.naam, status: null, tijdelijk: true, groep: s.groep ?? undefined, hist: {}, band: s.band }])
+      setZoekQ('')
+      setZoekResult([])
+      setOpgeslagen(`${s.naam} toegevoegd aan deze les (tijdelijk)`)
+    } finally { setZoekBusy(false) }
   }
 
   async function voegGastToe() {
@@ -180,6 +211,36 @@ export function LesModus({ dag, leden: initLeden, recenteDagen, historie }: { da
           className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none" />
       </div>
 
+      {/* Lid zoeken en tijdelijk aan deze les toevoegen */}
+      <div className="rounded-xl border border-dashed border-gray-300 bg-white p-3">
+        <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-gray-400">➕ Lid zoeken en tijdelijk aan deze les toevoegen</label>
+        <p className="mb-2 text-xs text-gray-400">Voor een lid dat normaal in een andere groep les heeft, een oud-lid dat meedoet, of iemand van de andere locatie. Hij blijft in zijn eigen groep — alleen deze les krijgt een registratie.</p>
+        <input value={zoekQ} onChange={e => setZoekQ(e.target.value)}
+          placeholder="Typ een naam (min. 2 letters)…"
+          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none" />
+        {zoekResult.length > 0 && (
+          <div className="mt-2 space-y-1.5">
+            {zoekResult.map(s => (
+              <button key={s.id} onClick={() => voegLidToe(s)} disabled={zoekBusy}
+                className="flex w-full items-center justify-between gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-left text-sm hover:border-[#a90000]/50 disabled:opacity-50">
+                <span className="flex items-center gap-2 font-medium text-[#2a2a2a]">
+                  <BeltVak belt={s.band.huidig} size={10} />
+                  {s.naam}
+                  {s.trainer && <span className="rounded bg-[#2a2a2a] px-1.5 py-0.5 text-[10px] font-semibold text-white">trainer</span>}
+                </span>
+                <span className="flex items-center gap-2 text-xs text-gray-400">
+                  <span>{GROEP_LABEL[s.groep ?? ''] ?? 'geen groep'}{s.actief ? '' : ' · gestopt'}{s.alOpDag ? ' · staat al op deze les' : ''}</span>
+                  <span className="rounded-full bg-[#a90000] px-2 py-0.5 font-semibold text-white">+</span>
+                </span>
+              </button>
+            ))}
+          </div>
+        )}
+        {zoekQ.trim().length >= 2 && !zoekBusy && zoekResult.length === 0 && (
+          <p className="mt-2 text-xs text-gray-400">Niets gevonden — voor een echte gast/proefles gebruik je het vak eronder.</p>
+        )}
+      </div>
+
       {/* Gast / proefles toevoegen */}
       <div className="rounded-xl border border-dashed border-gray-300 bg-white p-3">
         {gastNaam === null ? (
@@ -212,6 +273,7 @@ export function LesModus({ dag, leden: initLeden, recenteDagen, historie }: { da
                   </span>
                 )}
                 {l.gast && <span className="rounded border border-sky-300 bg-sky-50 px-1.5 py-0.5 text-[10px] font-medium text-sky-700">gast</span>}
+                {l.tijdelijk && <span className="rounded border border-amber-300 bg-amber-50 px-1.5 py-0.5 text-[10px] font-medium text-amber-700" title={`Tijdelijk toegevoegd aan deze les — standaardgroep: ${GROEP_LABEL[l.groep ?? ''] ?? 'geen groep'}`}>tijdelijk</span>}
                 {l.trainer && <span className="rounded bg-[#2a2a2a] px-1.5 py-0.5 text-[10px] font-semibold text-white">trainer</span>}
               </p>
               <div className="flex items-center gap-2">

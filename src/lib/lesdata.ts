@@ -11,7 +11,7 @@ import type { BeltLevel, TrainingDay } from '@prisma/client'
 
 export type LesModusProps = {
   dag: { id: string; datum: string; groep: string; groepLabel: string; activity: string | null; vakantie?: boolean; cancelled: boolean }
-  leden: { id: string; naam: string; status: string | null; gast?: boolean; hist: Record<string, string>; band: { huidig: string | null; huidigKleur: string; volgende: string | null; volgendeKleur: string; slip: boolean } }[]
+  leden: { id: string; naam: string; status: string | null; gast?: boolean; trainer?: boolean; tijdelijk?: boolean; groep?: string; hist: Record<string, string>; band: { huidig: string | null; huidigKleur: string; volgende: string | null; volgendeKleur: string; slip: boolean } }[]
   historie: { id: string; label: string }[]
   recenteDagen: { id: string; label: string; actief: boolean }[]
 }
@@ -47,9 +47,12 @@ export async function lesModusProps(day: TrainingDay): Promise<LesModusProps> {
       where: {
         OR: [
           { primaryGroup: day.group, isActive: true, clubStatus: { not: 'GESTOPT' }, isTrainer: false },
-          { primaryGroup: day.group, attendance: { some: { trainingDayId: day.id } }, isTrainer: false },
+          // Iedereen met een registratie op DEZE dag hoort in de lijst — ook als
+          // zijn hoofdgroep een andere is (tijdelijk toegevoegd: oud-lid dat
+          // meedoet, lid uit een andere groep/locatie).
+          { attendance: { some: { trainingDayId: day.id } }, isTrainer: false },
           { isTrainer: true, clubStatus: { notIn: ['GESTOPT'] } },
-          { user: { role: { in: ['ADMIN', 'INSTRUCTOR'] } }, clubStatus: { notIn: ['GESTOPT'] } },
+          { user: { role: 'INSTRUCTOR' }, clubStatus: { notIn: ['GESTOPT'] } },
         ],
       },
       orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }],
@@ -94,7 +97,10 @@ export async function lesModusProps(day: TrainingDay): Promise<LesModusProps> {
       naam: `${m.firstName} ${m.lastName}`,
       status: m.attendance[0]?.status ?? null,
       gast: m.clubStatus === 'PROEF',
-      trainer: m.isTrainer || ['ADMIN', 'INSTRUCTOR'].includes(m.user?.role ?? ''),
+      trainer: m.isTrainer || m.user?.role === 'INSTRUCTOR',
+      // Lid met een andere hoofdgroep die op deze dag staat = tijdelijk toegevoegd
+      tijdelijk: (m.primaryGroup ?? '') !== day.group && !(m.isTrainer || m.user?.role === 'INSTRUCTOR') && m.clubStatus !== 'PROEF',
+      groep: m.primaryGroup ?? undefined,
       hist: histMap[m.id] ?? {},
       band: bandInfo(m),
     })).sort((a, b) => Number(!!a.trainer) - Number(!!b.trainer) || BELT_ORDER.indexOf((a.band?.huidig ?? '') as any) - BELT_ORDER.indexOf((b.band?.huidig ?? '') as any) || a.naam.localeCompare(b.naam)),

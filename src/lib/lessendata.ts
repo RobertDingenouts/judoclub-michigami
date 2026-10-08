@@ -63,9 +63,10 @@ export async function lessenGridData(opts: {
       select: { id: true, firstName: true, lastName: true, primaryGroup: true, clubStatus: true, dateOfBirth: true, currentBelt: true, joinDate: true },
     }),
     // Trainers/instructeurs: onderaan elke lesgroep kruisbaar, ongeacht hun eigen groep.
-    // Automatisch: isTrainer-vlag OF rol ADMIN/INSTRUCTOR op hun account.
+    // Automatisch: isTrainer-vlag OF rol INSTRUCTOR. ADMIN is géén trainer —
+    // het Bestuur-account en admin-accounts hebben hun eigen rol (okt 2026).
     db.member.findMany({
-      where: { clubStatus: { notIn: ['GESTOPT'] }, OR: [{ isTrainer: true }, { user: { role: { in: ['ADMIN', 'INSTRUCTOR'] } } }] },
+      where: { clubStatus: { notIn: ['GESTOPT'] }, OR: [{ isTrainer: true }, { user: { role: 'INSTRUCTOR' } }] },
       orderBy: [{ lastName: 'asc' }],
       select: { id: true, firstName: true, lastName: true, primaryGroup: true, clubStatus: true, dateOfBirth: true, currentBelt: true, joinDate: true },
     }),

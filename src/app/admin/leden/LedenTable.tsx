@@ -12,6 +12,8 @@ import type { BeltLevel } from '@prisma/client'
 type Row = {
   id: string; firstName: string; lastName: string; isActive: boolean
   clubStatus: string
+  role: string
+  isTrainer: boolean
   leaveDate: string | null
   groep: string | null; band: string | null; bondsnummer: string | null
   dateOfBirth: string | null; email: string | null; phone: string | null; phone2: string | null
@@ -53,6 +55,8 @@ export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: 
   const [q, setQ] = useState('')
   const [groep, setGroep] = useState('')
   const [status, setStatus] = useState('actief')
+  // Rol-filter: ouders/trainers los van clubstatus filterbaar (okt 2026)
+  const [rol, setRol] = useState('')
   const [sortKey, setSortKey] = useState<SortKey>('band')
   const [open, setOpen] = useState<string | null>(null)
   // mobiel: alle filterknoppen opgeklapt in één menu, niet een muur van chips
@@ -74,6 +78,10 @@ export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: 
       if (status === 'proef' && r.clubStatus !== 'PROEF') return false
       if (status === 'vrijgesteld' && r.clubStatus !== 'VRIJGESTELD') return false
       if (groep && r.groep !== groep) return false
+      if (rol === 'trainer' && !(r.isTrainer || r.role === 'INSTRUCTOR')) return false
+      if (rol === 'ouder' && r.role !== 'PARENT') return false
+      if (rol === 'admin' && r.role !== 'ADMIN') return false
+      if (rol === 'lid' && !['MEMBER'].includes(r.role)) return false
       if (ql && !(`${r.firstName} ${r.lastName}`.toLowerCase().includes(ql))) return false
       return true
     })
@@ -94,7 +102,7 @@ export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: 
       }
     })
     return out
-  }, [rows, q, groep, status, sortKey])
+  }, [rows, q, groep, status, rol, sortKey])
 
   const statusCount = (s: string) => rows.filter(r =>
     s === 'archief' ? !r.isActive :
@@ -140,6 +148,13 @@ export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: 
           <Chip active={status === 'archief'} onClick={() => setStatus('archief')}>🗑 Archief ({statusCount('archief')})</Chip>
           <Chip active={status === ''} onClick={() => setStatus('')}>Alle</Chip>
         </div>
+      </div>
+      <div className={`flex flex-wrap gap-1.5 ${filtersOpen ? '' : 'hidden'} sm:flex`}>
+        <Chip active={rol === ''} onClick={() => setRol('')}>Alle rollen</Chip>
+        <Chip active={rol === 'lid'} onClick={() => setRol('lid')}>Leden ({rows.filter(r => r.role === 'MEMBER' && r.isActive).length})</Chip>
+        <Chip active={rol === 'ouder'} onClick={() => setRol('ouder')}>Ouders ({rows.filter(r => r.role === 'PARENT').length})</Chip>
+        <Chip active={rol === 'trainer'} onClick={() => setRol('trainer')}>Trainers ({rows.filter(r => r.isTrainer || r.role === 'INSTRUCTOR').length})</Chip>
+        <Chip active={rol === 'admin'} onClick={() => setRol('admin')}>Bestuur ({rows.filter(r => r.role === 'ADMIN').length})</Chip>
       </div>
       <div className={`flex flex-wrap gap-1.5 ${filtersOpen ? '' : 'hidden'} sm:flex`}>
         <Chip active={groep === ''} onClick={() => setGroep('')}>Alle groepen ({filtered.length})</Chip>
@@ -207,6 +222,9 @@ function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; on
           </p>
           <p className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-gray-500">
             {r.groep && <span className="rounded bg-[#fdf6f6] px-1.5 py-0.5 font-medium text-[#a90000]">{GROEP_LABEL[r.groep as keyof typeof GROEP_LABEL] ?? r.groep}</span>}
+            {(r.isTrainer || r.role === 'INSTRUCTOR') && <span className="rounded bg-[#2a2a2a] px-1.5 py-0.5 font-medium text-white">trainer</span>}
+            {r.role === 'PARENT' && <span className="rounded bg-gray-100 px-1.5 py-0.5 font-medium text-gray-600">ouder</span>}
+            {r.role === 'ADMIN' && <span className="rounded bg-gray-100 px-1.5 py-0.5 font-medium text-gray-600">bestuur</span>}
             {age !== null && <span>{age} jr</span>}
             {r.band ? <span className="flex items-center gap-1.5"><BeltVak belt={r.band} size={10} />{getBeltLabel(r.band as BeltLevel)}</span> : <span className="flex items-center gap-1.5 text-gray-400"><BeltVak belt={null} size={10} />nog geen band</span>}
             {r.city && <span className="hidden sm:inline">{r.city}</span>}

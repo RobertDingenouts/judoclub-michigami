@@ -3,9 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { TRAINING_GROUPS } from '@/lib/student-progress-types'
 import { GROEPEN } from '@/lib/admin2'
-import type { TrainingGroupValue } from '@/lib/student-progress-types'
 
 interface StudentData {
   id: string
@@ -13,11 +11,21 @@ interface StudentData {
   lastName: string
   email: string | null
   phone: string | null
+  phone2: string | null
   dateOfBirth: string | null
   currentBelt: string | null
   location: string | null
-  trainingGroups: TrainingGroupValue[] | null
-  primaryGroup: TrainingGroupValue | null
+  gender: string | null
+  address: string | null
+  postalCode: string | null
+  city: string | null
+  clubStatus: string
+  isTrainer: boolean
+  portraitRights: boolean | null
+  leaveDate: string | null
+  remarks: string | null
+  trainingGroups: string[] | null
+  primaryGroup: string | null
   joinDate: string
   isActive: boolean
   emergencyContactName: string | null
@@ -140,11 +148,20 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
         lastName: formData.get('lastName') as string,
         email: formData.get('email') as string || null,
         phone: formData.get('phone') as string || null,
+        phone2: formData.get('phone2') as string || null,
         dateOfBirth: formData.get('dateOfBirth') as string || null,
         currentBelt: formData.get('currentBelt') as string || null,
         location: formData.get('location') as string || null,
+        gender: formData.get('gender') as string || null,
+        address: formData.get('address') as string || null,
+        postalCode: formData.get('postalCode') as string || null,
+        city: formData.get('city') as string || null,
         joinDate: formData.get('joinDate') as string || null,
         role: formData.get('role') as string || null,
+        clubStatus: formData.get('clubStatus') as string || null,
+        isTrainer: formData.get('isTrainer') === 'on',
+        portraitRights: formData.get('portraitRights') === 'on',
+        remarks: formData.get('remarks') as string || null,
         isActive: formData.get('isActive') === 'on',
         trainingGroups,
         primaryGroup: formData.get('primaryGroup') as string || null,
@@ -222,8 +239,24 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
             <FormField label="Achternaam" name="lastName" defaultValue={student.lastName} required />
             <FormField label="E-mail" name="email" type="email" defaultValue={student.email || ''} />
             <FormField label="Telefoon" name="phone" type="tel" defaultValue={student.phone || ''} />
+            <FormField label="Telefoon (2e)" name="phone2" type="tel" defaultValue={student.phone2 || ''} />
             <FormField label="Geboortedatum" name="dateOfBirth" type="date" defaultValue={student.dateOfBirth ? new Date(student.dateOfBirth).toISOString().split('T')[0] : ''} />
             <FormField label="Lid vanaf" name="joinDate" type="date" defaultValue={student.joinDate ? new Date(student.joinDate).toISOString().split('T')[0] : ''} />
+            <FormField label="Adres" name="address" defaultValue={student.address || ''} />
+            <FormField label="Postcode" name="postalCode" defaultValue={student.postalCode || ''} />
+            <FormField label="Woonplaats" name="city" defaultValue={student.city || ''} />
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-gray-700">Geslacht</label>
+              <select
+                name="gender"
+                defaultValue={student.gender || ''}
+                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+              >
+                <option value="">Onbekend</option>
+                <option value="M">Man</option>
+                <option value="V">Vrouw</option>
+              </select>
+            </div>
             <div>
               <label className="mb-1.5 block text-sm font-medium text-gray-700">Band</label>
               <select
@@ -238,7 +271,7 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
               </select>
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-gray-700">Rol</label>
+              <label className="mb-1.5 block text-sm font-medium text-gray-700">Rol (inlogrecht)</label>
               <select
                 name="role"
                 defaultValue={student.user?.role || 'MEMBER'}
@@ -247,6 +280,22 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
                 {ROLES.map(r => (
                   <option key={r.value} value={r.value}>{r.label}</option>
                 ))}
+              </select>
+              <p className="mt-1 text-xs text-gray-400">Rol = wat het account mag in het systeem. Clubstatus hieronder = of iemand meejudot.</p>
+            </div>
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-gray-700">Clubstatus</label>
+              <select
+                name="clubStatus"
+                defaultValue={student.clubStatus || 'LID'}
+                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+              >
+                <option value="LID">Lid</option>
+                <option value="PROEF">Proefles</option>
+                <option value="RESERVE">Reserve</option>
+                <option value="VRIJGESTELD">Vrijgesteld (betaalt geen contributie)</option>
+                <option value="STOPPEND">Stoppend</option>
+                <option value="GESTOPT">Gestopt</option>
               </select>
             </div>
             <div>
@@ -267,10 +316,10 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
         {/* Training groups */}
         <div>
           <h2 className="text-lg font-semibold text-[#2a2a2a] mb-4">Trainingsgroepen</h2>
-          <p className="text-sm text-gray-500 mb-3">Selecteer de groepen waar deze student aan deelneemt.</p>
+          <p className="text-sm text-gray-500 mb-3">Vink de groepen aan waarin dit lid meetelt in het lessenrooster. De hoofdgroep bepaalt in welke leslijst het lid standaard verschijnt.</p>
           <div className="space-y-2">
-            {TRAINING_GROUPS.map(group => {
-              const isSelected = (student.trainingGroups || []).includes(group.value)
+            {GROEPEN.map(group => {
+              const isSelected = (student.trainingGroups || []).includes(group.value) || student.primaryGroup === group.value
               return (
                 <label key={group.value} className="flex items-center gap-3 rounded-lg border border-gray-200 p-3 cursor-pointer hover:bg-gray-50">
                   <input
@@ -282,29 +331,48 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
                   />
                   <div>
                     <span className="text-sm font-medium text-gray-700">{group.label}</span>
+                    {group.dag && <span className="ml-2 text-xs text-gray-400">{group.dag} · {group.locatie}</span>}
                   </div>
                 </label>
               )
             })}
           </div>
-          {(student.trainingGroups || []).length > 1 && (
-            <div className="mt-4">
-              <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                Hoofdgroep (voor examens)
-                <span className="text-xs text-gray-400 font-normal ml-2">— deze groep wordt gebruikt voor bandexamens</span>
-              </label>
-              <select
-                name="primaryGroup"
-                defaultValue={student.primaryGroup || ''}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
-              >
-                <option value="">Selecteer hoofdgroep...</option>
-                {GROEPEN.map(g => (
-                  <option key={g.value} value={g.value}>{g.label} — {g.dag || 'o.a. trainers'}</option>
-                ))}
-              </select>
-            </div>
-          )}
+          <div className="mt-4">
+            <label className="mb-1.5 block text-sm font-medium text-gray-700">
+              Hoofdgroep (leslijst + examens)
+            </label>
+            <select
+              name="primaryGroup"
+              defaultValue={student.primaryGroup || ''}
+              className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+            >
+              <option value="">Geen hoofdgroep</option>
+              {GROEPEN.map(g => (
+                <option key={g.value} value={g.value}>{g.label}{g.dag ? ` — ${g.dag}` : ' — o.a. trainers'}</option>
+              ))}
+            </select>
+          </div>
+          <label className="mt-4 flex items-center gap-3 rounded-lg border border-gray-200 p-3 cursor-pointer hover:bg-gray-50">
+            <input
+              type="checkbox"
+              name="isTrainer"
+              defaultChecked={student.isTrainer}
+              className="h-4 w-4 rounded border-gray-300 text-[#a90000] focus:ring-[#a90000]"
+            />
+            <span className="text-sm font-medium text-gray-700">Trainer — verschijnt onderaan élke les in de lesmodus</span>
+          </label>
+        </div>
+
+        {/* Notities */}
+        <div>
+          <h2 className="text-lg font-semibold text-[#2a2a2a] mb-4">Notities</h2>
+          <textarea
+            name="remarks"
+            defaultValue={student.remarks || ''}
+            rows={2}
+            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+            placeholder="Interne notities bij dit lid"
+          />
         </div>
 
         {/* Emergency contact */}
@@ -340,7 +408,7 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
         </div>
 
         {/* Status */}
-        <div>
+        <div className="flex flex-wrap gap-6">
           <label className="flex items-center gap-3">
             <input
               type="checkbox"
@@ -349,6 +417,15 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
               className="h-4 w-4 rounded border-gray-300 text-[#a90000] focus:ring-[#a90000]"
             />
             <span className="text-sm font-medium text-gray-700">Actief lid</span>
+          </label>
+          <label className="flex items-center gap-3">
+            <input
+              type="checkbox"
+              name="portraitRights"
+              defaultChecked={student.portraitRights !== false}
+              className="h-4 w-4 rounded border-gray-300 text-[#a90000] focus:ring-[#a90000]"
+            />
+            <span className="text-sm font-medium text-gray-700">Portretrecht (foto's mogen getoond worden)</span>
           </label>
         </div>
 
