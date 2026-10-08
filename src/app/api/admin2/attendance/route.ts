@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true, status: null })
   }
 
-  const valid = ['AANWEZIG', 'AFGEMELD', 'ZIEK', 'VERZET', 'VAKANTIE']
+  const valid = ['AANWEZIG', 'AFGEMELD', 'ZIEK', 'VERZET', 'VAKANTIE', 'PROEFLES']
   if (!valid.includes(status)) return NextResponse.json({ error: `Ongeldige status: ${status}` }, { status: 400 })
 
   const rec = await db.attendance.upsert({

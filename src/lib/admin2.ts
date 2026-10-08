@@ -15,6 +15,7 @@ export const STATUS_INFO: Record<string, { label: string; emoji: string; klas: s
   ZIEK:          { label: 'Ziek',          emoji: '🤒', klas: 'bg-purple-100 text-purple-800 border-purple-300' },
   VERZET:        { label: 'Verzet',        emoji: '🔁', klas: 'bg-blue-100 text-blue-800 border-blue-300' },
   VAKANTIE:      { label: 'Geen les',      emoji: '🏖', klas: 'bg-gray-100 text-gray-600 border-gray-300' },
+  PROEFLES:      { label: 'Proefles',      emoji: '🆕', klas: 'bg-sky-100 text-sky-800 border-sky-300' },
 }
 
 export const PAYMENT_INFO: Record<string, { label: string; klas: string }> = {

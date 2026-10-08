@@ -13,7 +13,7 @@ import type { BeltLevel } from '@prisma/client'
 export type DagCel = { id: string; datum: string; groep: string; locatie: string; cancelled: boolean; activity: string | null; vakantie?: boolean }
 export type LidRef = { id: string; naam: string; clubStatus: string; groep: string; dateOfBirth: string | null; currentBelt: string | null; joinDate?: string | null }
 
-const CYCLE: (string | null)[] = ['AANWEZIG', 'AFGEMELD', 'ZIEK', 'NIET_AANWEZIG', null]
+const CYCLE: (string | null)[] = ['AANWEZIG', 'AFGEMELD', 'ZIEK', 'NIET_AANWEZIG', 'PROEFLES', null]
 const LOC_KORT: Record<string, string> = { STEENBERGEN: 'Knotwilg', OUD_VOSSEMEER: 'Vossenkuil' }
 const CLUBSTATUS_LABEL: Record<string, string> = { LID: 'Lid', RESERVE: 'Reserve', STOPPEND: 'Stopt binnenkort', GESTOPT: 'Gestopt', PROEF: 'Proeflid', VRIJGESTELD: 'Vrijgesteld' }
 const BAND_VOLGORDE: string[] = ['WIT', 'WIT_GEEL', 'GEEL', 'GEEL_ORANJE', 'ORANJE', 'ORANJE_GROEN', 'GROEN', 'GROEN_BLAUW', 'BLAUW', 'BLAUW_BRUIN', 'BRUIN', 'ZWART_1']

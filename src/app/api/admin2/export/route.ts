@@ -134,7 +134,7 @@ export async function GET(req: NextRequest) {
       where: { trainingDayId: { in: dagen.map(d => d.id) } },
     })
     const attMap = new Map(att.map(a => [`${a.memberId}|${a.trainingDayId}`, a.status]))
-    const EM: Record<string, string> = { AANWEZIG: 'Aanwezig', AFGEMELD: 'Afgemeld', ZIEK: 'Ziek', NIET_AANWEZIG: 'Afwezig' }
+    const EM: Record<string, string> = { AANWEZIG: 'Aanwezig', AFGEMELD: 'Afgemeld', ZIEK: 'Ziek', NIET_AANWEZIG: 'Afwezig', PROEFLES: 'Proefles' }
     const kop = ['Naam', 'Groep', ...dagen.map(d => d.date.toLocaleDateString('nl-NL', { day: '2-digit', month: '2-digit' })), 'Opkomst']
     const groepen = ['WOENSDAG', 'VRIJDAG_1E', 'VRIJDAG_2E']
     const wsKoppen: (string | number)[][] = [kop]

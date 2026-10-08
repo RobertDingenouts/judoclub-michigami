@@ -336,6 +336,7 @@ enum AttendanceStatus {
   ZIEK
   VERZET
   VAKANTIE
+  PROEFLES
 }
 
 model Attendance {

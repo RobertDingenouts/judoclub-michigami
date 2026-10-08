@@ -50,11 +50,13 @@ export async function lessenGridData(opts: {
       // kwartaal weer op. Regel: normale leden altijd; gestopten/verwijderden
       // ALLEEN in periodes waar ze daadwerkelijk aanwezigheid hebben.
       where: {
-        clubStatus: { notIn: ['PROEF'] },
         primaryGroup: { in: groepen },
         OR: [
-          { isActive: true, clubStatus: { not: 'GESTOPT' }, isTrainer: false },
+          { isActive: true, clubStatus: { notIn: ['GESTOPT', 'PROEF'] }, isTrainer: false },
           { attendance: { some: { trainingDay: { date: { gte: rangeStart, lt: rangeEnd } } } }, isTrainer: false },
+          // Proefleden (gasten) altijd in beeld zolang ze actief zijn, zodat
+          // proeflessen gekruist kunnen worden.
+          { clubStatus: 'PROEF', isActive: true, isTrainer: false },
         ],
       },
       orderBy: [{ lastName: 'asc' }],

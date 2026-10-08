@@ -20,7 +20,7 @@ type Row = {
   emergencyContactName: string | null; emergencyContactPhone: string | null
   portretrecht: boolean | null
   bandHistory: { belt: string; at: string }[]
-  payments: { label: string; status: string; amount: number; note: string | null; start: string }[]
+  payments: { label: string; status: string; amount: number; note: string | null; start: string; due: string | null }[]
   exams: { belt: string; status: string; date: string | null; score: number | null }[]
   competitions: { id: string; date: string; name: string; result: string | null }[]
   jpDiolmas: string[]
@@ -81,7 +81,7 @@ export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: 
     // Toekomstige periodes (Q1 2027 start pas 1-1-2027) zijn nog geen schuld
     // en tellen niet mee — Q4 wél, want die loopt nu.
     const nu = new Date().toISOString()
-    const openBedrag = (r: Row) => r.payments.filter(p => ['OPEN', 'HERINNERING1', 'HERINNERING2'].includes(p.status) && p.start <= nu).reduce((s, p) => s + p.amount, 0)
+    const openBedrag = (r: Row) => r.payments.filter(p => ['OPEN', 'HERINNERING1', 'HERINNERING2'].includes(p.status) && (p.due ?? p.start) <= nu).reduce((s, p) => s + p.amount, 0)
     out.sort((a, b) => {
       switch (sortKey) {
         case 'naam': return (`${a.lastName} ${a.firstName}`).localeCompare(`${b.lastName} ${b.firstName}`)
@@ -173,7 +173,7 @@ function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; on
   // "Open" = periode is al (deels) ingegaan en er is nog niet betaald.
   // Een Q1-2027-factuur (start 1-1-2027) is nog geen schuld zolang Q4 loopt.
   const nuIso = new Date().toISOString()
-  const openBet = r.payments.filter(p => ['OPEN', 'HERINNERING1', 'HERINNERING2'].includes(p.status) && p.start <= nuIso)
+  const openBet = r.payments.filter(p => ['OPEN', 'HERINNERING1', 'HERINNERING2'].includes(p.status) && (p.due ?? p.start) <= nuIso)
   const laatstePer = [...periodLabels].reverse().find(l => {
     // actuele periode = laatste die al is ingegaan (Q4 2026, niet Q1 2027)
     const [y, q] = l.split('-Q')

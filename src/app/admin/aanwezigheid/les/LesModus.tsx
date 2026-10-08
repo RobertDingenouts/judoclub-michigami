@@ -17,6 +17,7 @@ const KNoppen: { status: string; kort: string }[] = [
   { status: 'ZIEK', kort: '🤒' },
   { status: 'NIET_AANWEZIG', kort: '❌' },
   { status: 'VAKANTIE', kort: '🏖' },
+  { status: 'PROEFLES', kort: '🆕' },
 ]
 
 export function LesModus({ dag, leden: initLeden, recenteDagen, historie }: { dag: DagInfo; leden: Lid[]; recenteDagen: DagTab[]; historie: HistDag[] }) {

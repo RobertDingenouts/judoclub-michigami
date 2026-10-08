@@ -49,6 +49,7 @@ export default async function LedenPage({
       label: p.period.label, status: p.status,
       amount: Number(p.amount), note: p.note,
       start: p.period.start.toISOString(),
+      due: p.dueDate?.toISOString() ?? null,
     })),
     exams: m.examAttempts.map(e => ({
       belt: e.beltLevel, status: e.status,
