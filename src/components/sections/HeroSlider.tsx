@@ -2,40 +2,19 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
-import { PlayCircle, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { openProeflesForm } from '@/lib/form-events';
 
+// Curated, rustige selectie — geen 30 foto's meer, alleen de sterkste
 const heroImages = [
   { src: '/hero/dojo-2024.jpg' },
-  { src: '/hero/insta-jubileum-2024.webp' },
-  { src: '/hero/michigami-25jaar-1.jpg' },
-  { src: '/hero/insta-training-2024.webp' },
-  { src: '/hero/budodag-actie-1.jpg' },
-  { src: '/hero/insta-actie-2024.webp' },
-  { src: '/hero/heerle-toernooi-1.jpg' },
-  { src: '/hero/insta-feest-2024.webp' },
-  { src: '/hero/clubkamp-groep.jpg' },
-  { src: '/hero/insta-nieuwjaar-2026.webp' },
-  { src: '/hero/training-oud.jpg' },
-  { src: '/hero/insta-club-2024.webp' },
-  { src: '/hero/jubileum-groepsfoto.jpg' },
-  { src: '/hero/insta-zomer-2025.webp' },
-  { src: '/hero/examen-dangraad.jpg' },
   { src: '/hero/insta-groep-2024.webp' },
   { src: '/hero/dojo-nieuwe-matten.jpg' },
-  { src: '/hero/insta-sportief-2024.webp' },
-  { src: '/hero/michigami-25jaar-2.jpg' },
-  { src: '/hero/insta-winter-2025.webp' },
-  { src: '/hero/budodag-actie-3.jpg' },
-  { src: '/hero/heerle-toernooi-2.jpg' },
-  { src: '/hero/clubkamp-actie.jpg' },
-  { src: '/hero/training-oud-2.jpg' },
-  { src: '/hero/jubileum-feest.jpg' },
-  { src: '/hero/examen-3dan.jpg' },
-  { src: '/hero/budodag-actie-2.jpg' },
-  { src: '/hero/heerle-actie-2.jpg' },
-  { src: '/hero/heerle-groep.jpg' },
-  { src: '/hero/budodag-actie-4.jpg' },
+  { src: '/hero/insta-training-2024.webp' },
+  { src: '/hero/jubileum-groepsfoto.jpg' },
+  { src: '/hero/insta-actie-2024.webp' },
+  { src: '/hero/examen-dangraad.jpg' },
+  { src: '/hero/insta-club-2024.webp' },
 ];
 
 export function HeroSlider() {
@@ -53,7 +32,7 @@ export function HeroSlider() {
 
   useEffect(() => {
     if (isPaused) return;
-    const timer = setInterval(nextSlide, 7000);
+    const timer = setInterval(nextSlide, 9000);
     return () => clearInterval(timer);
   }, [isPaused, nextSlide]);
 
@@ -73,81 +52,62 @@ export function HeroSlider() {
 
   return (
     <div
-      className="relative h-[440px] sm:h-[520px] lg:h-[600px] w-full overflow-hidden rounded-2xl group/slider shadow-xl shadow-black/10 touch-pan-y"
+      className="relative h-[440px] sm:h-[520px] lg:h-[580px] w-full overflow-hidden rounded-2xl group/slider shadow-xl shadow-black/10 touch-pan-y"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Slides with Ken Burns zoom */}
+      {/* Slides — zachte crossfade, geen ken-burns gedoe */}
       {heroImages.map((image, idx) => (
         <div
           key={idx}
-          className={`absolute inset-0 transition-opacity duration-1000 ${
+          className={`absolute inset-0 transition-opacity duration-[1400ms] ${
             idx === current ? 'opacity-100 z-10' : 'opacity-0 z-0'
           }`}
         >
-          <div className={`relative w-full h-full ${idx === current ? 'animate-heroZoom' : ''}`}>
-            <Image
-              src={image.src}
-              alt="Judoclub Michigami"
-              fill
-              sizes="100vw"
-              className="object-cover"
-              priority={idx === 0}
-            />
-          </div>
+          <Image
+            src={image.src}
+            alt="Judoclub Michigami"
+            fill
+            sizes="100vw"
+            className="object-cover"
+            priority={idx === 0}
+          />
         </div>
       ))}
 
-      {/* Sumi ink gradient — deep, cinematic, warm at the base */}
-      <div className="absolute inset-0 z-20 bg-gradient-to-t from-[#14120e]/90 via-[#14120e]/35 to-[#14120e]/45" />
-      <div className="absolute inset-0 z-20 bg-gradient-to-r from-[#14120e]/60 via-transparent to-transparent" />
-      {/* Vermilion ember glow, bottom-left */}
-      <div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-[#a90000]/12 blur-3xl z-20" />
+      {/* Egale, kalme overlay — eentje, rustig verloop + extra donker aan de tekstkant */}
+      <div className="absolute inset-0 z-20 bg-gradient-to-t from-[#14120e]/85 via-[#14120e]/35 to-[#14120e]/25" />
+      <div className="absolute inset-0 z-20 bg-gradient-to-r from-[#14120e]/55 via-transparent to-transparent" />
 
-      {/* Vertical kanji — 柔道 (judo), right edge, classical */}
-      <div className="absolute right-6 sm:right-9 top-1/2 -translate-y-1/2 z-30 hidden sm:flex flex-col items-center gap-4 pointer-events-none">
-        {/* Enso brush circle — draws itself, then breathes */}
-        <svg width="64" height="64" viewBox="0 0 100 100" className="mb-2" aria-hidden>
-          <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="7" strokeLinecap="round" className="enso-draw" transform="rotate(-90 50 50)" />
-        </svg>
-        <span className="text-vertical font-mincho text-3xl lg:text-4xl text-white/85 tracking-[0.5em] drop-shadow-lg">
+      {/* Verticale kanji — alleen desktop, rustig */}
+      <div className="absolute right-9 top-1/2 -translate-y-1/2 z-30 hidden lg:flex flex-col items-center gap-3 pointer-events-none">
+        <span className="text-vertical font-mincho text-3xl text-white/70 tracking-[0.5em]">
           柔道
         </span>
-        <span className="w-px h-10 bg-gradient-to-b from-white/50 to-transparent" />
-        <span className="text-vertical text-[10px] lg:text-xs text-white/50 tracking-[0.4em] font-medium">
-          柔心剛意
-        </span>
+        <span className="w-px h-10 bg-gradient-to-b from-white/40 to-transparent" />
       </div>
 
-      {/* Hero content */}
-      <div className="absolute inset-0 z-30 flex flex-col justify-center px-5 sm:px-10 lg:px-14">
+      {/* Hero content — pt houdt ruimte vrij voor de hamburgerknop op mobiel */}
+      <div className="absolute inset-0 z-30 flex flex-col justify-center px-5 sm:px-10 lg:px-14 pt-14 sm:pt-0">
         <div className="max-w-2xl">
           {/* Brand row: hanko seal + name */}
           <div className="flex items-center gap-3 mb-5">
-            <span className="hanko hanko--lg w-11 h-11 sm:w-12 sm:h-12 text-lg sm:text-xl animate-hankoStamp">
+            <span className="hanko hanko--lg w-11 h-11 sm:w-12 sm:h-12 text-lg sm:text-xl">
               道
             </span>
-            <div className="flex items-baseline gap-2.5">
-              <span className="text-white/90 text-sm sm:text-base font-medium tracking-[0.18em] uppercase">
-                Judoclub Michigami
-              </span>
-              <span className="text-white/60 text-[10px] sm:text-xs font-mincho tracking-[0.3em]">
-                道上
-              </span>
-            </div>
+            <span className="text-white/90 text-sm sm:text-base font-medium tracking-[0.18em] uppercase">
+              Judoclub Michigami
+            </span>
           </div>
 
-          {/* Gold hairline above headline */}
-          <div className="divider-kin mb-4 max-w-[220px]" />
-
-          <h1 className="font-display text-4xl sm:text-5xl lg:text-7xl font-bold text-white leading-[1.05] drop-shadow-xl">
-            Judo voor jong &amp; oud
+          <h1 className="font-display text-4xl sm:text-5xl lg:text-7xl font-bold text-white leading-[1.05]">
+            Judo <span className="whitespace-nowrap">voor jong &amp; oud</span>
           </h1>
 
-          <p className="mt-3 sm:mt-4 text-base sm:text-lg lg:text-2xl text-white/85 font-light drop-shadow-md max-w-xl">
-            Van kleuters tot volwassenen — recreatief of competitief, in Steenbergen &amp; Oud-Vossemeer.
+          <p className="mt-3 sm:mt-4 text-base sm:text-lg text-white/80 font-light max-w-xl">
+            Van kleuters tot volwassenen, recreatief of competitief. In Steenbergen en Oud-Vossemeer.
           </p>
 
           <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3">
@@ -155,7 +115,6 @@ export function HeroSlider() {
               onClick={openProeflesForm}
               className="btn-shu inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-base font-semibold"
             >
-              <PlayCircle className="w-5 h-5" />
               Gratis proefles
             </button>
             <a
@@ -167,48 +126,40 @@ export function HeroSlider() {
             </a>
           </div>
 
-          {/* Est. line — mincho, gold */}
-          <p className="mt-6 text-[11px] sm:text-xs text-white/55 font-mincho tracking-[0.35em]">
-            OPGERICHT 1993 · 心技体
+          <p className="mt-6 text-[11px] sm:text-xs text-white/50 tracking-[0.3em]">
+            OPGERICHT 1993
           </p>
         </div>
       </div>
 
-      {/* Navigation arrows */}
+      {/* Pijltjes alleen op desktop (hover) */}
       <button
         onClick={prevSlide}
-        className="absolute left-5 sm:left-7 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity duration-500 z-40 backdrop-blur-sm border border-white/15"
+        className="hidden sm:flex absolute left-7 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/35 hover:bg-black/60 text-white items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity duration-500 z-40 border border-white/15"
         aria-label="Vorige foto"
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="sm:w-5 sm:h-5"><path d="M15 18l-6-6 6-6"/></svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
       <button
         onClick={nextSlide}
-        className="absolute right-5 sm:right-7 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity duration-500 z-40 backdrop-blur-sm border border-white/15"
+        className="hidden sm:flex absolute right-7 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/35 hover:bg-black/60 text-white items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity duration-500 z-40 border border-white/15"
         aria-label="Volgende foto"
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="sm:w-5 sm:h-5"><path d="M9 18l6-6-6-6"/></svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
       </button>
 
-      {/* Progress indicator — washi pill with gold counter */}
-      <div className="absolute bottom-6 right-6 sm:bottom-8 sm:right-9 flex items-center gap-2 z-40">
-        <button
-          onClick={prevSlide}
-          className="w-9 h-9 rounded-full bg-black/55 hover:bg-black/75 text-white flex items-center justify-center transition-colors duration-300 backdrop-blur-sm border border-white/15"
-          aria-label="Vorige foto"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 18l-6-6 6-6"/></svg>
-        </button>
-        <span className="text-white text-sm font-semibold tabular-nums bg-black/55 backdrop-blur-sm px-3 py-1.5 rounded-full min-w-[64px] text-center border border-white/15">
-          {current + 1} / {heroImages.length}
-        </span>
-        <button
-          onClick={nextSlide}
-          className="w-9 h-9 rounded-full bg-black/55 hover:bg-black/75 text-white flex items-center justify-center transition-colors duration-300 backdrop-blur-sm border border-white/15"
-          aria-label="Volgende foto"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 18l6-6-6-6"/></svg>
-        </button>
+      {/* Rustige dots — alleen desktop */}
+      <div className="hidden sm:flex absolute bottom-6 left-1/2 -translate-x-1/2 z-40 items-center gap-2">
+        {heroImages.map((_, idx) => (
+          <button
+            key={idx}
+            onClick={() => setCurrent(idx)}
+            aria-label={`Foto ${idx + 1}`}
+            className={`h-1.5 rounded-full transition-all duration-500 ${
+              idx === current ? 'w-6 bg-white/90' : 'w-1.5 bg-white/40 hover:bg-white/60'
+            }`}
+          />
+        ))}
       </div>
     </div>
   );

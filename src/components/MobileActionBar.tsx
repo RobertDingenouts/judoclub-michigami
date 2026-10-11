@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { Home, CalendarDays, Info, UserPlus, MoreHorizontal } from 'lucide-react';
 import { type SectionId } from './nav-config';
 import { MobileUserAvatar } from './UserDropdown';
 import {
@@ -17,41 +18,41 @@ interface MobileActionBarProps {
   onProeflesClick?: () => void;
 }
 
-// All items in order: Home → Agenda → Info → Proefles → Lid Worden → Technieken → Examens → C.Japans → Meer
-const allItems: { id: SectionId | string; emoji: string; label: string; isProefles?: boolean }[] = [
-  { id: 'home', emoji: '🏠', label: 'Home' },
-  { id: 'agenda', emoji: '📅', label: 'Agenda' },
-  { id: 'info', emoji: 'ℹ️', label: 'Info' },
-  { id: 'proefles', emoji: '🥋', label: 'Proefles', isProefles: true },
-  { id: 'leden', emoji: '👤', label: 'Lid Worden' },
-  { id: 'technieken', emoji: '🎯', label: 'Technieken' },
-  { id: 'exameneisen', emoji: '🏅', label: 'Examens' },
-  { id: 'cursusjapans', emoji: '🇯🇵', label: 'C.Japans' },
+// Vast aantal pillen — past altijd op het scherm, de rest gaat in "Meer"
+const mainItems: { id: SectionId | string; icon: React.ReactNode; label: string; isProefles?: boolean }[] = [
+  { id: 'home', icon: <Home className="w-4 h-4" />, label: 'Home' },
+  { id: 'agenda', icon: <CalendarDays className="w-4 h-4" />, label: 'Agenda' },
+  { id: 'info', icon: <Info className="w-4 h-4" />, label: 'Info' },
+  { id: 'proefles', icon: <UserPlus className="w-4 h-4" />, label: 'Proefles', isProefles: true },
 ];
 
-const moreLinks: { id: SectionId | string; emoji: string; label: string; isExternal?: boolean; url?: string }[] = [
-  { id: 'signin', emoji: '🔑', label: 'Inloggen', isExternal: true, url: '/signin' },
-  { id: 'locatie', emoji: '📍', label: 'Locatie' },
-  { id: 'contact', emoji: '✉️', label: 'Contact' },
-  { id: 'foto-galerij', emoji: '📸', label: "Foto's" },
-  { id: 'video-galerij', emoji: '🎬', label: "Video's" },
-  { id: 'lestijden', emoji: '🕐', label: 'Lestijden' },
-  { id: 'band-knopen', emoji: '🪢', label: 'Band Knopen' },
-  { id: 'formulieren', emoji: '📋', label: 'Formulieren' },
+const moreLinks: { id: SectionId | string; label: string; isExternal?: boolean; url?: string }[] = [
+  { id: 'leden', label: 'Lid worden' },
+  { id: 'technieken', label: 'Technieken' },
+  { id: 'exameneisen', label: 'Examens' },
+  { id: 'cursusjapans', label: 'Cursus Japans' },
+  { id: 'lestijden', label: 'Lestijden' },
+  { id: 'nieuws', label: 'Nieuws' },
+  { id: 'signin', label: 'Inloggen', isExternal: true, url: '/signin' },
+  { id: 'locatie', label: 'Locaties' },
+  { id: 'contact', label: 'Contact' },
+  { id: 'foto-galerij', label: "Foto's" },
+  { id: 'video-galerij', label: "Video's" },
+  { id: 'band-knopen', label: 'Band knopen' },
+  { id: 'formulieren', label: 'Formulieren' },
 ];
 
 export function MobileActionBar({ activeSection, onSectionChange, onProeflesClick }: MobileActionBarProps) {
   const [moreOpen, setMoreOpen] = useState(false);
 
   return (
-    <div className="md:hidden fixed bottom-4 left-0 right-0 z-50 pointer-events-none">
+    <div className="md:hidden fixed bottom-4 left-3 right-3 z-50 pointer-events-none">
       <div
-        className="flex gap-1.5 overflow-x-auto -webkit-overflow-scrolling-touch px-2 pointer-events-auto items-center"
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        className="flex gap-1.5 pointer-events-auto items-center justify-between bg-white/85 backdrop-blur-md rounded-2xl border border-[#2a2a2a]/10 shadow-lg px-2 py-1.5"
       >
         {/* User avatar — shows when logged in */}
         <MobileUserAvatar onSectionChange={(s) => { onSectionChange(s as SectionId); setMoreOpen(false); }} />
-        {allItems.map((item) => (
+        {mainItems.map((item) => (
           <button
             key={item.id + item.label}
             onClick={() => {
@@ -61,15 +62,16 @@ export function MobileActionBar({ activeSection, onSectionChange, onProeflesClic
                 onSectionChange(item.id as SectionId);
               }
             }}
-            className={`flex-shrink-0 inline-flex items-center gap-1 h-9 px-3 rounded-lg shadow-lg border text-xs font-medium active:scale-[0.99] transition-all ${
+            className={`flex-1 inline-flex flex-col items-center gap-0.5 h-12 px-2 rounded-xl text-[11px] font-medium active:scale-[0.98] transition-all ${
               item.isProefles
-                ? 'bg-gradient-to-r from-[#27ae60] to-[#2ecc71] text-white border-transparent'
+                ? 'text-white'
                 : activeSection === item.id
-                ? 'bg-[#fff2f2] backdrop-blur-md text-foreground border-judo-red'
-                : 'bg-white/80 backdrop-blur-md text-foreground border-gray-200/60'
+                ? 'bg-[#fff2f2] text-[#8c0000]'
+                : 'text-[#1c1915]'
             }`}
+            style={item.isProefles ? { backgroundColor: '#a90000' } : undefined}
           >
-            <span className="text-sm">{item.emoji}</span>
+            {item.icon}
             <span>{item.label}</span>
           </button>
         ))}
@@ -77,15 +79,15 @@ export function MobileActionBar({ activeSection, onSectionChange, onProeflesClic
         {/* More pill — opens bottom sheet */}
         <Drawer direction="bottom" open={moreOpen} onOpenChange={setMoreOpen}>
           <DrawerTrigger asChild>
-            <button className="flex-shrink-0 inline-flex items-center gap-1 h-9 px-3 rounded-lg bg-white/80 backdrop-blur-md shadow-lg border border-gray-200/60 text-xs font-medium text-foreground active:scale-[0.99] transition-transform">
-              <span className="text-sm">⋯</span>
+            <button className="flex-1 inline-flex flex-col items-center gap-0.5 h-12 px-2 rounded-xl text-[11px] font-medium text-[#1c1915] active:scale-[0.98] transition-transform">
+              <MoreHorizontal className="w-4 h-4" />
               <span>Meer</span>
             </button>
           </DrawerTrigger>
           <DrawerContent className="max-h-[70vh]">
             <DrawerHeader>
               <DrawerTitle className="text-center font-bold" style={{ color: '#8c0000' }}>
-                Meer Opties
+                Meer
               </DrawerTitle>
             </DrawerHeader>
             <div className="px-4 pb-6 space-y-1">
@@ -98,7 +100,6 @@ export function MobileActionBar({ activeSection, onSectionChange, onProeflesClic
                     rel="noopener noreferrer"
                     className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-foreground hover:bg-judo-red-bg transition-all active:scale-[0.99]"
                   >
-                    <span>{link.emoji}</span>
                     <span>{link.label}</span>
                   </a>
                 ) : (
@@ -111,7 +112,6 @@ export function MobileActionBar({ activeSection, onSectionChange, onProeflesClic
                         : 'text-foreground hover:bg-judo-red-bg'
                     }`}
                   >
-                    <span>{link.emoji}</span>
                     <span>{link.label}</span>
                   </button>
                 )

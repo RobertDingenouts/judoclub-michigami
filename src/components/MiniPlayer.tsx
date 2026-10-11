@@ -113,7 +113,7 @@ export function MiniPlayer({ onOpenMusic, formOpen = false }: { onOpenMusic: () 
     const h = md === 'dot' ? DOT : md === 'bar' ? 46 : 104;
     const dp = clampPos(
       p?.x ?? (mobile ? window.innerWidth - w - 12 : window.innerWidth - w - 16),
-      p?.y ?? (mobile ? window.innerHeight - 60 - h - 12 : 16),
+      p?.y ?? (mobile ? window.innerHeight - 130 - h : 16),
       w, h,
     );
     posRef.current = dp;
