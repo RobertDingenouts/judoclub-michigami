@@ -1,0 +1,305 @@
+{
+ "agenda2025": {
+  "2025-01-12": {
+   "displayDate": "12 January",
+   "event": "Lintjestoernooi (Ribbon Tournament)",
+   "eventSub": "Budoschool Cor Schuurbiers",
+   "details": "Beginner judoka up to 16 years",
+   "location": "Sporthal In de Roos",
+   "locationSub": "Roosendaal",
+   "locationUrl": "https://maps.google.com/?q=Sporthal+In+de+Roos+Roosendaal",
+   "time": "8.00-11.00"
+  },
+  "2025-02-09": {
+   "displayDate": "9 February",
+   "event": "Lintjestoernooi (Ribbon Tournament)",
+   "eventSub": "Budoschool Cor Schuurbiers",
+   "details": "Beginner judoka up to 16 years",
+   "location": "Sporthal In de Roos",
+   "locationSub": "Roosendaal",
+   "locationUrl": "https://maps.google.com/?q=Sporthal+In+de+Roos+Roosendaal",
+   "time": "8.00-11.00"
+  },
+  "2025-02-28": {
+   "displayDate": "28 feb & 7 mrt",
+   "event": "No lessons due to",
+   "eventSub": "Carnival holiday",
+   "details": "",
+   "location": "-",
+   "time": "-"
+  },
+  "2025-03-14": {
+   "displayDate": "14 March",
+   "event": "Oostkapelle Tournament",
+   "details": "up to 12 years",
+   "location": "Halve Maan",
+   "locationSub": "Oostkapelle",
+   "locationUrl": "https://maps.google.com/?q=Sporthal+de+Halve+Maan+Oostkapelle",
+   "time": "16.30"
+  },
+  "2025-03-15": {
+   "displayDate": "15 March",
+   "event": "CJJF Kata/",
+   "eventSub": "Technical training",
+   "details": "From 15 years<br>blue belt",
+   "location": "Wuustwezel",
+   "time": "14.00-16.00"
+  },
+  "2025-03-22": {
+   "displayDate": "22 March",
+   "event": "Shinomaki Competition",
+   "eventSub": "Loenhout",
+   "details": "All ages",
+   "location": "Sportcentrum",
+   "locationSub": "Gooreind",
+   "time": "Zie weegtijden",
+   "inschrijfUrl": "https://linknaar.shinomaki.info/inschrijven",
+   "inschrijfTekst": "Info & Sign up"
+  },
+  "2025-03-23": {
+   "displayDate": "23 March",
+   "event": "Judo Tournament J.C. Yoshi-Kwai",
+   "eventSub": "Borgerhout",
+   "details": "All ages",
+   "location": "Sporthal Luisbekelaar",
+   "locationSub": "Borgerhout",
+   "locationUrl": "https://maps.google.com/?q=Sporthal+Luisbekelaar+Borgerhout",
+   "time": "From 8.45",
+   "inschrijfUrl": "https://voorbeeld.com/inschrijfformulier-yoshikwai",
+   "inschrijfTekst": "Sign up"
+  },
+  "2025-04-13": {
+   "displayDate": "13 April",
+   "event": "Lintjestoernooi (Ribbon Tournament)",
+   "eventSub": "Budoschool Cor Schuurbiers",
+   "details": "Beginner judoka up to 16 years",
+   "location": "Sporthal In de Roos",
+   "locationSub": "Roosendaal",
+   "locationUrl": "https://maps.google.com/?q=Sporthal+In+de+Roos+Roosendaal",
+   "time": "8.00-11.00",
+   "inschrijfUrl": "https://voorbeeld.com/inschrijven-lintjes-april",
+   "inschrijfTekst": "Sign up"
+  },
+  "2025-04-19": {
+   "displayDate": "19 April",
+   "event": "Paastoernooi (Easter Tournament) OVJV",
+   "details": "up to 18 years",
+   "location": "Dorpshuis \"De Vossenkuil\"",
+   "locationSub": "Oud-Vossemeer",
+   "locationUrl": "https://www.google.com/maps/search/?api=1&query=Bou+Kooijmanstraat+48+4698+AM+Oud-Vossemeer",
+   "time": "9.00-12.00",
+   "inschrijfUrl": "https://ovjv.nl/paastoernooi/inschrijven",
+   "inschrijfTekst": "Sign up"
+  },
+  "2025-04-25": {
+   "displayDate": "25 apr & 2 May",
+   "event": "No lessons due to",
+   "eventSub": "May holiday",
+   "details": "",
+   "location": "-",
+   "time": "-"
+  },
+  "2025-05-23": {
+   "displayDate": "23 May",
+   "event": "Puntentoernooi (Points Tournament) Oostkapelle",
+   "details": "up to 12 years",
+   "location": "Halve Maan",
+   "locationSub": "Oostkapelle",
+   "locationUrl": "https://maps.google.com/?q=Sporthal+de+Halve+Maan+Oostkapelle",
+   "time": "16.30"
+  },
+  "2025-05-24": {
+   "displayDate": "24 May",
+   "event": "CJJF Kata/",
+   "eventSub": "Technical training",
+   "details": "From 15 years<br>blue belt",
+   "location": "Wuustwezel",
+   "time": "14.00-16.00"
+  },
+  "2025-06-13": {
+   "displayDate": "13 June",
+   "event": "Beach Training Oostkapelle",
+   "details": "All ages",
+   "location": "Oostkapelle Beach",
+   "locationUrl": "https://maps.app.goo.gl/5osCGE6pBMmT3FNh6",
+   "time": "1e 16.30<br>2e 17.30<br>3e 18.30"
+  },
+  "2025-06-15": {
+   "displayDate": "15 June",
+   "event": "Lintjestoernooi (Ribbon Tournament)",
+   "eventSub": "Budoschool Cor Schuurbiers",
+   "details": "Beginner judoka up to 16 years",
+   "location": "Sporthal In de Roos",
+   "locationSub": "Roosendaal",
+   "locationUrl": "https://maps.app.goo.gl/7ZnFrSxadrgEiAhm6",
+   "inschrijfUrl": "https://budoschool-corschuurbiers.nl/inschrijving-lintjestoernooi",
+   "inschrijfTekst": "Sign up",
+   "time": "8.00-11.00"
+  },
+  "2025-07-04": {
+   "displayDate": "4 July t/m 15 aug",
+   "event": "No lessons due to",
+   "eventSub": "Summer holiday",
+   "details": "",
+   "location": "-",
+   "time": "-"
+  },
+  "2025-09-12": {
+   "displayDate": "12 September",
+   "event": "Open Club Championships",
+   "eventSub": "Judoclub Michigami",
+   "details": "All ages",
+   "location": "Sportcentrum De Knotwilg",
+   "locationUrl": "https://www.google.com/maps/search/?api=1&query=Sportcentrum+De+Knotwilg+Wipstraat+2+4651+XW+Steenbergen",
+   "inschrijfUrl": "https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAYAABgJGLlUMzRSRFQyUU1LMk1JUlZXVEtVVFVGQUIzSS4u",
+   "inschrijfTekst": "Sign up",
+   "time": "18.30-22.30"
+  },
+  "2025-09-14": {
+   "displayDate": "14 September",
+   "event": "Lintjestoernooi (Ribbon Tournament)",
+   "eventSub": "Budoschool Cor Schuurbiers",
+   "details": "Beginner judoka up to 16 years",
+   "location": "Sporthal In de Roos",
+   "locationSub": "Roosendaal",
+   "locationUrl": "https://maps.app.goo.gl/7ZnFrSxadrgEiAhm6",
+   "inschrijfUrl": "https://budoschool-corschuurbiers.nl/inschrijving-lintjestoernooi",
+   "inschrijfTekst": "Sign up",
+   "time": "8.00-11.00"
+  },
+  "2025-10-24": {
+   "displayDate": "24 October",
+   "event": "Bring-a-friend day",
+   "eventSub": "Judoclub Michigami",
+   "details": "All ages",
+   "location": "Sportcentrum De Knotwilg",
+   "locationSub": "Steenbergen",
+   "locationUrl": "https://www.google.com/maps/search/?api=1&query=Sportcentrum+De+Knotwilg+Wipstraat+2+4651+XW+Steenbergen",
+   "time": "18.45-21.45"
+  },
+  "2025-11-09": {
+   "displayDate": "9 November",
+   "event": "Lintjestoernooi (Ribbon Tournament)",
+   "eventSub": "Budoschool Cor Schuurbiers",
+   "details": "Beginner judoka up to 16 years",
+   "location": "Sporthal In de Roos",
+   "locationSub": "Roosendaal",
+   "locationUrl": "https://maps.app.goo.gl/7ZnFrSxadrgEiAhm6",
+   "inschrijfUrl": "https://budoschool-corschuurbiers.nl/inschrijving-lintjestoernooi",
+   "inschrijfTekst": "Sign up",
+   "time": "8.00-11.00"
+  },
+  "2025-11-28": {
+   "displayDate": "28 November",
+   "event": "Oostkapelle Tournament",
+   "details": "up to 12 years",
+   "location": "Halve Maan",
+   "locationSub": "Oostkapelle",
+   "locationUrl": "https://maps.google.com/?q=Sporthal+de+Halve+Maan+Oostkapelle",
+   "time": "16.30",
+   "inschrijfUrl": "https://forms.office.com/r/mPaDTkienk",
+   "inschrijfTekst": "Sign up"
+  },
+  "2025-11-28-2": {
+   "displayDate": "28 November",
+   "event": "Lintjestoernooi (Ribbon Tournament)",
+   "eventSub": "Budoschool Cor Schuurbiers",
+   "details": "Beginner judoka up to 16 years",
+   "location": "Sporthal In de Roos",
+   "locationSub": "Roosendaal",
+   "locationUrl": "https://maps.app.goo.gl/7ZnFrSxadrgEiAhm6",
+   "inschrijfUrl": "https://budoschool-corschuurbiers.nl/inschrijving-lintjestoernooi",
+   "inschrijfTekst": "Sign up",
+   "time": "8.00-11.00",
+   "canceled": true
+  },
+  "2025-12-05": {
+   "displayDate": "5 December",
+   "event": "No lessons due to",
+   "eventSub": "Sinterklaas evening",
+   "details": "",
+   "location": "-",
+   "time": "-"
+  },
+  "2025-12-12": {
+   "displayDate": "12 December",
+   "event": "Last lesson",
+   "eventSub": "Before the Christmas holiday",
+   "details": "",
+   "location": "-",
+   "time": "-"
+  },
+  "2025-12-14": {
+   "displayDate": "14 December",
+   "event": "Kersttoernooi (Christmas Tournament) Sportschool Shintai",
+   "eventSub": "Halsteren",
+   "details": "All ages",
+   "location": "Sporthal De Kannebuis",
+   "locationSub": "Halsteren",
+   "locationUrl": "https://maps.app.goo.gl/DXLfGqMGzPhdiXX2A",
+   "time": "From 9.00, exact time known 1 week in advance",
+   "inschrijfUrl": "https://forms.office.com/r/h5i508mHkK",
+   "inschrijfTekst": "Sign up"
+  },
+  "2025-12-14-2": {
+   "displayDate": "14 December",
+   "event": "Lintjestoernooi (Ribbon Tournament)",
+   "eventSub": "Budoschool Cor Schuurbiers",
+   "details": "Beginner judoka up to 16 years",
+   "location": "Sporthal In de Roos",
+   "locationSub": "Roosendaal",
+   "locationUrl": "https://maps.app.goo.gl/7ZnFrSxadrgEiAhm6",
+   "inschrijfUrl": "https://budoschool-corschuurbiers.nl/inschrijving-lintjestoernooi",
+   "inschrijfTekst": "Sign up",
+   "time": "8.00-11.00",
+   "canceled": true
+  },
+  "2025-12-19": {
+   "displayDate": "19 dec & 26 dec",
+   "event": "No lessons due to",
+   "eventSub": "Christmas holiday",
+   "details": "",
+   "location": "-",
+   "time": "-"
+  }
+ },
+ "archive": {
+  "clubkampioenschappen-2012": {
+   "title": "Club Championships 2012"
+  },
+  "budo-kidsdag-2015": {
+   "title": "Budo Kids Day 2015",
+   "description": "CJJF/IMAF Budo Kids Day"
+  },
+  "budodag-2011": {
+   "title": "Budo Day 2011"
+  },
+  "budodag-duiven-imaf-2015": {
+   "title": "Budo Day Duiven IMAF 2015"
+  },
+  "heerle-2016": {
+   "title": "Heerle 2016"
+  },
+  "oud-vossemeer-2014": {
+   "title": "Oud Vossemeer 2014"
+  },
+  "survivalrun-steenbergen": {
+   "title": "Survival Run Steenbergen"
+  },
+  "sinterklaastoernooi-heerle-2013": {
+   "title": "Sinterklaastoernooi (Sinterklaas Tournament) Heerle 2013"
+  },
+  "toernooi-stichting-judo-geelhoed": {
+   "title": "Stichting Judo Geelhoed Tournament"
+  },
+  "toernooi-yukio-tani-huijbergen": {
+   "title": "Yukio Tani Huijbergen Tournament"
+  },
+  "vlissingen-2015": {
+   "title": "Vlissingen 2015"
+  },
+  "vechtbaltoernooi-22-maart-2014": {
+   "title": "Vechtbaltoernooi (Combat Ball Tournament) 22 March 2014"
+  }
+ }
+}

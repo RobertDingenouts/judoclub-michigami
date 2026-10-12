@@ -2,6 +2,7 @@
 
 import { ArrowRight } from 'lucide-react';
 import type { Section } from '@/components/nav-config';
+import { useT } from '@/i18n/LangContext';
 
 const itemDescriptions: Record<string, string> = {
   'home': 'Welkom & overzicht',
@@ -57,6 +58,7 @@ export function CategoryHubSection({ group, onNavigate, navGroups, groupHubMap }
   navGroups: { label: string; emoji: string; items: { key: string }[] }[];
   groupHubMap: Record<string, Section>;
 }) {
+  const { t } = useT();
   const theme = groupThemes[group.label] || DEFAULT_THEME;
 
   return (
@@ -104,7 +106,7 @@ export function CategoryHubSection({ group, onNavigate, navGroups, groupHubMap }
             </div>
             <div className="min-w-0">
               <p className="text-[10px] sm:text-xs uppercase tracking-[0.25em] font-semibold mb-1" style={{ color: theme.accent }}>
-                Verzamelpagina
+                {t('Verzamelpagina')}
               </p>
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight drop-shadow-sm">
                 {group.label}
@@ -115,7 +117,7 @@ export function CategoryHubSection({ group, onNavigate, navGroups, groupHubMap }
             className="hub-anim mt-4 sm:mt-5 text-sm sm:text-base max-w-xl text-white/85 leading-relaxed"
             style={{ animationDelay: '0.08s' }}
           >
-            {theme.tagline}
+            {t(theme.tagline)}
           </p>
           <div
             className="hub-anim mt-5 h-1 w-16 rounded-full bg-white/40"
@@ -160,17 +162,17 @@ export function CategoryHubSection({ group, onNavigate, navGroups, groupHubMap }
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="font-bold text-gray-800 group-hover:text-[#a90000] transition-colors text-base sm:text-lg leading-snug">
-                  {item.label}
+                  {t(item.label)}
                 </h3>
                 <p className="text-xs text-gray-500 mt-1 leading-relaxed">
-                  {itemDescriptions[item.key] || ''}
+                  {t(itemDescriptions[item.key] || '')}
                 </p>
               </div>
             </div>
 
             {/* CTA-rij onderaan */}
             <div className="mt-4 flex items-center gap-1.5 text-xs font-semibold text-[#a90000] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 relative">
-              <span>Kijken</span>
+              <span>{t('Kijken')}</span>
               <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
             </div>
           </button>
@@ -181,7 +183,7 @@ export function CategoryHubSection({ group, onNavigate, navGroups, groupHubMap }
       <div className="pt-2">
         <div className="flex items-center gap-3 mb-4">
           <h3 className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em]">
-            Verken ook
+            {t('Verken ook')}
           </h3>
           <div className="flex-1 h-px bg-gradient-to-r from-[#e9e0cf] to-transparent" />
         </div>
@@ -190,7 +192,7 @@ export function CategoryHubSection({ group, onNavigate, navGroups, groupHubMap }
             .filter((g) => g.label !== group.label)
             .map((otherGroup, i) => (
               <button
-                key={otherGroup.label}
+                key={t(otherGroup.label)}
                 onClick={() => onNavigate(groupHubMap[otherGroup.label])}
                 className="group flex items-center gap-4 p-4 rounded-xl border border-[#e9e0cf] bg-white hover:shadow-md hover:border-[#a90000]/25 hover:bg-[#fdf6f6] transition-all duration-300 active:scale-[0.99]"
               >
@@ -199,10 +201,10 @@ export function CategoryHubSection({ group, onNavigate, navGroups, groupHubMap }
                 </div>
                 <div className="text-left flex-1 min-w-0">
                   <span className="text-sm font-bold text-gray-800 group-hover:text-[#a90000] transition-colors block truncate">
-                    {otherGroup.label}
+                    {t(otherGroup.label)}
                   </span>
                   <span className="text-[11px] text-gray-400">
-                    {otherGroup.items.length} onderwerpen
+                    {otherGroup.items.length} {t('onderwerpen')}
                   </span>
                 </div>
                 <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-[#a90000] group-hover:translate-x-0.5 transition-all flex-shrink-0" />

@@ -3,7 +3,6 @@ import { Geist, Inter, Rokkitt, Noto_Sans_JP, Oswald, Shippori_Mincho, Fraunces,
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { JsonLd } from "@/components/JsonLd";
-import { SeoFooter } from "@/components/SeoFooter";
 import { PWARegister } from "@/components/PWARegister";
 
 const geistSans = Geist({
@@ -175,7 +174,6 @@ export default function RootLayout({
       >
         <PWARegister />
         {children}
-        <SeoFooter />
         <Toaster />
         <JsonLd />
       </body>

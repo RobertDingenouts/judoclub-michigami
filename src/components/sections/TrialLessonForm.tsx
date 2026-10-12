@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react';
 import { Mail, Phone, ChevronRight, ChevronLeft, Check, X, User, Calendar, Clock, MapPin } from 'lucide-react';
 import { contactInfo } from '@/data/contact';
+import { useT } from '@/i18n/LangContext';
 
 // --- Types ---
 interface FormData {
@@ -113,6 +114,7 @@ function getMailtoLink(formData: FormData) {
 
 // --- Progress Indicator with green checkmarks ---
 function StepIndicator({ currentStep, totalSteps }: { currentStep: number; totalSteps: number }) {
+  const { t } = useT();
   const steps = [
     { label: 'Judoka' },
     { label: 'Groep & dag' },
@@ -123,7 +125,7 @@ function StepIndicator({ currentStep, totalSteps }: { currentStep: number; total
     <div className="space-y-3">
       {/* Step label */}
       <div className="text-center text-xs font-medium text-gray-500">
-        Stap {currentStep} van {totalSteps}
+        {t('Stap')} {currentStep} {t('van')} {totalSteps}
       </div>
 
       {/* Checkmark progress bars */}
@@ -149,7 +151,7 @@ function StepIndicator({ currentStep, totalSteps }: { currentStep: number; total
               <span className={`text-[10px] hidden sm:block ${
                 i + 1 <= currentStep ? 'text-gray-700 font-medium' : 'text-gray-400'
               }`}>
-                {steps[i]?.label}
+                {t(steps[i]?.label ?? '')}
               </span>
             </div>
             {i < totalSteps - 1 && (
@@ -166,33 +168,34 @@ function StepIndicator({ currentStep, totalSteps }: { currentStep: number; total
 
 // --- Step 1: Judoka Info ---
 function Step1_JudokaInfo({ data, onChange }: { data: FormData; onChange: (field: string, value: string) => void }) {
+  const { t } = useT();
   return (
     <div className="space-y-4">
-      <h3 className="font-bold text-[#8c0000] text-base sm:text-lg text-center">Informatie over de judoka</h3>
+      <h3 className="font-bold text-[#8c0000] text-base sm:text-lg text-center">{t('Informatie over de judoka')}</h3>
 
       <div className="space-y-1">
-        <label className="text-sm font-medium text-gray-700">Naam van de judoka</label>
+        <label className="text-sm font-medium text-gray-700">{t('Naam van de judoka')}</label>
         <div className="relative">
           <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
             type="text"
             value={data.judokaName}
             onChange={(e) => onChange('judokaName', e.target.value)}
-            placeholder="Voornaam en achternaam"
+            placeholder={t('Voornaam en achternaam')}
             className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-[#e9e0cf] focus:ring-2 focus:ring-[#a90000]/30 focus:border-[#a90000] outline-none transition-all text-sm"
           />
         </div>
       </div>
 
       <div className="space-y-1">
-        <label className="text-sm font-medium text-gray-700">Leeftijd</label>
+        <label className="text-sm font-medium text-gray-700">{t('Leeftijd')}</label>
         <input
           type="number"
           min="4"
           max="99"
           value={data.judokaAge}
           onChange={(e) => onChange('judokaAge', e.target.value)}
-          placeholder="Bijv. 8"
+          placeholder={t('Bijv. 8')}
           className="w-full px-4 py-2.5 rounded-lg border border-[#e9e0cf] focus:ring-2 focus:ring-[#a90000]/30 focus:border-[#a90000] outline-none transition-all text-sm"
         />
       </div>
@@ -202,6 +205,7 @@ function Step1_JudokaInfo({ data, onChange }: { data: FormData; onChange: (field
 
 // --- Step 2: Groep + voorkeur trainingsdag (samengevoegd) ---
 function Step2_GroupAndDay({ age, data, onChange }: { age: string; data: FormData; onChange: (field: string, value: string) => void }) {
+  const { t } = useT();
   const groupInfo = getEffectiveGroup(data.preferredDay, parseInt(age) || 0);
 
   const days = [
@@ -223,7 +227,7 @@ function Step2_GroupAndDay({ age, data, onChange }: { age: string; data: FormDat
 
   return (
     <div className="space-y-4">
-      <h3 className="font-bold text-[#8c0000] text-base sm:text-lg text-center">Jouw groep & trainingsdag</h3>
+      <h3 className="font-bold text-[#8c0000] text-base sm:text-lg text-center">{t('Jouw groep & trainingsdag')}</h3>
 
       {parseInt(age) >= 4 ? (
         <div className="bg-gradient-to-br from-[#fdf6f6] to-white rounded-lg p-4 sm:p-5 border border-[#a90000]/10">
@@ -232,15 +236,15 @@ function Step2_GroupAndDay({ age, data, onChange }: { age: string; data: FormDat
               <Check className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
             <div>
-              <h4 className="font-bold text-[#8c0000] text-base sm:text-lg">{groupInfo.groupName}</h4>
-              <p className="text-xs sm:text-sm text-gray-500">{groupInfo.ageRange}</p>
+              <h4 className="font-bold text-[#8c0000] text-base sm:text-lg">{t(groupInfo.groupName)}</h4>
+              <p className="text-xs sm:text-sm text-gray-500">{t(groupInfo.ageRange)}</p>
             </div>
           </div>
 
           <div className="space-y-2 text-sm">
             <div className="flex items-center gap-2 text-gray-700">
               <Calendar className="w-4 h-4 text-[#a90000] flex-shrink-0" />
-              <span>{groupInfo.day === 'woensdag' ? 'Woensdagavond' : 'Vrijdagavond'}</span>
+              <span>{t(groupInfo.day === 'woensdag' ? 'Woensdagavond' : 'Vrijdagavond')}</span>
             </div>
             <div className="flex items-center gap-2 text-gray-700">
               <Clock className="w-4 h-4 text-[#a90000] flex-shrink-0" />
@@ -248,20 +252,20 @@ function Step2_GroupAndDay({ age, data, onChange }: { age: string; data: FormDat
             </div>
             <div className="flex items-center gap-2 text-gray-700">
               <MapPin className="w-4 h-4 text-[#a90000] flex-shrink-0" />
-              <span>{groupInfo.location}</span>
+              <span>{t(groupInfo.location)}</span>
             </div>
           </div>
 
           <p className="text-xs text-gray-500 mt-3 italic">
             {data.preferredDay === 'woensdag'
-              ? 'Op woensdagavond is één algemene training voor alle leeftijden.'
-              : 'Deze groep is automatisch geselecteerd op basis van de leeftijd.'}
+              ? t('Op woensdagavond is één algemene training voor alle leeftijden.')
+              : t('Deze groep is automatisch geselecteerd op basis van de leeftijd.')}
           </p>
         </div>
       ) : (
         <div className="bg-[#fff2f2] rounded-lg p-4 sm:p-5 text-center border border-[#a90000]/10">
           <p className="text-sm text-gray-700">
-            Geef de leeftijd van de judoka in om automatisch de juiste groep te zien.
+            {t('Geef de leeftijd van de judoka in om automatisch de juiste groep te zien.')}
           </p>
         </div>
       )}
@@ -269,7 +273,7 @@ function Step2_GroupAndDay({ age, data, onChange }: { age: string; data: FormDat
       {/* Voorkeur trainingsdag */}
       <div>
         <h4 className="font-bold text-[#8c0000] text-sm sm:text-base text-center mb-3">
-          Kies je voorkeur trainingsdag
+          {t('Kies je voorkeur trainingsdag')}
         </h4>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {days.map((day) => {
@@ -290,9 +294,9 @@ function Step2_GroupAndDay({ age, data, onChange }: { age: string; data: FormDat
                   </div>
                 )}
                 <div className="text-2xl mb-2">{day.icon}</div>
-                <h4 className="font-bold text-[#8c0000] text-sm sm:text-base">{day.label}</h4>
-                <p className="text-xs text-gray-500 mt-1">{day.time}</p>
-                <p className="text-xs text-gray-500">{day.location}</p>
+                <h4 className="font-bold text-[#8c0000] text-sm sm:text-base">{t(day.label)}</h4>
+                <p className="text-xs text-gray-500 mt-1">{t(day.time)}</p>
+                <p className="text-xs text-gray-500">{t(day.location)}</p>
               </button>
             );
           })}
@@ -304,64 +308,65 @@ function Step2_GroupAndDay({ age, data, onChange }: { age: string; data: FormDat
 
 // --- Step 3: Confirmation (Contact + Summary) ---
 function Step4_Confirmation({ data, onChange, onSubmit }: { data: FormData; onChange: (field: string, value: string) => void; onSubmit: () => void }) {
+  const { t } = useT();
   const groupInfo = getEffectiveGroup(data.preferredDay, parseInt(data.judokaAge) || 0);
   const details = getTrainingDetails(data.preferredDay, parseInt(data.judokaAge) || 0);
 
   return (
     <div className="space-y-4">
-      <h3 className="font-bold text-[#8c0000] text-base sm:text-lg text-center">Bijna klaar! Controleer je gegevens</h3>
+      <h3 className="font-bold text-[#8c0000] text-base sm:text-lg text-center">{t('Bijna klaar! Controleer je gegevens')}</h3>
 
       {/* Summary Card */}
       <div className="bg-gradient-to-br from-[#fdf6f6] to-white rounded-lg p-4 sm:p-5 border border-[#a90000]/10 space-y-2">
         <div className="flex items-center gap-2 text-sm">
           <User className="w-4 h-4 text-[#a90000] flex-shrink-0" />
           <span className="font-medium text-gray-700">{data.judokaName}</span>
-          <span className="text-gray-500">({data.judokaAge} jaar)</span>
+          <span className="text-gray-500">({data.judokaAge} {t('jaar')})</span>
         </div>
         <div className="flex items-center gap-2 text-sm">
           <Calendar className="w-4 h-4 text-[#a90000] flex-shrink-0" />
-          <span className="text-gray-700">{groupInfo.groupName}</span>
+          <span className="text-gray-700">{t(groupInfo.groupName)}</span>
         </div>
         <div className="flex items-center gap-2 text-sm">
           <Clock className="w-4 h-4 text-[#a90000] flex-shrink-0" />
           <span className="text-gray-700">
-            {data.preferredDay === 'woensdag' ? 'Woensdagavond' : 'Vrijdagavond'} — {details.time}
+            {t(data.preferredDay === 'woensdag' ? 'Woensdagavond' : 'Vrijdagavond')} — {details.time}
           </span>
         </div>
         <div className="flex items-center gap-2 text-sm">
           <MapPin className="w-4 h-4 text-[#a90000] flex-shrink-0" />
-          <span className="text-gray-700">{details.location}</span>
+          <span className="text-gray-700">{t(details.location)}</span>
         </div>
       </div>
 
       {/* Contact Info */}
       <div className="space-y-3">
-        <h4 className="font-semibold text-sm text-gray-700 text-center">Contactgegevens ouder/verantwoordelijke</h4>
+        <h4 className="font-semibold text-sm text-gray-700 text-center">{t('Contactgegevens ouder/verantwoordelijke')}</h4>
 
         <div className="space-y-1">
-          <label className="text-sm font-medium text-gray-700">Naam</label>
+          <label className="text-sm font-medium text-gray-700">{t('Naam')}</label>
           <input
             type="text"
             value={data.parentName}
             onChange={(e) => onChange('parentName', e.target.value)}
-            placeholder="Uw volledige naam"
+            placeholder={t('Uw volledige naam')}
             className="w-full px-4 py-2.5 rounded-lg border border-[#e9e0cf] focus:ring-2 focus:ring-[#a90000]/30 focus:border-[#a90000] outline-none transition-all text-sm"
           />
         </div>
 
         <div className="space-y-1">
-          <label className="text-sm font-medium text-gray-700">Telefoonnummer</label>
+          <label className="text-sm font-medium text-gray-700">{t('Telefoonnummer')}</label>
           <input
             type="tel"
             value={data.parentPhone}
             onChange={(e) => onChange('parentPhone', e.target.value)}
-            placeholder="Bijv. 0612345678"
+            placeholder={t('Bijv. 0612345678')}
             className="w-full px-4 py-2.5 rounded-lg border border-[#e9e0cf] focus:ring-2 focus:ring-[#a90000]/30 focus:border-[#a90000] outline-none transition-all text-sm"
           />
         </div>
 
         <div className="space-y-1">
-          <label className="text-sm font-medium text-gray-700">Email (optioneel)</label>
+          <label className="text-sm font-medium text-gray-700">{t('Email (optioneel)')}</label>
           <input
             type="email"
             value={data.parentEmail}
@@ -372,17 +377,17 @@ function Step4_Confirmation({ data, onChange, onSubmit }: { data: FormData; onCh
         </div>
       </div>
 
-      {/* Submit Buttons */}
+      {/* Submit Buttons — de gegenereerde mail/WhatsApp-tekst blijft Nederlandstalig (de club leest dat) */}
       <div className="space-y-3 pt-2">
         <button
           onClick={onSubmit}
           className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#a90000] to-[#c00000] text-white px-6 py-3 rounded-lg font-bold text-sm sm:text-base hover:from-[#8c0000] hover:to-[#a00000] transition-all shadow-md hover:shadow-lg"
         >
           <Mail className="w-4 h-4" />
-          Verstuur via email
+          {t('Verstuur via email')}
         </button>
 
-        <div className="text-center text-xs text-gray-500">of</div>
+        <div className="text-center text-xs text-gray-500">{t('of')}</div>
 
         <a
           href={getWhatsAppLink(data)}
@@ -391,11 +396,11 @@ function Step4_Confirmation({ data, onChange, onSubmit }: { data: FormData; onCh
           className="flex items-center justify-center gap-2 w-full bg-[#25D366] hover:bg-[#128C7E] text-white px-6 py-3 rounded-lg font-bold text-sm sm:text-base transition-all shadow-md hover:shadow-lg"
         >
           <Phone className="w-4 h-4" />
-          Verstuur via WhatsApp
+          {t('Verstuur via WhatsApp')}
         </a>
 
         <p className="text-xs text-gray-500 text-center">
-          Je wordt doorgestuurd naar je email client of WhatsApp. De proefles aanvraag wordt dan verstuurd naar de club.
+          {t('Je wordt doorgestuurd naar je email client of WhatsApp. De proefles aanvraag wordt dan verstuurd naar de club.')}
         </p>
       </div>
     </div>
@@ -404,6 +409,7 @@ function Step4_Confirmation({ data, onChange, onSubmit }: { data: FormData; onCh
 
 // --- Main Component ---
 export function TrialLessonForm({ onClose }: { onClose?: () => void }) {
+  const { t } = useT();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<FormData>({
     judokaName: '',
@@ -453,8 +459,8 @@ export function TrialLessonForm({ onClose }: { onClose?: () => void }) {
             <X className="w-4 h-4" />
           </button>
         )}
-        <h2 className="text-base sm:text-lg font-bold">Gratis Proefles</h2>
-        <p className="text-white/80 text-xs sm:text-sm mt-1">Vul het formulier in en we nemen contact met je op</p>
+        <h2 className="text-base sm:text-lg font-bold">{t('Gratis Proefles')}</h2>
+        <p className="text-white/80 text-xs sm:text-sm mt-1">{t('Vul het formulier in en we nemen contact met je op')}</p>
       </div>
 
       {/* Step Indicator */}
@@ -480,7 +486,7 @@ export function TrialLessonForm({ onClose }: { onClose?: () => void }) {
               className="flex items-center gap-1 px-4 py-2.5 rounded-lg border border-[#e9e0cf] text-gray-600 hover:bg-gray-50 transition-all text-sm"
             >
               <ChevronLeft className="w-4 h-4" />
-              Vorige
+              {t('Vorige')}
             </button>
           )}
           <button
@@ -492,7 +498,7 @@ export function TrialLessonForm({ onClose }: { onClose?: () => void }) {
                 : 'bg-gray-100 text-gray-400 cursor-not-allowed'
             }`}
           >
-            Volgende
+            {t('Volgende')}
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>

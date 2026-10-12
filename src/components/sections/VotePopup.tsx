@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useT } from '@/i18n/LangContext';
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
 
@@ -11,6 +12,7 @@ const STEM_BEGIN = new Date('2026-09-07T00:00:00');
 const STEM_EINDE = new Date('2026-09-29T23:59:59');
 
 export function VotePopup() {
+  const { t } = useT();
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -99,7 +101,7 @@ export function VotePopup() {
             {/* Sluitknop */}
             <button
               onClick={close}
-              aria-label="Sluiten"
+              aria-label={t('Sluiten')}
               className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-white/90 text-gray-600 hover:bg-white hover:text-[#a90000] transition-colors shadow-sm"
             >
               ✕
@@ -109,11 +111,10 @@ export function VotePopup() {
             <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] px-6 pt-6 pb-5 text-white">
               <div className="text-3xl mb-2">🗳️</div>
               <h3 className="text-xl font-bold leading-tight">
-                Het is weer zover: Rabo ClubSupport!
+                {t('Het is weer zover: Rabo ClubSupport!')}
               </h3>
               <p className="text-sm mt-1 text-white/90">
-                Stem van <strong>7 t/m 29 september</strong> op jouw
-                favoriete clubs — en natuurlijk op{' '}
+                {t('Stem van')} <strong>{t('7 t/m 29 september')}</strong> {t('op jouw favoriete clubs — en natuurlijk op')}{' '}
                 <strong>Michigami</strong>! 💙🧡
               </p>
             </div>
@@ -124,22 +125,19 @@ export function VotePopup() {
                 <li className="flex gap-3">
                   <span className="text-lg">📲</span>
                   <span>
-                    Stem via de <strong>Rabo App</strong>: Instellingen →
-                    Lidmaatschap → Rabo ClubSupport
+                    {t('Stem via de')} <strong>{t('Rabo App')}</strong>: {t('Instellingen')} → {t('Lidmaatschap')} → Rabo ClubSupport
                   </span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-lg">🆓</span>
                   <span>
-                    Nog geen lid? Word <strong>gratis lid</strong> in de app
-                    en stem op jouw 3 favoriete clubs
+                    {t('Nog geen lid? Word')} <strong>{t('gratis lid')}</strong> {t('in de app en stem op jouw 3 favoriete clubs')}
                   </span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-lg">👶</span>
                   <span>
-                    Stemmen kan al <strong>vanaf 12 jaar</strong> (met
-                    toestemming van een ouder/verzorger in de app)
+                    {t('Stemmen kan al')} <strong>{t('vanaf 12 jaar')}</strong> ({t('met toestemming van een ouder/verzorger in de app')})
                   </span>
                 </li>
               </ul>
@@ -149,7 +147,7 @@ export function VotePopup() {
                 onClick={naarNieuws}
                 className="mt-5 w-full bg-[#a90000] hover:bg-[#8c0000] text-white font-bold py-3 rounded-xl transition-colors shadow-md"
               >
-                📰 Lees het nieuwsbericht
+                📰 {t('Lees het nieuwsbericht')}
               </button>
 
               {/* Flyer-afbeelding */}
@@ -164,8 +162,7 @@ export function VotePopup() {
               </div>
 
               <p className="text-xs text-gray-500 mt-3 text-center">
-                Alvast ontzettend bedankt voor je steun! Samen maken we
-                Michigami nog sterker. 💪🥋
+                {t('Alvast ontzettend bedankt voor je steun! Samen maken we Michigami nog sterker.')} 💪🥋
               </p>
             </div>
           </motion.div>

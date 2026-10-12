@@ -1,5 +1,7 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import { T } from '@/components/T'
+import { LangProviderShell } from '@/components/LangProviderShell'
 
 export const metadata: Metadata = {
   title: 'Diploma Verifiëren - Judoclub Michigami',
@@ -13,6 +15,7 @@ export default async function DiplomaVerifyIndexPage({ searchParams }: { searchP
   const error = params?.error as string | undefined
 
   return (
+    <LangProviderShell>
     <div className="min-h-screen bg-gray-50 flex flex-col py-8 sm:py-16">
       <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8 w-full">
         {/* Header */}
@@ -22,23 +25,23 @@ export default async function DiplomaVerifyIndexPage({ searchParams }: { searchP
               <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#2a2a2a]">Diploma Verifiëren</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#2a2a2a]"><T k="Diploma Verifiëren" /></h1>
           <p className="text-gray-500 mt-2 max-w-xs mx-auto">
-            Voer de verificatiecode in of scan de QR-code op het diploma om de authenticiteit te controleren.
+            <T k="Voer de verificatiecode in of scan de QR-code op het diploma om de authenticiteit te controleren." />
           </p>
         </div>
 
         {/* Error message */}
         {error === 'not_found' && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 text-center text-red-700" role="alert">
-            <p className="font-medium">Diploma niet gevonden</p>
-            <p className="text-sm mt-1">De verificatiecode is ongeldig of het diploma bestaat niet.</p>
+            <p className="font-medium"><T k="Diploma niet gevonden" /></p>
+            <p className="text-sm mt-1"><T k="De verificatiecode is ongeldig of het diploma bestaat niet." /></p>
           </div>
         )}
         {error === 'invalid' && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 text-center text-red-700" role="alert">
-            <p className="font-medium">Ongeldige code</p>
-            <p className="text-sm mt-1">De verificatiecode kon niet worden geverifieerd.</p>
+            <p className="font-medium"><T k="Ongeldige code" /></p>
+            <p className="text-sm mt-1"><T k="De verificatiecode kon niet worden geverifieerd." /></p>
           </div>
         )}
 
@@ -46,7 +49,7 @@ export default async function DiplomaVerifyIndexPage({ searchParams }: { searchP
         <form action="/diploma/verifieren" method="GET" className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 space-y-6">
           <div>
             <label htmlFor="code" className="block text-sm font-medium text-gray-700 mb-2">
-              Verificatiecode
+              <T k="Verificatiecode" />
             </label>
             <div className="relative">
               <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -64,7 +67,7 @@ export default async function DiplomaVerifyIndexPage({ searchParams }: { searchP
               />
             </div>
             <p className="mt-2 text-xs text-gray-500 text-center">
-              De code staat op het diploma (bijv. <code className="font-mono bg-gray-100 px-1 rounded">JP-A1B2-C3D4</code> of <code className="font-mono bg-gray-100 px-1 rounded">MJ-A1B2-C3D4</code>)
+              <T k="De code staat op het diploma (bijv." /> <code className="font-mono bg-gray-100 px-1 rounded">JP-A1B2-C3D4</code> <T k="of" /> <code className="font-mono bg-gray-100 px-1 rounded">MJ-A1B2-C3D4</code>)
             </p>
           </div>
 
@@ -75,7 +78,7 @@ export default async function DiplomaVerifyIndexPage({ searchParams }: { searchP
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-5 h-5">
               <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            Verifiëren
+            <T k="Verifiëren" />
           </button>
         </form>
 
@@ -108,11 +111,12 @@ export default async function DiplomaVerifyIndexPage({ searchParams }: { searchP
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-5 h-5">
               <path d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
-            Terug naar website
+            <T k="Terug naar website" />
           </Link>
         </div>
       </div>
     </div>
+    </LangProviderShell>
   )
 }
 
@@ -120,8 +124,8 @@ function InfoCard({ icon, title, desc }: { icon: React.ReactNode; title: string;
   return (
     <div className="bg-white rounded-lg border border-gray-100 p-4 hover:border-[#a90000]/50 transition-colors">
       <div className="text-[#a90000] mb-2">{icon}</div>
-      <h3 className="font-semibold text-sm text-gray-800">{title}</h3>
-      <p className="text-xs text-gray-500 mt-1">{desc}</p>
+      <h3 className="font-semibold text-sm text-gray-800"><T k={title} /></h3>
+      <p className="text-xs text-gray-500 mt-1"><T k={desc} /></p>
     </div>
   )
 }

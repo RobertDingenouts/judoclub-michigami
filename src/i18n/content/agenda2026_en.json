@@ -1,0 +1,713 @@
+{
+ "2026-01-02": {
+  "displayDate": "2 January",
+  "event": "No lesson due to",
+  "emoji": "ban",
+  "eventSub": "Christmas holiday",
+  "details": "",
+  "location": "-",
+  "time": "-"
+ },
+ "2026-01-09": {
+  "displayDate": "9 January",
+  "event": "Lesson - CANCELLED",
+  "emoji": "xmark",
+  "eventSub": "due to weather conditions",
+  "details": "Ice, rain, frost and snow.",
+  "location": "-",
+  "time": "-",
+  "cancelled": true
+ },
+ "2026-01-11": {
+  "displayDate": "11 January",
+  "event": "Lintjestoernooi (Ribbon Tournament) - CANCELLED",
+  "emoji": "xmark",
+  "eventSub": "Budoschool Cor Schuurbiers",
+  "details": "Cancelled due to weather conditions.",
+  "location": "Sporthal In de Roos",
+  "locationSub": "Roosendaal",
+  "time": "8.00-11.00",
+  "cancelled": true
+ },
+ "2026-02-08": {
+  "displayDate": "8 February",
+  "event": "Lintjestoernooi (Ribbon Tournament)",
+  "emoji": "medal",
+  "eventSub": "Budoschool Cor Schuurbiers",
+  "details": "Beginner judoka up to 16 years",
+  "location": "Sporthal In de Roos",
+  "locationSub": "Roosendaal",
+  "locationUrl": "https://maps.app.goo.gl/7ZnFrSxadrgEiAhm6",
+  "inschrijfUrl": "https://budoschool-corschuurbiers.nl/3-3/",
+  "inschrijfTekst": "Sign up",
+  "time": "8.00-11.00"
+ },
+ "2026-02-20": {
+  "displayDate": "20 February",
+  "event": "No lessons due to",
+  "emoji": "ban",
+  "eventSub": "Carnival holiday",
+  "details": "",
+  "location": "-",
+  "time": "-"
+ },
+ "2026-03-08": {
+  "displayDate": "8 March",
+  "event": "Lintjestoernooi (Ribbon Tournament)",
+  "emoji": "medal",
+  "eventSub": "Budoschool Cor Schuurbiers",
+  "details": "Beginner judoka up to 16 years",
+  "location": "Sporthal In de Roos",
+  "locationSub": "Roosendaal",
+  "locationUrl": "https://maps.app.goo.gl/7ZnFrSxadrgEiAhm6",
+  "inschrijfUrl": "https://budoschool-corschuurbiers.nl/3-3/",
+  "inschrijfTekst": "Sign up",
+  "time": "8.00-11.00"
+ },
+ "2026-03-20": {
+  "displayDate": "20 March",
+  "event": "Puntentoernooi (Points Tournament) Oostkapelle",
+  "emoji": "medal",
+  "details": "up to 12 years",
+  "location": "Halve Maan",
+  "locationSub": "Oostkapelle",
+  "locationUrl": "https://maps.google.com/?q=Sporthal+de+Halve+Maan+Oostkapelle",
+  "time": "16.30"
+ },
+ "2026-04-03": {
+  "displayDate": "3 April",
+  "event": "No lessons due to",
+  "emoji": "ban",
+  "eventSub": "Good Friday",
+  "details": "",
+  "location": "-",
+  "time": "-"
+ },
+ "2026-04-12": {
+  "displayDate": "12 April",
+  "event": "Lintjestoernooi (Ribbon Tournament)",
+  "emoji": "medal",
+  "eventSub": "Budoschool Cor Schuurbiers",
+  "details": "Beginner judoka up to 16 years",
+  "location": "Sporthal In de Roos",
+  "locationSub": "Roosendaal",
+  "locationUrl": "https://maps.app.goo.gl/7ZnFrSxadrgEiAhm6",
+  "inschrijfUrl": "https://budoschool-corschuurbiers.nl/3-3/",
+  "inschrijfTekst": "Sign up",
+  "time": "8.00-11.00"
+ },
+ "2026-04-22": {
+  "displayDate": "22 April",
+  "event": "No lesson (Oud-Vossemeer) due to",
+  "emoji": "ban",
+  "eventSub": "May holiday",
+  "details": "",
+  "location": "De Vossenkuil",
+  "time": "-",
+  "locationUrl": "https://www.google.com/maps/search/?api=1&query=Bou+Kooijmanstraat+48+4698+AM+Oud-Vossemeer"
+ },
+ "2026-04-24": {
+  "displayDate": "24 April",
+  "event": "No lesson (Steenbergen) due to",
+  "emoji": "ban",
+  "eventSub": "May holiday",
+  "details": "",
+  "location": "De Knotwilg",
+  "time": "-",
+  "locationUrl": "https://www.google.com/maps/search/?api=1&query=Sportcentrum+De+Knotwilg+Wipstraat+2+4651+XW+Steenbergen"
+ },
+ "2026-04-29": {
+  "displayDate": "29 April",
+  "event": "No lesson (Oud-Vossemeer) due to",
+  "emoji": "ban",
+  "eventSub": "May holiday",
+  "details": "",
+  "location": "De Vossenkuil",
+  "time": "-",
+  "locationUrl": "https://www.google.com/maps/search/?api=1&query=Bou+Kooijmanstraat+48+4698+AM+Oud-Vossemeer"
+ },
+ "2026-05-01": {
+  "displayDate": "1 May",
+  "event": "No lesson (Steenbergen) due to",
+  "emoji": "ban",
+  "eventSub": "May holiday",
+  "details": "",
+  "location": "De Knotwilg",
+  "time": "-",
+  "locationUrl": "https://www.google.com/maps/search/?api=1&query=Sportcentrum+De+Knotwilg+Wipstraat+2+4651+XW+Steenbergen"
+ },
+ "2026-05-06": {
+  "displayDate": "6 May",
+  "event": "Cancelled Lesson Oud-Vossemeer",
+  "emoji": "xmark",
+  "eventSub": "Venue not available",
+  "details": "Unfortunately, the venue is not available.",
+  "location": "Oud-Vossemeer",
+  "time": "-",
+  "cancelled": true
+ },
+ "2026-05-09": {
+  "displayDate": "9 May",
+  "event": "Zomertoernooi (Summer Tournament) Halsteren",
+  "emoji": "medal",
+  "eventSub": "Sportschool Shintai",
+  "details": "All ages from 6 years. Every participant gets a 3D medal! Entry fee €15.",
+  "location": "De Kannebuis",
+  "locationSub": "Halsteren",
+  "locationUrl": "https://maps.app.goo.gl/7ZnFrSxadrgEiAhm6",
+  "time": "n.n.b."
+ },
+ "2026-05-10": {
+  "displayDate": "10 May",
+  "event": "Lintjestoernooi (Ribbon Tournament)",
+  "emoji": "medal",
+  "eventSub": "Budoschool Cor Schuurbiers",
+  "details": "Beginner judoka up to 16 years",
+  "location": "Sporthal In de Roos",
+  "locationSub": "Roosendaal",
+  "locationUrl": "https://maps.app.goo.gl/7ZnFrSxadrgEiAhm6",
+  "inschrijfUrl": "https://budoschool-corschuurbiers.nl/3-3/",
+  "inschrijfTekst": "Sign up",
+  "time": "8.00-11.00"
+ },
+ "2026-05-13": {
+  "displayDate": "13 May",
+  "event": "Lesson Oud-Vossemeer",
+  "emoji": "medal",
+  "eventSub": "Free drink after the lesson!",
+  "details": "Regular judo lesson.",
+  "location": "Oud-Vossemeer",
+  "time": "-"
+ },
+ "2026-05-29": {
+  "displayDate": "29 May",
+  "event": "Puntentoernooi (Points Tournament) Oostkapelle",
+  "emoji": "medal",
+  "details": "up to 12 years",
+  "location": "Halve Maan",
+  "locationSub": "Oostkapelle",
+  "locationUrl": "https://maps.google.com/?q=Sporthal+de+Halve+Maan+Oostkapelle",
+  "time": "16.30"
+ },
+ "2026-06-13": {
+  "displayDate": "13 June",
+  "event": "Lustrumtoernooi (Anniversary Tournament) Yoshi - CANCELLED",
+  "emoji": "xmark",
+  "eventSub": "Judoclub Yoshi",
+  "details": "Cancelled due to too few participants. The €7 entry fee will be refunded.",
+  "location": "Sporthal De Kannebuis",
+  "locationSub": "Halsteren",
+  "locationUrl": "https://www.google.com/maps/search/?api=1&query=Poelekes+12+Halsteren",
+  "time": "10:00",
+  "cancelled": true
+ },
+ "2026-06-14": {
+  "displayDate": "14 June",
+  "event": "Lintjestoernooi (Ribbon Tournament)",
+  "emoji": "medal",
+  "eventSub": "Budoschool Cor Schuurbiers",
+  "details": "Beginner judoka up to 16 years",
+  "location": "Sporthal In de Roos",
+  "locationSub": "Roosendaal",
+  "locationUrl": "https://maps.app.goo.gl/7ZnFrSxadrgEiAhm6",
+  "inschrijfUrl": "https://budoschool-corschuurbiers.nl/3-3/",
+  "inschrijfTekst": "Sign up",
+  "time": "8.00-11.00"
+ },
+ "2026-06-26": {
+  "displayDate": "26 June",
+  "event": "Lesson - CANCELLED",
+  "emoji": "xmark",
+  "eventSub": "due to extreme heat (38°C)",
+  "details": "38 degrees expected. Voltage too low due to the heat, risk of overheating. One-off cancellation.",
+  "location": "-",
+  "time": "-",
+  "cancelled": true
+ },
+ "2026-07-10": {
+  "displayDate": "10 July t/m 21 aug",
+  "event": "No lessons (Steenbergen) due to",
+  "emoji": "ban",
+  "eventSub": "Summer holiday",
+  "details": "",
+  "location": "De Knotwilg",
+  "time": "-",
+  "locationUrl": "https://www.google.com/maps/search/?api=1&query=Sportcentrum+De+Knotwilg+Wipstraat+2+4651+XW+Steenbergen"
+ },
+ "2026-07-08": {
+  "displayDate": "8 jul t/m 19 aug",
+  "event": "No lessons (Oud-Vossemeer) due to",
+  "emoji": "ban",
+  "eventSub": "Summer holiday",
+  "details": "",
+  "location": "De Vossenkuil",
+  "time": "-",
+  "locationUrl": "https://www.google.com/maps/search/?api=1&query=Bou+Kooijmanstraat+48+4698+AM+Oud-Vossemeer"
+ },
+ "2026-09-13": {
+  "displayDate": "13 September",
+  "event": "Lintjestoernooi (Ribbon Tournament) - CANCELLED",
+  "emoji": "xmark",
+  "eventSub": "Budoschool Cor Schuurbiers",
+  "details": "Cancelled due to illness in the organization.",
+  "location": "Sporthal In de Roos",
+  "locationSub": "Roosendaal",
+  "time": "8.15-10.30",
+  "cancelled": true
+ },
+ "2026-10-11": {
+  "displayDate": "11 October",
+  "event": "Lintjestoernooi (Ribbon Tournament)",
+  "emoji": "medal",
+  "eventSub": "Budoschool Cor Schuurbiers",
+  "details": "Beginner judoka up to 16 years · Tournament costs € 8.50 (cash, payable at the weigh-in)",
+  "location": "Sporthal In de Roos",
+  "locationSub": "Roosendaal",
+  "locationUrl": "https://maps.app.goo.gl/7ZnFrSxadrgEiAhm6",
+  "inschrijfUrl": "https://budoschool-corschuurbiers.nl/3-3/",
+  "inschrijfTekst": "Sign up",
+  "time": "8.15-10.30",
+  "eventInfo": {
+   "title": "Lintjestoernooi (Ribbon Tournament)",
+   "sections": [
+    {
+     "label": "About the tournament",
+     "lines": [
+      "Only for beginner judoka who want to gain competition experience (no competition judoka).",
+      "Organized by Budoschool Cor Schuurbiers, about once a month.",
+      "We always try to make sure everyone judos 4 matches."
+     ]
+    },
+    {
+     "label": "Weigh-in & match times",
+     "lines": [
+      "Weigh-in 8.15-8.30 (4 up to 16 years)",
+      "Be present a quarter before the weigh-in starts",
+      "Matches start around 8.30-8.45"
+     ]
+    },
+    {
+     "label": "Points & rewards",
+     "lines": [
+      "Loss 2 · draw 3 · designated winner 4 · yuko 5 · wazari 6 · ippon 7",
+      "Flags: 40 yellow · 80 orange · 120 green · 160 blue · 200 brown · 240 black",
+      "Medals: 300 bronze · 360 silver · 420 gold · 600 points = trophy"
+     ]
+    },
+    {
+     "label": "Costs & registration",
+     "lines": [
+      "€ 8.50 per participant, payable in cash at the weigh-in in the hall",
+      "Fill in digitally via the registration link (Sign up button)"
+     ]
+    }
+   ]
+  }
+ },
+ "2026-10-16": {
+  "displayDate": "16 okt & 23 okt",
+  "event": "No lessons (Steenbergen) due to",
+  "emoji": "ban",
+  "eventSub": "Autumn holiday",
+  "details": "",
+  "location": "De Knotwilg",
+  "time": "-",
+  "locationUrl": "https://www.google.com/maps/search/?api=1&query=Sportcentrum+De+Knotwilg+Wipstraat+2+4651+XW+Steenbergen"
+ },
+ "2026-10-17": {
+  "displayDate": "17 October",
+  "event": "Jubileumtoernooi (Jubilee Tournament) OVJV",
+  "emoji": "champagne",
+  "eventSub": "OVJV 50th anniversary · 47th edition",
+  "details": "Recreational tournament for all ages. Sign up by September 30 at the latest.",
+  "location": "De Vossenkuil",
+  "locationSub": "Oud-Vossemeer",
+  "locationUrl": "https://www.google.com/maps/search/?api=1&query=Bou+Kooijmanstraat+48+4698+AM+Oud-Vossemeer",
+  "inschrijfUrl": "https://forms.cloud.microsoft/r/XZkMDrBVRk",
+  "inschrijfTekst": "Sign up",
+  "time": "09:00",
+  "special": true,
+  "eventInfo": {
+   "title": "Jubileumtoernooi (Jubilee Tournament) OVJV",
+   "sections": [
+    {
+     "label": "About the tournament",
+     "lines": [
+      "Recreational mass-sport tournament — amateur referees, emphasis on sportsmanship and fun.",
+      "Location: Bou-Kooijmanstraat 48, 4698 AM Oud-Vossemeer"
+     ]
+    },
+    {
+     "label": "Costs & payment",
+     "lines": [
+      "€ 7.50 per judoka (including 1 drink)",
+      "Transfer to: NL81 RBRB 0939 7268 15 in the name of Judovereniging O.V.J.V.",
+      "Mention: first & last name judoka + jubileumtoernooi OVJV"
+     ]
+    },
+    {
+     "label": "Attendance",
+     "lines": [
+      "Everyone at 09:00"
+     ]
+    },
+    {
+     "label": "Sign up",
+     "lines": [
+      "By September 30 at the latest",
+      "Via the registration form (button on the right)"
+     ]
+    }
+   ]
+  }
+ },
+ "2026-10-21": {
+  "displayDate": "21 October",
+  "event": "No lesson (Oud-Vossemeer) due to",
+  "emoji": "ban",
+  "eventSub": "Autumn holiday",
+  "details": "",
+  "location": "De Vossenkuil",
+  "time": "-",
+  "locationUrl": "https://www.google.com/maps/search/?api=1&query=Bou+Kooijmanstraat+48+4698+AM+Oud-Vossemeer"
+ },
+ "2026-11-04": {
+  "displayDate": "4 November",
+  "event": "No lesson (Oud-Vossemeer) due to",
+  "emoji": "ban",
+  "eventSub": "Bird exhibition",
+  "details": "",
+  "location": "De Vossenkuil",
+  "time": "-",
+  "locationUrl": "https://www.google.com/maps/search/?api=1&query=Bou+Kooijmanstraat+48+4698+AM+Oud-Vossemeer"
+ },
+ "2026-11-08": {
+  "displayDate": "8 November",
+  "event": "Lintjestoernooi (Ribbon Tournament)",
+  "emoji": "medal",
+  "eventSub": "Budoschool Cor Schuurbiers",
+  "details": "Beginner judoka up to 16 years · Tournament costs € 8.50 (cash, payable at the weigh-in)",
+  "location": "Sporthal In de Roos",
+  "locationSub": "Roosendaal",
+  "locationUrl": "https://maps.app.goo.gl/7ZnFrSxadrgEiAhm6",
+  "inschrijfUrl": "https://budoschool-corschuurbiers.nl/3-3/",
+  "inschrijfTekst": "Sign up",
+  "time": "8.15-10.30",
+  "eventInfo": {
+   "title": "Lintjestoernooi (Ribbon Tournament)",
+   "sections": [
+    {
+     "label": "About the tournament",
+     "lines": [
+      "Only for beginner judoka who want to gain competition experience (no competition judoka).",
+      "Organized by Budoschool Cor Schuurbiers, about once a month.",
+      "We always try to make sure everyone judos 4 matches."
+     ]
+    },
+    {
+     "label": "Weigh-in & match times",
+     "lines": [
+      "Weigh-in 8.15-8.30 (4 up to 16 years)",
+      "Be present a quarter before the weigh-in starts",
+      "Matches start around 8.30-8.45"
+     ]
+    },
+    {
+     "label": "Points & rewards",
+     "lines": [
+      "Loss 2 · draw 3 · designated winner 4 · yuko 5 · wazari 6 · ippon 7",
+      "Flags: 40 yellow · 80 orange · 120 green · 160 blue · 200 brown · 240 black",
+      "Medals: 300 bronze · 360 silver · 420 gold · 600 points = trophy"
+     ]
+    },
+    {
+     "label": "Costs & registration",
+     "lines": [
+      "€ 8.50 per participant, payable in cash at the weigh-in in the hall",
+      "Fill in digitally via the registration link (Sign up button)"
+     ]
+    }
+   ]
+  }
+ },
+ "2026-12-18": {
+  "displayDate": "18 December",
+  "event": "No lessons (Steenbergen) due to",
+  "emoji": "ban",
+  "eventSub": "Christmas holiday",
+  "details": "",
+  "location": "De Knotwilg",
+  "time": "-",
+  "locationUrl": "https://www.google.com/maps/search/?api=1&query=Sportcentrum+De+Knotwilg+Wipstraat+2+4651+XW+Steenbergen"
+ },
+ "2026-12-23": {
+  "displayDate": "23 December",
+  "event": "No lesson (Oud-Vossemeer) due to",
+  "emoji": "ban",
+  "eventSub": "Christmas holiday",
+  "details": "",
+  "location": "De Vossenkuil",
+  "time": "-",
+  "locationUrl": "https://www.google.com/maps/search/?api=1&query=Bou+Kooijmanstraat+48+4698+AM+Oud-Vossemeer"
+ },
+ "2026-12-25": {
+  "displayDate": "25 December",
+  "event": "No lessons (Steenbergen) due to",
+  "emoji": "ban",
+  "eventSub": "Christmas holiday",
+  "details": "",
+  "location": "De Knotwilg",
+  "time": "-",
+  "locationUrl": "https://www.google.com/maps/search/?api=1&query=Sportcentrum+De+Knotwilg+Wipstraat+2+4651+XW+Steenbergen"
+ },
+ "2026-12-30": {
+  "displayDate": "30 December",
+  "event": "No lesson (Oud-Vossemeer) due to",
+  "emoji": "ban",
+  "eventSub": "Christmas holiday",
+  "details": "",
+  "location": "De Vossenkuil",
+  "time": "-",
+  "locationUrl": "https://www.google.com/maps/search/?api=1&query=Bou+Kooijmanstraat+48+4698+AM+Oud-Vossemeer"
+ },
+ "2027-01-10": {
+  "displayDate": "10 January 2027",
+  "event": "Lintjestoernooi (Ribbon Tournament)",
+  "emoji": "medal",
+  "eventSub": "Budoschool Cor Schuurbiers",
+  "details": "Beginner judoka up to 16 years · Tournament costs € 8.50 (cash, payable at the weigh-in)",
+  "location": "Sporthal In de Roos",
+  "locationSub": "Roosendaal",
+  "locationUrl": "https://maps.app.goo.gl/7ZnFrSxadrgEiAhm6",
+  "inschrijfUrl": "https://budoschool-corschuurbiers.nl/3-3/",
+  "inschrijfTekst": "Sign up",
+  "time": "8.15-10.30",
+  "eventInfo": {
+   "title": "Lintjestoernooi (Ribbon Tournament)",
+   "sections": [
+    {
+     "label": "About the tournament",
+     "lines": [
+      "Only for beginner judoka who want to gain competition experience (no competition judoka).",
+      "Organized by Budoschool Cor Schuurbiers, about once a month.",
+      "We always try to make sure everyone judos 4 matches."
+     ]
+    },
+    {
+     "label": "Weigh-in & match times",
+     "lines": [
+      "Weigh-in 8.15-8.30 (4 up to 16 years)",
+      "Be present a quarter before the weigh-in starts"
+     ]
+    },
+    {
+     "label": "Points & rewards",
+     "lines": [
+      "Loss 2 · draw 3 · designated winner 4 · yuko 5 · wazari 6 · ippon 7",
+      "Flags: 40 yellow · 80 orange · 120 green · 160 blue · 200 brown · 240 black",
+      "Medals: 300 bronze · 360 silver · 420 gold · 600 points = trophy"
+     ]
+    },
+    {
+     "label": "Costs & registration",
+     "lines": [
+      "€ 8.50 per participant, payable in cash at the weigh-in in the hall",
+      "Fill in digitally via the registration link (Sign up button)"
+     ]
+    }
+   ]
+  }
+ },
+ "2027-03-14": {
+  "displayDate": "14 March 2027",
+  "event": "Lintjestoernooi (Ribbon Tournament)",
+  "emoji": "medal",
+  "eventSub": "Budoschool Cor Schuurbiers",
+  "details": "Beginner judoka up to 16 years · Tournament costs € 8.50 (cash, payable at the weigh-in)",
+  "location": "Sporthal In de Roos",
+  "locationSub": "Roosendaal",
+  "locationUrl": "https://maps.app.goo.gl/7ZnFrSxadrgEiAhm6",
+  "inschrijfUrl": "https://budoschool-corschuurbiers.nl/3-3/",
+  "inschrijfTekst": "Sign up",
+  "time": "8.15-10.30",
+  "eventInfo": {
+   "title": "Lintjestoernooi (Ribbon Tournament)",
+   "sections": [
+    {
+     "label": "About the tournament",
+     "lines": [
+      "Only for beginner judoka who want to gain competition experience (no competition judoka).",
+      "Organized by Budoschool Cor Schuurbiers, about once a month.",
+      "We always try to make sure everyone judos 4 matches."
+     ]
+    },
+    {
+     "label": "Weigh-in & match times",
+     "lines": [
+      "Weigh-in 8.15-8.30 (4 up to 16 years)",
+      "Be present a quarter before the weigh-in starts"
+     ]
+    },
+    {
+     "label": "Points & rewards",
+     "lines": [
+      "Loss 2 · draw 3 · designated winner 4 · yuko 5 · wazari 6 · ippon 7",
+      "Flags: 40 yellow · 80 orange · 120 green · 160 blue · 200 brown · 240 black",
+      "Medals: 300 bronze · 360 silver · 420 gold · 600 points = trophy"
+     ]
+    },
+    {
+     "label": "Costs & registration",
+     "lines": [
+      "€ 8.50 per participant, payable in cash at the weigh-in in the hall",
+      "Fill in digitally via the registration link (Sign up button)"
+     ]
+    }
+   ]
+  }
+ },
+ "2027-04-11": {
+  "displayDate": "11 April 2027",
+  "event": "Lintjestoernooi (Ribbon Tournament)",
+  "emoji": "medal",
+  "eventSub": "Budoschool Cor Schuurbiers",
+  "details": "Beginner judoka up to 16 years · Tournament costs € 8.50 (cash, payable at the weigh-in)",
+  "location": "Sporthal In de Roos",
+  "locationSub": "Roosendaal",
+  "locationUrl": "https://maps.app.goo.gl/7ZnFrSxadrgEiAhm6",
+  "inschrijfUrl": "https://budoschool-corschuurbiers.nl/3-3/",
+  "inschrijfTekst": "Sign up",
+  "time": "8.15-10.30",
+  "eventInfo": {
+   "title": "Lintjestoernooi (Ribbon Tournament)",
+   "sections": [
+    {
+     "label": "About the tournament",
+     "lines": [
+      "Only for beginner judoka who want to gain competition experience (no competition judoka).",
+      "Organized by Budoschool Cor Schuurbiers, about once a month.",
+      "We always try to make sure everyone judos 4 matches."
+     ]
+    },
+    {
+     "label": "Weigh-in & match times",
+     "lines": [
+      "Weigh-in 8.15-8.30 (4 up to 16 years)",
+      "Be present a quarter before the weigh-in starts"
+     ]
+    },
+    {
+     "label": "Points & rewards",
+     "lines": [
+      "Loss 2 · draw 3 · designated winner 4 · yuko 5 · wazari 6 · ippon 7",
+      "Flags: 40 yellow · 80 orange · 120 green · 160 blue · 200 brown · 240 black",
+      "Medals: 300 bronze · 360 silver · 420 gold · 600 points = trophy"
+     ]
+    },
+    {
+     "label": "Costs & registration",
+     "lines": [
+      "€ 8.50 per participant, payable in cash at the weigh-in in the hall",
+      "Fill in digitally via the registration link (Sign up button)"
+     ]
+    }
+   ]
+  }
+ },
+ "2027-06-13": {
+  "displayDate": "13 June 2027",
+  "event": "Lintjestoernooi (Ribbon Tournament)",
+  "emoji": "medal",
+  "eventSub": "Budoschool Cor Schuurbiers",
+  "details": "Beginner judoka up to 16 years · Tournament costs € 8.50 (cash, payable at the weigh-in)",
+  "location": "Sporthal In de Roos",
+  "locationSub": "Roosendaal",
+  "locationUrl": "https://maps.app.goo.gl/7ZnFrSxadrgEiAhm6",
+  "inschrijfUrl": "https://budoschool-corschuurbiers.nl/3-3/",
+  "inschrijfTekst": "Sign up",
+  "time": "8.15-10.30",
+  "eventInfo": {
+   "title": "Lintjestoernooi (Ribbon Tournament)",
+   "sections": [
+    {
+     "label": "About the tournament",
+     "lines": [
+      "Only for beginner judoka who want to gain competition experience (no competition judoka).",
+      "Organized by Budoschool Cor Schuurbiers, about once a month.",
+      "We always try to make sure everyone judos 4 matches."
+     ]
+    },
+    {
+     "label": "Weigh-in & match times",
+     "lines": [
+      "Weigh-in 8.15-8.30 (4 up to 16 years)",
+      "Be present a quarter before the weigh-in starts"
+     ]
+    },
+    {
+     "label": "Points & rewards",
+     "lines": [
+      "Loss 2 · draw 3 · designated winner 4 · yuko 5 · wazari 6 · ippon 7",
+      "Flags: 40 yellow · 80 orange · 120 green · 160 blue · 200 brown · 240 black",
+      "Medals: 300 bronze · 360 silver · 420 gold · 600 points = trophy"
+     ]
+    },
+    {
+     "label": "Costs & registration",
+     "lines": [
+      "€ 8.50 per participant, payable in cash at the weigh-in in the hall",
+      "Fill in digitally via the registration link (Sign up button)"
+     ]
+    }
+   ]
+  }
+ },
+ "2027-07-11": {
+  "displayDate": "11 July 2027",
+  "event": "Lintjestoernooi (Ribbon Tournament)",
+  "emoji": "medal",
+  "eventSub": "Budoschool Cor Schuurbiers",
+  "details": "Beginner judoka up to 16 years · Tournament costs € 8.50 (cash, payable at the weigh-in)",
+  "location": "Sporthal In de Roos",
+  "locationSub": "Roosendaal",
+  "locationUrl": "https://maps.app.goo.gl/7ZnFrSxadrgEiAhm6",
+  "inschrijfUrl": "https://budoschool-corschuurbiers.nl/3-3/",
+  "inschrijfTekst": "Sign up",
+  "time": "8.15-10.30",
+  "eventInfo": {
+   "title": "Lintjestoernooi (Ribbon Tournament)",
+   "sections": [
+    {
+     "label": "About the tournament",
+     "lines": [
+      "Only for beginner judoka who want to gain competition experience (no competition judoka).",
+      "Organized by Budoschool Cor Schuurbiers, about once a month.",
+      "We always try to make sure everyone judos 4 matches."
+     ]
+    },
+    {
+     "label": "Weigh-in & match times",
+     "lines": [
+      "Weigh-in 8.15-8.30 (4 up to 16 years)",
+      "Be present a quarter before the weigh-in starts"
+     ]
+    },
+    {
+     "label": "Points & rewards",
+     "lines": [
+      "Loss 2 · draw 3 · designated winner 4 · yuko 5 · wazari 6 · ippon 7",
+      "Flags: 40 yellow · 80 orange · 120 green · 160 blue · 200 brown · 240 black",
+      "Medals: 300 bronze · 360 silver · 420 gold · 600 points = trophy"
+     ]
+    },
+    {
+     "label": "Costs & registration",
+     "lines": [
+      "€ 8.50 per participant, payable in cash at the weigh-in in the hall",
+      "Fill in digitally via the registration link (Sign up button)"
+     ]
+    }
+   ]
+  }
+ }
+}

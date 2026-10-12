@@ -3,6 +3,7 @@ import { db } from '@/lib/db'
 import type { BeltLevel } from '@prisma/client'
 import { BELT_LABELS_NL } from '@/lib/student-progress-types'
 import Link from 'next/link'
+import { T } from '@/components/T'
 
 export const dynamic = 'force-dynamic'
 
@@ -29,10 +30,10 @@ export default async function LedenDashboard() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-[#2a2a2a]">
-          Welkom, {user.member?.firstName || user.name || 'Lid'}!
+          <T k="Welkom" />, {user.member?.firstName || user.name || 'Lid'}!
         </h1>
         <p className="text-sm text-gray-500 mt-1">
-          Jouw ledendashboard bij Judoclub Michigami
+          <T k="Jouw ledendashboard bij Judoclub Michigami" />
         </p>
       </div>
 
@@ -70,7 +71,7 @@ export default async function LedenDashboard() {
 
       {/* Quick actions */}
       <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-lg font-semibold text-[#2a2a2a]">Snelle Acties</h2>
+        <h2 className="mb-4 text-lg font-semibold text-[#2a2a2a]"><T k="Snelle Acties" /></h2>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <QuickAction href="/leden/voortgang" icon="📈" title="Mijn Voortgang" desc="Examens en banden" />
           <QuickAction href="/leden/diploma's" icon="🏆" title="Mijn Diploma's" desc="Bekijk en download" />
@@ -78,8 +79,8 @@ export default async function LedenDashboard() {
           <a href="/#agenda" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 rounded-lg border border-gray-200 p-4 transition-colors hover:border-[#a90000] hover:bg-[#fdf6f6]">
             <span className="text-xl">📅</span>
             <div>
-              <p className="text-sm font-medium text-[#2a2a2a]">Trainingstijden</p>
-              <p className="text-xs text-gray-500">Bekijk agenda op website</p>
+              <p className="text-sm font-medium text-[#2a2a2a]"><T k="Trainingstijden" /></p>
+              <p className="text-xs text-gray-500"><T k="Bekijk agenda op website" /></p>
             </div>
           </a>
         </div>
@@ -89,9 +90,9 @@ export default async function LedenDashboard() {
       {courseProgress.length > 0 && (
         <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-[#2a2a2a]">Cursus Japans Voortgang</h2>
+            <h2 className="text-lg font-semibold text-[#2a2a2a]"><T k="Cursus Japans Voortgang" /></h2>
             <Link href="/leden/cursus-japans" className="text-sm text-[#a90000] hover:underline">
-              Bekijk alle →
+              <T k="Bekijk alle →" />
             </Link>
           </div>
           <div className="space-y-3">
@@ -110,7 +111,7 @@ export default async function LedenDashboard() {
                       {BELT_LABELS_NL[cp.beltLevel as BeltLevel] || cp.beltLevel} — Japans
                     </p>
                     <p className="text-xs text-gray-500">
-                      {cp.lessonsCompleted}/{cp.lessonsTotal} lessen • {cp.wordsLearned}/{cp.wordsTotal} woorden
+                      {cp.lessonsCompleted}/{cp.lessonsTotal} <T k="lessen" /> • {cp.wordsLearned}/{cp.wordsTotal} <T k="woorden" />
                     </p>
                   </div>
                 </div>
@@ -120,7 +121,7 @@ export default async function LedenDashboard() {
                     cp.isUnlocked ? 'bg-blue-100 text-blue-800' :
                     'bg-gray-100 text-gray-500'
                   }`}>
-                    {cp.isPassed ? 'Geslaagd' : cp.isUnlocked ? 'Bezig' : 'Vergrendeld'}
+                    {cp.isPassed ? <T k="Geslaagd" /> : cp.isUnlocked ? <T k="Bezig" /> : <T k="Vergrendeld" />}
                   </span>
                 </div>
               </div>
@@ -139,9 +140,9 @@ function StatCard({ title, value, icon, href, subtitle }: {
     <Link href={href} className="group rounded-lg border border-gray-200 bg-white p-5 shadow-sm transition-colors hover:border-[#a90000]">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-medium text-gray-500">{title}</p>
-          <p className="mt-1 text-3xl font-bold text-[#2a2a2a]">{value}</p>
-          <p className="mt-1 text-xs text-gray-400">{subtitle}</p>
+          <p className="text-sm font-medium text-gray-500"><T k={title} /></p>
+          <p className="mt-1 text-3xl font-bold text-[#2a2a2a]">{typeof value === "number" ? value : <T k={value} />}</p>
+          <p className="mt-1 text-xs text-gray-400"><T k={subtitle} /></p>
         </div>
         <span className="text-3xl opacity-60">{icon}</span>
       </div>
@@ -154,8 +155,8 @@ function QuickAction({ href, icon, title, desc }: { href: string; icon: string; 
     <Link href={href} className="flex items-center gap-3 rounded-lg border border-gray-200 p-4 transition-colors hover:border-[#a90000] hover:bg-[#fdf6f6]">
       <span className="text-xl">{icon}</span>
       <div>
-        <p className="text-sm font-medium text-[#2a2a2a]">{title}</p>
-        <p className="text-xs text-gray-500">{desc}</p>
+        <p className="text-sm font-medium text-[#2a2a2a]"><T k={title} /></p>
+        <p className="text-xs text-gray-500"><T k={desc} /></p>
       </div>
     </Link>
   )

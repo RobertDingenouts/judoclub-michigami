@@ -9,6 +9,8 @@ import { Trophy, Award, MapPin, Star, Users, Swords } from 'lucide-react';
 import { ImageLightbox } from '@/components/ui/ImageLightbox';
 import { type Section } from '@/components/nav-config';
 import { cn } from '@/lib/utils';
+import { useT } from '@/i18n/LangContext';
+import { timelineItemFor } from '@/i18n/content';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -22,7 +24,9 @@ const iconMap: Record<string, React.ReactNode> = {
 };
 
 /* --------------------------- tijdlijn-item -------------------------------- */
-function TimelineItem({ event, index }: { event: TimelineEvent; index: number }) {
+function TimelineItem({ event: evNl, index, occurrence = 0 }: { event: TimelineEvent; index: number; occurrence?: number }) {
+  const { t, lang } = useT();
+  const event = timelineItemFor(evNl, lang, occurrence);
   const ref = useRef<HTMLDivElement>(null);
   const [photoOpen, setPhotoOpen] = useState(false);
   const inView = useInView(ref, { once: true, margin: '-120px' });
@@ -88,7 +92,7 @@ function TimelineItem({ event, index }: { event: TimelineEvent; index: number })
                   type="button"
                   onClick={() => setPhotoOpen(true)}
                   className="group relative block w-full overflow-hidden rounded-lg border border-[var(--sumi-700)]/20 shadow-[0_10px_30px_-18px_rgba(42,33,28,0.7)]"
-                  aria-label={event.photoCaption ? `Grootbeeld: ${event.photoCaption}` : 'Grootbeeld openen'}
+                  aria-label={event.photoCaption ? `${t('Grootbeeld')}: ${event.photoCaption}` : t('Grootbeeld openen')}
                 >
                   <div className={cn('relative w-full', event.photoAspect ?? 'aspect-square')}>
                     <Image
@@ -181,7 +185,7 @@ export function TimelineSection({ onNavigate }: { onNavigate?: (s: Section) => v
           />
 
           {timelineEvents.map((event, index) => (
-            <TimelineItem key={event.year + index} event={event} index={index} />
+            <TimelineItem key={event.year + index} event={event} index={index} occurrence={timelineEvents.slice(0, index).filter((e) => e.year === event.year).length} />
           ))}
         </div>
 

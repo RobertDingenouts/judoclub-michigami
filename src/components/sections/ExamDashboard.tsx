@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronUp, Play, X } from 'lucide-react';
 import { AnimatedCard, AnimatedButton, subtleHover } from '@/components/ui/animated-card';
+import { useT } from '@/i18n/LangContext';
+import { techDutchFor } from '@/i18n/content';
 
 // ==========================================================================
 // TYPES
@@ -254,6 +256,7 @@ const BELT_COLORS: Record<string, string> = {
 // COMPONENT
 // ==========================================================================
 export function ExamDashboard() {
+  const { t, lang } = useT();
   const [selectedBeltId, setSelectedBeltId] = useState('wit');
   const [viewMode, setViewMode] = useState<'all' | 'new'>('all');
   const [showDirectTransition, setShowDirectTransition] = useState(false);
@@ -306,9 +309,9 @@ export function ExamDashboard() {
 
           return (
             <AnimatedButton key={belt.id} onClick={() => { setSelectedBeltId(belt.id); }} variants={subtleHover}>
-              <div className={`relative w-12 h-6 rounded transition-all duration-300 ${isActive ? 'scale-110 ring-2 ring-white ring-offset-2 ring-offset-[#a90000]' : 'hover:scale-105'}`} style={{ background: bgColor, boxShadow: isActive ? '0 4px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2)' : '0 2px 4px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.2)' }} title={belt.name}>
+              <div className={`relative w-12 h-6 rounded transition-all duration-300 ${isActive ? 'scale-110 ring-2 ring-white ring-offset-2 ring-offset-[#a90000]' : 'hover:scale-105'}`} style={{ background: bgColor, boxShadow: isActive ? '0 4px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2)' : '0 2px 4px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.2)' }} title={t(belt.name)}>
                 <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] whitespace-nowrap opacity-0 hover:opacity-100 transition-opacity">
-                  {belt.name}
+                  {t(belt.name)}
                 </span>
               </div>
             </AnimatedButton>
@@ -356,7 +359,7 @@ export function ExamDashboard() {
                     {cat.icon}
                   </div>
                   <div className="text-left">
-                    <div className="font-bold text-gray-800 text-sm sm:text-base">{cat.nameNl}</div>
+                    <div className="font-bold text-gray-800 text-sm sm:text-base">{t(cat.nameNl)}</div>
                     <div className="text-xs sm:text-sm text-[#a90000] font-medium">{cat.nameJa}</div>
                   </div>
                 </div>
@@ -393,13 +396,13 @@ export function ExamDashboard() {
                             </span>
                             {tech.youtubeId && (
                               <AnimatedButton onClick={() => { setVideoModal({ youtubeId: tech.youtubeId!, nameJa: tech.nameJa, nameNl: tech.nameNl }); }} variants={subtleHover}>
-                                <div className="flex-shrink-0 w-7 h-7 rounded-lg bg-[#a90000] hover:bg-[#8c0000] text-white flex items-center justify-center transition-colors shadow" title={`Video: ${tech.nameJa}`}>
+                                <div className="flex-shrink-0 w-7 h-7 rounded-lg bg-[#a90000] hover:bg-[#8c0000] text-white flex items-center justify-center transition-colors shadow" title={`${t('Video')}: ${tech.nameJa}`}>
                                   <Play className="w-3.5 h-3.5 ml-0.5" />
                                 </div>
                               </AnimatedButton>
                             )}
                           </div>
-                          <span className="block text-xs text-gray-500 mt-0.5">{tech.nameNl}</span>
+                          <span className="block text-xs text-gray-500 mt-0.5">{techDutchFor(tech.nameNl, lang)}</span>
                           {tech.forbidden && (
                             <span className="inline-block mt-1 px-1.5 py-0.5 bg-red-100 text-red-500 text-[10px] font-semibold rounded">
                               verboden
@@ -424,8 +427,8 @@ export function ExamDashboard() {
       {/* Header */}
       <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-lg p-4 sm:p-5 text-white shadow-lg overflow-hidden relative">
         <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'40\' height=\'40\' viewBox=\'0 0 40 40\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.05\'%3E%3Cpath d=\'M20 0L40 20L20 40L0 20z\'/%3E%3C/g%3E%3C/svg%3E")' }}></div>
-        <h1 className="text-lg sm:text-xl md:text-2xl font-bold relative z-10">Exameneisen</h1>
-        <p className="text-white/80 mt-1 text-xs sm:text-sm relative z-10">Kies je bandniveau voor de exameneisen</p>
+        <h1 className="text-lg sm:text-xl md:text-2xl font-bold relative z-10">{t('Exameneisen')}</h1>
+        <p className="text-white/80 mt-1 text-xs sm:text-sm relative z-10">{t('Kies je bandniveau voor de exameneisen')}</p>
       </div>
 
       {/* Control Panel */}
@@ -433,10 +436,10 @@ export function ExamDashboard() {
         <div className="space-y-4">
           {/* Belt Buttons */}
           <div>
-            <label className="block text-sm font-semibold text-[#a90000] mb-2 uppercase tracking-wide">Band selecteren</label>
+            <label className="block text-sm font-semibold text-[#a90000] mb-2 uppercase tracking-wide">{t('Band selecteren')}</label>
             {renderBeltButtons()}
             <div className="mt-8 p-3 bg-gray-50 rounded-lg border-l-4 border-[#a90000]">
-              <span className="text-sm text-gray-600">Geselecteerd: </span>
+              <span className="text-sm text-gray-600">{t('Geselecteerd:')} </span>
               <strong className="text-sm text-[#a90000]">{selectedBelt.name}</strong>
               {selectedBelt.kyu && <span className="text-sm text-gray-500 ml-1">({selectedBelt.kyu}e kyu)</span>}
             </div>
@@ -444,26 +447,26 @@ export function ExamDashboard() {
 
           {/* View Mode Toggle */}
           <div>
-            <label className="block text-sm font-semibold text-[#a90000] mb-2 uppercase tracking-wide">Weergave</label>
+            <label className="block text-sm font-semibold text-[#a90000] mb-2 uppercase tracking-wide">{t('Weergave')}</label>
             <div className="flex rounded-lg overflow-hidden border-2 border-[#a90000] bg-white">
               <button
                 onClick={() => setViewMode('all')}
                 className={`flex-1 py-2 px-3 text-sm font-semibold transition-all ${viewMode === 'all' ? 'bg-[#a90000] text-white' : 'text-gray-600 hover:bg-gray-50'}`}
               >
-                Alles
+                {t('Alles')}
               </button>
               <button
                 onClick={() => setViewMode('new')}
                 className={`flex-1 py-2 px-3 text-sm font-semibold transition-all border-l-2 border-[#a90000] ${viewMode === 'new' ? 'bg-[#DC143C] text-white' : 'text-gray-600 hover:bg-gray-50'}`}
               >
-                Alleen nieuw
+                {t('Alleen nieuw')}
               </button>
             </div>
           </div>
 
           {/* Direct Transition Toggle */}
           <div>
-            <label className="block text-sm font-semibold text-[#a90000] mb-2 uppercase tracking-wide">Directe overgang</label>
+            <label className="block text-sm font-semibold text-[#a90000] mb-2 uppercase tracking-wide">{t('Directe overgang')}</label>
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setShowDirectTransition(!showDirectTransition)}
@@ -471,7 +474,7 @@ export function ExamDashboard() {
               >
                 <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform shadow ${showDirectTransition ? 'left-7' : 'left-1'}`}></div>
               </button>
-              <span className="text-sm text-gray-600">Van band overslaan</span>
+              <span className="text-sm text-gray-600">{t('Van band overslaan')}</span>
             </div>
             {showDirectTransition && (
               <select
@@ -480,7 +483,7 @@ export function ExamDashboard() {
                 className="w-full mt-2 p-2 border-2 border-gray-300 rounded-lg text-sm focus:border-[#a90000] focus:outline-none"
               >
                 {BELT_LEVELS.filter(b => !b.isSlip).map(belt => (
-                  <option key={belt.id} value={belt.id}>{belt.name}</option>
+                  <option key={belt.id} value={belt.id}>{t(belt.name)}</option>
                 ))}
               </select>
             )}
@@ -493,17 +496,17 @@ export function ExamDashboard() {
         {/* Content Header */}
         <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] p-3 sm:p-4 flex justify-between items-center relative text-white">
           <h2 className="text-base sm:text-lg font-bold">
-            {showDirectTransition ? `${fromBelt?.name} → ${selectedBelt.name}` : `Exameneisen ${selectedBelt.name}`}
+            {showDirectTransition ? `${t(fromBelt?.name || '')} → ${t(selectedBelt.name)}` : `${t('Exameneisen')} ${t(selectedBelt.name)}`}
           </h2>
           <div className="flex gap-2">
             <AnimatedButton onClick={expandAll} variants={subtleHover}>
               <div className="px-3 py-1.5 text-xs font-semibold bg-white/15 hover:bg-white/25 rounded border border-white/20 backdrop-blur-sm transition-all text-white">
-                Alles openen
+                {t('Alles openen')}
               </div>
             </AnimatedButton>
             <AnimatedButton onClick={collapseAll} variants={subtleHover}>
               <div className="px-3 py-1.5 text-xs font-semibold bg-white/15 hover:bg-white/25 rounded border border-white/20 backdrop-blur-sm transition-all text-white">
-                Alles sluiten
+                {t('Alles sluiten')}
               </div>
             </AnimatedButton>
           </div>
@@ -514,13 +517,13 @@ export function ExamDashboard() {
 
         {/* Extra Info */}
         <div className="border-t-3 border-[#a90000] bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-5">
-          <h3 className="text-sm font-semibold text-[#a90000] mb-3 uppercase tracking-wide">Extra eisen</h3>
+          <h3 className="text-sm font-semibold text-[#a90000] mb-3 uppercase tracking-wide">{t('Extra eisen')}</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <AnimatedCard variants={subtleHover}>
               <div className="flex items-center justify-between p-3 sm:p-4 bg-white rounded-lg shadow hover:shadow-lg transition-all">
                 <div>
                   <div className="font-bold text-gray-800">Nage-komi</div>
-                  <div className="text-xs text-gray-500 mt-0.5">Vrije worp naar keuze</div>
+                  <div className="text-xs text-gray-500 mt-0.5">{t('Vrije worp naar keuze')}</div>
                 </div>
                 <div className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-br from-[#a90000] to-[#DC143C] bg-clip-text text-transparent">
                   {beltReq.nageKomi}
@@ -531,7 +534,7 @@ export function ExamDashboard() {
               <div className="flex items-center justify-between p-3 sm:p-4 bg-white rounded-lg shadow hover:shadow-lg transition-all">
                 <div>
                   <div className="font-bold text-gray-800">Kanteltechnieken</div>
-                  <div className="text-xs text-gray-500 mt-0.5">Aantal kanteltechnieken</div>
+                  <div className="text-xs text-gray-500 mt-0.5">{t('Aantal kanteltechnieken')}</div>
                 </div>
                 <div className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-br from-[#a90000] to-[#DC143C] bg-clip-text text-transparent">
                   {beltReq.kantelTechnieken}
@@ -550,7 +553,7 @@ export function ExamDashboard() {
             <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] p-4 flex items-center justify-between">
               <div>
                 <h3 className="text-white font-bold text-lg">{videoModal.nameJa}</h3>
-                <p className="text-white/80 text-sm">{videoModal.nameNl}</p>
+                <p className="text-white/80 text-sm">{techDutchFor(videoModal.nameNl, lang)}</p>
               </div>
               <button
                 onClick={() => setVideoModal(null)}

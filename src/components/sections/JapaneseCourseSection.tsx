@@ -5,6 +5,8 @@ import { getLevels, type JudoLevel, type JudoTerm, beltColors } from '@/data/jap
 import { Lock, Unlock, Trophy, ChevronLeft, ChevronRight, RotateCcw, Volume2, VolumeX, Star, ImageOff, Play, X } from 'lucide-react';
 import { techniqueCategories } from '@/data/techniques';
 import { getTechniqueImage } from '@/data/technique-images';
+import { useT } from '@/i18n/LangContext';
+import { termMeaning, termMeaningByDutch } from '@/i18n/content';
 
 /** Map een JudoTerm naar een techniek afbeelding */
 function getTermImage(term: JudoTerm) {
@@ -211,6 +213,8 @@ function PlayButton({ term, size = 'md' }: { term: string; size?: 'sm' | 'md' })
 // FLASHCARD COMPONENT
 // ==========================================================================
 function Flashcard({ term, onFlip }: { term: JudoTerm; onFlip: () => void }) {
+  const { t, lang } = useT();
+  const meaning = termMeaning(term.uitspraak, term.nederlands, lang);
   const [flipped, setFlipped] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const youtubeId = getTermYouTubeId(term);
@@ -228,7 +232,7 @@ function Flashcard({ term, onFlip }: { term: JudoTerm; onFlip: () => void }) {
             style={{ backfaceVisibility: 'hidden' }}
           >
             <span className="inline-block px-3 py-1 bg-[#a90000] text-white text-xs font-bold rounded-lg mb-4">
-              {term.categorie}
+              {t(term.categorie)}
             </span>
             <div className="flex items-center gap-3">
               <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#a90000] text-center break-words">
@@ -236,7 +240,7 @@ function Flashcard({ term, onFlip }: { term: JudoTerm; onFlip: () => void }) {
               </h3>
               <PlayButton term={term.uitspraak} />
             </div>
-            <p className="text-gray-400 text-xs mt-4">Klik om te draaien</p>
+            <p className="text-gray-400 text-xs mt-4">{t('Klik om te draaien')}</p>
           </div>
           {/* Back */}
           <div
@@ -244,10 +248,10 @@ function Flashcard({ term, onFlip }: { term: JudoTerm; onFlip: () => void }) {
             style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
           >
             <span className="inline-block px-3 py-1 bg-[#a90000] text-white text-xs font-bold rounded-lg mb-3">
-              {term.categorie}
+              {t(term.categorie)}
             </span>
             <p className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 text-center break-words w-full">
-              {term.nederlands}
+              {meaning}
             </p>
             <div className="flex items-center gap-2 mt-2">
               <span className="text-sm text-[#a90000] font-semibold">{term.uitspraak}</span>
@@ -301,7 +305,7 @@ function Flashcard({ term, onFlip }: { term: JudoTerm; onFlip: () => void }) {
                 allowFullScreen
               />
             </div>
-            <p className="text-white text-center text-sm mt-3 font-medium">{term.uitspraak} — {term.nederlands}</p>
+            <p className="text-white text-center text-sm mt-3 font-medium">{term.uitspraak} — {meaning}</p>
           </div>
         </div>
       )}
@@ -333,6 +337,12 @@ const WRONG_ANSWER_POOL: string[] = Array.from(
 );
 
 export function QuizMode({ level, onPass, onNext, onPrev }: { level: JudoLevel; onPass: (score: number, total: number) => void; onNext?: () => void; onPrev?: () => void }) {
+  const { t, lang } = useT();
+  const meaningOf = useCallback((term: JudoTerm) => termMeaning(term.uitspraak, term.nederlands, lang), [lang]);
+  const wrongPool = useMemo(
+    () => Array.from(new Set(WRONG_ANSWER_POOL.map((n) => (lang === 'en' ? (termMeaningByDutch(n, lang) ?? n) : n)))),
+    [lang],
+  );
   const [questions, setQuestions] = useState<JudoTerm[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -369,15 +379,15 @@ export function QuizMode({ level, onPass, onNext, onPrev }: { level: JudoLevel; 
      blijft dus staan tijdens feedback én wisselt niet per toeval. */
   const optionsByQuestion = useMemo(() => {
     return questions.map((q) => {
-      const correct = q.nederlands;
-      const wrong = shuffle(WRONG_ANSWER_POOL.filter((n) => n !== correct)).slice(0, 3);
+      const correct = meaningOf(q);
+      const wrong = shuffle(wrongPool.filter((n) => n !== correct)).slice(0, 3);
       return shuffle([correct, ...wrong]);
     });
-  }, [questions]);
+  }, [questions, meaningOf, wrongPool]);
 
   function handleAnswer(option: string) {
     if (showFeedback || !questions.length) return;
-    const correct = questions[currentIndex].nederlands;
+    const correct = meaningOf(questions[currentIndex]);
     const isCorrect = option === correct;
 
     setSelected(option);
@@ -420,7 +430,7 @@ export function QuizMode({ level, onPass, onNext, onPrev }: { level: JudoLevel; 
   if (level.terms.length === 0) {
     return (
       <div className="bg-white rounded-lg shadow-sm border border-[#e9e0cf] p-6 sm:p-8">
-        <p className="text-gray-500 text-center">Geen termen beschikbaar voor deze module.</p>
+        <p className="text-gray-500 text-center">{t('Geen termen beschikbaar voor deze module.')}</p>
       </div>
     );
   }
@@ -441,7 +451,7 @@ export function QuizMode({ level, onPass, onNext, onPrev }: { level: JudoLevel; 
             {passed ? <Trophy className="w-10 h-10 text-white" /> : <RotateCcw className="w-10 h-10 text-gray-400" />}
           </div>
           <h3 className={`text-2xl sm:text-3xl font-bold mb-2 ${passed ? 'text-[#198754]' : 'text-[#dc3545]'}`}>
-            {passed ? '🎉 Gefeliciteerd!' : 'Blijf oefenen!'}
+            {passed ? t('🎉 Gefeliciteerd!') : t('Blijf oefenen!')}
           </h3>
           <p className="text-5xl font-bold text-[#8c0000] my-4">{score} / {questions.length}</p>
           <div className="w-full h-4 bg-gray-100 rounded-lg mb-4 overflow-hidden">
@@ -450,14 +460,14 @@ export function QuizMode({ level, onPass, onNext, onPrev }: { level: JudoLevel; 
               style={{ width: `${percentage}%` }}
             />
           </div>
-          <p className="text-gray-500 mb-2">{percentage}% goed — {passed ? '(≥80% geslaagd!)' : '(min. 80% nodig)'}</p>
+          <p className="text-gray-500 mb-2">{percentage}% {t('goed')} — {passed ? t('(≥80% geslaagd!)') : t('(min. 80% nodig)')}</p>
           {passed && (
             <div className="mt-3 space-y-2">
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-50 border border-yellow-200 rounded-lg">
                 <span className="text-yellow-600 text-lg">🎓</span>
-                <span className="text-sm font-bold text-yellow-700">Diploma ontvangen!</span>
+                <span className="text-sm font-bold text-yellow-700">{t('Diploma ontvangen!')}</span>
               </div>
-              <p className="text-xs text-gray-500">Je diploma staat in je dashboard onder "Mijn Diploma's"</p>
+              <p className="text-xs text-gray-500">{t('Je diploma staat in je dashboard onder')} "Mijn Diploma's"</p>
             </div>
           )}
           <div className="flex flex-col sm:flex-row justify-center gap-3 mt-6">
@@ -466,7 +476,7 @@ export function QuizMode({ level, onPass, onNext, onPrev }: { level: JudoLevel; 
                 onClick={onNext}
                 className="bg-gradient-to-r from-[#a90000] to-[#8c0000] hover:from-[#8c0000] hover:to-[#700000] text-white px-6 py-2.5 rounded-lg font-semibold text-sm transition-all shadow-md hover:shadow-lg"
               >
-                Volgende band →
+                {t('Volgende band')} →
               </button>
             )}
             {passed && onPrev && (
@@ -474,14 +484,14 @@ export function QuizMode({ level, onPass, onNext, onPrev }: { level: JudoLevel; 
                 onClick={onPrev}
                 className="bg-white border-2 border-[#a90000] text-[#a90000] hover:bg-[#fdf6f6] px-6 py-2.5 rounded-lg font-semibold text-sm transition-colors"
               >
-                ← Terug naar modules
+                ← {t('Terug naar modules')}
               </button>
             )}
             <button
               onClick={startQuiz}
               className="bg-white border-2 border-gray-200 hover:border-[#a90000] text-gray-600 hover:text-[#a90000] px-6 py-2.5 rounded-lg font-semibold text-sm transition-colors"
             >
-              Opnieuw proberen
+              {t('Opnieuw proberen')}
             </button>
           </div>
         </div>
@@ -490,7 +500,7 @@ export function QuizMode({ level, onPass, onNext, onPrev }: { level: JudoLevel; 
   }
 
   const question = questions[currentIndex];
-  const correctAnswer = question.nederlands;
+  const correctAnswer = meaningOf(question);
 
   /* options komen uit de memo: volgorde is stabiel per vraag */
   const options = optionsByQuestion[currentIndex] ?? [];
@@ -509,7 +519,7 @@ export function QuizMode({ level, onPass, onNext, onPrev }: { level: JudoLevel; 
 
       <div className="flex items-center justify-between mb-2">
         <p className="text-xs text-gray-400">
-          Vraag {currentIndex + 1} van {questions.length}
+          {t('Vraag')} {currentIndex + 1} {t('van')} {questions.length}
         </p>
         <p className="text-xs font-bold text-[#a90000]">Score: {score}</p>
       </div>
@@ -521,7 +531,7 @@ export function QuizMode({ level, onPass, onNext, onPrev }: { level: JudoLevel; 
         <PlayButton term={question.uitspraak} size="sm" />
       </div>
 
-      <p className="text-center text-sm text-gray-500 mb-4">Wat betekent dit?</p>
+      <p className="text-center text-sm text-gray-500 mb-4">{t('Wat betekent dit?')}</p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {options.map((option, idx) => {
@@ -555,7 +565,7 @@ export function QuizMode({ level, onPass, onNext, onPrev }: { level: JudoLevel; 
 
       {showFeedback && (
         <p className={`mt-4 text-center font-bold ${selected === correctAnswer ? 'text-[#198754]' : 'quiz-pop text-[#dc3545]'}`}>
-          {selected === correctAnswer ? '✓ Correct!' : `✗ Jammer — juist antwoord: ${correctAnswer}`}
+          {selected === correctAnswer ? `✓ ${t('Correct!')}` : `✗ ${t('Jammer — juist antwoord')}: ${correctAnswer}`}
         </p>
       )}
     </div>
@@ -566,6 +576,7 @@ export function QuizMode({ level, onPass, onNext, onPrev }: { level: JudoLevel; 
 // MAIN COMPONENT
 // ==========================================================================
 export function JapaneseCourseSection() {
+  const { t } = useT();
   const levels = getLevels();
   const [selectedLevel, setSelectedLevel] = useState<JudoLevel | null>(null);
   const [mode, setMode] = useState<'learn' | 'quiz'>('learn');
@@ -708,7 +719,7 @@ export function JapaneseCourseSection() {
           <button
             onClick={() => setSoundEnabled(!soundEnabled)}
             className={`p-2 rounded-lg transition-colors ${soundEnabled ? 'text-[#a90000] bg-[#fdf6f6]' : 'text-gray-400'}`}
-            title={soundEnabled ? 'Geluid uit' : 'Geluid aan'}
+            title={soundEnabled ? t('Geluid uit') : t('Geluid aan')}
           >
             {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
           </button>
@@ -724,13 +735,13 @@ export function JapaneseCourseSection() {
               {typeof selectedLevel.id === 'number' ? `${selectedLevel.id + 1}` : '📚'}
             </div>
             <div>
-              <h2 className="text-lg sm:text-xl font-bold">{selectedLevel.name}</h2>
-              <p className="text-white/70 text-xs sm:text-sm">{selectedLevel.terms.length} termen</p>
+              <h2 className="text-lg sm:text-xl font-bold">{t(selectedLevel.name)}</h2>
+              <p className="text-white/70 text-xs sm:text-sm">{selectedLevel.terms.length} {t('termen')}</p>
             </div>
             {progress.passedLevels[selectedLevel.id] && (
               <div className="ml-auto flex items-center gap-1 bg-green-500/20 px-3 py-1 rounded-lg">
                 <Star className="w-4 h-4 text-yellow-300" />
-                <span className="text-xs font-bold text-green-200">Geslaagd!</span>
+                <span className="text-xs font-bold text-green-200">{t('Geslaagd!')}</span>
               </div>
             )}
           </div>
@@ -746,7 +757,7 @@ export function JapaneseCourseSection() {
                 : 'text-gray-500 hover:text-gray-700'
             }`}
           >
-            📖 Leren
+            📖 {t('Leren')}
           </button>
           <button
             onClick={() => { setMode('quiz'); sounds.click(); }}
@@ -756,7 +767,7 @@ export function JapaneseCourseSection() {
                 : 'text-gray-500 hover:text-gray-700'
             }`}
           >
-            🎯 Examen
+            🎯 {t('Examen')}
           </button>
         </div>
 
@@ -850,15 +861,15 @@ export function JapaneseCourseSection() {
         </svg>
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">Cursus Japans</h1>
+            <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">{t('Cursus Japans')}</h1>
             <p className="text-white/80 mt-1 text-xs sm:text-sm">
-              Examentrainer voor de Japanse judo-terminologie
+              {t('Examentrainer voor de Japanse judo-terminologie')}
             </p>
           </div>
           <button
             onClick={() => setSoundEnabled(!soundEnabled)}
             className={`p-2 rounded-lg transition-colors ${soundEnabled ? 'text-white bg-white/20' : 'text-white/40'}`}
-            title={soundEnabled ? 'Geluid uit' : 'Geluid aan'}
+            title={soundEnabled ? t('Geluid uit') : t('Geluid aan')}
           >
             {soundEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
           </button>
@@ -873,8 +884,8 @@ export function JapaneseCourseSection() {
         return (
           <div className="bg-white rounded-lg shadow-sm border border-[#e9e0cf] p-4 sm:p-5">
             <div className="flex items-center justify-between mb-2">
-              <h3 className="font-bold text-gray-800 text-sm">Jouw voortgang</h3>
-              <span className="text-xs font-bold text-[#a90000]">{passedCount}/{totalBelts} banden geslaagd</span>
+              <h3 className="font-bold text-gray-800 text-sm">{t('Jouw voortgang')}</h3>
+              <span className="text-xs font-bold text-[#a90000]">{passedCount}/{totalBelts} {t('banden geslaagd')}</span>
             </div>
             <div className="w-full h-3 bg-gray-100 rounded-lg overflow-hidden">
               <div
@@ -888,7 +899,7 @@ export function JapaneseCourseSection() {
 
       {/* Module Grid */}
       <div>
-        <h2 className="text-xl sm:text-2xl font-bold text-[#8c0000] mb-4">Kies een module</h2>
+        <h2 className="text-xl sm:text-2xl font-bold text-[#8c0000] mb-4">{t('Kies een module')}</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {levels.map((level) => {
             const unlocked = isLevelUnlocked(level);
@@ -932,15 +943,15 @@ export function JapaneseCourseSection() {
                     <h3 className={`text-lg sm:text-xl font-bold transition-colors ${
                       unlocked ? 'text-gray-800 group-hover:text-[#a90000]' : 'text-gray-400'
                     }`}>
-                      {level.name}
+                      {t(level.name)}
                     </h3>
                   </div>
                   <p className="text-xs sm:text-sm text-gray-400 mt-1">
-                    {level.terms.length} termen
+                    {level.terms.length} {t('termen')}
                   </p>
                   {!unlocked && (
                     <p className="text-[10px] text-gray-400 mt-1">
-                      📌 Haal eerst de vorige band
+                      📌 {t('Haal eerst de vorige band')}
                     </p>
                   )}
                 </div>
@@ -953,8 +964,7 @@ export function JapaneseCourseSection() {
       {/* Footer */}
       <div className="bg-[#fdf6f6] rounded-lg p-4 sm:p-5 border border-[#e9e0cf]">
         <p className="text-xs sm:text-sm text-gray-600 leading-relaxed text-center">
-          <strong>Hoe werkt het?</strong> — Leer de termen met flashcards, doe dan het examen (min. 80% nodig).
-          Haal je een band? Dan ontgrendel je automatisch de volgende! 🥋
+          <strong>{t('Hoe werkt het?')}</strong> — {t('Leer de termen met flashcards, doe dan het examen (min. 80% nodig). Haal je een band? Dan ontgrendel je automatisch de volgende!')} 🥋
         </p>
       </div>
 

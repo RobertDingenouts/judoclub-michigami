@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { LogoutButton } from './LogoutButton';
 import { BELT_LABELS_NL, BELT_COLORS } from '@/lib/student-progress-types';
+import { useT } from '@/i18n/LangContext';
 
 interface UserData {
   id: string;
@@ -28,6 +29,7 @@ interface UserData {
 
 export function UserDropdown({ onSectionChange }: { onSectionChange?: (section: string) => void }) {
   const router = useRouter();
+  const { t } = useT();
   const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -86,7 +88,7 @@ export function UserDropdown({ onSectionChange }: { onSectionChange?: (section: 
           <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3 3 0 11-6 0 3 3 0 016 0z" />
           <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12a9 9 0 0118 0" />
         </svg>
-        Inloggen
+        {t('Inloggen')}
       </a>
     );
   }
@@ -180,7 +182,7 @@ export function UserDropdown({ onSectionChange }: { onSectionChange?: (section: 
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
-              Profiel & Instellingen
+              {t('Profiel & Instellingen')}
             </a>
 
             {/* Diplomas */}
@@ -191,7 +193,7 @@ export function UserDropdown({ onSectionChange }: { onSectionChange?: (section: 
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              Mijn Diploma&apos;s
+              {t("Mijn Diploma's")}
             </a>
 
             {/* Admin Dashboard — only for admins */}
@@ -229,6 +231,7 @@ export function UserDropdown({ onSectionChange }: { onSectionChange?: (section: 
  */
 export function MobileUserAvatar({ onSectionChange }: { onSectionChange?: (section: string) => void }) {
   const router = useRouter();
+  const { t } = useT();
   const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -282,10 +285,10 @@ export function MobileUserAvatar({ onSectionChange }: { onSectionChange?: (secti
         </div>
         <div className="py-1">
           <a href="/leden/profiel/bewerken" className="flex items-center gap-2 px-3 py-2 text-xs text-gray-700 hover:bg-[#fdf6f6] hover:text-[#a90000]">
-            👤 Profiel
+            👤 {t('Profiel')}
           </a>
           <a href="/leden/diploma's" className="flex items-center gap-2 px-3 py-2 text-xs text-gray-700 hover:bg-[#fdf6f6] hover:text-[#a90000]">
-            🏅 Diploma&apos;s
+            🏅 {t("Diploma's")}
           </a>
           {user.role === 'ADMIN' && (
             <a href="/admin" className="flex items-center gap-2 px-3 py-2 text-xs text-[#a90000] font-medium hover:bg-[#fdf6f6]">
@@ -300,7 +303,7 @@ export function MobileUserAvatar({ onSectionChange }: { onSectionChange?: (secti
             }}
             className="w-full flex items-center gap-2 px-3 py-2 text-xs text-gray-500 hover:text-red-600"
           >
-            🚪 Uitloggen
+            🚪 {t('Uitloggen')}
           </button>
         </div>
       </div>

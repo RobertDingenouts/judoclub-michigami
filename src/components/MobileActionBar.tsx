@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { Home, CalendarDays, Info, UserPlus, MoreHorizontal } from 'lucide-react';
 import { type SectionId } from './nav-config';
 import { MobileUserAvatar } from './UserDropdown';
+import { LangToggle } from './LangToggle';
+import { useT } from '@/i18n/LangContext';
 import {
   Drawer,
   DrawerContent,
@@ -43,6 +45,7 @@ const moreLinks: { id: SectionId | string; label: string; isExternal?: boolean; 
 ];
 
 export function MobileActionBar({ activeSection, onSectionChange, onProeflesClick }: MobileActionBarProps) {
+  const { t } = useT();
   const [moreOpen, setMoreOpen] = useState(false);
 
   return (
@@ -72,7 +75,7 @@ export function MobileActionBar({ activeSection, onSectionChange, onProeflesClic
             style={item.isProefles ? { backgroundColor: '#a90000' } : undefined}
           >
             {item.icon}
-            <span>{item.label}</span>
+            <span>{t(item.label)}</span>
           </button>
         ))}
 
@@ -81,16 +84,19 @@ export function MobileActionBar({ activeSection, onSectionChange, onProeflesClic
           <DrawerTrigger asChild>
             <button className="flex-1 inline-flex flex-col items-center gap-0.5 h-12 px-2 rounded-xl text-[11px] font-medium text-[#1c1915] active:scale-[0.98] transition-transform">
               <MoreHorizontal className="w-4 h-4" />
-              <span>Meer</span>
+              <span>{t('Meer')}</span>
             </button>
           </DrawerTrigger>
           <DrawerContent className="max-h-[70vh]">
             <DrawerHeader>
               <DrawerTitle className="text-center font-bold" style={{ color: '#8c0000' }}>
-                Meer
+                {t('Meer')}
               </DrawerTitle>
             </DrawerHeader>
             <div className="px-4 pb-6 space-y-1">
+              <div className="flex justify-center py-2 border-b border-[#2a2a2a]/10 mb-2">
+                <LangToggle />
+              </div>
               {moreLinks.map((link) => (
                 link.isExternal ? (
                   <a
@@ -100,7 +106,7 @@ export function MobileActionBar({ activeSection, onSectionChange, onProeflesClic
                     rel="noopener noreferrer"
                     className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-foreground hover:bg-judo-red-bg transition-all active:scale-[0.99]"
                   >
-                    <span>{link.label}</span>
+                    <span>{t(link.label)}</span>
                   </a>
                 ) : (
                   <button
@@ -112,7 +118,7 @@ export function MobileActionBar({ activeSection, onSectionChange, onProeflesClic
                         : 'text-foreground hover:bg-judo-red-bg'
                     }`}
                   >
-                    <span>{link.label}</span>
+                    <span>{t(link.label)}</span>
                   </button>
                 )
               ))}

@@ -2,9 +2,11 @@
 
 import { scheduleInfo } from '@/data/schedule';
 import { Clock } from 'lucide-react';
+import { useT } from '@/i18n/LangContext';
 import type { Section } from '@/components/nav-config';
 
 export function ScheduleSection({ onNavigate }: { onNavigate?: (s: Section) => void }) {
+  const { t } = useT();
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -19,8 +21,8 @@ export function ScheduleSection({ onNavigate }: { onNavigate?: (s: Section) => v
           <rect x="20" y="18" width="6" height="58" rx="1" />
           <rect x="74" y="18" width="6" height="58" rx="1" />
         </svg>
-        <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">{scheduleInfo.title}</h1>
-        <p className="text-white/80 mt-1 text-xs sm:text-sm">{scheduleInfo.subtitle}</p>
+        <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">{t(scheduleInfo.title)}</h1>
+        <p className="text-white/80 mt-1 text-xs sm:text-sm">{t(scheduleInfo.subtitle)}</p>
         <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-lg mt-2 sm:mt-3" />
       </div>
 
@@ -29,7 +31,7 @@ export function ScheduleSection({ onNavigate }: { onNavigate?: (s: Section) => v
         <div key={dayIdx} className="bg-white rounded-lg shadow-sm border border-[#e9e0cf] overflow-hidden">
           {/* Day Header */}
           <div className="bg-gradient-to-r from-[#fdf6f6] to-white px-4 sm:px-5 py-3 border-b border-[#e9e0cf]">
-            <h3 className="font-bold text-[#8c0000] text-base sm:text-lg">{day.dayLabel}</h3>
+            <h3 className="font-bold text-[#8c0000] text-base sm:text-lg">{t(day.dayLabel)}</h3>
           </div>
 
           {/* Sessions */}
@@ -47,8 +49,8 @@ export function ScheduleSection({ onNavigate }: { onNavigate?: (s: Section) => v
 
                   {/* Group Info */}
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-semibold text-gray-800 text-sm sm:text-base truncate">{session.groupName}</h4>
-                    <p className="text-xs sm:text-sm text-gray-500">{session.ageRange}</p>
+                    <h4 className="font-semibold text-gray-800 text-sm sm:text-base truncate">{t(session.groupName)}</h4>
+                    <p className="text-xs sm:text-sm text-gray-500">{t(session.ageRange)}</p>
                   </div>
 
                   {/* Location */}
@@ -72,7 +74,7 @@ export function ScheduleSection({ onNavigate }: { onNavigate?: (s: Section) => v
                         d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                       />
                     </svg>
-                    <span className="truncate">{session.location}</span>
+                    <span className="truncate">{t(session.location)}</span>
                   </div>
                 </div>
               </div>
@@ -84,9 +86,9 @@ export function ScheduleSection({ onNavigate }: { onNavigate?: (s: Section) => v
       {/* Note */}
       <div className="bg-[#fdf6f6] rounded-lg p-4 sm:p-5 border border-[#e9e0cf]">
         <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
-          <span className="font-bold text-[#8c0000]">Let op:</span> De lestijden kunnen wijzigen i.v.m. vakanties en evenementen.
-          Houd de{' '}
-          <button onClick={() => onNavigate?.('agenda')} className="text-[#a90000] hover:text-[#8c0000] underline cursor-pointer">agenda</button> in de gaten voor de actuele informatie.
+          <span className="font-bold text-[#8c0000]">{t('Let op:')}</span> {t('De lestijden kunnen wijzigen i.v.m. vakanties en evenementen.')}
+          {' '}{t('Houd de')}{' '}
+          <button onClick={() => onNavigate?.('agenda')} className="text-[#a90000] hover:text-[#8c0000] underline cursor-pointer">{t('agenda')}</button> {t('in de gaten voor de actuele informatie.')}
         </p>
       </div>
     </div>

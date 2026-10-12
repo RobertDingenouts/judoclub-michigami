@@ -30,7 +30,9 @@ import { ProfileSection } from '@/components/sections/ProfileSection';
 import { ExamApprovalSection } from '@/components/sections/ExamApprovalSection';
 import { MusicSection } from '@/components/sections/MusicSection';
 import { MiniPlayer } from '@/components/MiniPlayer';
+import { SeoFooter } from '@/components/SeoFooter';
 import { MusicPlayerProvider } from '@/context/MusicPlayerContext';
+import { LangProvider } from '@/i18n/LangContext';
 import { PullToRefreshIndicator } from '@/components/PullToRefreshIndicator';
 import { StickyCTA } from '@/components/StickyCTA';
 import { TrialLessonForm } from '@/components/sections/TrialLessonForm';
@@ -313,6 +315,7 @@ export default function MichigamiApp() {
   }, [ptrPulling, ptrProgress]);
 
   return (
+    <LangProvider>
     <MusicPlayerProvider>
     <div className="min-h-screen flex flex-col md:flex-row bg-washi w-full overflow-x-hidden">
       {/* Pull-to-refresh indicator */}
@@ -411,6 +414,8 @@ export default function MichigamiApp() {
             )}
             </motion.div>
           </AnimatePresence>
+          {/* SEO-footer: binnen het scrollgebied, dus geen overlap meer met de content */}
+          <div className="pb-[7rem] sm:pb-[5rem]"><SeoFooter /></div>
           </div>
         </ScrollArea>
         </div>
@@ -446,5 +451,6 @@ export default function MichigamiApp() {
       <VotePopup />
     </div>
     </MusicPlayerProvider>
+    </LangProvider>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { fetchUserDiplomas, getDiplomaDownloadUrl } from '@/lib/actions/diploma-actions'
+import { useT } from '@/i18n/LangContext'
 
 interface Diploma {
   id: string
@@ -42,6 +43,7 @@ interface DiplomasSectionProps {
 }
 
 export function DiplomasSection({ userId }: DiplomasSectionProps) {
+  const { t } = useT();
   const [diplomas, setDiplomas] = useState<Diploma[]>([])
   const [loading, setLoading] = useState(true)
   const [downloadingId, setDownloadingId] = useState<string | null>(null)
@@ -117,11 +119,11 @@ export function DiplomasSection({ userId }: DiplomasSectionProps) {
     return (
       <div className="space-y-6">
         <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-lg p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
-          <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold">Mijn Diplomas</h1>
-          <p className="text-white/80 mt-1 text-xs sm:text-sm">Inloggen vereist om je diplomas te bekijken</p>
+          <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold">{t('Mijn Diplomas')}</h1>
+          <p className="text-white/80 mt-1 text-xs sm:text-sm">{t('Inloggen vereist om je diplomas te bekijken')}</p>
         </div>
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-center">
-          <p className="text-yellow-800">Log in om je judo diplomas te bekijken en te downloaden.</p>
+          <p className="text-yellow-800">{t('Log in om je judo diplomas te bekijken en te downloaden.')}</p>
         </div>
       </div>
     )
@@ -131,8 +133,8 @@ export function DiplomasSection({ userId }: DiplomasSectionProps) {
     <div className="space-y-6">
       {/* Header */}
       <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-lg p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
-        <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold">Mijn Diplomas</h1>
-        <p className="text-white/80 mt-1 text-xs sm:text-sm">Je behaalde judo examens en certificaten</p>
+        <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold">{t('Mijn Diplomas')}</h1>
+        <p className="text-white/80 mt-1 text-xs sm:text-sm">{t('Je behaalde judo examens en certificaten')}</p>
         <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-lg mt-2 sm:mt-3" />
       </div>
 
@@ -147,9 +149,9 @@ export function DiplomasSection({ userId }: DiplomasSectionProps) {
       {!loading && diplomas.length === 0 && (
         <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center space-y-3">
           <div className="text-4xl">🎓</div>
-          <h3 className="font-bold text-gray-700">Nog geen diplomas</h3>
+          <h3 className="font-bold text-gray-700">{t('Nog geen diplomas')}</h3>
           <p className="text-sm text-gray-500">
-            Wanneer je een judo examen haalt, ontvang je automatisch een digitaal diploma.
+            {t('Wanneer je een judo examen haalt, ontvang je automatisch een digitaal diploma.')}
           </p>
         </div>
       )}
@@ -239,7 +241,7 @@ export function DiplomasSection({ userId }: DiplomasSectionProps) {
                           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                           </svg>
-                          Download PDF
+                          {t('Download PDF')}
                         </>
                       )}
                     </button>

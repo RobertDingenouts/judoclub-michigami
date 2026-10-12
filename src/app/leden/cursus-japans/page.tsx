@@ -1,6 +1,7 @@
 import { getCurrentUser } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { beltColors } from '@/data/japanese-course'
+import { T } from '@/components/T'
 
 export const dynamic = 'force-dynamic'
 
@@ -97,14 +98,14 @@ export default async function CursusJapansPage() {
       <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-lg p-4 sm:p-5 md:p-6 text-white shadow-lg relative overflow-hidden">
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-xl sm:text-2xl font-bold">Cursus Japans</h1>
+            <h1 className="text-xl sm:text-2xl font-bold"><T k="Cursus Japans" /></h1>
             <p className="text-white/80 mt-1 text-sm">
-              Jouw voortgang per bandniveau
+              <T k="Jouw voortgang per bandniveau" />
             </p>
           </div>
           <div className="text-right">
             <div className="text-3xl font-bold">{passedCount}</div>
-            <div className="text-xs text-white/70">van {totalBelts} banden</div>
+            <div className="text-xs text-white/70"><T k="van" /> {totalBelts} <T k="banden" /></div>
           </div>
         </div>
         {/* Overall progress bar */}
@@ -159,11 +160,11 @@ export default async function CursusJapansPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="font-bold text-[#2a2a2a] text-base sm:text-lg">
-                        {colors.label} band
+                        <T k={`${colors.label} band`} />
                       </h3>
                       {course?.isPassed && (
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-bold bg-green-100 text-green-700">
-                          ✓ Geslaagd
+                          ✓ <T k="Geslaagd" />
                         </span>
                       )}
                       {hasDiploma && (
@@ -173,12 +174,12 @@ export default async function CursusJapansPage() {
                       )}
                       {!course?.isUnlocked && (
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-500">
-                          🔒 Vergrendeld
+                          🔒 <T k="Vergrendeld" />
                         </span>
                       )}
                     </div>
                     <p className="text-sm text-gray-500 mt-0.5">
-                      {course?.wordsLearned ?? 0}/{course?.wordsTotal ?? 0} woorden geleerd
+                      {course?.wordsLearned ?? 0}/{course?.wordsTotal ?? 0} <T k="woorden geleerd" />
                       {((course?.overallScore ?? 0) > 0) && (
                         <span className="ml-2 font-semibold text-[#a90000]">
                           · {(course?.overallScore ?? 0).toFixed(0)}% score
@@ -212,7 +213,7 @@ export default async function CursusJapansPage() {
                       rel="noopener noreferrer"
                       className="px-4 py-2 bg-[#a90000] hover:bg-[#8c0000] text-white text-sm font-semibold rounded-lg transition-colors shadow-sm whitespace-nowrap inline-block"
                     >
-                      Start examen →
+                      <T k="Start examen" /> →
                     </a>
                   )}
                 </div>
@@ -226,7 +227,7 @@ export default async function CursusJapansPage() {
       {diplomas.length > 0 && (
         <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
           <h2 className="font-bold text-[#2a2a2a] text-lg mb-3 flex items-center gap-2">
-            🎓 Jouw diploma&apos;s
+            🎓 <T k="Jouw diploma's" />
           </h2>
           <div className="space-y-2">
             {diplomas.map((diploma) => {
@@ -273,10 +274,7 @@ export default async function CursusJapansPage() {
       {/* How it works */}
       <div className="bg-[#fdf6f6] rounded-lg p-4 border border-[#e9e0cf]">
         <p className="text-sm text-gray-600 leading-relaxed">
-          <strong>Hoe werkt het?</strong> — Ga naar de Cursus Japans sectie op de homepage,
-          leer de termen met flashcards en doe het examen (min. 80% nodig).
-          Haal je een band? Dan krijg je automatisch een digitaal diploma 🎓
-          en ontgrendel je de volgende band!
+          <strong><T k="Hoe werkt het?" /></strong> — <T k="Ga naar de Cursus Japans sectie op de homepage, leer de termen met flashcards en doe het examen (min. 80% nodig). Haal je een band? Dan krijg je automatisch een digitaal diploma 🎓 en ontgrendel je de volgende band!" />
         </p>
       </div>
     </div>

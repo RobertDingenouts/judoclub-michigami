@@ -4,7 +4,9 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { newsArchive, socialLinks } from '@/data/news-archive';
 import Image from 'next/image';
-import { AnimatedButton } from '@/components/ui/animated-card';
+import { AnimatedCard, AnimatedButton, subtleHover } from '@/components/ui/animated-card';
+import { useT } from '@/i18n/LangContext';
+import { newsItemFor } from '@/i18n/content';
 import { ImageLightbox } from '@/components/ui/ImageLightbox';
 
 const containerVariants = {
@@ -20,11 +22,11 @@ const itemVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.35 } },
 };
 
-function formatDate(dateStr: string | undefined): string {
+function formatDate(dateStr: string | undefined, lang: string = 'nl'): string {
   if (!dateStr) return '';
   try {
     const date = new Date(dateStr);
-    return date.toLocaleDateString('nl-NL', {
+    return date.toLocaleDateString(lang === 'en' ? 'en-GB' : 'nl-NL', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -35,6 +37,7 @@ function formatDate(dateStr: string | undefined): string {
 }
 
 function NewsCard({ article }: { article: (typeof newsArchive)[number]['articles'][number] }) {
+  const { t, lang } = useT();
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
   return (
@@ -82,7 +85,7 @@ function NewsCard({ article }: { article: (typeof newsArchive)[number]['articles
             <svg className="w-4 h-4 text-[#a90000]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
-            <time className="text-xs text-gray-400">{formatDate(article.date)}</time>
+            <time className="text-xs text-gray-400">{formatDate(article.date, lang)}</time>
           </div>
           <h3 className="text-base sm:text-lg font-bold text-[#8c0000] mb-3">{article.title}</h3>
           <div className="text-sm sm:text-base text-gray-600 leading-relaxed whitespace-pre-line">
@@ -104,7 +107,9 @@ function NewsCard({ article }: { article: (typeof newsArchive)[number]['articles
   );
 }
 
-function YearSection({ yearData, autoOpen = false }: { yearData: (typeof newsArchive)[number], autoOpen?: boolean }) {
+function YearSection({ yearData: yearDataNl, autoOpen = false }: { yearData: (typeof newsArchive)[number], autoOpen?: boolean }) {
+  const { t, lang } = useT();
+  const yearData = { ...yearDataNl, articles: yearDataNl.articles.map((a) => newsItemFor(a, lang)) };
   const [isOpen, setIsOpen] = useState(autoOpen);
 
   return (
@@ -122,7 +127,7 @@ function YearSection({ yearData, autoOpen = false }: { yearData: (typeof newsArc
             <div>
               <h2 className="font-bold text-[#8c0000] text-base sm:text-lg">{yearData.year}</h2>
               <p className="text-xs text-gray-400 mt-0.5">
-                {yearData.articles.length} artikel{yearData.articles.length !== 1 ? 's' : ''}
+                {yearData.articles.length} {yearData.articles.length !== 1 ? t('artikelen') : t('artikel')}
               </p>
             </div>
           </div>
@@ -159,6 +164,7 @@ function YearSection({ yearData, autoOpen = false }: { yearData: (typeof newsArc
 }
 
 export function NewsSection() {
+  const { t } = useT();
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -173,9 +179,9 @@ export function NewsSection() {
             <rect x="20" y="18" width="6" height="58" rx="1" />
             <rect x="74" y="18" width="6" height="58" rx="1" />
           </svg>
-          <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">Nieuwsarchief</h1>
+          <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">{t('Nieuwsarchief')}</h1>
           <p className="text-white/80 mt-1 text-xs sm:text-sm">
-            Historisch nieuws van Judoclub Michigami (2013-heden)
+            {t('Historisch nieuws van Judoclub Michigami (2013-heden)')}
           </p>
           <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-lg mt-2 sm:mt-3" />
         </div>
@@ -183,7 +189,7 @@ export function NewsSection() {
       {/* Social Links */}
       <div className="bg-white rounded-lg shadow-sm border border-[#e9e0cf] p-4 sm:p-6">
         <p className="text-sm sm:text-base text-gray-700 mb-4">
-          Kijk voor het laatste nieuws over judoclub Michigami op onze sociale media:
+          {t('Kijk voor het laatste nieuws over judoclub Michigami op onze sociale media:')}
         </p>
         <div className="flex flex-wrap gap-3">
           <AnimatedButton as="a" href={socialLinks.facebook} target="_blank" rel="noopener noreferrer">

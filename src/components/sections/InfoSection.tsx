@@ -7,6 +7,8 @@ import { ChevronRight, ScrollText, Award } from 'lucide-react';
 import { ImageLightbox } from '@/components/ui/ImageLightbox';
 import { cn } from '@/lib/utils';
 import { storyChapters } from '@/data/story-chapters';
+import { useT } from '@/i18n/LangContext';
+import { storyFor } from '@/i18n/content';
 import type { Section } from '@/components/nav-config';
 
 /* ============================================================================
@@ -41,30 +43,32 @@ function Stamp({ children, className = '' }: { children: React.ReactNode; classN
 }
 
 export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void }) {
+  const { t, lang } = useT();
+  const chapters = storyFor(lang);
   const [signupOpen, setSignupOpen] = useState(false);
   const dark = useSystemDark();
   const rootRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
 
   const masters = [
-    { name: 'Robin Hack', dan: '三', danLabel: '3e Dan', role: 'Trainer & penningmeester' },
-    { name: 'Pascal Hack', dan: '三', danLabel: '3e Dan', role: 'Trainer & voorzitter' },
-    { name: 'Robert Dingenouts', dan: '三', danLabel: '3e Dan', role: 'Trainer & secretaris' },
-    { name: 'Wendy Jansen', dan: '一', danLabel: '1e Dan', role: 'Trainer & EHBO\u2019er' },
+    { name: 'Robin Hack', dan: '三', danLabel: '3e Dan', role: t('Trainer & penningmeester') },
+    { name: 'Pascal Hack', dan: '三', danLabel: '3e Dan', role: t('Trainer & voorzitter') },
+    { name: 'Robert Dingenouts', dan: '三', danLabel: '3e Dan', role: t('Trainer & secretaris') },
+    { name: 'Wendy Jansen', dan: '一', danLabel: '1e Dan', role: t('Trainer & EHBO\u2019er') },
   ];
 
   const principles = [
     {
       kanji: '力',
       name: 'Seiryoku Zen\u2019yō',
-      sub: 'Macht — zuinig besteed',
-      body: 'Kracht is een middelpunt, geen doel. Judo leert je je kracht zo in te zetten dat er het minste nodig is voor het beste resultaat.',
+      sub: t('Macht — zuinig besteed'),
+      body: t('Kracht is een middelpunt, geen doel. Judo leert je je kracht zo in te zetten dat er het minste nodig is voor het beste resultaat.'),
     },
     {
       kanji: '和',
       name: 'Jita Kyōei',
-      sub: 'Gemeenschappelijk welzijn',
-      body: 'Zelf en de ander op één lijn. De zachte weg draait om wederzijds voordeel — winnen zonder de ander te verwonden.',
+      sub: t('Gemeenschappelijk welzijn'),
+      body: t('Zelf en de ander op één lijn. De zachte weg draait om wederzijds voordeel — winnen zonder de ander te verwonden.'),
     },
   ];
 
@@ -90,10 +94,10 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
   }, []);
 
   const stats = useMemo(() => ([
-    { n: '1993', l: 'opgericht' },
-    { n: '2', l: 'locaties' },
-    { n: '8e', l: 'dan oprichter' },
-  ]), []);
+    { n: '1993', l: t('opgericht') },
+    { n: '2', l: t('locaties') },
+    { n: '8e', l: t('dan oprichter') },
+  ]), [t]);
 
   return (
     <div ref={rootRef} className={cn('story-root zen-fullbleed relative overflow-hidden', dark ? 'is-dark' : 'is-light')}>
@@ -116,13 +120,13 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
           </div>
 
           <h1 className="story-mincho story-reveal story-title-glow mt-7 text-[2.6rem] font-black leading-[1.08] sm:text-6xl lg:text-7xl" style={{ color: 'var(--st-ink)' }}>
-            Al dertig jaar
+            {t('Al dertig jaar')}
             <br />
-            <span className="story-accent" style={{ color: 'var(--st-red)' }}>bloeit judo hier</span>
+            <span className="story-accent" style={{ color: 'var(--st-red)' }}>{t('bloeit judo hier')}</span>
           </h1>
 
           <p className="story-reveal story-kaku mx-auto mt-8 max-w-xl text-base font-light leading-relaxed sm:text-lg" style={{ color: 'var(--st-ink-soft)' }}>
-            Michigami groeide uit tot een van de grootste judoclubs van de regio — een bloeiende club die altijd doorging, door de gouden jaren en de stillere tijden. Meer dan dertig jaar later bloeit het judo hier nog steeds. Dit is het verhaal van een pad dat hier nooit gestopt heeft.
+            {t('Michigami groeide uit tot een van de grootste judoclubs van de regio — een bloeiende club die altijd doorging, door de gouden jaren en de stillere tijden. Meer dan dertig jaar later bloeit het judo hier nog steeds. Dit is het verhaal van een pad dat hier nooit gestopt heeft.')}
           </p>
 
           <div className="story-reveal mt-12 grid w-full max-w-lg grid-cols-3">
@@ -137,19 +141,19 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
           <div className="story-reveal mt-12 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Button onClick={() => onNavigate?.('leden')}
               className="story-sheen px-7 py-3 text-white" style={{ background: 'linear-gradient(135deg, #c1100c, var(--shu-600))', boxShadow: '0 14px 36px -12px rgba(169,0,0,0.6)' }}>
-              Boek een proefles
+              {t('Boek een proefles')}
             </Button>
             <Button onClick={() => onNavigate?.('timeline')} variant="outline"
               className="story-outline backdrop-blur-sm">
               <ScrollText className="mr-2 h-4 w-4" />
-              Bekijk de volledige tijdlijn
+              {t('Bekijk de volledige tijdlijn')}
             </Button>
           </div>
         </div>
 
         {/* scroll-hint — alleen desktop */}
         <div className="absolute bottom-7 left-1/2 z-10 hidden -translate-x-1/2 text-center md:block" aria-hidden>
-          <div className="story-kaku text-[10px] uppercase tracking-[0.3em]" style={{ color: 'var(--st-ink-faint)' }}>het verhaal</div>
+          <div className="story-kaku text-[10px] uppercase tracking-[0.3em]" style={{ color: 'var(--st-ink-faint)' }}>{t('het verhaal')}</div>
           <svg className="story-nudge mx-auto mt-2" width="14" height="22" viewBox="0 0 14 22" fill="none">
             <path d="M7 1v18M1 13l6 7 6-7" stroke="var(--st-gold)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
@@ -161,16 +165,16 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
         <div className="story-reveal flex items-end gap-5">
           <span className="story-mincho text-6xl leading-none sm:text-7xl" style={{ color: 'var(--st-red)' }} aria-hidden>語</span>
           <div>
-            <h2 className="story-mincho text-3xl font-black sm:text-4xl" style={{ color: 'var(--st-ink)' }}>Zeven hoofdstukken, één pad</h2>
-            <p className="story-kaku mt-1 text-sm" style={{ color: 'var(--st-ink-faint)' }}>Van de wortels tot twee locaties, één club</p>
+            <h2 className="story-mincho text-3xl font-black sm:text-4xl" style={{ color: 'var(--st-ink)' }}>{t('Zeven hoofdstukken, één pad')}</h2>
+            <p className="story-kaku mt-1 text-sm" style={{ color: 'var(--st-ink-faint)' }}>{t('Van de wortels tot twee locaties, één club')}</p>
           </div>
         </div>
         <div className="mt-4 h-px w-24" style={{ background: 'linear-gradient(90deg, var(--st-gold), transparent)' }} />
 
         <div className="relative mt-12 lg:grid lg:grid-cols-[64px_1fr] lg:gap-10">
           {/* sticky kana-rail (desktop) */}
-          <nav className="sticky top-24 hidden h-max flex-col items-center gap-5 lg:flex" aria-label="Hoofdstukken">
-            {storyChapters.map((ch, i) => (
+          <nav className="sticky top-24 hidden h-max flex-col items-center gap-5 lg:flex" aria-label={t('Hoofdstukken')}>
+            {chapters.map((ch, i) => (
               <span key={i}
                 className={cn('story-mincho flex h-11 w-11 items-center justify-center rounded-full border text-lg transition-all duration-500', i === active ? 'scale-110' : 'opacity-35')}
                 style={{
@@ -186,7 +190,7 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
 
           <div className="story-spine space-y-16 sm:space-y-24">
             <span className="story-spine-line" aria-hidden />
-            {storyChapters.map((ch, i) => (
+            {chapters.map((ch, i) => (
               <Chapter key={i} index={i} data={ch} />
             ))}
           </div>
@@ -196,37 +200,36 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
       {/* ══════════════════ EERBETUIGINGEN ══════════════════ */}
       <section className="relative mx-auto mt-28 max-w-5xl px-5 sm:px-8">
         <div className="story-reveal text-center">
-          <h2 className="story-mincho text-3xl font-black sm:text-4xl" style={{ color: 'var(--st-ink)' }}>Eerbetuigingen</h2>
+          <h2 className="story-mincho text-3xl font-black sm:text-4xl" style={{ color: 'var(--st-ink)' }}>{t('Eerbetuigingen')}</h2>
           <p className="story-kaku mx-auto mt-2 max-w-lg text-sm" style={{ color: 'var(--st-ink-soft)' }}>
-            De meester die de zachte weg naar het westen bracht — en de mensen die hier hun
-            wortels sloegen.
+            {t('De meester die de zachte weg naar het westen bracht — en de mensen die hier hun wortels sloegen.')}
           </p>
         </div>
         <div className="mt-10 grid gap-5 lg:grid-cols-2">
           <TributeCard
             kanji="道"
-            label="Eerbewijs aan de meester"
+            label={t('Eerbewijs aan de meester')}
             title="Haku Michigami"
-            sub="1912–2002 · de zachte weg naar het westen"
-            body="Hij bracht judo naar het westen: dertien jaar in Nederland, technisch adviseur van de bond en vormgever van grootse judoka’s — waaronder Anton Geesink. Zijn traditie is de ziel die hier in Steenbergen haar naam draagt."
+            sub={t('1912–2002 · de zachte weg naar het westen')}
+            body={t('Hij bracht judo naar het westen: dertien jaar in Nederland, technisch adviseur van de bond en vormgever van grootse judoka’s — waaronder Anton Geesink. Zijn traditie is de ziel die hier in Steenbergen haar naam draagt.')}
           />
           <TributeCard
             kanji="八"
             stamp="段"
-            label="Eerbewijs aan de oprichter"
+            label={t('Eerbewijs aan de oprichter')}
             title="Koos van Wezel"
             sub="八段 · 8e Dan"
-            body="Meester in grondwerk, internationaal gerenommeerd scheidsrechter en hoofdscheidsrechter bij de CJJF. Hij groeide veel judoka’s groot en nam ze mee naar legio nationale en internationale toernooien — streng als het nodig was, maar vooral met de zachte hand."
+            body={t('Meester in grondwerk, internationaal gerenommeerd scheidsrechter en hoofdscheidsrechter bij de CJJF. Hij groeide veel judoka’s groot en nam ze mee naar legio nationale en internationale toernooien — streng als het nodig was, maar vooral met de zachte hand.')}
           />
           <TributeCard
             kanji="絆"
             stamp="段"
-            label="Eerbewijs aan een vast gezicht"
+            label={t('Eerbewijs aan een vast gezicht')}
             title="Franco Hack"
             sub="1966–2026 · 4e Dan"
-            body="Vader van Robin en Pascal, schoonzoon van Koos. Hij droeg de vlam van de club door het vuur — een judoka voor het leven."
+            body={t('Vader van Robin en Pascal, schoonzoon van Koos. Hij droeg de vlam van de club door het vuur — een judoka voor het leven.')}
             photoUrl="/images/minuut-stilte-franco.jpg"
-            photoCaption="1 april 2026 · minuut stilte voor Franco, De Vossenkuil Oud-Vossemeer"
+            photoCaption={t('1 april 2026 · minuut stilte voor Franco, De Vossenkuil Oud-Vossemeer')}
           />
         </div>
       </section>
@@ -234,9 +237,9 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
       {/* ══════════════════ DE MEESTERS ══════════════════ */}
       <section className="relative mx-auto mt-28 max-w-5xl px-5 sm:px-8">
         <div className="story-reveal text-center">
-          <h2 className="story-mincho text-3xl font-black sm:text-4xl" style={{ color: 'var(--st-ink)' }}>De Meesters</h2>
+          <h2 className="story-mincho text-3xl font-black sm:text-4xl" style={{ color: 'var(--st-ink)' }}>{t('De Meesters')}</h2>
           <p className="story-kaku mx-auto mt-2 max-w-lg text-sm" style={{ color: 'var(--st-ink-soft)' }}>
-            De mannen en de vrouw die het pad nu verder dragen — samen met de geest van Koos en Franco.
+            {t('De mannen en de vrouw die het pad nu verder dragen — samen met de geest van Koos en Franco.')}
           </p>
         </div>
         <div className="mt-10 grid gap-4 sm:grid-cols-2">
@@ -250,9 +253,9 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
       <section className="relative mx-auto mt-28 max-w-5xl px-5 sm:px-8">
         <div className="story-reveal relative text-center">
           <span className="story-year-ghost pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-[34vw] sm:text-[22vw]" aria-hidden>道</span>
-          <h2 className="story-mincho relative text-3xl font-black sm:text-4xl" style={{ color: 'var(--st-ink)' }}>De Zachte Weg</h2>
+          <h2 className="story-mincho relative text-3xl font-black sm:text-4xl" style={{ color: 'var(--st-ink)' }}>{t('De Zachte Weg')}</h2>
           <p className="story-kaku relative mx-auto mt-3 max-w-xl text-base font-light leading-relaxed" style={{ color: 'var(--st-ink-soft)' }}>
-            柔 (ju) — de zachte kracht · 道 (dō) — de weg. Judo is meer dan vallen en opstaan: het is een filosofie van bescheidenheid, oprecht contact en het beste uit jezelf én je tegenstander halen.
+            {t('柔 (ju) — de zachte kracht · 道 (dō) — de weg. Judo is meer dan vallen en opstaan: het is een filosofie van bescheidenheid, oprecht contact en het beste uit jezelf én je tegenstander halen.')}
           </p>
         </div>
         <div className="mt-10 grid gap-4 sm:grid-cols-2">
@@ -280,34 +283,34 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
             <Stamp className="!h-20 !w-20 !rotate-[-4deg] !text-4xl">道</Stamp>
           </div>
           <h2 className="story-reveal story-mincho story-title-glow mt-6 text-3xl font-black sm:text-5xl" style={{ color: 'var(--st-ink)' }}>
-            Het verhaal gaat <span className="story-accent" style={{ color: 'var(--st-red)' }}>verder</span>
+            {t('Het verhaal gaat')} <span className="story-accent" style={{ color: 'var(--st-red)' }}>{t('verder')}</span>
           </h2>
           <p className="story-reveal story-kaku mx-auto mt-6 max-w-lg text-base font-light leading-relaxed sm:text-lg" style={{ color: 'var(--st-ink-soft)' }}>
-            De volgende hoofdstukken worden hier geschreven, op de matten in Steenbergen en Oud-Vossemeer. Wil je erbij horen?
+            {t('De volgende hoofdstukken worden hier geschreven, op de matten in Steenbergen en Oud-Vossemeer. Wil je erbij horen?')}
           </p>
           <div className="story-reveal mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Button onClick={() => onNavigate?.('leden')} className="story-sheen px-7 py-3 text-white" style={{ background: 'linear-gradient(135deg, #c1100c, var(--shu-600))', boxShadow: '0 14px 36px -12px rgba(169,0,0,0.6)' }}>
-              Boek een proefles
+              {t('Boek een proefles')}
             </Button>
             <Button onClick={() => (signupOpen ? onNavigate?.('leden') : setSignupOpen(true))}
               variant="outline" className="story-outline backdrop-blur-sm">
               <Award className="mr-2 h-4 w-4" />
-              Lid worden
+              {t('Lid worden')}
             </Button>
           </div>
 
           {signupOpen && (
             <div className="story-card relative mt-8 rounded-xl p-6 text-left">
               <p className="story-kaku text-sm font-light leading-relaxed" style={{ color: 'var(--st-ink-soft)' }}>
-                Inschrijven doe je via ons clubformulier — we nemen daarna persoonlijk contact met je op.
+                {t('Inschrijven doe je via ons clubformulier — we nemen daarna persoonlijk contact met je op.')}
               </p>
               <div className="mt-4 flex flex-wrap gap-3">
                 <Button onClick={() => onNavigate?.('leden')} className="text-white" style={{ background: 'var(--shu-600)' }}>
-                  Ga naar Lid worden
+                  {t('Ga naar Lid worden')}
                 </Button>
                 <Button onClick={() => onNavigate?.('contact')} variant="outline" className="story-outline">
                   <ChevronRight className="mr-2 h-4 w-4" />
-                  Contact
+                  {t('Contact')}
                 </Button>
               </div>
             </div>
@@ -320,6 +323,7 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
 
 /* --- Hoofdstuk: genummerde rol met stempel en spook-jaar ------------------- */
 function Chapter({ index, data }: { index: number; data: (typeof storyChapters)[number] }) {
+  const { t } = useT();
   const [photoOpen, setPhotoOpen] = useState(false);
   const flip = index % 2 === 1;
   const yearMatch = data.era.match(/\d{4}/);
@@ -363,7 +367,7 @@ function Chapter({ index, data }: { index: number; data: (typeof storyChapters)[
                 type="button"
                 onClick={() => setPhotoOpen(true)}
                 className="story-photo block w-full"
-                aria-label={data.photoCaption ? `Grootbeeld: ${data.photoCaption}` : 'Grootbeeld openen'}
+                aria-label={data.photoCaption ? `${t('Grootbeeld')}: ${data.photoCaption}` : t('Grootbeeld openen')}
               >
                 <div className={cn('relative w-full', data.photoAspect ?? 'aspect-[16/10]')}>
                   <Image

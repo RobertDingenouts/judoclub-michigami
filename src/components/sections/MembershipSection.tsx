@@ -4,8 +4,10 @@ import { membershipInfo } from '@/data/membership';
 import { Calendar } from 'lucide-react';
 import { openProeflesForm } from '@/lib/form-events';
 import { ActionCostNote } from '@/components/ActionCostNote';
+import { useT } from '@/i18n/LangContext';
 
 export function MembershipSection() {
+  const { t } = useT();
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -20,8 +22,8 @@ export function MembershipSection() {
           <rect x="20" y="18" width="6" height="58" rx="1" />
           <rect x="74" y="18" width="6" height="58" rx="1" />
         </svg>
-        <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">{membershipInfo.title}</h1>
-        <p className="text-white/80 mt-1 text-xs sm:text-sm">{membershipInfo.subtitle}</p>
+        <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">{t(membershipInfo.title)}</h1>
+        <p className="text-white/80 mt-1 text-xs sm:text-sm">{t(membershipInfo.subtitle)}</p>
         <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-lg mt-2 sm:mt-3" />
       </div>
 
@@ -32,13 +34,13 @@ export function MembershipSection() {
             🎁
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-bold text-[#8c0000] text-base sm:text-lg">Proeflessen</h3>
+            <h3 className="font-bold text-[#8c0000] text-base sm:text-lg">{t('Proeflessen')}</h3>
             <p className="text-sm sm:text-base text-gray-700 mt-1">
-              Wil je graag op judo, kom dan eerst een keer kijken! Je kunt{' '}
-              <span className="font-bold text-[#a90000]">{membershipInfo.trialLessons}</span> volgen.
+              {t('Wil je graag op judo, kom dan eerst een keer kijken! Je kunt')}{' '}
+              <span className="font-bold text-[#a90000]">{t(membershipInfo.trialLessons)}</span>.
             </p>
             <p className="text-xs sm:text-sm text-gray-500 mt-2">
-              Bevalt het en wil je graag lid worden, schrijf je dan in via ons online inschrijfformulier.
+              {t('Bevalt het en wil je graag lid worden, schrijf je dan in via ons online inschrijfformulier.')}
             </p>
           </div>
         </div>
@@ -54,8 +56,8 @@ export function MembershipSection() {
             <div className="flex items-center gap-3 mb-3">
               <span className="text-2xl">{tier.icon}</span>
               <div className="min-w-0 flex-1">
-                <h3 className="font-bold text-[#8c0000] text-sm sm:text-base truncate">{tier.name}</h3>
-                <p className="text-xs text-gray-500">{tier.targetAudience}</p>
+                <h3 className="font-bold text-[#8c0000] text-sm sm:text-base truncate">{t(tier.name)}</h3>
+                <p className="text-xs text-gray-500">{t(tier.targetAudience)}</p>
               </div>
             </div>
 
@@ -63,13 +65,13 @@ export function MembershipSection() {
               {tier.name === 'Extra kosten' ? (
                 <>
                   <span className="text-xl sm:text-2xl font-bold text-gray-400 line-through">€15</span>
-                  <span className="text-xl sm:text-2xl font-bold text-[#27ae60] ml-2">gratis</span>
-                  <span className="text-xs text-gray-500 ml-1">({tier.pricePeriod})</span>
+                  <span className="text-xl sm:text-2xl font-bold text-[#27ae60] ml-2">{t('gratis')}</span>
+                  <span className="text-xs text-gray-500 ml-1">({t(tier.pricePeriod)})</span>
                 </>
               ) : (
                 <>
                   <span className="text-xl sm:text-2xl font-bold text-[#a90000]">{tier.price}</span>
-                  <span className="text-xs text-gray-500 ml-1">{tier.pricePeriod}</span>
+                  <span className="text-xs text-gray-500 ml-1">{t(tier.pricePeriod)}</span>
                 </>
               )}
             </div>
@@ -78,7 +80,7 @@ export function MembershipSection() {
               {tier.benefits.map((benefit, bIdx) => (
                 <li key={bIdx} className="flex items-start gap-2 text-xs sm:text-sm text-gray-700">
                   <span className="flex-shrink-0 text-[#a90000] mt-0.5">✓</span>
-                  <span>{benefit}</span>
+                  <span>{t(benefit)}</span>
                 </li>
               ))}
             </ul>
@@ -97,9 +99,9 @@ export function MembershipSection() {
           onClick={() => openProeflesForm()}
           className="inline-flex items-center gap-2 bg-gradient-to-r from-[#27ae60] to-[#2ecc71] text-white px-8 py-4 rounded-lg font-bold text-base hover:from-[#219a52] hover:to-[#27ae60] transition-all shadow-lg hover:shadow-xl"
         >
-          <Calendar className="w-5 h-5" /> Gratis Proefles
+          <Calendar className="w-5 h-5" /> {t('Gratis Proefles')}
         </button>
-        <div className="text-xs text-gray-500">of</div>
+        <div className="text-xs text-gray-500">{t('of')}</div>
         <a
           href="/inschrijven"
           className="inline-flex items-center gap-2 bg-gradient-to-r from-[#a90000] to-[#c00000] text-white px-6 py-3 rounded-lg font-bold text-sm sm:text-base hover:from-[#8c0000] hover:to-[#a00000] transition-all shadow-md hover:shadow-lg"

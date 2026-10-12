@@ -14,6 +14,8 @@ import {
 } from 'lucide-react';
 import { MUSIC_ALBUMS, type MusicAlbum, type MusicTrack } from '@/data/club-music';
 import { useMusicPlayer } from '@/context/MusicPlayerContext';
+import { useT } from '@/i18n/LangContext';
+import { termFor } from '@/i18n/content';
 
 // ============ Helpers ============
 
@@ -53,6 +55,7 @@ function AlbumCover({ album, size = 'md' }: { album: MusicAlbum; size?: 'sm' | '
 // ============ Main Section ============
 
 export function MusicSection() {
+  const { t, lang } = useT();
   const mp = useMusicPlayer();
   const [selectedAlbum, setSelectedAlbum] = useState<MusicAlbum | null>(null);
   const [videoTrack, setVideoTrack] = useState<MusicTrack | null>(null);
@@ -68,11 +71,11 @@ export function MusicSection() {
           <span className="inline-flex items-center justify-center w-11 h-11 rounded-2xl bg-[#a90000] text-white shadow-lg shadow-[#a90000]/25">
             <Music2 className="w-6 h-6" />
           </span>
-          Club Muziek
+          {t('Club Muziek')}
         </h1>
         <p className="mt-2 text-sm text-[#2a2a2a]/60">
-          Speciaal voor Judoclub Michigami gemaakt door Robas — {MUSIC_ALBUMS.length} albums,{' '}
-          {MUSIC_ALBUMS.reduce((a, al) => a + al.tracks.length, 0)} nummers.
+          {t('Speciaal voor Judoclub Michigami gemaakt door Robas')} — {MUSIC_ALBUMS.length} {t('albums')},{' '}
+          {MUSIC_ALBUMS.reduce((a, al) => a + al.tracks.length, 0)} {t('nummers')}.
         </p>
       </header>
 
@@ -81,14 +84,14 @@ export function MusicSection() {
         <div className="flex items-center gap-4 rounded-2xl bg-white/70 backdrop-blur border border-[#2a2a2a]/10 p-4 shadow-sm">
           <AlbumCover album={mp.album} size="sm" />
           <div className="flex-1 min-w-0">
-            <div className="text-xs font-semibold uppercase tracking-wider text-[#a90000]">Speelt nu</div>
+            <div className="text-xs font-semibold uppercase tracking-wider text-[#a90000]">{t('Speelt nu')}</div>
             <div className="font-semibold text-[#1c1915] truncate">{mp.currentTrack.title}</div>
             <div className="text-sm text-[#2a2a2a]/60 truncate">{mp.album.name} — {mp.album.artist}</div>
           </div>
           <button
             onClick={mp.togglePlay}
             className="w-11 h-11 rounded-full bg-[#a90000] text-white flex items-center justify-center shadow-lg shadow-[#a90000]/30 hover:scale-105 transition-transform shrink-0"
-            aria-label={mp.playing ? 'Pauzeer' : 'Speel af'}
+            aria-label={mp.playing ? t('Pauzeer') : t('Speel af')}
           >
             {mp.playing ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 ml-0.5" />}
           </button>
@@ -115,11 +118,11 @@ export function MusicSection() {
                   <h3 className="font-bold text-[#1c1915] leading-tight">{albumItem.name}</h3>
                   <p className="text-sm text-[#2a2a2a]/60 mt-0.5">{albumItem.artist}</p>
                   <p className="text-xs text-[#2a2a2a]/45 mt-1">
-                    {albumItem.tracks.length} nummers · {totalDuration(albumItem)}
+                    {albumItem.tracks.length} {t('nummers')} · {totalDuration(albumItem)}
                   </p>
                 </div>
               </div>
-              <p className="text-sm text-[#2a2a2a]/70 mt-3 leading-relaxed line-clamp-2">{albumItem.description}</p>
+              <p className="text-sm text-[#2a2a2a]/70 mt-3 leading-relaxed line-clamp-2">{termFor('club-music', albumItem.id, 'description', albumItem.description, lang)}</p>
               <div className="mt-3 flex items-center justify-between">
                 <button
                   onClick={(e) => {
@@ -159,7 +162,7 @@ export function MusicSection() {
               onClick={() => setSelectedAlbum(null)}
               className="hidden sm:inline-flex items-center gap-1 text-sm text-[#2a2a2a]/60 hover:text-[#a90000] transition-colors -ml-1"
             >
-              <ChevronLeft className="w-4 h-4" /> Alle albums
+              <ChevronLeft className="w-4 h-4" /> {t('Alle albums')}
             </button>
             <AlbumCover album={selectedAlbum} size="lg" />
             <div className="flex-1 min-w-0">

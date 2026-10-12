@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useT } from '@/i18n/LangContext';
+import { newsItemFor } from '@/i18n/content';
 import Image from 'next/image';
 import { Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { NewsArticle } from '@/data/news-archive';
@@ -9,7 +11,9 @@ import { ImageLightbox } from '@/components/ui/ImageLightbox';
 
 const SLIDE_INTERVAL = 5000;
 
-export function NewsSlider({ articles, onNavigate }: { articles: NewsArticle[]; onNavigate?: () => void }) {
+export function NewsSlider({ articles: articlesNl, onNavigate }: { articles: NewsArticle[]; onNavigate?: () => void }) {
+  const { t, lang } = useT();
+  const articles = articlesNl.map((a) => newsItemFor(a, lang));
   const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
   const [direction, setDirection] = useState(0);
@@ -85,7 +89,7 @@ export function NewsSlider({ articles, onNavigate }: { articles: NewsArticle[]; 
       {/* Header bar */}
       <div className="px-4 py-3 border-b border-[#2a2a2a]/10 flex items-center justify-between">
         <h3 className="font-bold text-[#1c1915] flex items-center gap-2 section-title">
-          <Sparkles className="w-4 h-4" style={{ color: '#a90000' }} /> Nieuws
+          <Sparkles className="w-4 h-4" style={{ color: '#a90000' }} /> {t('Nieuws')}
         </h3>
         {onNavigate && (
           <button onClick={onNavigate} className="text-xs font-medium hover:underline" style={{ color: '#a90000' }}>

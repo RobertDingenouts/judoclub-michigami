@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Mail, Phone, MapPin, Send, Check } from 'lucide-react';
 import { contactInfo } from '@/data/contact';
+import { useT } from '@/i18n/LangContext';
 
 // --- Form state ---
 interface ContactFormData {
@@ -48,6 +49,7 @@ function getMailtoLink(data: ContactFormData) {
 
 // --- Location card ---
 function LocationCard({ loc }: { loc: (typeof contactInfo.locations)[number] }) {
+  const { t } = useT();
   return (
     <div className="bg-white rounded-lg shadow-sm border border-[#e9e0cf] overflow-hidden">
       <div className="p-4 sm:p-5">
@@ -58,7 +60,7 @@ function LocationCard({ loc }: { loc: (typeof contactInfo.locations)[number] }) 
             <p className="text-sm text-gray-600">{loc.address}</p>
             <p className="text-sm text-gray-600">{loc.postalCode} {loc.city}</p>
             <p className="text-xs text-[#a90000] font-semibold mt-1.5">
-              {loc.trainingDay} · {loc.trainingTime}
+              {t(loc.trainingDay)} · {loc.trainingTime}
             </p>
           </div>
         </div>
@@ -69,7 +71,7 @@ function LocationCard({ loc }: { loc: (typeof contactInfo.locations)[number] }) 
           className="mt-3 inline-flex items-center gap-2 bg-[#a90000] hover:bg-[#8c0000] text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors w-full justify-center"
         >
           <MapPin className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" />
-          Open in Google Maps
+          {t('Open in Google Maps')}
         </a>
       </div>
     </div>
@@ -78,6 +80,7 @@ function LocationCard({ loc }: { loc: (typeof contactInfo.locations)[number] }) 
 
 // --- Contact form (eigen beheer: WhatsApp of mail) ---
 function ContactForm() {
+  const { t } = useT();
   const [data, setData] = useState<ContactFormData>({
     name: '',
     email: '',
@@ -108,12 +111,12 @@ function ContactForm() {
           <Check className="w-7 h-7 text-green-600" />
         </div>
         <h3 className="text-lg font-bold text-gray-800 mb-1">
-          {submitted === 'whatsapp' ? 'WhatsApp geopend' : 'E-mailprogramma geopend'}
+          {submitted === 'whatsapp' ? t('WhatsApp geopend') : t('E-mailprogramma geopend')}
         </h3>
         <p className="text-sm text-gray-600 mb-5">
           {submitted === 'whatsapp'
-            ? 'Je bericht is klaar in WhatsApp — druk op verzenden!'
-            : 'Je bericht is klaar in je e-mailprogramma — druk op verzenden!'}
+            ? t('Je bericht is klaar in WhatsApp — druk op verzenden!')
+            : t('Je bericht is klaar in je e-mailprogramma — druk op verzenden!')}
         </p>
         <button
           onClick={() => {
@@ -122,7 +125,7 @@ function ContactForm() {
           }}
           className="text-sm text-[#a90000] font-semibold hover:text-[#8c0000]"
         >
-          Nog een bericht sturen
+          {t('Nog een bericht sturen')}
         </button>
       </div>
     );
@@ -133,27 +136,27 @@ function ContactForm() {
       {/* Naam */}
       <div>
         <label className="block text-sm font-semibold text-gray-700 mb-1">
-          Naam <span className="text-[#a90000]">*</span>
+          {t('Naam')} <span className="text-[#a90000]">*</span>
         </label>
         <input
           type="text"
           value={data.name}
           onChange={(e) => setData({ ...data, name: e.target.value })}
-          placeholder="Je naam"
+          placeholder={t('Je naam')}
           className="w-full px-3 py-2.5 rounded-lg border border-[#e9e0cf] bg-[#fdfcfa] text-sm focus:outline-none focus:ring-2 focus:ring-[#a90000]/30 focus:border-[#a90000]"
         />
       </div>
 
       {/* Onderwerp */}
       <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-1">Onderwerp</label>
+        <label className="block text-sm font-semibold text-gray-700 mb-1">{t('Onderwerp')}</label>
         <select
           value={data.subject}
           onChange={(e) => setData({ ...data, subject: e.target.value })}
           className="w-full px-3 py-2.5 rounded-lg border border-[#e9e0cf] bg-[#fdfcfa] text-sm focus:outline-none focus:ring-2 focus:ring-[#a90000]/30 focus:border-[#a90000]"
         >
           {SUBJECTS.map((s) => (
-            <option key={s} value={s}>{s}</option>
+            <option key={s} value={s}>{t(s)}</option>
           ))}
         </select>
       </div>
@@ -161,7 +164,7 @@ function ContactForm() {
       {/* Email + telefoon */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-1">Email</label>
+          <label className="block text-sm font-semibold text-gray-700 mb-1">{t('Email')}</label>
           <input
             type="email"
             value={data.email}
@@ -171,7 +174,7 @@ function ContactForm() {
           />
         </div>
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-1">Telefoon</label>
+          <label className="block text-sm font-semibold text-gray-700 mb-1">{t('Telefoon')}</label>
           <input
             type="tel"
             value={data.phone}
@@ -185,12 +188,12 @@ function ContactForm() {
       {/* Bericht */}
       <div>
         <label className="block text-sm font-semibold text-gray-700 mb-1">
-          Bericht <span className="text-[#a90000]">*</span>
+          {t('Bericht')} <span className="text-[#a90000]">*</span>
         </label>
         <textarea
           value={data.message}
           onChange={(e) => setData({ ...data, message: e.target.value })}
-          placeholder="Waar kunnen we je mee helpen?"
+          placeholder={t('Waar kunnen we je mee helpen?')}
           rows={5}
           className="w-full px-3 py-2.5 rounded-lg border border-[#e9e0cf] bg-[#fdfcfa] text-sm focus:outline-none focus:ring-2 focus:ring-[#a90000]/30 focus:border-[#a90000] resize-none"
         />
@@ -204,7 +207,7 @@ function ContactForm() {
           className="w-full inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1fb857] disabled:bg-gray-300 disabled:cursor-not-allowed text-white px-4 py-3 rounded-lg text-sm font-semibold transition-colors"
         >
           <Send className="w-4 h-4" />
-          Verstuur via WhatsApp
+          {t('Verstuur via WhatsApp')}
         </button>
         <button
           onClick={handleEmail}
@@ -212,7 +215,7 @@ function ContactForm() {
           className="w-full inline-flex items-center justify-center gap-2 bg-[#a90000] hover:bg-[#8c0000] disabled:bg-gray-300 disabled:cursor-not-allowed text-white px-4 py-3 rounded-lg text-sm font-semibold transition-colors"
         >
           <Mail className="w-4 h-4" />
-          Verstuur via email
+          {t('Verstuur via email')}
         </button>
       </div>
     </div>
@@ -221,6 +224,7 @@ function ContactForm() {
 
 // --- Main section ---
 export function ContactSection() {
+  const { t } = useT();
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -235,9 +239,9 @@ export function ContactSection() {
           <rect x="20" y="18" width="6" height="58" rx="1" />
           <rect x="74" y="18" width="6" height="58" rx="1" />
         </svg>
-        <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">Contact</h1>
+        <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">{t('Contact')}</h1>
         <p className="text-white/80 mt-1 text-xs sm:text-sm">
-          Neem contact op met Judoclub Michigami
+          {t('Neem contact op met Judoclub Michigami')}
         </p>
         <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-lg mt-2 sm:mt-3" />
       </div>
@@ -246,9 +250,9 @@ export function ContactSection() {
         {/* Contact Form (eigen beheer) */}
         <div className="bg-white rounded-lg shadow-sm border border-[#e9e0cf] overflow-hidden">
           <div className="p-4 sm:p-5 border-b border-[#e9e0cf]">
-            <h2 className="text-lg sm:text-xl font-bold text-[#8c0000] section-title">Contactformulier</h2>
+            <h2 className="text-lg sm:text-xl font-bold text-[#8c0000] section-title">{t('Contactformulier')}</h2>
             <p className="text-xs text-gray-500 mt-0.5">
-              Verstuur je bericht via WhatsApp of je e-mailprogramma
+              {t('Verstuur je bericht via WhatsApp of je e-mailprogramma')}
             </p>
           </div>
           <ContactForm />
@@ -280,7 +284,7 @@ export function ContactSection() {
           {/* Social Links */}
           <div className="bg-white rounded-lg shadow-sm border border-[#e9e0cf] p-4 sm:p-6">
             <h2 className="text-lg sm:text-xl font-bold text-[#8c0000] mb-4 section-title">
-              Volg ons
+              {t('Volg ons')}
             </h2>
             <div className="flex flex-wrap gap-3">
               <a

@@ -2,8 +2,10 @@
 
 import { locationData } from '@/data/location';
 import { GoogleMapEmbed } from './GoogleMapEmbed';
+import { useT } from '@/i18n/LangContext';
 
 export function LocationSection() {
+  const { t } = useT();
   return (
     <div className="space-y-6 pb-4 sm:pb-0">
       {/* Header */}
@@ -18,9 +20,9 @@ export function LocationSection() {
           <rect x="20" y="18" width="6" height="58" rx="1" />
           <rect x="74" y="18" width="6" height="58" rx="1" />
         </svg>
-        <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold">Locatie</h1>
+        <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold">{t('Locatie')}</h1>
         <p className="text-white/80 mt-1 text-xs sm:text-sm">
-          Waar je onze trainingen kunt vinden
+          {t('Waar je onze trainingen kunt vinden')}
         </p>
         <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-lg mt-2 sm:mt-3" />
       </div>
@@ -56,7 +58,7 @@ export function LocationSection() {
                   <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
-                  Hoofdlocatie
+                  {t('Hoofdlocatie')}
                 </div>
               )}
             </div>

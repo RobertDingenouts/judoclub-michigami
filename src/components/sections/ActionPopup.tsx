@@ -3,11 +3,13 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
+import { useT } from '@/i18n/LangContext';
 
 const STORAGE_KEY = 'michigami-actie-popup-gezien';
 const ACTIE_EINDE = new Date('2026-12-31T23:59:59');
 
 export function ActionPopup() {
+  const { t } = useT();
   const [open, setOpen] = useState(false);
   const [actieActief, setActieActief] = useState(true);
 
@@ -69,7 +71,7 @@ export function ActionPopup() {
             {/* Sluitknop */}
             <button
               onClick={close}
-              aria-label="Sluiten"
+              aria-label={t('Sluiten')}
               className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-white/90 text-gray-600 hover:bg-white hover:text-[#a90000] transition-colors shadow-sm"
             >
               ✕
@@ -79,11 +81,10 @@ export function ActionPopup() {
             <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] px-6 pt-6 pb-5 text-white">
               <div className="text-3xl mb-2">🎁</div>
               <h3 className="text-xl font-bold leading-tight">
-                Actie: gratis inschrijven!
+                {t('Actie: gratis inschrijven!')}
               </h3>
               <p className="text-sm mt-1 text-white/90">
-                Schrijf je vóór <strong>31 december</strong> in en betaal geen
-                inschrijfgeld van €15.
+                {t('Schrijf je vóór')} <strong>{t('31 december')}</strong> {t('in en betaal geen inschrijfgeld van €15.')}
               </p>
             </div>
 
@@ -93,29 +94,27 @@ export function ActionPopup() {
                 <li className="flex gap-3">
                   <span className="text-lg">1️⃣</span>
                   <span>
-                    Meld je aan voor een{' '}
-                    <strong>gratis proefles</strong>
+                    {t('Meld je aan voor een')}{' '}
+                    <strong>{t('gratis proefles')}</strong>
                   </span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-lg">2️⃣</span>
                   <span>
-                    Volg <strong>3 gratis proeflessen</strong> en ervaar wat
-                    judo met je doet
+                    {t('Volg')} <strong>{t('3 gratis proeflessen')}</strong> {t('en ervaar wat judo met je doet')}
                   </span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-lg">3️⃣</span>
                   <span>
-                    Schrijf je vóór <strong>31 december</strong> in en{' '}
-                    <strong>bespaar €15</strong> inschrijfkosten!
+                    {t('Schrijf je vóór')} <strong>{t('31 december')}</strong> {t('in en')}{' '}
+                    <strong>{t('bespaar €15')}</strong> {t('inschrijfkosten!')}
                   </span>
                 </li>
               </ul>
 
               <p className="text-xs text-gray-500 mt-4">
-                Voor iedereen vanaf 6 jaar — woensdagavond in
-                Oud-Vossemeer & vrijdagavond in Steenbergen.
+                {t('Voor iedereen vanaf 6 jaar — woensdagavond in Oud-Vossemeer & vrijdagavond in Steenbergen.')}
               </p>
 
               {/* CTA */}
@@ -123,13 +122,13 @@ export function ActionPopup() {
                 onClick={openProefles}
                 className="mt-5 w-full bg-[#a90000] hover:bg-[#8c0000] text-white font-bold py-3 rounded-xl transition-colors shadow-md"
               >
-                🥋 Meld je aan voor een gratis proefles
+                🥋 {t('Meld je aan voor een gratis proefles')}
               </button>
 
               {/* In samenwerking met */}
               <div className="mt-5 pt-4 border-t border-gray-100 flex items-center justify-center gap-2">
                 <span className="text-[11px] text-gray-400 uppercase tracking-wide">
-                  In samenwerking met
+                  {t('In samenwerking met')}
                 </span>
               </div>
               <div className="mt-2 flex items-center justify-center">

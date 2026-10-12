@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import { openProeflesForm } from '@/lib/form-events';
+import { useT } from '@/i18n/LangContext';
 
 // Curated, rustige selectie — geen 30 foto's meer, alleen de sterkste
 const heroImages = [
@@ -18,6 +19,7 @@ const heroImages = [
 ];
 
 export function HeroSlider() {
+  const { t } = useT();
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const touchStartX = useRef<number | null>(null);
@@ -103,11 +105,11 @@ export function HeroSlider() {
           </div>
 
           <h1 className="font-display text-4xl sm:text-5xl lg:text-7xl font-bold text-white leading-[1.05]">
-            Judo <span className="whitespace-nowrap">voor jong &amp; oud</span>
+            Judo <span className="whitespace-nowrap">{t('voor jong & oud')}</span>
           </h1>
 
           <p className="mt-3 sm:mt-4 text-base sm:text-lg text-white/80 font-light max-w-xl">
-            Van kleuters tot volwassenen, recreatief of competitief. In Steenbergen en Oud-Vossemeer.
+            {t('Van kleuters tot volwassenen, recreatief of competitief. In Steenbergen en Oud-Vossemeer.')}
           </p>
 
           <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3">
@@ -115,19 +117,19 @@ export function HeroSlider() {
               onClick={openProeflesForm}
               className="btn-shu inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-base font-semibold"
             >
-              Gratis proefles
+              {t('Gratis proefles')}
             </button>
             <a
               href="/inschrijven"
               className="btn-outline-kin inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-base font-semibold"
             >
-              Lid worden
+              {t('Lid worden')}
               <ArrowRight className="w-5 h-5" />
             </a>
           </div>
 
           <p className="mt-6 text-[11px] sm:text-xs text-white/50 tracking-[0.3em]">
-            OPGERICHT 1993
+            {t('OPGERICHT 1993')}
           </p>
         </div>
       </div>
@@ -136,14 +138,14 @@ export function HeroSlider() {
       <button
         onClick={prevSlide}
         className="hidden sm:flex absolute left-7 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/35 hover:bg-black/60 text-white items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity duration-500 z-40 border border-white/15"
-        aria-label="Vorige foto"
+        aria-label={t('Vorige foto')}
       >
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
       <button
         onClick={nextSlide}
         className="hidden sm:flex absolute right-7 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/35 hover:bg-black/60 text-white items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity duration-500 z-40 border border-white/15"
-        aria-label="Volgende foto"
+        aria-label={t('Volgende foto')}
       >
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
       </button>

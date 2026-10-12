@@ -4,6 +4,8 @@ import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import { galleryData, type GalleryImage, fullResSrc } from '@/data/gallery';
+import { useT } from '@/i18n/LangContext';
+import { captionFor } from '@/i18n/content';
 import { ChevronDown, ChevronUp, Camera } from 'lucide-react';
 
 function ImageGrid({ images, onImageClick }: { images: GalleryImage[]; onImageClick: (images: GalleryImage[], index: number) => void }) {
@@ -315,11 +317,14 @@ function Lightbox({
 }
 
 export function PhotoGallery() {
+  const { t, lang } = useT();
   const [lightbox, setLightbox] = useState<{ images: GalleryImage[]; index: number; openId: number } | null>(null);
   const [expandedAlbums, setExpandedAlbums] = useState<Set<string>>(new Set());
 
   // Sorteer op order (Archive = 999, altijd onderaan).
-  const sortedAlbums = [...galleryData].sort((a, b) => a.order - b.order);
+  const sortedAlbums = [...galleryData]
+    .sort((a, b) => a.order - b.order)
+    .map((a) => ({ ...a, title: t(a.title), images: a.images.map((img) => ({ ...img, caption: captionFor(img.caption, lang) })) }));
   const totalPhotos = galleryData.reduce((s, a) => s + a.images.length, 0);
 
   const toggleAlbum = (id: string) => {
@@ -339,11 +344,10 @@ export function PhotoGallery() {
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[var(--shu-600)] border border-[var(--kin-400)]/40 mb-4">
             <Camera className="w-7 h-7 text-[var(--washi-50)]" />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-[var(--sumi-900)] tracking-tight">Foto&apos;s</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold text-[var(--sumi-900)] tracking-tight">{t('Foto\u2019s')}</h1>
           <div className="w-16 h-0.5 bg-[var(--shu-600)] rounded-full mx-auto mt-4" />
           <p className="text-[var(--sumi-500)] mt-4 text-sm sm:text-base max-w-xl mx-auto">
-            {totalPhotos} beelden van onze judoclub, toernooien en evenementen — van de eerste
-            toernooien tot vandaag. Klik op een album om het te openen.
+            {totalPhotos} {t('beelden van onze judoclub, toernooien en evenementen — van de eerste toernooien tot vandaag. Klik op een album om het te openen.')}
           </p>
         </div>
 
@@ -379,7 +383,7 @@ export function PhotoGallery() {
                   <div className="flex-1 min-w-0">
                     <h2 className="text-base sm:text-lg font-bold text-[var(--shu-700)] truncate">{album.title}</h2>
                     <p className="text-xs sm:text-sm text-[var(--sumi-500)] mt-0.5">
-                      {album.images.length} foto{album.images.length !== 1 ? '\u2019s' : ''}
+                      {album.images.length} {album.images.length !== 1 ? t('foto\u2019s') : t('foto')}
                     </p>
                   </div>
 

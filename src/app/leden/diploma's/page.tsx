@@ -1,6 +1,7 @@
 import { getCurrentUser } from '@/lib/auth'
 import { db } from '@/lib/db'
 import Link from 'next/link'
+import { T } from '@/components/T'
 
 export const dynamic = 'force-dynamic'
 
@@ -16,8 +17,8 @@ export default async function DiplomasPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-[#2a2a2a]">Mijn Diploma&apos;s</h1>
-        <p className="text-sm text-gray-500 mt-1">Jouw verkregen diploma&apos;s en certificaten</p>
+        <h1 className="text-2xl font-bold text-[#2a2a2a]"><T k="Mijn Diploma's" /></h1>
+        <p className="text-sm text-gray-500 mt-1"><T k="Jouw verkregen diploma's en certificaten" /></p>
       </div>
 
       <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
@@ -37,8 +38,8 @@ export default async function DiplomasPage() {
                         diploma.type === 'COURSE_JAPANESE' ? 'bg-yellow-100 text-yellow-800' :
                         'bg-blue-100 text-blue-800'
                       }`}>
-                        {diploma.type === 'BELT_EXAM' ? '🥋 Band Examen' :
-                         diploma.type === 'COURSE_JAPANESE' ? '🎓 Cursus Japans' : '⭐ Bijzonderheid'}
+                        {diploma.type === 'BELT_EXAM' ? <T k="🥋 Band Examen" /> :
+                         diploma.type === 'COURSE_JAPANESE' ? <T k="🎓 Cursus Japans" /> : <T k="⭐ Bijzonderheid" />}
                       </span>
                     </div>
                     <p className="mt-2 text-xs text-gray-400 flex items-center gap-3">
@@ -53,14 +54,14 @@ export default async function DiplomasPage() {
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-[#a90000] transition-colors"
                     >
-                      👁 Bekijken
+                      <T k="👁 Bekijken" />
                     </a>
                     <a
                       href={`/api/diplomas/download?id=${diploma.id}`}
                       download
                       className="inline-flex items-center gap-1 text-xs text-[#a90000] hover:underline font-medium"
                     >
-                      ⬇ Download PDF
+                      <T k="⬇ Download PDF" />
                     </a>
                   </div>
                 </div>
@@ -70,8 +71,8 @@ export default async function DiplomasPage() {
         ) : (
           <div className="text-center py-8">
             <p className="text-4xl mb-3">🏆</p>
-            <p className="text-sm text-gray-400">Nog geen diploma&apos;s verkregen</p>
-            <p className="text-xs text-gray-300 mt-1">Haal je eerste examen of voltooi de Cursus Japans!</p>
+            <p className="text-sm text-gray-400"><T k="Nog geen diploma's verkregen" /></p>
+            <p className="text-xs text-gray-300 mt-1"><T k="Haal je eerste examen of voltooi de Cursus Japans!" /></p>
           </div>
         )}
       </div>

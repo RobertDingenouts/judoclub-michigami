@@ -2,8 +2,11 @@
 
 import { useState } from 'react';
 import { beltKnotVideos, beltKnotInfo } from '@/data/belt-knots';
+import { useT } from '@/i18n/LangContext';
+import { termFor } from '@/i18n/content';
 
 export function BeltKnotsSection() {
+  const { t, lang } = useT();
   const [activeVideo, setActiveVideo] = useState(0);
 
   return (
@@ -20,8 +23,8 @@ export function BeltKnotsSection() {
           <rect x="20" y="18" width="6" height="58" rx="1" />
           <rect x="74" y="18" width="6" height="58" rx="1" />
         </svg>
-        <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">Band Knopen</h1>
-        <p className="text-white/80 mt-1 text-xs sm:text-sm">Leer je judo-band netjes knopen</p>
+        <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">{t('Band Knopen')}</h1>
+        <p className="text-white/80 mt-1 text-xs sm:text-sm">{t('Leer je judo-band netjes knopen')}</p>
         <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-lg mt-2 sm:mt-3" />
       </div>
 
@@ -38,7 +41,7 @@ export function BeltKnotsSection() {
                   : 'text-gray-500 hover:text-[#a90000] hover:bg-[#fdf6f6]'
               }`}
             >
-              {video.title}
+              {termFor('belt-knots', video.level === 'beginner' ? 'video-beginner' : 'video-advanced', 'title', video.title, lang)}
             </button>
           ))}
         </div>
@@ -59,12 +62,12 @@ export function BeltKnotsSection() {
 
           {/* Tips */}
           <div className="mt-4 sm:mt-6">
-            <h3 className="font-bold text-[#8c0000] text-base sm:text-lg mb-3">Tips</h3>
+            <h3 className="font-bold text-[#8c0000] text-base sm:text-lg mb-3">{t('Tips')}</h3>
             <ul className="space-y-2">
               {beltKnotInfo.tips.map((tip, idx) => (
                 <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
                   <span className="flex-shrink-0 text-[#a90000] mt-0.5">•</span>
-                  <span>{tip}</span>
+                  <span>{termFor('belt-knots', `tip-${idx + 1}`, 'tip', tip, lang)}</span>
                 </li>
               ))}
             </ul>

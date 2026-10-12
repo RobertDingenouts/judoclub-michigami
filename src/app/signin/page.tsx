@@ -4,9 +4,13 @@ import { useState } from 'react'
 import { useFormStatus } from 'react-dom'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { useT } from '@/i18n/LangContext'
+import { LangToggle } from '@/components/LangToggle'
+import { LangProvider } from '@/i18n/LangContext'
 
 function SubmitButton() {
   const { pending } = useFormStatus()
+  const { t } = useT()
   return (
     <button
       type="submit"
@@ -19,17 +23,26 @@ function SubmitButton() {
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
           </svg>
-          Inloggen...
+          {t('Inloggen...')}
         </>
       ) : (
-        'Inloggen'
+        t('Inloggen')
       )}
     </button>
   )
 }
 
 export default function SignInPage() {
+  return (
+    <LangProvider>
+      <SignInInner />
+    </LangProvider>
+  )
+}
+
+function SignInInner() {
   const router = useRouter()
+  const { t } = useT()
   const [email, setEmail] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [forgotOpen, setForgotOpen] = useState(false)
@@ -97,12 +110,16 @@ export default function SignInPage() {
       <div className="pointer-events-none absolute -top-24 -right-24 h-72 w-72 rounded-full bg-[#a90000]/10 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-[#a90000]/10 blur-3xl" />
 
+      <div className="absolute top-6 right-6 z-10">
+        <LangToggle />
+      </div>
+
       <div className="absolute top-6 left-6 z-10">
         <Link href="/" className="flex items-center gap-2 text-sm font-medium text-[#a90000] hover:text-[#8c0000]">
           <svg viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5">
             <path fillRule="evenodd" d="M9.793 14.707a1 1 0 010-1.414L12.179 11H5a1 1 0 110-2h7.179l-2.386-2.386a1 1 0 111.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
           </svg>
-          Terug naar website
+          {t('Terug naar website')}
         </Link>
       </div>
 
@@ -116,14 +133,14 @@ export default function SignInPage() {
               className="h-16 w-16 object-contain rounded-full"
             />
           </div>
-          <h1 className="font-display text-3xl font-bold text-[#2a2a2a]">Leden Login</h1>
+          <h1 className="font-display text-3xl font-bold text-[#2a2a2a]">{t('Leden Login')}</h1>
           <p className="mt-1 text-sm text-gray-500">Judoclub Michigami</p>
         </div>
 
         {/* Error message */}
         {error && (
           <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700 border border-red-200">
-            {error}
+            {t(error)}
           </div>
         )}
 
@@ -131,7 +148,7 @@ export default function SignInPage() {
         <form action={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-gray-700">
-              E-mailadres
+              {t('E-mailadres')}
             </label>
             <input
               id="email"
@@ -147,7 +164,7 @@ export default function SignInPage() {
 
           <div>
             <label htmlFor="password" className="mb-1.5 block text-sm font-medium text-gray-700">
-              Wachtwoord
+              {t('Wachtwoord')}
             </label>
             <input
               id="password"
@@ -169,7 +186,7 @@ export default function SignInPage() {
             onClick={() => { setForgotOpen(!forgotOpen); setForgotStatus('idle'); setForgotMsg('') }}
             className="text-sm text-gray-500 hover:text-[#a90000] underline-offset-2 hover:underline"
           >
-            Wachtwoord vergeten?
+            {t('Wachtwoord vergeten?')}
           </button>
         </div>
 
@@ -177,11 +194,11 @@ export default function SignInPage() {
           <div className="mt-4 rounded-lg border border-gray-200 bg-gray-50 p-4">
             {forgotStatus === 'sent' ? (
               <p className="text-sm text-green-700">
-                Als dit e-mailadres bij ons bekend is, hebben we een reset-link gestuurd. Controleer je inbox.
+                {t('Als dit e-mailadres bij ons bekend is, hebben we een reset-link gestuurd. Controleer je inbox.')}
               </p>
             ) : (
               <form onSubmit={handleForgot} className="space-y-3">
-                <p className="text-xs text-gray-600">Vul je e-mailadres in en we sturen je een link om je wachtwoord te resetten.</p>
+                <p className="text-xs text-gray-600">{t('Vul je e-mailadres in en we sturen je een link om je wachtwoord te resetten.')}</p>
                 <input
                   type="email"
                   required
@@ -198,7 +215,7 @@ export default function SignInPage() {
                   disabled={forgotStatus === 'sending'}
                   className="w-full rounded-lg bg-[#a90000] px-4 py-2 text-sm font-medium text-white hover:bg-[#8c0000] disabled:opacity-50"
                 >
-                  {forgotStatus === 'sending' ? 'Bezig...' : 'Verstuur reset-link'}
+                  {forgotStatus === 'sending' ? t('Bezig...') : t('Verstuur reset-link')}
                 </button>
               </form>
             )}
@@ -206,13 +223,13 @@ export default function SignInPage() {
         )}
 
         <p className="mt-6 text-center text-sm text-gray-500">
-          Nog geen account?{' '}
+          {t('Nog geen account?')}{' '}
           <Link href="/inschrijven" className="font-medium text-[#a90000] hover:text-[#8c0000]">
-            Word lid
+            {t('Word lid')}
           </Link>
           {' '}·{' '}
           <Link href="/signup" className="font-medium text-[#a90000] hover:text-[#8c0000]">
-            Hoe werkt het?
+            {t('Hoe werkt het?')}
           </Link>
         </p>
       </div>

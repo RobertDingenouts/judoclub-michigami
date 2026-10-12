@@ -3,8 +3,11 @@
 import { techniquesCards } from '@/data/techniques-card';
 import Image from 'next/image';
 import { AnimatedCard, AnimatedButton } from '@/components/ui/animated-card';
+import { useT } from '@/i18n/LangContext';
+import { termFor } from '@/i18n/content';
 
 export function TechniquesCardSection() {
+  const { t, lang } = useT();
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -20,8 +23,8 @@ export function TechniquesCardSection() {
             <rect x="20" y="18" width="6" height="58" rx="1" />
             <rect x="74" y="18" width="6" height="58" rx="1" />
           </svg>
-          <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">Techniekenkaart</h1>
-          <p className="text-white/80 mt-1 text-xs sm:text-sm">Downloadbare PDF's met judotechnieken en exameneisen</p>
+          <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">{t('Techniekenkaart')}</h1>
+          <p className="text-white/80 mt-1 text-xs sm:text-sm">{t("Downloadbare PDF's met judotechnieken en exameneisen")}</p>
           <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-lg mt-2 sm:mt-3" />
         </div>
       </AnimatedCard>
@@ -47,8 +50,8 @@ export function TechniquesCardSection() {
 
               {/* Content */}
               <div className="p-4 sm:p-6">
-                <h3 className="font-bold text-[#8c0000] text-base sm:text-lg mb-2">{card.title}</h3>
-                <p className="text-sm text-gray-600 mb-4 leading-relaxed">{card.description}</p>
+                <h3 className="font-bold text-[#8c0000] text-base sm:text-lg mb-2">{termFor('techniques-card', `card-${idx + 1}`, 'title', card.title, lang)}</h3>
+                <p className="text-sm text-gray-600 mb-4 leading-relaxed">{termFor('techniques-card', `card-${idx + 1}`, 'description', card.description, lang)}</p>
 
                 {/* Download Button */}
                 <AnimatedButton as="a" href={card.pdfUrl} download>
@@ -56,7 +59,7 @@ export function TechniquesCardSection() {
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
-                    Bestand downloaden
+                    {t('Bestand downloaden')}
                   </div>
                 </AnimatedButton>
               </div>

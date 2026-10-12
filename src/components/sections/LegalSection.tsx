@@ -1,7 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { useT } from '@/i18n/LangContext';
 import { legalDocuments, type LegalDocument } from '@/data/legal';
+import { legalDocFor } from '@/i18n/content';
 
 function LegalSectionItem({ section, index }: { section: { heading: string; content: string }; index: number }) {
   const [expanded, setExpanded] = useState(index === 0);
@@ -40,6 +42,7 @@ function DocumentCard({
   isActive: boolean;
   onClick: () => void;
 }) {
+  const { t } = useT();
   return (
     <button
       onClick={onClick}
@@ -75,8 +78,8 @@ function DocumentCard({
           </h3>
           {doc.version && (
             <p className="text-xs text-gray-400 mt-0.5">
-              Versie {doc.version}
-              {doc.lastUpdated && ` · Bijgewerkt ${doc.lastUpdated}`}
+              {t('Versie')} {doc.version}
+              {doc.lastUpdated && ` · ${t('Bijgewerkt')} ${doc.lastUpdated}`}
             </p>
           )}
         </div>
@@ -86,8 +89,9 @@ function DocumentCard({
 }
 
 export function LegalSection() {
+  const { t, lang } = useT();
   const [activeDocId, setActiveDocId] = useState(legalDocuments[0].id);
-  const activeDoc = legalDocuments.find((d) => d.id === activeDocId);
+  const activeDoc = legalDocFor(legalDocuments.find((d) => d.id === activeDocId)!, lang);
 
   return (
     <div className="space-y-6">
@@ -103,8 +107,8 @@ export function LegalSection() {
           <rect x="20" y="18" width="6" height="58" rx="1" />
           <rect x="74" y="18" width="6" height="58" rx="1" />
         </svg>
-        <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">Juridisch</h1>
-        <p className="text-white/80 mt-1 text-xs sm:text-sm">Algemene voorwaarden, gedragscode en privacyverklaring</p>
+        <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">{t('Juridisch')}</h1>
+        <p className="text-white/80 mt-1 text-xs sm:text-sm">{t('Algemene voorwaarden, gedragscode en privacyverklaring')}</p>
         <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-lg mt-2 sm:mt-3" />
       </div>
 
@@ -114,7 +118,7 @@ export function LegalSection() {
           {legalDocuments.map((doc) => (
             <DocumentCard
               key={doc.id}
-              doc={doc}
+              doc={legalDocFor(doc, lang)}
               isActive={doc.id === activeDocId}
               onClick={() => setActiveDocId(doc.id)}
             />
@@ -129,8 +133,8 @@ export function LegalSection() {
                 <h2 className="font-bold text-[#8c0000] text-base sm:text-lg">{activeDoc.title}</h2>
                 {activeDoc.version && (
                   <p className="text-xs text-gray-400 mt-1">
-                    Versie {activeDoc.version}
-                    {activeDoc.lastUpdated && ` · Laatst bijgewerkt ${activeDoc.lastUpdated}`}
+                    {t('Versie')} {activeDoc.version}
+                    {activeDoc.lastUpdated && ` · ${t('Laatst bijgewerkt')} ${activeDoc.lastUpdated}`}
                   </p>
                 )}
               </div>

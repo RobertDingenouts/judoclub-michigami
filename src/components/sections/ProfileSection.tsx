@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { BELT_LABELS_NL, BELT_COLORS, LOCATION_LABELS_NL } from '@/lib/student-progress-types'
+import { useT } from '@/i18n/LangContext'
 
 interface UserProfile {
   id: string
@@ -26,6 +27,7 @@ interface UserProfile {
 }
 
 export function ProfileSection() {
+  const { t } = useT()
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -64,11 +66,11 @@ export function ProfileSection() {
     return (
       <div className="space-y-6">
         <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-lg p-6 text-white">
-          <h1 className="text-2xl font-bold">Mijn Profiel</h1>
-          <p className="text-white/80 mt-1">Je persoonlijke gegevens en statistieken</p>
+          <h1 className="text-2xl font-bold">{t('Mijn Profiel')}</h1>
+          <p className="text-white/80 mt-1">{t('Je persoonlijke gegevens en statistieken')}</p>
         </div>
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-center">
-          <p className="text-yellow-800">Log in om je profiel te bekijken.</p>
+          <p className="text-yellow-800">{t('Log in om je profiel te bekijken.')}</p>
         </div>
       </div>
     )
@@ -167,30 +169,30 @@ export function ProfileSection() {
       {profile.member && (
         <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
           <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
-            <h2 className="text-sm font-semibold text-gray-700">Persoonlijke Gegevens</h2>
+            <h2 className="text-sm font-semibold text-gray-700">{t('Persoonlijke Gegevens')}</h2>
           </div>
           <div className="p-4 space-y-3">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-500">Naam</span>
+              <span className="text-sm text-gray-500">{t('Naam')}</span>
               <span className="text-sm font-medium text-gray-800">
                 {profile.member.firstName} {profile.member.lastName}
               </span>
             </div>
             {profile.member.email && (
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-500">E-mail</span>
+                <span className="text-sm text-gray-500">{t('E-mail')}</span>
                 <span className="text-sm font-medium text-gray-800">{profile.member.email}</span>
               </div>
             )}
             {profile.member.phone && (
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-500">Telefoon</span>
+                <span className="text-sm text-gray-500">{t('Telefoon')}</span>
                 <span className="text-sm font-medium text-gray-800">{profile.member.phone}</span>
               </div>
             )}
             {profile.member.dateOfBirth && (
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-500">Geboortedatum</span>
+                <span className="text-sm text-gray-500">{t('Geboortedatum')}</span>
                 <span className="text-sm font-medium text-gray-800">
                   {new Date(profile.member.dateOfBirth).toLocaleDateString('nl-NL')}
                 </span>
@@ -198,7 +200,7 @@ export function ProfileSection() {
             )}
             {joinDate && (
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-500">Lid sinds</span>
+                <span className="text-sm text-gray-500">{t('Lid sinds')}</span>
                 <span className="text-sm font-medium text-gray-800">
                   {new Date(joinDate).toLocaleDateString('nl-NL', { month: 'long', year: 'numeric' })}
                 </span>
@@ -206,7 +208,7 @@ export function ProfileSection() {
             )}
             {profile.member.location && (
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-500">Trainingslocatie</span>
+                <span className="text-sm text-gray-500">{t('Trainingslocatie')}</span>
                 <span className="text-sm font-medium text-gray-800">
                   📍 {LOCATION_LABELS_NL[profile.member.location as keyof typeof LOCATION_LABELS_NL] || profile.member.location}
                 </span>
@@ -216,18 +218,18 @@ export function ProfileSection() {
               <>
                 <div className="border-t border-gray-100 pt-3">
                   <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-                    Noodcontact
+                    {t('Noodcontact')}
                   </h3>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-500">Naam</span>
+                  <span className="text-sm text-gray-500">{t('Naam')}</span>
                   <span className="text-sm font-medium text-gray-800">
                     {profile.member.emergencyContactName}
                   </span>
                 </div>
                 {profile.member.emergencyContactPhone && (
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-500">Telefoon</span>
+                    <span className="text-sm text-gray-500">{t('Telefoon')}</span>
                     <span className="text-sm font-medium text-gray-800">
                       {profile.member.emergencyContactPhone}
                     </span>

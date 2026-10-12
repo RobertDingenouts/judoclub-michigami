@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Camera, Shield, Eye, EyeOff } from 'lucide-react'
 import { compressImage } from '@/lib/image-compression'
+import { useT } from '@/i18n/LangContext'
 
 interface ProfileEditData {
   firstName: string
@@ -36,6 +37,7 @@ interface ProfileEditData {
 
 export default function ProfileEditPage() {
   const router = useRouter()
+  const { t } = useT()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [activeTab, setActiveTab] = useState<'gegevens' | 'wachtwoord' | 'akkoorden'>('gegevens')
@@ -319,11 +321,11 @@ export default function ProfileEditPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <Link href="/leden" className="text-gray-400 hover:text-[#a90000] text-sm">
-          ← Terug naar dashboard
+          ← {t('Terug naar dashboard')}
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-[#2a2a2a]">Mijn Profiel</h1>
-          <p className="text-sm text-gray-500 mt-1">Beheer je persoonlijke gegevens en instellingen</p>
+          <h1 className="text-2xl font-bold text-[#2a2a2a]">{t('Mijn Profiel')}</h1>
+          <p className="text-sm text-gray-500 mt-1">{t('Beheer je persoonlijke gegevens en instellingen')}</p>
         </div>
       </div>
 
@@ -339,7 +341,7 @@ export default function ProfileEditPage() {
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200'
               }`}
             >
-              Persoonlijke gegevens
+              {t('Persoonlijke gegevens')}
             </button>
             <button
               onClick={() => { setActiveTab('wachtwoord'); setError(null); setSuccess(null); }}
@@ -349,7 +351,7 @@ export default function ProfileEditPage() {
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200'
               }`}
             >
-              <Shield className="w-4 h-4" /> Wachtwoord
+              <Shield className="w-4 h-4" /> {t('Wachtwoord')}
             </button>
             <button
               onClick={() => { setActiveTab('akkoorden'); setError(null); setSuccess(null); }}
@@ -359,7 +361,7 @@ export default function ProfileEditPage() {
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200'
               }`}
             >
-              Akkoorden
+              {t('Akkoorden')}
             </button>
           </nav>
         </div>
@@ -367,12 +369,12 @@ export default function ProfileEditPage() {
         <div className="p-6">
           {error && (
             <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700 flex items-center gap-2">
-              {error}
+              {t(error)}
             </div>
           )}
           {success && (
             <div className="mb-6 rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-700 flex items-center gap-2">
-              {success}
+              {t(success)}
             </div>
           )}
 
@@ -390,7 +392,7 @@ export default function ProfileEditPage() {
                 <div>
                   <label htmlFor="avatar" className="inline-flex items-center gap-2 rounded-lg bg-gray-100 px-4 py-2.5 text-sm font-medium text-gray-700 cursor-pointer hover:bg-gray-200 transition-colors">
                     <Camera className="w-4 h-4" />
-                    {compressing ? 'Verwerken...' : 'Foto kiezen'}
+                    {compressing ? t('Verwerken...') : t('Foto kiezen')}
                   </label>
                   <input
                     id="avatar"
@@ -400,15 +402,15 @@ export default function ProfileEditPage() {
                     className="hidden"
                     disabled={compressing}
                   />
-                  <p className="text-xs text-gray-500 mt-1">Automatisch verkleind voor optimale kwaliteit.</p>
-                  {compressing && <p className="text-xs text-[#a90000] mt-0.5 animate-pulse">Foto wordt verkleind...</p>}
+                  <p className="text-xs text-gray-500 mt-1">{t('Automatisch verkleind voor optimale kwaliteit.')}</p>
+                  {compressing && <p className="text-xs text-[#a90000] mt-0.5 animate-pulse">{t('Foto wordt verkleind...')}</p>}
                 </div>
               </div>
 
               <hr className="border-gray-100" />
 
               {/* Personal Info */}
-              <h2 className="text-lg font-semibold text-[#2a2a2a]">Persoonlijke Gegevens</h2>
+              <h2 className="text-lg font-semibold text-[#2a2a2a]">{t('Persoonlijke Gegevens')}</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FormField label="Voornaam" name="firstName" value={form?.firstName || ''} required onChange={(e) => handleFormChange('firstName', e.target.value)} />
                 <FormField label="Achternaam" name="lastName" value={form?.lastName || ''} required onChange={(e) => handleFormChange('lastName', e.target.value)} />
@@ -420,7 +422,7 @@ export default function ProfileEditPage() {
               <hr className="border-gray-100" />
 
               {/* Adres */}
-              <h2 className="text-lg font-semibold text-[#2a2a2a]">Adres</h2>
+              <h2 className="text-lg font-semibold text-[#2a2a2a]">{t('Adres')}</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FormField label="Straat + huisnummer" name="address" value={form?.address || ''} onChange={(e) => handleFormChange('address', e.target.value)} />
                 <div className="grid grid-cols-2 gap-3">
@@ -432,7 +434,7 @@ export default function ProfileEditPage() {
               <hr className="border-gray-100" />
 
               {/* Contact */}
-              <h2 className="text-lg font-semibold text-[#2a2a2a]">Contact</h2>
+              <h2 className="text-lg font-semibold text-[#2a2a2a]">{t('Contact')}</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FormField label="Telefoonnummer 1" name="phone" type="tel" value={form?.phone || ''} onChange={(e) => handleFormChange('phone', e.target.value)} />
                 <FormField label="Telefoonnummer 2" name="phone2" type="tel" value={form?.phone2 || ''} onChange={(e) => handleFormChange('phone2', e.target.value)} />
@@ -441,8 +443,8 @@ export default function ProfileEditPage() {
               <hr className="border-gray-100" />
 
               {/* Groepsapp */}
-              <h2 className="text-lg font-semibold text-[#2a2a2a]">Groepsapp</h2>
-              <p className="text-sm text-gray-500 mb-3">Wil je toegevoegd worden aan onze judoclub groepsapp voor belangrijke mededelingen en updates?</p>
+              <h2 className="text-lg font-semibold text-[#2a2a2a]">{t('Groepsapp')}</h2>
+              <p className="text-sm text-gray-500 mb-3">{t('Wil je toegevoegd worden aan onze judoclub groepsapp voor belangrijke mededelingen en updates?')}</p>
               <div className="space-y-2">
                 <label className="flex items-center gap-3 cursor-pointer">
                   <input
@@ -453,7 +455,7 @@ export default function ProfileEditPage() {
                     onChange={() => handleFormChange('whatsappGroup', '')}
                     className="text-[#a90000] focus:ring-[#a90000]"
                   />
-                  <span className="text-sm text-gray-700">Nee, bedankt</span>
+                  <span className="text-sm text-gray-700">{t('Nee, bedankt')}</span>
                 </label>
                 <label className="flex items-center gap-3 cursor-pointer">
                   <input
@@ -464,7 +466,7 @@ export default function ProfileEditPage() {
                     onChange={() => handleFormChange('whatsappGroup', 'ja1')}
                     className="text-[#a90000] focus:ring-[#a90000]"
                   />
-                  <span className="text-sm text-gray-700">Ja, met telefoonnummer 1</span>
+                  <span className="text-sm text-gray-700">{t('Ja, met telefoonnummer 1')}</span>
                 </label>
                 <label className="flex items-center gap-3 cursor-pointer">
                   <input
@@ -475,7 +477,7 @@ export default function ProfileEditPage() {
                     onChange={() => handleFormChange('whatsappGroup', 'ja2')}
                     className="text-[#a90000] focus:ring-[#a90000]"
                   />
-                  <span className="text-sm text-gray-700">Ja, met telefoonnummer 2</span>
+                  <span className="text-sm text-gray-700">{t('Ja, met telefoonnummer 2')}</span>
                 </label>
                 <label className="flex items-center gap-3 cursor-pointer">
                   <input
@@ -486,32 +488,32 @@ export default function ProfileEditPage() {
                     onChange={() => handleFormChange('whatsappGroup', 'ja12')}
                     className="text-[#a90000] focus:ring-[#a90000]"
                   />
-                  <span className="text-sm text-gray-700">Ja, met beide telefoonnummers</span>
+                  <span className="text-sm text-gray-700">{t('Ja, met beide telefoonnummers')}</span>
                 </label>
               </div>
 
               <hr className="border-gray-100" />
 
               {/* Location (read-only) */}
-              <h2 className="text-lg font-semibold text-[#2a2a2a]">Trainingslocatie</h2>
+              <h2 className="text-lg font-semibold text-[#2a2a2a]">{t('Trainingslocatie')}</h2>
               <div className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-700">Locatie</span>
+                  <span className="text-sm font-medium text-gray-700">{t('Locatie')}</span>
                   <span className="text-sm text-gray-600">
                     {form?.location ? (
                       <>📍 {form.location === 'STeenbergen' ? 'Steenbergen' : form.location === 'OUD_VOSSEMEER' ? 'Oud-Vossemeer' : form.location}</>
                     ) : (
-                      <span className="text-gray-400 italic">Nog geen locatie toegekend</span>
+                      <span className="text-gray-400 italic">{t('Nog geen locatie toegekend')}</span>
                     )}
                   </span>
                 </div>
-                <p className="text-xs text-gray-400 mt-1">Contacteer de admin om je locatie te wijzigen.</p>
+                <p className="text-xs text-gray-400 mt-1">{t('Contacteer de admin om je locatie te wijzigen.')}</p>
               </div>
 
               <hr className="border-gray-100" />
 
               {/* Emergency Contact */}
-              <h2 className="text-lg font-semibold text-[#2a2a2a]">Noodcontact</h2>
+              <h2 className="text-lg font-semibold text-[#2a2a2a]">{t('Noodcontact')}</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FormField label="Naam" name="emergencyContactName" value={form?.emergencyContactName || ''} onChange={(e) => handleFormChange('emergencyContactName', e.target.value)} />
                 <FormField label="Telefoon" name="emergencyContactPhone" type="tel" value={form?.emergencyContactPhone || ''} onChange={(e) => handleFormChange('emergencyContactPhone', e.target.value)} />
@@ -520,27 +522,27 @@ export default function ProfileEditPage() {
               <hr className="border-gray-100" />
 
               {/* Medical Notes */}
-              <h2 className="text-lg font-semibold text-[#2a2a2a]">Medische Notities</h2>
+              <h2 className="text-lg font-semibold text-[#2a2a2a]">{t('Medische Notities')}</h2>
               <textarea
                 name="medicalNotes"
                 value={form?.medicalNotes || ''}
                 onChange={(e) => handleFormChange('medicalNotes', e.target.value)}
                 rows={3}
                 className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm focus:border-[#a90000] focus:outline-none focus:ring-2 focus:ring-[#a90000]/30"
-                placeholder="Allergieën, aandoeningen, medicijnen, etc. (alleen zichtbaar voor beheerders en instructeurs)"
+                placeholder={t('Allergieën, aandoeningen, medicijnen, etc. (alleen zichtbaar voor beheerders en instructeurs)')} 
               />
 
               <hr className="border-gray-100" />
 
               {/* Opmerkingen */}
-              <h2 className="text-lg font-semibold text-[#2a2a2a]">Overige Opmerkingen</h2>
+              <h2 className="text-lg font-semibold text-[#2a2a2a]">{t('Overige Opmerkingen')}</h2>
               <textarea
                 name="remarks"
                 value={form?.remarks || ''}
                 onChange={(e) => handleFormChange('remarks', e.target.value)}
                 rows={3}
                 className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm focus:border-[#a90000] focus:outline-none focus:ring-2 focus:ring-[#a90000]/30"
-                placeholder="Opmerkingen voor de club (optioneel)"
+                placeholder={t('Opmerkingen voor de club (optioneel)')} 
               />
 
               {/* Actions */}
@@ -550,10 +552,10 @@ export default function ProfileEditPage() {
                   disabled={saving}
                   className="inline-flex items-center gap-2 rounded-lg bg-[#a90000] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#8c0000] disabled:opacity-50"
                 >
-                  {saving ? 'Opslaan...' : 'Wijzigingen opslaan'}
+                  {saving ? t('Opslaan...') : t('Wijzigingen opslaan')}
                 </button>
                 <p className="text-xs text-gray-400 flex items-start">
-                  ⚠️ Bij belangrijke wijzigingen (e-mail, noodcontact, medische notities) krijgt het admin team een notificatie.
+                  ⚠️ {t('Bij belangrijke wijzigingen (e-mail, noodcontact, medische notities) krijgt het admin team een notificatie.')}
                 </p>
               </div>
             </form>
@@ -561,15 +563,14 @@ export default function ProfileEditPage() {
 
           {activeTab === 'wachtwoord' && (
             <form onSubmit={handlePasswordSubmit} className="space-y-6 max-w-md">
-              <h2 className="text-lg font-semibold text-[#2a2a2a]">Wachtwoord wijzigen</h2>
+              <h2 className="text-lg font-semibold text-[#2a2a2a]">{t('Wachtwoord wijzigen')}</h2>
               <p className="text-sm text-gray-500">
-                Je huidige wachtwoord is vereist om je wachtwoord te wijzigen.
-                Kies een veilig wachtwoord van minimaal 8 tekens.
+                {t('Je huidige wachtwoord is vereist om je wachtwoord te wijzigen. Kies een veilig wachtwoord van minimaal 8 tekens.')}
               </p>
 
               <div>
                 <label htmlFor="currentPassword" className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Huidig wachtwoord *
+                  {t('Huidig wachtwoord')} *
                 </label>
                 <div className="relative">
                   <input
@@ -578,7 +579,7 @@ export default function ProfileEditPage() {
                     value={currentPassword}
                     onChange={(e) => setCurrentPassword(e.target.value)}
                     className="w-full rounded-lg border border-gray-300 px-4 py-3 pr-12 text-sm focus:border-[#a90000] focus:outline-none focus:ring-2 focus:ring-[#a90000]/30"
-                    placeholder="Voer huidig wachtwoord in"
+                    placeholder={t('Voer huidig wachtwoord in')}
                     required
                   />
                   <button
@@ -598,7 +599,7 @@ export default function ProfileEditPage() {
 
               <div>
                 <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Nieuw wachtwoord *
+                  {t('Nieuw wachtwoord')} *
                 </label>
                 <div className="relative">
                   <input
@@ -607,7 +608,7 @@ export default function ProfileEditPage() {
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     className="w-full rounded-lg border border-gray-300 px-4 py-3 pr-12 text-sm focus:border-[#a90000] focus:outline-none focus:ring-2 focus:ring-[#a90000]/30"
-                    placeholder="Minimaal 8 tekens"
+                    placeholder={t('Minimaal 8 tekens')}
                     required
                     minLength={8}
                   />
@@ -629,7 +630,7 @@ export default function ProfileEditPage() {
 
               <div>
                 <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Bevestig nieuw wachtwoord *
+                  {t('Bevestig nieuw wachtwoord')} *
                 </label>
                 <div className="relative">
                   <input
@@ -638,7 +639,7 @@ export default function ProfileEditPage() {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     className="w-full rounded-lg border border-gray-300 px-4 py-3 pr-12 text-sm focus:border-[#a90000] focus:outline-none focus:ring-2 focus:ring-[#a90000]/30"
-                    placeholder="Herhaal nieuw wachtwoord"
+                    placeholder={t('Herhaal nieuw wachtwoord')}
                     required
                   />
                   <button
@@ -662,14 +663,14 @@ export default function ProfileEditPage() {
                   disabled={saving}
                   className="inline-flex items-center gap-2 rounded-lg bg-[#a90000] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#8c0000] disabled:opacity-50"
                 >
-                  {saving ? 'Wachtwoord wijzigen...' : 'Wachtwoord wijzigen'}
+                  {saving ? t('Wachtwoord wijzigen...') : t('Wachtwoord wijzigen')}
                 </button>
               </div>
 
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <p className="text-sm text-blue-800 flex items-center gap-1">
                   <Shield className="w-4 h-4" />
-                  Tip: Gebruik een wachtwoordmanager voor sterke, unieke wachtwoorden.
+                  {t('Tip: Gebruik een wachtwoordmanager voor sterke, unieke wachtwoorden.')}
                 </p>
               </div>
             </form>
@@ -677,16 +678,16 @@ export default function ProfileEditPage() {
 
           {activeTab === 'akkoorden' && (
             <form onSubmit={handleAgreementsSubmit} className="space-y-6 max-w-2xl">
-              <h2 className="text-lg font-semibold text-[#2a2a2a]">Akkoorden & Toestemmingen</h2>
+              <h2 className="text-lg font-semibold text-[#2a2a2a]">{t('Akkoorden & Toestemmingen')}</h2>
               <p className="text-sm text-gray-500">
-                Hieronder kun je je toestemmingen beheren. Deze zijn gegeven bij je inschrijving.
+                {t('Hieronder kun je je toestemmingen beheren. Deze zijn gegeven bij je inschrijving.')}
               </p>
 
               {/* Portretrecht */}
               <div className="rounded-lg border border-gray-200 p-4 space-y-3">
-                <h3 className="font-medium text-[#2a2a2a]">Portretrecht — Foto's & Video's</h3>
+                <h3 className="font-medium text-[#2a2a2a]">{t("Portretrecht — Foto's & Video's")}</h3>
                 <p className="text-sm text-gray-600">
-                  Mag de judoclub foto's en video's van je maken tijdens evenementen en trainingen en deze gebruiken voor promotiedoeleinden op social media en onze website?
+                  {t("Mag de judoclub foto's en video's van je maken tijdens evenementen en trainingen en deze gebruiken voor promotiedoeleinden op social media en onze website?")}
                 </p>
                 <div className="space-y-2">
                   <label className="flex items-center gap-3 cursor-pointer">
@@ -697,7 +698,7 @@ export default function ProfileEditPage() {
                       onChange={() => handleFormChange('portraitRights', true)}
                       className="text-[#a90000] focus:ring-[#a90000]"
                     />
-                    <span className="text-sm text-gray-700">Ja, ik geef toestemming</span>
+                    <span className="text-sm text-gray-700">{t('Ja, ik geef toestemming')}</span>
                   </label>
                   <label className="flex items-center gap-3 cursor-pointer">
                     <input
@@ -707,11 +708,11 @@ export default function ProfileEditPage() {
                       onChange={() => handleFormChange('portraitRights', false)}
                       className="text-[#a90000] focus:ring-[#a90000]"
                     />
-                    <span className="text-sm text-gray-700">Nee, ik geef geen toestemming</span>
+                    <span className="text-sm text-gray-700">{t('Nee, ik geef geen toestemming')}</span>
                   </label>
                   {form?.portraitRights === null && (
                     <p className="text-xs text-amber-600 bg-amber-50 rounded px-3 py-2">
-                      ⚠️ Nog niet ingesteld. Kies een optie hierboven.
+                      ⚠️ {t('Nog niet ingesteld. Kies een optie hierboven.')}
                     </p>
                   )}
                 </div>
@@ -719,9 +720,9 @@ export default function ProfileEditPage() {
 
               {/* Naam vermelden */}
               <div className="rounded-lg border border-gray-200 p-4 space-y-3">
-                <h3 className="font-medium text-[#2a2a2a]">Naam Vermelden</h3>
+                <h3 className="font-medium text-[#2a2a2a]">{t('Naam Vermelden')}</h3>
                 <p className="text-sm text-gray-600">
-                  Mag de judoclub je naam vermelden in nieuwsberichten op social media en onze website?
+                  {t('Mag de judoclub je naam vermelden in nieuwsberichten op social media en onze website?')}
                 </p>
                 <div className="space-y-2">
                   <label className="flex items-center gap-3 cursor-pointer">
@@ -732,7 +733,7 @@ export default function ProfileEditPage() {
                       onChange={() => handleFormChange('nameMention', true)}
                       className="text-[#a90000] focus:ring-[#a90000]"
                     />
-                    <span className="text-sm text-gray-700">Ja, ik geef toestemming</span>
+                    <span className="text-sm text-gray-700">{t('Ja, ik geef toestemming')}</span>
                   </label>
                   <label className="flex items-center gap-3 cursor-pointer">
                     <input
@@ -742,11 +743,11 @@ export default function ProfileEditPage() {
                       onChange={() => handleFormChange('nameMention', false)}
                       className="text-[#a90000] focus:ring-[#a90000]"
                     />
-                    <span className="text-sm text-gray-700">Nee, ik geef geen toestemming</span>
+                    <span className="text-sm text-gray-700">{t('Nee, ik geef geen toestemming')}</span>
                   </label>
                   {form?.nameMention === null && (
                     <p className="text-xs text-amber-600 bg-amber-50 rounded px-3 py-2">
-                      ⚠️ Nog niet ingesteld. Kies een optie hierboven.
+                      ⚠️ {t('Nog niet ingesteld. Kies een optie hierboven.')}
                     </p>
                   )}
                 </div>
@@ -756,12 +757,12 @@ export default function ProfileEditPage() {
 
               {/* Privacyverklaring */}
               <div className="rounded-lg border border-gray-200 p-4 space-y-3">
-                <h3 className="font-medium text-[#2a2a2a]">Privacyverklaring</h3>
+                <h3 className="font-medium text-[#2a2a2a]">{t('Privacyverklaring')}</h3>
                 <p className="text-sm text-gray-600">
-                  Ga je akkoord met het gebruik van je persoonsgegevens zoals beschreven in de privacyverklaring?
+                  {t('Ga je akkoord met het gebruik van je persoonsgegevens zoals beschreven in de privacyverklaring?')}
                 </p>
                 <a href="/#juridisch" target="_blank" className="text-sm text-[#a90000] hover:underline inline-block">
-                  📄 Privacyverklaring lezen →
+                  📄 {t('Privacyverklaring lezen')} →
                 </a>
                 <div className="flex items-center gap-3">
                   <input
@@ -772,24 +773,24 @@ export default function ProfileEditPage() {
                     className="rounded text-[#a90000] focus:ring-[#a90000]"
                   />
                   <label htmlFor="privacyAgreed" className="text-sm text-gray-700 cursor-pointer">
-                    Ik ga akkoord met de privacyverklaring
+                    {t('Ik ga akkoord met de privacyverklaring')}
                   </label>
                 </div>
                 {form?.privacyAgreedAt && (
                   <p className="text-xs text-gray-400">
-                    Akkoord gegeven op {formatDate(form.privacyAgreedAt)}
+                    {t('Akkoord gegeven op')} {formatDate(form.privacyAgreedAt)}
                   </p>
                 )}
               </div>
 
               {/* Algemene Voorwaarden */}
               <div className="rounded-lg border border-gray-200 p-4 space-y-3">
-                <h3 className="font-medium text-[#2a2a2a]">Algemene Voorwaarden</h3>
+                <h3 className="font-medium text-[#2a2a2a]">{t('Algemene Voorwaarden')}</h3>
                 <p className="text-sm text-gray-600">
-                  Ga je akkoord met de algemene voorwaarden van Judoclub Michigami?
+                  {t('Ga je akkoord met de algemene voorwaarden van Judoclub Michigami?')}
                 </p>
                 <a href="/#juridisch" target="_blank" className="text-sm text-[#a90000] hover:underline inline-block">
-                  📄 Algemene voorwaarden lezen →
+                  📄 {t('Algemene voorwaarden lezen')} →
                 </a>
                 <div className="flex items-center gap-3">
                   <input
@@ -800,24 +801,24 @@ export default function ProfileEditPage() {
                     className="rounded text-[#a90000] focus:ring-[#a90000]"
                   />
                   <label htmlFor="termsAgreed" className="text-sm text-gray-700 cursor-pointer">
-                    Ik ga akkoord met de algemene voorwaarden
+                    {t('Ik ga akkoord met de algemene voorwaarden')}
                   </label>
                 </div>
                 {form?.termsAgreedAt && (
                   <p className="text-xs text-gray-400">
-                    Akkoord gegeven op {formatDate(form.termsAgreedAt)}
+                    {t('Akkoord gegeven op')} {formatDate(form.termsAgreedAt)}
                   </p>
                 )}
               </div>
 
               {/* Gedragscode */}
               <div className="rounded-lg border border-gray-200 p-4 space-y-3">
-                <h3 className="font-medium text-[#2a2a2a]">Gedragscode</h3>
+                <h3 className="font-medium text-[#2a2a2a]">{t('Gedragscode')}</h3>
                 <p className="text-sm text-gray-600">
-                  Ga je akkoord met de gedragscode van Judoclub Michigami?
+                  {t('Ga je akkoord met de gedragscode van Judoclub Michigami?')}
                 </p>
                 <a href="/#juridisch" target="_blank" className="text-sm text-[#a90000] hover:underline inline-block">
-                  📄 Gedragscode lezen →
+                  📄 {t('Gedragscode lezen')} →
                 </a>
                 <div className="flex items-center gap-3">
                   <input
@@ -828,17 +829,17 @@ export default function ProfileEditPage() {
                     className="rounded text-[#a90000] focus:ring-[#a90000]"
                   />
                   <label htmlFor="codeOfConduct" className="text-sm text-gray-700 cursor-pointer">
-                    Ik ga akkoord met de gedragscode
+                    {t('Ik ga akkoord met de gedragscode')}
                   </label>
                 </div>
                 {form?.codeOfConduct && form?.codeOfConductAt && (
                   <p className="text-xs text-gray-400">
-                    Akkoord gegeven op {formatDate(form.codeOfConductAt)}
+                    {t('Akkoord gegeven op')} {formatDate(form.codeOfConductAt)}
                   </p>
                 )}
                 {form?.codeOfConduct === null && (
                   <p className="text-xs text-amber-600 bg-amber-50 rounded px-3 py-2">
-                    ⚠️ Nog niet ingesteld. Vink aan als je akkoord gaat.
+                    ⚠️ {t('Nog niet ingesteld. Vink aan als je akkoord gaat.')}
                   </p>
                 )}
               </div>
@@ -850,7 +851,7 @@ export default function ProfileEditPage() {
                   disabled={saving}
                   className="inline-flex items-center gap-2 rounded-lg bg-[#a90000] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#8c0000] disabled:opacity-50"
                 >
-                  {saving ? 'Opslaan...' : 'Akkoorden opslaan'}
+                  {saving ? t('Opslaan...') : t('Akkoorden opslaan')}
                 </button>
               </div>
             </form>
@@ -864,10 +865,11 @@ export default function ProfileEditPage() {
 function FormField({ label, name, type = 'text', value = '', required = false, onChange, placeholder }: {
   label: string; name: string; type?: string; value?: string; required?: boolean; onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void; placeholder?: string
 }) {
+  const { t } = useT()
   return (
     <div>
       <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-1.5">
-        {label}{required && <span className="text-[#a90000]">*</span>}
+        {t(label)}{required && <span className="text-[#a90000]">*</span>}
       </label>
       <input
         id={name}
@@ -876,7 +878,7 @@ function FormField({ label, name, type = 'text', value = '', required = false, o
         value={value}
         onChange={onChange}
         required={required}
-        placeholder={placeholder}
+        placeholder={placeholder ? t(placeholder) : undefined}
         className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm focus:border-[#a90000] focus:outline-none focus:ring-2 focus:ring-[#a90000]/30 transition-colors"
       />
     </div>

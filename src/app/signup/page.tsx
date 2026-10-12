@@ -1,6 +1,10 @@
 'use client'
 
 import Link from 'next/link'
+import { useT } from '@/i18n/LangContext'
+import { LangToggle } from '@/components/LangToggle'
+import { LangProvider } from '@/i18n/LangContext'
+import { T } from '@/components/T'
 
 /**
  * Openbare registratie is uitgeschakeld: accounts worden door de club
@@ -9,16 +13,29 @@ import Link from 'next/link'
  */
 export default function SignUpPage() {
   return (
+    <LangProvider>
+      <SignUpInner />
+    </LangProvider>
+  )
+}
+
+function SignUpInner() {
+  const { t } = useT()
+  return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#f5f5f0] px-4">
       <div className="pointer-events-none absolute -top-24 -right-24 h-72 w-72 rounded-full bg-[#a90000]/10 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-[#a90000]/10 blur-3xl" />
+
+      <div className="absolute top-6 right-6 z-10">
+        <LangToggle />
+      </div>
 
       <div className="absolute top-6 left-6 z-10">
         <Link href="/" className="flex items-center gap-2 text-sm font-medium text-[#a90000] hover:text-[#8c0000]">
           <svg viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5">
             <path fillRule="evenodd" d="M9.793 14.707a1 1 0 010-1.414L12.179 11H5a1 1 0 110-2h7.179l-2.386-2.386a1 1 0 111.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
           </svg>
-          Terug naar website
+          {t('Terug naar website')}
         </Link>
       </div>
 
@@ -27,23 +44,22 @@ export default function SignUpPage() {
           <img src="/logo-hd.png" alt="Judoclub Michigami" className="h-16 w-16 object-contain rounded-full" />
         </div>
 
-        <h1 className="font-display text-2xl font-bold text-[#2a2a2a]">Account aanmaken?</h1>
+        <h1 className="font-display text-2xl font-bold text-[#2a2a2a]">{t('Account aanmaken?')}</h1>
         <p className="mt-3 text-sm leading-relaxed text-gray-600">
-          Accounts worden door <strong>Judoclub Michigami</strong> aangemaakt —
-          zo houden we onze ledenadministratie overzichtelijk.
+          <T k="Accounts worden door" /> <strong>Judoclub Michigami</strong> <T k="aangemaakt — zo houden we onze ledenadministratie overzichtelijk." />
         </p>
         <ol className="mt-4 space-y-2 text-left text-sm text-gray-600">
           <li className="flex gap-2">
             <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#a90000] text-[11px] font-bold text-white">1</span>
-            Schrijf je in via het <strong>inschrijfformulier</strong>.
+            <T k="Schrijf je in via het" /> <strong><T k="inschrijfformulier" /></strong>.
           </li>
           <li className="flex gap-2">
             <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#a90000] text-[11px] font-bold text-white">2</span>
-            De club controleert je inschrijving en goedgekeurd.
+            <T k="De club controleert je inschrijving en keurt goed." />
           </li>
           <li className="flex gap-2">
             <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#a90000] text-[11px] font-bold text-white">3</span>
-            Je ontvangt een <strong>e-mail met je tijdelijk wachtwoord</strong> — en dat is je account.
+            <T k="Je ontvangt een" /> <strong><T k="e-mail met je tijdelijk wachtwoord" /></strong> — <T k="en dat is je account." />
           </li>
         </ol>
 
@@ -52,10 +68,10 @@ export default function SignUpPage() {
             href="/inschrijven"
             className="flex items-center justify-center rounded-lg bg-[#a90000] px-4 py-3 text-sm font-medium text-white transition-all hover:bg-[#8c0000] shadow-sm"
           >
-            Naar het inschrijfformulier
+            {t('Naar het inschrijfformulier')}
           </Link>
           <Link href="/signin" className="text-sm font-medium text-[#a90000] hover:text-[#8c0000]">
-            Al een account? Inloggen
+            {t('Al een account? Inloggen')}
           </Link>
         </div>
       </div>

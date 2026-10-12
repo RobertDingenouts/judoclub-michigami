@@ -4,6 +4,8 @@ import { useState, useEffect, useRef } from 'react';
 import { Calendar, Flame, MapPin, Clock, ArrowRight, Ban, Trophy, XCircle, CircleDot } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { agendaItems } from '@/data/agenda';
+import { agendaItemFor } from '@/i18n/content';
+import { useT } from '@/i18n/LangContext';
 
 // Handmatige vakanties vanuit de admin (api/agenda/lesvrij) meenemen in de
 // agenda: "Geen lessen i.v.m. <reden>" verschijnt automatisch zodra een les op
@@ -175,10 +177,11 @@ function EventInfoInline({ info }: { info: EventInfo }) {
 }
 
 export function AgendaSection() {
+  const { t, lang } = useT();
   const desktopFirstFutureRef = useRef<HTMLTableRowElement>(null);
   const mobileFirstFutureRef = useRef<HTMLDivElement>(null);
   const [confettiActive, setConfettiActive] = useState(false);
-  const items = useLesvrijItems();
+  const items = useLesvrijItems().map((i) => agendaItemFor(i, lang));
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
@@ -239,7 +242,7 @@ export function AgendaSection() {
       {/* Header — gradient branding zoals oude agenda */}
       <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-lg p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
         <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">Judoclub Michigami</h1>
-        <p className="text-white/80 mt-1 text-xs sm:text-sm">Activiteitenkalender <span className="font-bold text-[#fce0e0]">{yearLabel}</span></p>
+        <p className="text-white/80 mt-1 text-xs sm:text-sm">{t('Activiteitenkalender')} <span className="font-bold text-[#fce0e0]">{yearLabel}</span></p>
         <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-lg mt-2 sm:mt-3" />
       </div>
 
@@ -248,12 +251,12 @@ export function AgendaSection() {
         <table className="w-full border-collapse">
           <thead>
             <tr className="bg-[#fdf6f6]">
-              <th className="px-5 py-4 text-left text-xs font-semibold text-[#5c0000] uppercase tracking-wider"><Calendar className="w-4 h-4 inline mr-2" />Datum</th>
+              <th className="px-5 py-4 text-left text-xs font-semibold text-[#5c0000] uppercase tracking-wider"><Calendar className="w-4 h-4 inline mr-2" />{t('Datum')}</th>
               <th className="px-3 py-4 w-10"></th>
-              <th className="px-5 py-4 text-left text-xs font-semibold text-[#5c0000] uppercase tracking-wider"><Flame className="w-4 h-4 inline mr-2" />Evenement</th>
-              <th className="px-5 py-4 text-left text-xs font-semibold text-[#5c0000] uppercase tracking-wider">Details</th>
-              <th className="px-5 py-4 text-left text-xs font-semibold text-[#5c0000] uppercase tracking-wider"><MapPin className="w-4 h-4 inline mr-2" />Locatie</th>
-              <th className="px-5 py-4 text-left text-xs font-semibold text-[#5c0000] uppercase tracking-wider"><Clock className="w-4 h-4 inline mr-2" />Tijd/Info</th>
+              <th className="px-5 py-4 text-left text-xs font-semibold text-[#5c0000] uppercase tracking-wider"><Flame className="w-4 h-4 inline mr-2" />{t('Evenement')}</th>
+              <th className="px-5 py-4 text-left text-xs font-semibold text-[#5c0000] uppercase tracking-wider">{t('Details')}</th>
+              <th className="px-5 py-4 text-left text-xs font-semibold text-[#5c0000] uppercase tracking-wider"><MapPin className="w-4 h-4 inline mr-2" />{t('Locatie')}</th>
+              <th className="px-5 py-4 text-left text-xs font-semibold text-[#5c0000] uppercase tracking-wider"><Clock className="w-4 h-4 inline mr-2" />{t('Tijd/Info')}</th>
             </tr>
           </thead>
           <tbody>
@@ -329,14 +332,14 @@ export function AgendaSection() {
                 {item.special ? <span className="text-base">⭐</span> : getEmojiIcon(item.emoji, "w-4 h-4")}
                 <span className={`text-sm font-bold ${item.cancelled ? 'text-[#c00000] line-through' : isPast ? 'text-gray-400' : item.special ? 'text-[#b8860b]' : 'text-[#8c0000]'}`}>{item.displayDate}</span>
                 {item.special && <span className="special-badge-mobile">🎉 50-jarig!</span>}
-                {item.cancelled && <Badge variant="destructive" className="text-[9px] ml-auto px-2 py-0.5">AFGELAST</Badge>}
-                {isPast && !item.cancelled && <Badge variant="secondary" className="text-[9px] ml-auto px-2 py-0.5">Voorbij</Badge>}
+                {item.cancelled && <Badge variant="destructive" className="text-[9px] ml-auto px-2 py-0.5">{t('AFGELAST')}</Badge>}
+                {isPast && !item.cancelled && <Badge variant="secondary" className="text-[9px] ml-auto px-2 py-0.5">{t('Voorbij')}</Badge>}
               </div>
               {/* Content */}
               <div className="px-4 py-3.5 space-y-2">
                 {/* Event name */}
                 <div>
-                  <p className="text-[10px] font-bold text-[#a90000] uppercase tracking-wider mb-1">Evenement</p>
+                  <p className="text-[10px] font-bold text-[#a90000] uppercase tracking-wider mb-1">{t('Evenement')}</p>
                   <p className={`font-bold text-sm leading-snug ${item.cancelled ? 'text-[#c00000]' : isPast ? 'text-gray-400' : 'text-[#c00000]'}`}>
                     {item.event}
                   </p>
@@ -345,7 +348,7 @@ export function AgendaSection() {
                 {/* Details */}
                 {item.details && (
                   <div className="bg-[#fdfafa] rounded-lg px-3 py-2.5">
-                    <p className="text-[10px] font-bold text-[#a90000] uppercase tracking-wider mb-0.5">Details</p>
+                    <p className="text-[10px] font-bold text-[#a90000] uppercase tracking-wider mb-0.5">{t('Details')}</p>
                     <p className={`text-xs leading-relaxed ${isPast ? 'text-gray-400' : 'text-gray-600'}`}>{item.details}</p>
                     {weegtijden && !eventInfo && (
                       <div className="mt-2 pt-2 border-t border-red-100">
@@ -367,7 +370,7 @@ export function AgendaSection() {
                 {/* Location */}
                 {item.location !== '-' && (
                   <div>
-                    <p className="text-[10px] font-bold text-[#a90000] uppercase tracking-wider mb-1">Locatie</p>
+                    <p className="text-[10px] font-bold text-[#a90000] uppercase tracking-wider mb-1">{t('Locatie')}</p>
                     {item.locationUrl ? (
                       <a href={item.locationUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-[#c00000] text-xs font-medium hover:underline">
                         <MapPin className="w-3.5 h-3.5 flex-shrink-0" />

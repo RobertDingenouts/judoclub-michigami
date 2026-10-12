@@ -1,9 +1,13 @@
 'use client';
 
 import { useState } from 'react';
+import { useT } from '@/i18n/LangContext';
 import { yearAgendas, archiveEvents, type AgendaItem, type YearAgenda, type ArchiveEvent } from '@/data/events';
+import { agenda2025ItemFor, archiveEventFor } from '@/i18n/content';
 
-function AgendaItemCard({ item, year }: { item: AgendaItem; year: number }) {
+function AgendaItemCard({ item: itemNl, year, occurrence = 0 }: { item: AgendaItem; year: number; occurrence?: number }) {
+  const { lang } = useT();
+  const item = agenda2025ItemFor(itemNl, lang, occurrence);
   const eventDate = new Date(item.compareDate);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -105,7 +109,9 @@ function AgendaItemCard({ item, year }: { item: AgendaItem; year: number }) {
   );
 }
 
-function ArchiveEventCard({ event }: { event: ArchiveEvent }) {
+function ArchiveEventCard({ event: evNl }: { event: ArchiveEvent }) {
+  const { lang } = useT();
+  const event = archiveEventFor(evNl, lang);
   return (
     <div className="bg-white rounded-lg border border-[#e9e0cf] overflow-hidden hover:shadow-sm transition-shadow">
       <div className="aspect-video bg-gradient-to-br from-[#fdf6f6] to-[#f5f0f0] flex items-center justify-center p-6">
@@ -128,6 +134,7 @@ function ArchiveEventCard({ event }: { event: ArchiveEvent }) {
 }
 
 export function EventArchiveSection() {
+  const { t } = useT();
   const [activeYear, setActiveYear] = useState(yearAgendas[0].year);
   const [activeTab, setActiveTab] = useState<'agenda' | 'archive'>('agenda');
 
@@ -160,8 +167,8 @@ export function EventArchiveSection() {
           <rect x="20" y="18" width="6" height="58" rx="1" />
           <rect x="74" y="18" width="6" height="58" rx="1" />
         </svg>
-        <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">Agenda & Evenementen</h1>
-        <p className="text-white/80 mt-1 text-xs sm:text-sm">Activiteitenkalender en archief van evenementen</p>
+        <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">{t('Agenda & Evenementen')}</h1>
+        <p className="text-white/80 mt-1 text-xs sm:text-sm">{t('Activiteitenkalender en archief van evenementen')}</p>
         <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-lg mt-2 sm:mt-3" />
       </div>
 
@@ -176,7 +183,7 @@ export function EventArchiveSection() {
                 : 'text-gray-500 hover:text-[#a90000] hover:bg-[#fdf6f6]'
             }`}
           >
-            Agenda
+            {t('Agenda')}
           </button>
           <button
             onClick={() => setActiveTab('archive')}
@@ -186,7 +193,7 @@ export function EventArchiveSection() {
                 : 'text-gray-500 hover:text-[#a90000] hover:bg-[#fdf6f6]'
             }`}
           >
-            Archief
+            {t('Archief')}
           </button>
         </div>
 
@@ -215,7 +222,7 @@ export function EventArchiveSection() {
               {currentAgenda && sortedItems.length > 0 && (
                 <div className="space-y-3">
                   {sortedItems.map((item, idx) => (
-                    <AgendaItemCard key={`${item.compareDate}-${idx}`} item={item} year={currentAgenda.year} />
+                    <AgendaItemCard key={`${item.compareDate}-${idx}`} item={item} year={currentAgenda.year} occurrence={sortedItems.slice(0, idx).filter((i) => i.compareDate === item.compareDate).length} />
                   ))}
                 </div>
               )}
@@ -231,7 +238,7 @@ export function EventArchiveSection() {
                   onClick={() => setActiveTab('archive')}
                   className="px-4 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-[#a90000] to-[#c00000] text-white shadow-sm"
                 >
-                  Alle
+                  {t('Alle')}
                 </button>
                 {archiveYears.map((year) => (
                   <span

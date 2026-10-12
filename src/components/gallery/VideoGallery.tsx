@@ -1,8 +1,16 @@
 'use client';
 
 import { videoData, youtubeChannel } from '@/data/videos';
+import { useT } from '@/i18n/LangContext';
+import { termFor } from '@/i18n/content';
 
-function VideoEmbed({ video }: { video: (typeof videoData)[number] }) {
+function VideoEmbed({ video: v }: { video: (typeof videoData)[number] }) {
+  const { lang } = useT();
+  const video = {
+    ...v,
+    title: termFor('videos', v.id, 'title', v.title, lang),
+    description: v.description ? termFor('videos', v.id, 'description', v.description, lang) : v.description,
+  };
   return (
     <div className="group relative rounded-lg overflow-hidden shadow-lg bg-black aspect-video">
       <iframe
@@ -23,6 +31,7 @@ function VideoEmbed({ video }: { video: (typeof videoData)[number] }) {
 }
 
 export function VideoGallery() {
+  const { t } = useT();
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -37,9 +46,9 @@ export function VideoGallery() {
           <rect x="20" y="18" width="6" height="58" rx="1" />
           <rect x="74" y="18" width="6" height="58" rx="1" />
         </svg>
-        <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">Video&apos;s</h1>
+        <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">{t("Video's")}</h1>
         <p className="text-white/80 mt-1 text-xs sm:text-sm">
-          Beelden van onze judoclub en trainingen
+          {t('Beelden van onze judoclub en trainingen')}
         </p>
         <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-lg mt-2 sm:mt-3" />
       </div>
@@ -47,14 +56,13 @@ export function VideoGallery() {
       {/* YouTube Channel Info */}
       <div className="bg-white rounded-lg shadow-sm border border-[#e9e0cf] p-4 sm:p-6">
         <h2 className="text-lg sm:text-xl font-bold text-[#8c0000] mb-2">
-          Ons YouTube-kanaal
+          {t('Ons YouTube-kanaal')}
         </h2>
         <p className="text-sm sm:text-base text-gray-600 mb-4 leading-relaxed">
-          Judoclub Michigami heeft ook een eigen YouTube-kanaal! Hier kun je al onze video&apos;s bekijken.
-          Je kunt je ook (gratis!) abonneren op het kanaal, zodat je meteen bericht krijgt als er een nieuwe video is geüpload.
+          {t('Judoclub Michigami heeft ook een eigen YouTube-kanaal! Hier kun je al onze video\'s bekijken. Je kunt je ook (gratis!) abonneren op het kanaal, zodat je meteen bericht krijgt als er een nieuwe video is geüpload.')}
         </p>
         <p className="text-sm sm:text-base text-gray-600 mb-6 leading-relaxed">
-          Heb jij een leuk filmpje wat je wil toevoegen aan ons kanaal? Bespreek dit dan even tijdens de les.
+          {t('Heb jij een leuk filmpje wat je wil toevoegen aan ons kanaal? Bespreek dit dan even tijdens de les.')}
         </p>
         <a
           href={youtubeChannel.url}
@@ -65,7 +73,7 @@ export function VideoGallery() {
           <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
             <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.041 0 12 0 12s0 3.959.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.959 24 12 24 12s0-3.959-.502-5.814zM9.549 15.568V8.432L15.816 12l-6.267 3.568z" />
           </svg>
-          Bekijk ons kanaal
+          {t('Bekijk ons kanaal')}
         </a>
       </div>
 
