@@ -18,6 +18,15 @@ export const newsArchive: NewsYear[] = [
     articles: [
 
       {
+        id: "lintjestoernooi-oktober-2026",
+        title: "Lintjestoernooi — trots op onze judoka's! 🥋",
+        content:
+          "Afgelopen zondag stond het Lintjestoernooi in Roosendaal op het programma en onze judoka's hebben het geweldig gedaan! Ze vochten heel fel en lieten mooie, verschillende technieken zien. Ik ben echt trots op ze. 💪\n\nDe puntenstand:\n🥋 Vive — 191\n🥋 Ariël — 51\n🥋 Yord — 36\n🥋 Rayn — 33\n🥋 Benjamin — 20\n🥋 Myla — 20\n\nEn een hele mooie mijlpaal: Ariël behaalde haar eerste lintje, het gele lintje! Gefeliciteerd Ariël! 🎉\n\nVoor de judoka's die meededen was het meteen een mooie oefening voor het Jubileumtoernooi van OVJV aanstaande zaterdag in Oud-Vossemeer. Veel succes daar! 👊\n\nOp zondag 8 november is de volgende editie van het Lintjestoernooi. Wil je ook meedoen? Inschrijven kan via: https://budoschool-corschuurbiers.nl/3-3/",
+        date: "2026-10-13",
+        imageUrl: "/instagram/202610/geel-lintje-lintjestoernooi-okt2026.webp",
+      },
+
+      {
         id: "rabo-clubsupport-2026",
         title: "🗳️ Steun Judoclub Michigami bij Rabo ClubSupport 2026!",
         content:
