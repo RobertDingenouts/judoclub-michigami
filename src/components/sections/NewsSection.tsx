@@ -36,6 +36,26 @@ function formatDate(dateStr: string | undefined, lang: string = 'nl'): string {
   }
 }
 
+// Maak URL's in nieuwsberichten klikbaar (content wordt anders als platte tekst gerenderd)
+function linkify(text: string) {
+  const parts = text.split(/(https?:\/\/[^\s]+)/g);
+  return parts.map((p, i) =>
+    /^https?:\/\//.test(p) ? (
+      <a
+        key={i}
+        href={p}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-[#a90000] underline font-medium break-all hover:text-[#8c0000]"
+      >
+        {p}
+      </a>
+    ) : (
+      p
+    )
+  );
+}
+
 function NewsCard({ article }: { article: (typeof newsArchive)[number]['articles'][number] }) {
   const { t, lang } = useT();
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -89,7 +109,7 @@ function NewsCard({ article }: { article: (typeof newsArchive)[number]['articles
           </div>
           <h3 className="text-base sm:text-lg font-bold text-[#8c0000] mb-3">{article.title}</h3>
           <div className="text-sm sm:text-base text-gray-600 leading-relaxed whitespace-pre-line">
-            {article.content}
+            {linkify(article.content)}
           </div>
         </div>
       </article>
