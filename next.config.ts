@@ -83,8 +83,19 @@ const nextConfig: NextConfig = {
         ],
       },
       {
+        // SW-script NOOIT cachen: anders blijven clients na een deploy
+        // een oude sw.js serveren (24u stale = vastgelopen PWA's).
+        source: "/sw.js",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-cache, no-store, must-revalidate",
+          },
+        ],
+      },
+      {
         // Cache PWA assets
-        source: "/(manifest.json|icon-192x192.png|icon-512x512.png|apple-touch-icon.png|sw.js)",
+        source: "/(manifest.json|icon-192x192.png|icon-512x512.png|apple-touch-icon.png)",
         headers: [
           {
             key: "Cache-Control",
