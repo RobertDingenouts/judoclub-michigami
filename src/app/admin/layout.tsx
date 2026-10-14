@@ -16,6 +16,7 @@ const NAV = [
 const EXTRA = [
   { href: '/admin/inschrijvingen', icon: '📝', label: 'Inschrijvingen' },
   { href: '/admin/exams', icon: '🎯', label: 'Examens' },
+  { href: '/admin/poelen', icon: '🥋', label: 'Poelen' },
   { href: '/admin/diplomas', icon: '🏆', label: "Diploma's" },
   { href: '/diploma/verifieren', icon: '🔍', label: 'Diploma verifiëren' },
 ]

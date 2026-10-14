@@ -415,3 +415,11 @@ model Competition {
   @@index([memberId])
   @@index([date])
 }
+
+model TournamentSetup {
+  id        String   @id @default(cuid())
+  toernooi  String   @unique
+  data      Json
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
