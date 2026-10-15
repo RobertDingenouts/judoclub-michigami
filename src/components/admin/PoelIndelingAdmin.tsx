@@ -185,8 +185,8 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
       <table class="grid"><tr><th class="nr">nr</th><th class="naam">Naam</th><th class="ver">vereniging</th>${ps.map(p => `<th class="pair">${p}</th>`).join("")}<th class="tot">gew.<br>partijen</th><th class="tot">aan.<br>punten</th><th class="tot">resultaat</th></tr>${rijen}</table>
       <div class="onderkant">
         <div class="resblok"><b>Resultaat:</b><table class="res"><tr><th></th><th>naam judoka</th></tr>${posities}</table></div>
-        <div class="juryblok">Jurylid 1: ______________________ &nbsp;&nbsp; Jurylid 2: ______________________<br><br>
-        Scheidsrechter 1: ______________ &nbsp; Scheidsrechter 2: ______________ &nbsp; Scheidsrechter 3: ______________</div>
+        <div class="juryblok">Jurylid 1: ____________________<br>Jurylid 2: ____________________<br><br>
+        Scheidsrechter 1: ______________<br>Scheidsrechter 2: ______________<br>Scheidsrechter 3: ______________</div>
       </div>
       <div class="regels">Puntentelling: Beslissing = 1 pt &nbsp;·&nbsp; Yuko = 5 pt &nbsp;·&nbsp; Waza-ari = 7 pt &nbsp;·&nbsp; Ippon = 10 pt &nbsp;&nbsp;|&nbsp;&nbsp; Shido's: 2 = yuko tegen &nbsp;·&nbsp; 3 = waza-ari tegen &nbsp;·&nbsp; 4 = hansoku-make &nbsp;&nbsp;|&nbsp;&nbsp; Osaekomi: 10s yuko / 15s waza-ari / 20s ippoon &nbsp;&nbsp;|&nbsp;&nbsp; Partijduren: juniors 2 min, seniors 3 min &nbsp;&nbsp;|&nbsp;&nbsp; Gelijk: beslissing scheidsrechter(s). &nbsp;&nbsp;Zwart vak = judoka speelt deze partij niet.</div>
     </div>`
