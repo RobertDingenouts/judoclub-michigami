@@ -80,8 +80,6 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
   const [dragId, setDragId] = useState<string | null>(null)
   const [dropState, setDropState] = useState<Record<string, "ok" | "nee">>({})
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const dragClone = useRef<HTMLDivElement | null>(null)
-  const longPress = useRef<ReturnType<typeof setTimeout> | null>(null)
   const justDragged = useRef(false)
   const isTouch = typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches
 
@@ -267,77 +265,34 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
     return true
   }
 
-  // ---- touch-drag (telefoon): long-press, zwevende kaart, drop op kolom ----
-  function kolomOnder(x: number, y: number): string | null {
-    const el = document.elementFromPoint(x, y)
-    return el ? (el.closest("[data-kolomkey]") as HTMLElement | null)?.dataset.kolomkey ?? null : null
-  }
-  function startTouchDrag(card: HTMLElement, id: string, cx: number, cy: number) {
-    document.querySelectorAll("[data-dragclone]").forEach(n => n.remove())
-    const clone = card.cloneNode(true) as HTMLDivElement
-    clone.setAttribute("data-dragclone", "1")
-    clone.style.cssText = `position:fixed;z-index:9999;width:${card.offsetWidth}px;pointer-events:none;opacity:.9;transform:rotate(2deg) scale(1.03);box-shadow:0 10px 28px rgba(0,0,0,.3);margin:0`
-    document.body.appendChild(clone)
-    dragClone.current = clone
-    document.body.style.touchAction = "none"
-    setDragId(id)
-    positionClone(cx, cy)
-  }
-  function positionClone(cx: number, cy: number) {
-    if (dragClone.current) { dragClone.current.style.left = `${cx - 40}px`; dragClone.current.style.top = `${cy - 24}px` }
-  }
-  function endTouchDrag(cx: number, cy: number, id: string) {
-    const key = kolomOnder(cx, cy)
-    if (key && geldigVoor(id, key)) {
-      if (key === "nieuw") nieuwePoelMet(id); else verplaats(id, key)
-    }
-    dragClone.current?.remove(); dragClone.current = null
-    document.body.style.touchAction = ""
-    setDragId(null); setDropState({})
-    justDragged.current = true
-    setTimeout(() => { justDragged.current = false }, 350)
-  }
+  // ---- touch (telefoon): long-press → "verplaatsen naar" menu ----
+  const [menuVoor, setMenuVoor] = useState<{ id: string; x: number; y: number } | null>(null)
   function onCardPointerDown(e: React.PointerEvent, x: Deelnemer) {
     if (x.uit || e.pointerType === "mouse") return
-    const card = e.currentTarget as HTMLElement
     const startX = e.clientX, startY = e.clientY
-    let dragging = false
-    longPress.current = setTimeout(() => { dragging = true; startTouchDrag(card, x.id, startX, startY) }, 350)
+    const timer = setTimeout(() => {
+      justDragged.current = true
+      setTimeout(() => { justDragged.current = false }, 500)
+      setMenuVoor({ id: x.id, x: Math.min(startX, window.innerWidth - 230), y: Math.min(startY, window.innerHeight - 330) })
+    }, 400)
     const onMove = (ev: TouchEvent) => {
       const t = ev.touches[0]
-      if (!dragging) {
-        if (Math.abs(t.clientX - startX) > 12 || Math.abs(t.clientY - startY) > 12) {
-          if (longPress.current) { clearTimeout(longPress.current); longPress.current = null }
-          cleanup()
-        }
-        return
-      }
-      ev.preventDefault()
-      positionClone(t.clientX, t.clientY)
-      const key = kolomOnder(t.clientX, t.clientY)
-      setDropState(key ? { [key]: geldigVoor(x.id, key) ? "ok" : "nee" } : {})
+      if (Math.abs(t.clientX - startX) > 12 || Math.abs(t.clientY - startY) > 12) clearTimeout(timer)
     }
-    const onEnd = (ev: TouchEvent) => {
-      if (longPress.current) { clearTimeout(longPress.current); longPress.current = null }
-      if (dragging) {
-        const t = (ev.changedTouches && ev.changedTouches[0]) || { clientX: startX, clientY: startY }
-        endTouchDrag(t.clientX, t.clientY, x.id)
-      }
-      cleanup()
-    }
-    const onPointerUp = (ev: PointerEvent) => {
-      if (dragging) { endTouchDrag(ev.clientX, ev.clientY, x.id); cleanup() }
-    }
+    const onUp = () => { clearTimeout(timer); cleanup() }
     const cleanup = () => {
       document.removeEventListener("touchmove", onMove)
-      document.removeEventListener("touchend", onEnd)
-      document.removeEventListener("touchcancel", onEnd)
-      document.removeEventListener("pointerup", onPointerUp)
+      document.removeEventListener("touchend", onUp)
+      document.removeEventListener("touchcancel", onUp)
     }
-    document.addEventListener("touchmove", onMove, { passive: false })
-    document.addEventListener("touchend", onEnd)
-    document.addEventListener("touchcancel", onEnd)
-    document.addEventListener("pointerup", onPointerUp)
+    document.addEventListener("touchmove", onMove, { passive: true })
+    document.addEventListener("touchend", onUp)
+    document.addEventListener("touchcancel", onUp)
+  }
+  function verplaatsViaMenu(id: string, key: string) {
+    setMenuVoor(null)
+    if (!geldigVoor(id, key)) return
+    if (key === "nieuw") nieuwePoelMet(id); else verplaats(id, key)
   }
 
   const Card = ({ x, pool }: { x: Deelnemer; pool: boolean }) => (
@@ -388,7 +343,7 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
         <div className="p-2.5 flex flex-col gap-2 min-h-[60px]">
           {sorteerList(ids).map(x => <Card key={x.id} x={x} pool={kind === "poel"} />)}
         </div>
-        {kind === "toew" && <div className="p-3 text-[11px] text-gray-500 border-t border-gray-100">Desktop: sleep een kaart (groen = mag, rood = kan niet). Telefoon: houd een kaart even ingedrukt en sleep, of tik de kaart en tik dan de poel. ⊘ = afmelden, ↩ = weer aanmelden. Max 6 per poel.</div>}
+        {kind === "toew" && <div className="p-3 text-[11px] text-gray-500 border-t border-gray-100">Desktop: sleep een kaart (groen = mag, rood = kan niet). Telefoon: houd een kaart even ingedrukt → kies de poel uit het menu. ⊘ = afmelden, ↩ = weer aanmelden. Max 6 per poel.</div>}
       </div>
     )
   }
@@ -423,6 +378,39 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
           ⬇ Sleep hierheen voor<br />nieuwe poel
         </div>
       </div>
+      {menuVoor && (() => {
+        const p = pers(menuVoor.id)
+        if (!p) return null
+        const opt = (key: string, label: string) => {
+          const ok = geldigVoor(menuVoor.id, key)
+          return (
+            <button
+              key={key}
+              disabled={!ok}
+              onClick={() => verplaatsViaMenu(menuVoor.id, key)}
+              className={`block w-full text-left px-3 py-2.5 text-sm font-medium rounded ${ok ? "text-gray-800 active:bg-gray-100" : "text-gray-300"}`}
+            >
+              {label}
+            </button>
+          )
+        }
+        return (
+          <div className="fixed inset-0 z-50" onClick={() => setMenuVoor(null)}>
+            <div
+              className="absolute bg-white rounded-xl shadow-2xl border border-gray-200 py-1.5 w-[220px] max-h-[70vh] overflow-y-auto"
+              style={{ left: menuVoor.x, top: menuVoor.y }}
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="px-3 pb-1.5 text-xs text-gray-500 border-b border-gray-100 mb-1">
+                <b className="text-gray-800">{p.v} {p.a}</b><br />Verplaatsen naar:
+              </div>
+              {opt("toew", "📋 Deelnemers")}
+              {state.poeelen.map((po, i) => opt(String(i), `🥋 ${po.naam}${po.m.length >= 6 ? " (vol)" : ` (${po.m.length})`}`))}
+              {opt("nieuw", "➕ Nieuwe poel maken")}
+            </div>
+          </div>
+        )
+      })()}
     </div>
   )
 }

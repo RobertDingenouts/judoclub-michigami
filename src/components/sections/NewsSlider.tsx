@@ -18,8 +18,6 @@ export function NewsSlider({ articles: articlesNl, onNavigate }: { articles: New
   const [paused, setPaused] = useState(false);
   const [direction, setDirection] = useState(0);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-  const touchStartX = useRef(0);
-  const touchStartY = useRef(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Collect all image URLs for lightbox navigation
@@ -43,6 +41,11 @@ export function NewsSlider({ articles: articlesNl, onNavigate }: { articles: New
     goTo((current - 1 + total) % total);
   }, [current, total, goTo]);
 
+  // Preload alle slider-foto's (geen witte flash bij doorbladeren)
+  useEffect(() => {
+    allImageUrls.forEach(url => { const im = new window.Image(); im.src = url; });
+  }, [allImageUrls.join("|")]);
+
   // Auto-play with pause on hover / touch
   useEffect(() => {
     if (paused || total <= 1) {
@@ -54,23 +57,7 @@ export function NewsSlider({ articles: articlesNl, onNavigate }: { articles: New
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, [paused, total, goNext]);
 
-  // Touch handlers for swipe
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-    touchStartY.current = e.touches[0].clientY;
-    setPaused(true);
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    const dx = e.changedTouches[0].clientX - touchStartX.current;
-    const dy = e.changedTouches[0].clientY - touchStartY.current;
-    // Only horizontal swipe (ignore vertical scroll)
-    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
-      if (dx < 0) goNext();
-      else goPrev();
-    }
-    setPaused(false);
-  };
+  // Touch swipe: afgehandeld via framer-motion drag op de slide (vinger-volgend + snap)
 
   // Mouse hover pause
   const handleMouseEnter = () => setPaused(true);
@@ -80,11 +67,9 @@ export function NewsSlider({ articles: articlesNl, onNavigate }: { articles: New
 
   return (
     <div
-      className="relative overflow-hidden transition-all group"
+      className="relative overflow-hidden group"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
     >
       {/* Header bar */}
       <div className="px-4 py-3 border-b border-[#2a2a2a]/10 flex items-center justify-between">
@@ -100,17 +85,28 @@ export function NewsSlider({ articles: articlesNl, onNavigate }: { articles: New
 
       {/* Slider viewport */}
       <div className="relative p-4" style={{ minHeight: total > 1 ? 150 : undefined }}>
-        <AnimatePresence custom={direction}>
+        <AnimatePresence mode="popLayout" custom={direction}>
           <motion.div
             key={current}
             initial={{ x: direction >= 0 ? '100%' : '-100%', opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: direction >= 0 ? '-100%' : '100%', opacity: 0 }}
             transition={{
-              x: { type: 'spring', stiffness: 300, damping: 30 },
-              opacity: { duration: 0.45 },
+              x: { type: 'spring', stiffness: 320, damping: 34 },
+              opacity: { duration: 0.3 },
             }}
-            className="relative"
+            drag={total > 1 ? 'x' : false}
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.6}
+            dragTransition={{ bounceStiffness: 600, bounceDamping: 30 }}
+            onDragStart={() => setPaused(true)}
+            onDragEnd={(_, info) => {
+              const power = info.offset.x + info.velocity.x * 0.25;
+              if (power < -80) goNext();
+              else if (power > 80) goPrev();
+              setPaused(false);
+            }}
+            className="relative cursor-grab active:cursor-grabbing"
           >
             {/* Article card — clickable to navigate to news section */}
             <div
@@ -134,7 +130,7 @@ export function NewsSlider({ articles: articlesNl, onNavigate }: { articles: New
                       fill
                       sizes="112px"
                       className="object-cover blur-xl scale-125"
-                      loading="lazy"
+                      loading="eager"
                       quality={40}
                     />
                   </div>
@@ -146,7 +142,7 @@ export function NewsSlider({ articles: articlesNl, onNavigate }: { articles: New
                       fill
                       sizes="112px"
                       className="object-cover transition-transform duration-300 group-hover/thumb:scale-105"
-                      loading="lazy"
+                      priority
                     />
                   </div>
                   {/* Zoom overlay hint */}
