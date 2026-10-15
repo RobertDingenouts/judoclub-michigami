@@ -234,8 +234,8 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
       onClick={e => { e.stopPropagation(); if (x.uit) return; setGeselecteerd(g => g === x.id ? null : x.id) }}
       className={`relative rounded-lg border p-2.5 bg-white shadow-sm transition-all ${x.uit ? "opacity-40" : "cursor-grab"} ${dragId === x.id ? "opacity-30 scale-95 border-[#a90000] border-dashed" : geselecteerd === x.id ? "ring-2 ring-[#a90000]" : "border-gray-200"}`}
     >
-      <button onClick={e => { e.stopPropagation(); toggleUit(x.id) }} title={x.uit ? "Weer aanmelden" : "Afmelden"} className="absolute right-1.5 top-1.5 text-gray-400 text-sm">{x.uit ? "↩" : "⊘"}</button>
-      {pool && <button onClick={e => { e.stopPropagation(); verplaats(x.id, null) }} title="Terug" className="absolute right-7 top-1.5 text-red-600 text-sm">✕</button>}
+      <button onClick={e => { e.stopPropagation(); if (confirm(`${x.v} ${x.a} AFMELDEN? Hij/zij valt uit alle poelen en printformulieren.`)) toggleUit(x.id) }} title={x.uit ? "Weer aanmelden" : "Afmelden"} className="absolute right-1.5 top-1.5 text-gray-400 text-sm">{x.uit ? "↩" : "⊘"}</button>
+      {pool && <button onClick={e => { e.stopPropagation(); if (confirm(`${x.v} ${x.a} terugzetten naar Deelnemers?`)) verplaats(x.id, null) }} title="Terug" className="absolute right-7 top-1.5 text-red-600 text-sm">✕</button>}
       <div className={`font-semibold text-sm ${x.uit ? "line-through" : ""}`}>{x.v} {x.a}</div>
       <div className="text-[11px] text-gray-500">{x.c} · {x.g === "V" ? "meisje" : "jongen"}{x.uit ? " · AFGEMELD" : ""}</div>
       <div className="flex gap-3 mt-1 text-xs"><span>leeftijd <b>{x.l ?? "?"}</b></span><span>gewicht <b>{x.w ?? "?"} kg</b></span></div>
