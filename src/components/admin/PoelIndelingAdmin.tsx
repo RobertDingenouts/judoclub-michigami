@@ -326,22 +326,18 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
       cleanup()
     }
     const onPointerUp = (ev: PointerEvent) => {
-      if (longPress.current) { clearTimeout(longPress.current); longPress.current = null }
       if (dragging) { endTouchDrag(ev.clientX, ev.clientY, x.id); cleanup() }
-      else cleanup()
     }
     const cleanup = () => {
       document.removeEventListener("touchmove", onMove)
       document.removeEventListener("touchend", onEnd)
       document.removeEventListener("touchcancel", onEnd)
       document.removeEventListener("pointerup", onPointerUp)
-      document.removeEventListener("pointercancel", onPointerUp)
     }
     document.addEventListener("touchmove", onMove, { passive: false })
     document.addEventListener("touchend", onEnd)
     document.addEventListener("touchcancel", onEnd)
     document.addEventListener("pointerup", onPointerUp)
-    document.addEventListener("pointercancel", onPointerUp)
   }
 
   const Card = ({ x, pool }: { x: Deelnemer; pool: boolean }) => (
