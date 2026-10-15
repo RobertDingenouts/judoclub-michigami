@@ -80,6 +80,10 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
   const [dragId, setDragId] = useState<string | null>(null)
   const [dropState, setDropState] = useState<Record<string, "ok" | "nee">>({})
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const dragClone = useRef<HTMLDivElement | null>(null)
+  const longPress = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const touchStart = useRef<{ x: number; y: number } | null>(null)
+  const justDragged = useRef(false)
 
   // ---- laden ----
   useEffect(() => {
@@ -163,12 +167,12 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
   function formulierHTML(po: Poel, i: number): string {
     const arr = sorteerList(po.m).filter(x => !x.uit)
     const ps = paren(arr.length)
-    const posities = arr.map((_, n) => `<tr><td>${n + 1}de plaats</td><td></td></tr>`).join("")
+    const posities = arr.map((_, n) => `<tr><td class="plaats">${n + 1}de plaats</td><td class="naam2"></td></tr>`).join("")
     const rijen = arr.map((x, j) => {
       const cells = ps.map(p => {
         const [a, b] = p.split("/").map(Number)
         const speelt = a === j + 1 || b === j + 1
-        return `<td class="${speelt ? "speelt" : "x"}"></td>`
+        return speelt ? `<td class="speelt"></td>` : `<td class="x"><svg width="100%" height="100%" preserveAspectRatio="none"><rect width="100%" height="100%" fill="#111"/></svg></td>`
       }).join("")
       return `<tr><td class="nr">${j + 1}</td><td class="naam">${x.v} ${x.a}</td><td class="ver">${x.c}</td>${cells}<td class="tot"></td><td class="tot"></td><td class="tot"></td></tr>`
     }).join("")
@@ -191,27 +195,30 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
     const w = window.open("", "_blank", "width=1000,height=700")
     if (!w) { alert("Pop-up geblokkeerd — sta pop-ups toe om te printen"); return }
     w.document.write(`<html><head><title>Poelformulieren</title><style>
-      @page { size: A4 landscape; margin: 10mm; }
+      @page { size: A4 landscape; margin: 8mm; }
+      html,body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
       body{font-family:'Times New Roman',serif;color:#000;margin:0;background:#fff}
-      .formulier{page-break-after:always;padding:4mm 0}
+      .formulier{page-break-after:always;padding:2mm 0}
       .formulier h2{margin:0 0 2px;font-size:20px}
       .kop{display:flex;align-items:center;gap:16px;border-bottom:3px solid #a90000;padding-bottom:6px;margin-bottom:8px}
       .kopMidden{flex:1}
       .kopRecht{text-align:right;font-size:13px;white-space:nowrap}
       table{border-collapse:collapse;width:100%;table-layout:fixed}
-      th,td{border:1.5px solid #000;padding:5px 3px;font-size:12px;text-align:center}
-      th{background:#eee;font-size:11px}
-      .nr{width:8mm}.naam{width:40mm;text-align:left}.ver{width:28mm;text-align:left}
-      .pair{font-weight:bold}.tot{width:16mm}
+      th,td{border:1.5px solid #000;padding:5px 3px;font-size:12px;text-align:center;height:26px}
+      th{background:#e8e8e8;font-size:11px;height:30px}
+      .nr{width:8mm}.naam{width:38mm;text-align:left}.ver{width:26mm;text-align:left}
+      .pair{font-weight:bold}.tot{width:15mm}
       td.naam,td.ver{text-align:left}
-      td.speelt{background:#fff;height:26px}
-      td.x{background:#1a1a1a}
-      .onderkant{display:flex;gap:24px;margin-top:10px;align-items:flex-start}
-      .resblok{min-width:200mm}
-      table.res{width:auto;table-layout:auto}
-      .res th,.res td{border:1.5px solid #000;padding:5px 6px;font-size:12px;text-align:left}
-      .res td{height:24px;width:80mm}
-      .juryblok{flex:1;font-size:13px;line-height:1.6}
+      td.speelt{background:#fff}
+      td.x{padding:0}
+      td.x svg{display:block}
+      .onderkant{display:flex;gap:20px;margin-top:10px;align-items:flex-start}
+      .resblok table{width:auto;table-layout:auto}
+      .res th,.res td{border:1.5px solid #000;padding:4px 6px;font-size:12px;text-align:left;height:24px}
+      .res th{background:#e8e8e8}
+      .res td.plaats{width:24mm}
+      .res td.naam2{width:90mm}
+      .juryblok{flex:1;font-size:13px;line-height:1.7}
       .regels{margin-top:10px;font-size:10px;color:#333;border-top:1px solid #999;padding-top:4px}
       @media print{button{display:none}}
     </style></head><body>
@@ -260,12 +267,77 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
     return true
   }
 
+  // ---- touch-drag (telefoon): long-press, zwevende kaart, drop op kolom ----
+  function kolomOnder(x: number, y: number): string | null {
+    const el = document.elementFromPoint(x, y)
+    return el ? (el.closest("[data-kolomkey]") as HTMLElement | null)?.dataset.kolomkey ?? null : null
+  }
+  function startTouchDrag(card: HTMLElement, id: string, cx: number, cy: number) {
+    const clone = card.cloneNode(true) as HTMLDivElement
+    clone.style.cssText = `position:fixed;z-index:9999;width:${card.offsetWidth}px;pointer-events:none;opacity:.9;transform:rotate(2deg) scale(1.03);box-shadow:0 10px 28px rgba(0,0,0,.3);margin:0`
+    document.body.appendChild(clone)
+    dragClone.current = clone
+    document.body.style.touchAction = "none"
+    setDragId(id)
+    positionClone(cx, cy)
+  }
+  function positionClone(cx: number, cy: number) {
+    if (dragClone.current) { dragClone.current.style.left = `${cx - 40}px`; dragClone.current.style.top = `${cy - 24}px` }
+  }
+  function endTouchDrag(cx: number, cy: number, id: string) {
+    const key = kolomOnder(cx, cy)
+    if (key && geldigVoor(id, key)) {
+      if (key === "nieuw") nieuwePoelMet(id); else verplaats(id, key)
+    }
+    dragClone.current?.remove(); dragClone.current = null
+    document.body.style.touchAction = ""
+    setDragId(null); setDropState({})
+    justDragged.current = true
+    setTimeout(() => { justDragged.current = false }, 350)
+  }
+  function onCardPointerDown(e: React.PointerEvent, x: Deelnemer) {
+    if (x.uit || e.pointerType === "mouse") return
+    const card = e.currentTarget as HTMLElement
+    touchStart.current = { x: e.clientX, y: e.clientY }
+    longPress.current = setTimeout(() => startTouchDrag(card, x.id, e.clientX, e.clientY), 350)
+    const onMove = (ev: PointerEvent) => {
+      const s = touchStart.current!
+      if (!dragClone.current) {
+        if (Math.abs(ev.clientX - s.x) > 12 || Math.abs(ev.clientY - s.y) > 12) {
+          if (longPress.current) { clearTimeout(longPress.current); longPress.current = null }
+          cleanup()
+        }
+        return
+      }
+      ev.preventDefault()
+      positionClone(ev.clientX, ev.clientY)
+      const key = kolomOnder(ev.clientX, ev.clientY)
+      setDropState(key ? { [key]: geldigVoor(x.id, key) ? "ok" : "nee" } : {})
+    }
+    const onUp = (ev: PointerEvent) => {
+      if (longPress.current) { clearTimeout(longPress.current); longPress.current = null }
+      if (dragClone.current) endTouchDrag(ev.clientX, ev.clientY, x.id)
+      cleanup()
+    }
+    const cleanup = () => {
+      document.removeEventListener("pointermove", onMove)
+      document.removeEventListener("pointerup", onUp)
+      document.removeEventListener("pointercancel", onUp)
+      touchStart.current = null
+    }
+    document.addEventListener("pointermove", onMove, { passive: false })
+    document.addEventListener("pointerup", onUp)
+    document.addEventListener("pointercancel", onUp)
+  }
+
   const Card = ({ x, pool }: { x: Deelnemer; pool: boolean }) => (
     <div
       draggable={!x.uit}
       onDragStart={e => { if (x.uit) { e.preventDefault(); return } e.dataTransfer.setData("text/plain", x.id); setDragId(x.id) }}
       onDragEnd={() => { setDragId(null); setDropState({}) }}
-      onClick={e => { e.stopPropagation(); if (x.uit) return; setGeselecteerd(g => g === x.id ? null : x.id) }}
+      onPointerDown={e => onCardPointerDown(e, x)}
+      onClick={e => { e.stopPropagation(); if (x.uit || justDragged.current) return; setGeselecteerd(g => g === x.id ? null : x.id) }}
+      style={{ touchAction: "manipulation" }}
       className={`relative rounded-lg border p-2.5 bg-white shadow-sm transition-all ${x.uit ? "opacity-40" : "cursor-grab"} ${dragId === x.id ? "opacity-30 scale-95 border-[#a90000] border-dashed" : geselecteerd === x.id ? "ring-2 ring-[#a90000]" : "border-gray-200"}`}
     >
       <button onClick={e => { e.stopPropagation(); if (confirm(`${x.v} ${x.a} AFMELDEN? Hij/zij valt uit alle poelen en printformulieren.`)) toggleUit(x.id) }} title={x.uit ? "Weer aanmelden" : "Afmelden"} className="absolute right-1.5 top-1.5 text-gray-400 text-sm">{x.uit ? "↩" : "⊘"}</button>
@@ -287,6 +359,7 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
     const ds = dropState[key]
     return (
       <div
+        data-kolomkey={key}
         onDragOver={e => { e.preventDefault(); if (dragId) setDropState(d => ({ ...d, [key]: geldigVoor(dragId, key) ? "ok" : "nee" })) }}
         onDragLeave={e => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setDropState(d => { const n = { ...d }; delete n[key]; return n }) }}
         onDrop={e => { e.preventDefault(); setDropState(d => { const n = { ...d }; delete n[key]; return n }); const id = e.dataTransfer.getData("text/plain"); if (geldigVoor(id, key)) verplaats(id, key); setDragId(null) }}
@@ -305,7 +378,7 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
         <div className="p-2.5 flex flex-col gap-2 min-h-[60px]">
           {sorteerList(ids).map(x => <Card key={x.id} x={x} pool={kind === "poel"} />)}
         </div>
-        {kind === "toew" && <div className="p-3 text-[11px] text-gray-500 border-t border-gray-100">Sleep een kaart naar een poel (groen = mag, rood = kan niet), of tik een kaart aan en tik dan de poel. ⊘ = afmelden, ↩ = weer aanmelden. Max 6 per poel.</div>}
+        {kind === "toew" && <div className="p-3 text-[11px] text-gray-500 border-t border-gray-100">Desktop: sleep een kaart (groen = mag, rood = kan niet). Telefoon: houd een kaart even ingedrukt en sleep, of tik de kaart en tik dan de poel. ⊘ = afmelden, ↩ = weer aanmelden. Max 6 per poel.</div>}
       </div>
     )
   }
@@ -331,6 +404,7 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
         <Kolom kind="toew" />
         {state.poeelen.map((_, i) => <Kolom key={i} kind="poel" i={i} />)}
         <div
+          data-kolomkey="nieuw"
           onDragOver={e => { e.preventDefault(); if (dragId) setDropState(d => ({ ...d, nieuw: geldigVoor(dragId, "nieuw") ? "ok" : "nee" })) }}
           onDragLeave={() => setDropState(d => { const n = { ...d }; delete n.nieuw; return n })}
           onDrop={e => { e.preventDefault(); setDropState(d => { const n = { ...d }; delete n.nieuw; return n }); const id = e.dataTransfer.getData("text/plain"); if (geldigVoor(id, "nieuw")) nieuwePoelMet(id); setDragId(null) }}
