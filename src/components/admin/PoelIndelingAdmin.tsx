@@ -347,7 +347,7 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
       onDragEnd={() => { setDragId(null); setDropState({}) }}
       onPointerDown={e => onCardPointerDown(e, x)}
       onClick={e => { e.stopPropagation(); if (x.uit || justDragged.current) return; setGeselecteerd(g => g === x.id ? null : x.id) }}
-      style={{ touchAction: "manipulation" }}
+      style={{ touchAction: "manipulation", WebkitTouchCallout: "none", userSelect: "none" }}
       className={`relative rounded-lg border p-2.5 bg-white shadow-sm transition-all ${x.uit ? "opacity-40" : "cursor-grab"} ${dragId === x.id ? "opacity-30 scale-95 border-[#a90000] border-dashed" : geselecteerd === x.id ? "ring-2 ring-[#a90000]" : "border-gray-200"}`}
     >
       <button onClick={e => { e.stopPropagation(); if (confirm(`${x.v} ${x.a} AFMELDEN? Hij/zij valt uit alle poelen en printformulieren.`)) toggleUit(x.id) }} title={x.uit ? "Weer aanmelden" : "Afmelden"} className="absolute right-1.5 top-1.5 text-gray-400 text-sm">{x.uit ? "↩" : "⊘"}</button>
