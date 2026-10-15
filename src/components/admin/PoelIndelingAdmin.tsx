@@ -30,30 +30,31 @@ const SEED: State = {
     { id: "steff", v: "Steff", a: "de Wit", c: "OVJV", g: "M", l: 10, w: 42, b: "WIT", bl: "Wit" },
     { id: "manuel", v: "Manuel", a: "van Hees", c: "Michigami", g: "M", l: 11, w: 50, b: "ORANJE", bl: "Oranje" },
     { id: "thijs", v: "Thijs", a: "Mosch", c: "OVJV", g: "M", l: 11, w: 51, b: "GEEL", bl: "Geel + oranje slip", slip: "ORANJE" },
+    { id: "flore", v: "Flore", a: "Bogers", c: "Yoshi", g: "V", l: 11, w: 39, b: "ORANJE", bl: "Oranje" },
     { id: "lotte", v: "Lotte", a: "van der Werf", c: "Michigami", g: "V", l: 12, w: 39, b: "ORANJE", bl: "Oranje + groene slip", slip: "GROEN" },
     { id: "jaidy", v: "Jaidy", a: "Ringelberg", c: "Michigami", g: "M", l: 12, w: 53, b: "GEEL", bl: "Geel" },
+    { id: "ilvy", v: "Ilvy", a: "De Wolf", c: "OVJV", g: "V", l: 12, w: 50, b: "ORANJE", bl: "Oranje" },
     { id: "ivo", v: "Ivo", a: "Poot", c: "Michigami", g: "M", l: 12, w: 59, b: "ORANJE", bl: "Oranje + groene slip (13 in dec)", slip: "GROEN" },
+    { id: "elin", v: "Elin", a: "Bogers", c: "Yoshi", g: "V", l: 14, w: 52, b: "ORANJE", bl: "Oranje" },
     { id: "jaz", v: "Jaz", a: "Aarts", c: "via Cor Schuurbiers", g: "V", l: 13, w: 45, b: "BLAUW", bl: "Blauw (08-06-2013)" },
     { id: "bikkel", v: "Bikkel", a: "Verweij", c: "Michigami", g: "M", l: 17, w: 117, b: "BLAUW", bl: "Blauw" },
-    { id: "ashley", v: "Ashley", a: "Koens", c: "Michigami", g: "V", l: 19, w: 65, b: "BLAUW", bl: "Blauw" },
+    { id: "ashley", v: "Ashley", a: "Koens", c: "Michigami", g: "V", l: 19, w: 65, b: "BLAUW", bl: "Blauw", uit: true },
     { id: "pepijn", v: "Pepijn", a: "Vortman", c: "Michigami", g: "M", l: 20, w: 80, b: "BRUIN", bl: "Bruin" },
-    { id: "milo", v: "Milo", a: "van der Werf", c: "Yoshi", g: "M", l: 22, w: null, b: "WIT", bl: "Wit" },
-    { id: "floris", v: "Floris", a: "van Dijk", c: "Yoshi", g: "M", l: 23, w: null, b: "GEEL", bl: "Geel" },
-    { id: "daniel", v: "Daniël", a: "Petrykiv", c: "Yoshi", g: "M", l: 25, w: null, b: "WIT", bl: "Wit" },
-    { id: "mika", v: "Mika", a: "Morice", c: "Michigami", g: "M", l: 25, w: null, b: "WIT", bl: "Wit" },
-    { id: "flore", v: "Flore", a: "Bogers", c: "Yoshi", g: "V", l: 39, w: null, b: "ORANJE", bl: "Oranje" },
-    { id: "ilvy", v: "Ilvy", a: "De Wolf", c: "OVJV", g: "V", l: 50, w: null, b: "ORANJE", bl: "Oranje" },
-    { id: "elin", v: "Elin", a: "Bogers", c: "Yoshi", g: "V", l: 52, w: null, b: "ORANJE", bl: "Oranje" },
-    { id: "lindert", v: "Lindert", a: "Bogers", c: "Yoshi", g: "M", l: 77, w: null, b: "BRUIN", bl: "Bruin" },
-    { id: "yorick", v: "Yorick", a: "Bouterse", c: "Yoshi", g: "M", l: 79, w: null, b: "ZWART", bl: "Zwart 2e dan" },
+    { id: "milo", v: "Milo", a: "van der Werf", c: "Yoshi", g: "M", l: 7, w: 22, b: "WIT", bl: "Wit" },
+    { id: "floris", v: "Floris", a: "van Dijk", c: "Yoshi", g: "M", l: 8, w: 23, b: "GEEL", bl: "Geel" },
+    { id: "daniel", v: "Daniël", a: "Petrykiv", c: "Yoshi", g: "M", l: 7, w: 25, b: "WIT", bl: "Wit" },
+    { id: "mika", v: "Mika", a: "Morice", c: "Michigami", g: "M", l: 8, w: 25, b: "WIT", bl: "Wit" },
+    { id: "yorick", v: "Yorick", a: "Bouterse", c: "Yoshi", g: "M", l: 29, w: 79, b: "ZWART", bl: "Zwart 2e dan" },
+    { id: "lindert", v: "Lindert", a: "Bogers", c: "Yoshi", g: "M", l: 42, w: 77, b: "BRUIN", bl: "Bruin" },
   ],
   poeelen: [
     { naam: "Poel 1", m: ["myla", "milo", "daniel"] },
     { naam: "Poel 2", m: ["luukm", "mika", "floris", "vive", "nathan"] },
     { naam: "Poel 3", m: ["marina", "jax", "steff", "luuka", "rayn"] },
     { naam: "Poel 4", m: ["flore", "lotte", "ilvy"] },
-    { naam: "Poel 5", m: ["elin", "manuel", "thijs", "jaidy", "ivo"] },
+    { naam: "Poel 5", m: ["manuel", "thijs", "jaidy"] },
     { naam: "Poel 6", m: ["bikkel", "yorick", "lindert", "pepijn"] },
+    { naam: "Poel 7", m: ["ivo", "jaz", "elin"] },
   ],
 }
 
@@ -76,7 +77,8 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
   const [status, setStatus] = useState("Laden…")
   const [geselecteerd, setGeselecteerd] = useState<string | null>(null)
   const [showNieuw, setShowNieuw] = useState(false)
-  const [dragOver, setDragOver] = useState<string | null>(null)
+  const [dragId, setDragId] = useState<string | null>(null)
+  const [dropState, setDropState] = useState<Record<string, "ok" | "nee">>({})
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // ---- laden ----
@@ -205,12 +207,32 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
   const rest = state.deelnemers.filter(x => !toe.includes(x.id)).map(x => x.id)
   const actief = state.deelnemers.filter(x => !x.uit).length
 
+  function nieuwePoelMet(id: string) {
+    update(s => {
+      const poeelen = s.poeelen.map(p => ({ ...p, m: p.m.filter(x => x !== id) }))
+      poeelen.push({ naam: "Poel " + (poeelen.length + 1), m: [id] })
+      return { ...s, poeelen }
+    })
+    setGeselecteerd(null)
+  }
+  function geldigVoor(id: string, key: string): boolean {
+    const p = pers(id)
+    if (!p || p.uit) return false
+    const huidig = inPoel(id)
+    const bron = huidig ? String(state!.poeelen.indexOf(huidig)) : "toew"
+    if (key === "nieuw") return true
+    if (key === bron) return false
+    if (key !== "toew" && state!.poeelen[+key].m.length >= 6) return false
+    return true
+  }
+
   const Card = ({ x, pool }: { x: Deelnemer; pool: boolean }) => (
     <div
       draggable={!x.uit}
-      onDragStart={e => { if (x.uit) { e.preventDefault(); return } e.dataTransfer.setData("text/plain", x.id) }}
+      onDragStart={e => { if (x.uit) { e.preventDefault(); return } e.dataTransfer.setData("text/plain", x.id); setDragId(x.id) }}
+      onDragEnd={() => { setDragId(null); setDropState({}) }}
       onClick={e => { e.stopPropagation(); if (x.uit) return; setGeselecteerd(g => g === x.id ? null : x.id) }}
-      className={`relative rounded-lg border p-2.5 bg-white shadow-sm ${x.uit ? "opacity-40" : "cursor-grab"} ${geselecteerd === x.id ? "ring-2 ring-[#a90000]" : "border-gray-200"}`}
+      className={`relative rounded-lg border p-2.5 bg-white shadow-sm transition-all ${x.uit ? "opacity-40" : "cursor-grab"} ${dragId === x.id ? "opacity-30 scale-95 border-[#a90000] border-dashed" : geselecteerd === x.id ? "ring-2 ring-[#a90000]" : "border-gray-200"}`}
     >
       <button onClick={e => { e.stopPropagation(); toggleUit(x.id) }} title={x.uit ? "Weer aanmelden" : "Afmelden"} className="absolute right-1.5 top-1.5 text-gray-400 text-sm">{x.uit ? "↩" : "⊘"}</button>
       {pool && <button onClick={e => { e.stopPropagation(); verplaats(x.id, null) }} title="Terug" className="absolute right-7 top-1.5 text-red-600 text-sm">✕</button>}
@@ -228,13 +250,14 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
     const key = kind === "toew" ? "toew" : String(i)
     const po = kind === "poel" ? state!.poeelen[i!] : null
     const ids = kind === "toew" ? rest : po!.m
+    const ds = dropState[key]
     return (
       <div
-        onDragOver={e => { e.preventDefault(); setDragOver(key) }}
-        onDragLeave={() => setDragOver(null)}
-        onDrop={e => { e.preventDefault(); setDragOver(null); verplaats(e.dataTransfer.getData("text/plain"), key) }}
-        onClick={() => { if (geselecteerd) verplaats(geselecteerd, key) }}
-        className={`bg-white border rounded-xl min-w-[260px] flex-1 basis-[260px] max-w-[340px] ${dragOver === key ? "ring-2 ring-dashed ring-[#a90000] bg-[#fdf0f0]" : "border-gray-200"}`}
+        onDragOver={e => { e.preventDefault(); if (dragId) setDropState(d => ({ ...d, [key]: geldigVoor(dragId, key) ? "ok" : "nee" })) }}
+        onDragLeave={e => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setDropState(d => { const n = { ...d }; delete n[key]; return n }) }}
+        onDrop={e => { e.preventDefault(); setDropState(d => { const n = { ...d }; delete n[key]; return n }); const id = e.dataTransfer.getData("text/plain"); if (geldigVoor(id, key)) verplaats(id, key); setDragId(null) }}
+        onClick={() => { if (geselecteerd && geldigVoor(geselecteerd, key)) verplaats(geselecteerd, key) }}
+        className={`bg-white border rounded-xl min-w-[260px] flex-1 basis-[260px] max-w-[340px] transition-all ${ds === "ok" ? "ring-2 ring-green-500 bg-green-50" : ds === "nee" ? "ring-2 ring-red-500 bg-red-50" : "border-gray-200"}`}
       >
         <div className="flex items-center justify-between gap-2 p-3 border-b border-gray-200">
           <div className="text-sm font-semibold">{po ? po.naam : "Deelnemers"}</div>
@@ -248,7 +271,7 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
         <div className="p-2.5 flex flex-col gap-2 min-h-[60px]">
           {sorteerList(ids).map(x => <Card key={x.id} x={x} pool={kind === "poel"} />)}
         </div>
-        {kind === "toew" && <div className="p-3 text-[11px] text-gray-500 border-t border-gray-100">Sleep een kaart naar een poel, of tik een kaart aan en tik dan de poel. ⊘ = afmelden, ↩ = weer aanmelden.</div>}
+        {kind === "toew" && <div className="p-3 text-[11px] text-gray-500 border-t border-gray-100">Sleep een kaart naar een poel (groen = mag, rood = kan niet), of tik een kaart aan en tik dan de poel. ⊘ = afmelden, ↩ = weer aanmelden. Max 6 per poel.</div>}
       </div>
     )
   }
@@ -273,6 +296,14 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
       <div className="flex flex-wrap gap-3 items-start">
         <Kolom kind="toew" />
         {state.poeelen.map((_, i) => <Kolom key={i} kind="poel" i={i} />)}
+        <div
+          onDragOver={e => { e.preventDefault(); if (dragId) setDropState(d => ({ ...d, nieuw: geldigVoor(dragId, "nieuw") ? "ok" : "nee" })) }}
+          onDragLeave={() => setDropState(d => { const n = { ...d }; delete n.nieuw; return n })}
+          onDrop={e => { e.preventDefault(); setDropState(d => { const n = { ...d }; delete n.nieuw; return n }); const id = e.dataTransfer.getData("text/plain"); if (geldigVoor(id, "nieuw")) nieuwePoelMet(id); setDragId(null) }}
+          className={`rounded-xl border-2 border-dashed min-w-[260px] flex-1 basis-[260px] max-w-[340px] min-h-[120px] flex items-center justify-center text-sm text-gray-400 transition-all ${dropState.nieuw === "ok" ? "ring-2 ring-green-500 bg-green-50 text-green-700 border-green-400" : dropState.nieuw === "nee" ? "ring-2 ring-red-500 bg-red-50 text-red-600 border-red-400" : "border-gray-300 bg-white/50"}`}
+        >
+          ⬇ Sleep hierheen voor<br />nieuwe poel
+        </div>
       </div>
     </div>
   )
