@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react"
 // ---- types ----
 type Deelnemer = {
   id: string; v: string; a: string; c: string; g: "M" | "V";
-  l: number | null; w: number | null; b: string; bl: string; slip?: string; uit?: boolean
+  l: number | null; w: number | null; b: string; bl: string; slip?: string; uit?: boolean; uitVan?: number
 }
 type Poel = { naam: string; m: string[] }
 type State = { deelnemers: Deelnemer[]; poeelen: Poel[] }
@@ -130,8 +130,16 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
   }
   function toggleUit(id: string) {
     update(s => {
-      const deelnemers = s.deelnemers.map(x => x.id === id ? { ...x, uit: !x.uit } : x)
-      const poeelen = s.poeelen.map(p => ({ ...p, m: p.m.filter(m => m !== id) }))
+      const p = s.deelnemers.find(x => x.id === id)
+      const wasUit = !!p?.uit
+      const bron = s.poeelen.findIndex(po => po.m.includes(id))
+      const deelnemers = s.deelnemers.map(x => x.id === id
+        ? { ...x, uit: !wasUit, uitVan: wasUit ? undefined : (bron >= 0 ? bron : undefined) }
+        : x)
+      let poeelen = s.poeelen.map(po => ({ ...po, m: po.m.filter(m => m !== id) }))
+      if (wasUit && p?.uitVan != null && poeelen[p.uitVan]) {
+        poeelen = poeelen.map((po, k) => k === p.uitVan ? { ...po, m: [...po.m, id] } : po)
+      }
       return { deelnemers, poeelen }
     })
   }
