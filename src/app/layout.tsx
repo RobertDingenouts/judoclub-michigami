@@ -35,6 +35,9 @@ const notoSansJp = Noto_Sans_JP({
   variable: "--font-noto-sans-jp",
   subsets: ["latin"],
   display: "swap",
+  // CJK wordt in ~70 subsets per gewicht gesliced; preload zou honderden
+  // woff2-links per page-load geven (request-storm, okt 2026).
+  preload: false,
 });
 
 const shipporiMincho = Shippori_Mincho({
@@ -42,6 +45,7 @@ const shipporiMincho = Shippori_Mincho({
   variable: "--font-shippori-mincho",
   subsets: ["latin"],
   display: "swap",
+  preload: false,
 });
 
 const fraunces = Fraunces({
@@ -63,6 +67,7 @@ const zenOldMincho = Zen_Old_Mincho({
   variable: "--font-zen-mincho",
   subsets: ["latin"], // CJK wordt door next/font automatisch gesliced
   display: "swap",
+  preload: false,
 });
 
 const zenKakuGothic = Zen_Kaku_Gothic_New({
@@ -70,6 +75,7 @@ const zenKakuGothic = Zen_Kaku_Gothic_New({
   variable: "--font-zen-kaku",
   subsets: ["latin"],
   display: "swap",
+  preload: false,
 });
 
 export const viewport: Viewport = {
