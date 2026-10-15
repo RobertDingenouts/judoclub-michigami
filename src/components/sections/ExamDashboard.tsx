@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { ChevronDown, ChevronUp, Play, X } from 'lucide-react';
 import { AnimatedCard, AnimatedButton, subtleHover } from '@/components/ui/animated-card';
 import { useT } from '@/i18n/LangContext';
@@ -221,6 +221,114 @@ const CATEGORIES: Record<string, Category> = {
   }
 };
 
+// Rode lijn-pictogrammen per categorie (judo-herkenbaar, clubrood #a90000)
+const CAT_ICONS: Record<string, ReactNode> = {
+  'ukemi-waza': (
+    <>
+      <circle cx="10" cy="8" r="2.4" />
+      <path d="M12 10 L17 17" />
+      <path d="M12 11 L6 14" />
+      <path d="M17 17 L23 14 M17 17 L23 20" />
+      <path d="M3 27 H29" />
+      <path d="M20 4 A 8 8 0 0 1 27 10" />
+      <path d="M27 10 L23.5 9 M27 10 L26 6.5" />
+    </>
+  ),
+  'ashi-waza': (
+    <>
+      <circle cx="13" cy="8" r="2.3" />
+      <path d="M13 10 L15 19" />
+      <path d="M15 19 L8 26 M15 19 L15 26" />
+      <path d="M15 19 L20 21" />
+      <circle cx="24" cy="6" r="2.3" />
+      <path d="M24 8 L22 16" />
+      <path d="M22 16 L23 26 M22 16 L27 22" />
+      <path d="M20 21 L22 22" />
+      <path d="M3 27 H29" />
+    </>
+  ),
+  'koshi-waza': (
+    <>
+      <circle cx="23" cy="13" r="2.3" />
+      <path d="M21 14 L17 18" />
+      <path d="M17 18 L15 26 M17 18 L20 26" />
+      <circle cx="5" cy="8" r="2.3" />
+      <path d="M7 9 L15 13" />
+      <path d="M15 13 L20 7 M15 13 L21 11" />
+      <path d="M3 27 H29" />
+    </>
+  ),
+  'kata-waza': (
+    <>
+      <circle cx="17" cy="11" r="2.3" />
+      <path d="M17 13 L17 21" />
+      <path d="M17 21 L14 26 M17 21 L20 26" />
+      <circle cx="6" cy="17" r="2.3" />
+      <path d="M8 16 L16 12" />
+      <path d="M16 12 L23 7 M16 12 L24 11" />
+      <path d="M3 27 H29" />
+    </>
+  ),
+  'te-waza': (
+    <>
+      <circle cx="7" cy="10" r="2.3" />
+      <path d="M8 12 L11 20" />
+      <path d="M11 20 L8 26 M11 20 L14 26" />
+      <path d="M8 13 L15 14" />
+      <circle cx="24" cy="8" r="2.3" />
+      <path d="M23 10 L21 18" />
+      <path d="M21 18 L19 26 M21 18 L25 25" />
+      <path d="M23 11 L16 13" />
+      <path d="M3 27 H29" />
+    </>
+  ),
+  'sutemi-waza': (
+    <>
+      <circle cx="6" cy="20" r="2.3" />
+      <path d="M8 21 L16 22" />
+      <path d="M16 22 L22 18 M16 22 L23 22" />
+      <path d="M3 27 H29" />
+      <path d="M12 8 A 9 9 0 0 1 27 14" />
+      <path d="M27 14 L23.5 13 M27 14 L25.5 17" />
+      <circle cx="11" cy="6" r="2" />
+    </>
+  ),
+  'osaekomi-waza': (
+    <>
+      <circle cx="5" cy="22" r="2.3" />
+      <path d="M7 22 L18 22" />
+      <path d="M18 22 L24 20 M18 22 L24 24" />
+      <circle cx="14" cy="11" r="2.3" />
+      <path d="M15 13 L19 18" />
+      <path d="M19 18 L23 26" />
+      <path d="M15 14 L10 17" />
+      <path d="M3 27 H29" />
+    </>
+  ),
+  'shime-waza': (
+    <>
+      <circle cx="13" cy="10" r="2.8" />
+      <path d="M13 13 L13 20" />
+      <path d="M13 20 L10 26 M13 20 L16 26" />
+      <circle cx="22" cy="9" r="2.3" />
+      <path d="M21 11 L20 19" />
+      <path d="M20 19 L18 26 M20 19 L23 26" />
+      <path d="M21 12.5 L11 12.5" />
+      <path d="M3 27 H29" />
+    </>
+  ),
+  'kansetsu-waza': (
+    <>
+      <circle cx="4" cy="11" r="2" />
+      <path d="M6 13 L23 13" />
+      <path d="M11 20 L17 20 L14 15 Z" />
+      <path d="M23 15 L23 21" />
+      <path d="M23 21 L20.5 18.5 M23 21 L25.5 18.5" />
+      <path d="M3 27 H29" />
+    </>
+  ),
+};
+
 const BELT_REQUIREMENTS: Record<string, BeltRequirements> = {
   'wit': { requirements: { 'ashi-waza': 1, 'koshi-waza': 1, 'kata-waza': 1, 'te-waza': 1, 'sutemi-waza': 0, 'osaekomi-waza': 2, 'shime-waza': 0, 'kansetsu-waza': 0 }, nageKomi: 3, kantelTechnieken: 0 },
   'wit-gele-slip': { requirements: { 'ashi-waza': 2, 'koshi-waza': 2, 'kata-waza': 1, 'te-waza': 1, 'sutemi-waza': 0, 'osaekomi-waza': 3, 'shime-waza': 0, 'kansetsu-waza': 0 }, nageKomi: 5, kantelTechnieken: 1 },
@@ -355,8 +463,10 @@ export function ExamDashboard() {
                   className="w-full p-3 sm:p-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
                 >
                 <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center text-xl sm:text-2xl font-bold text-[#a90000] shadow-sm">
-                    {cat.icon}
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center shadow-sm shrink-0">
+                    <svg viewBox="0 0 32 32" className="w-9 h-9 sm:w-11 sm:h-11" fill="none" stroke="#a90000" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      {CAT_ICONS[catId]}
+                    </svg>
                   </div>
                   <div className="text-left">
                     <div className="font-bold text-gray-800 text-sm sm:text-base">{t(cat.nameNl)}</div>
@@ -523,7 +633,7 @@ export function ExamDashboard() {
               <div className="flex items-center justify-between p-3 sm:p-4 bg-white rounded-lg shadow hover:shadow-lg transition-all">
                 <div>
                   <div className="font-bold text-gray-800">Nage-komi</div>
-                  <div className="text-xs text-gray-500 mt-0.5">{t('Vrije worp naar keuze')}</div>
+                  <div className="text-xs text-gray-500 mt-0.5">{t('Vrije worpen in 1 minuut')}</div>
                 </div>
                 <div className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-br from-[#a90000] to-[#DC143C] bg-clip-text text-transparent">
                   {beltReq.nageKomi}

@@ -355,6 +355,7 @@ export const DICT_EN: Record<string, string> = {
   'Alles sluiten': 'Collapse all',
   'Extra eisen': 'Extra requirements',
   'Vrije worp naar keuze': 'Free throw of your choice',
+  'Vrije worpen in 1 minuut': 'Free throws within 1 minute',
   'Aantal kanteltechnieken': 'Number of sweeping techniques',
   'Klik om te draaien': 'Click to flip',
   '🎉 Gefeliciteerd!': '🎉 Congratulations!',
