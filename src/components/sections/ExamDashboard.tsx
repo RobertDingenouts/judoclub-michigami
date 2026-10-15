@@ -221,110 +221,80 @@ const CATEGORIES: Record<string, Category> = {
   }
 };
 
-// Rode lijn-pictogrammen per categorie (judo-herkenbaar, clubrood #a90000)
+// Rode pictogrammen per categorie — zelfde symbolen als de vorige emoji's (🛡️🦵🔄💪🤚⬇️🔒😤🦾), nu in clubrood
 const CAT_ICONS: Record<string, ReactNode> = {
+  // 🛡️ Valbreektechnieken
   'ukemi-waza': (
     <>
-      <circle cx="10" cy="8" r="2.4" />
-      <path d="M12 10 L17 17" />
-      <path d="M12 11 L6 14" />
-      <path d="M17 17 L23 14 M17 17 L23 20" />
-      <path d="M3 27 H29" />
-      <path d="M20 4 A 8 8 0 0 1 27 10" />
-      <path d="M27 10 L23.5 9 M27 10 L26 6.5" />
+      <path d="M16 3 L26 7 V15 Q26 23 16 28 Q6 23 6 15 V7 Z" />
+      <path d="M11 14 L15 18 L21 11" />
     </>
   ),
+  // 🦵 Beenworpen
   'ashi-waza': (
     <>
-      <circle cx="13" cy="8" r="2.3" />
-      <path d="M13 10 L15 19" />
-      <path d="M15 19 L8 26 M15 19 L15 26" />
-      <path d="M15 19 L20 21" />
-      <circle cx="24" cy="6" r="2.3" />
-      <path d="M24 8 L22 16" />
-      <path d="M22 16 L23 26 M22 16 L27 22" />
-      <path d="M20 21 L22 22" />
-      <path d="M3 27 H29" />
+      <path d="M10 3 H17 Q19 9 17 14 Q15 18 17 22 L17 24 H24 Q26 24 26 26 Q26 27 24 27 H10 L10 22 Q12 18 10 14 Q8 9 10 3 Z" />
     </>
   ),
+  // 🔄 Heupworpen
   'koshi-waza': (
     <>
-      <circle cx="23" cy="13" r="2.3" />
-      <path d="M21 14 L17 18" />
-      <path d="M17 18 L15 26 M17 18 L20 26" />
-      <circle cx="5" cy="8" r="2.3" />
-      <path d="M7 9 L15 13" />
-      <path d="M15 13 L20 7 M15 13 L21 11" />
-      <path d="M3 27 H29" />
+      <path d="M8 14 A 8 8 0 0 1 22 8" />
+      <path d="M22 8 L18.5 8.5 M22 8 L21.5 4.5" />
+      <path d="M24 18 A 8 8 0 0 1 10 24" />
+      <path d="M10 24 L13.5 23.5 M10 24 L10.5 27.5" />
     </>
   ),
+  // 💪 Armworpen (biceps)
   'kata-waza': (
     <>
-      <circle cx="17" cy="11" r="2.3" />
-      <path d="M17 13 L17 21" />
-      <path d="M17 21 L14 26 M17 21 L20 26" />
-      <circle cx="6" cy="17" r="2.3" />
-      <path d="M8 16 L16 12" />
-      <path d="M16 12 L23 7 M16 12 L24 11" />
-      <path d="M3 27 H29" />
+      <path d="M3 26 L3 19 Q3 10 10 10 Q16 10 17 16 L17 26 Z" />
+      <path d="M17 16 L19.5 8" strokeWidth="4.5" />
+      <circle cx="21" cy="5" r="4.5" />
     </>
   ),
+  // 🤚 Handworpen
   'te-waza': (
     <>
-      <circle cx="7" cy="10" r="2.3" />
-      <path d="M8 12 L11 20" />
-      <path d="M11 20 L8 26 M11 20 L14 26" />
-      <path d="M8 13 L15 14" />
-      <circle cx="24" cy="8" r="2.3" />
-      <path d="M23 10 L21 18" />
-      <path d="M21 18 L19 26 M21 18 L25 25" />
-      <path d="M23 11 L16 13" />
-      <path d="M3 27 H29" />
+      <path d="M11 15 V23 Q11 27 15 27 H17 Q21 27 21 23 V15" />
+      <path d="M11 15 V7 M14.3 15 V5 M17.7 15 V5 M21 15 V7" />
+      <path d="M11 18 L5.5 15" />
     </>
   ),
+  // ⬇️ Offerworpen
   'sutemi-waza': (
     <>
-      <circle cx="6" cy="20" r="2.3" />
-      <path d="M8 21 L16 22" />
-      <path d="M16 22 L22 18 M16 22 L23 22" />
-      <path d="M3 27 H29" />
-      <path d="M12 8 A 9 9 0 0 1 27 14" />
-      <path d="M27 14 L23.5 13 M27 14 L25.5 17" />
-      <circle cx="11" cy="6" r="2" />
+      <path d="M16 4 V26" />
+      <path d="M16 26 L8 18 M16 26 L24 18" />
     </>
   ),
+  // 🔒 Houdgrepen
   'osaekomi-waza': (
     <>
-      <circle cx="5" cy="22" r="2.3" />
-      <path d="M7 22 L18 22" />
-      <path d="M18 22 L24 20 M18 22 L24 24" />
-      <circle cx="14" cy="11" r="2.3" />
-      <path d="M15 13 L19 18" />
-      <path d="M19 18 L23 26" />
-      <path d="M15 14 L10 17" />
-      <path d="M3 27 H29" />
+      <path d="M9 15 H23 V26 H9 Z" />
+      <path d="M12.5 15 V11 A3.5 3.5 0 0 1 19.5 11 V15" />
+      <circle cx="16" cy="20.5" r="1.4" fill="#a90000" stroke="none" />
     </>
   ),
+  // 😤 Wurgingen
   'shime-waza': (
     <>
-      <circle cx="13" cy="10" r="2.8" />
-      <path d="M13 13 L13 20" />
-      <path d="M13 20 L10 26 M13 20 L16 26" />
-      <circle cx="22" cy="9" r="2.3" />
-      <path d="M21 11 L20 19" />
-      <path d="M20 19 L18 26 M20 19 L23 26" />
-      <path d="M21 12.5 L11 12.5" />
-      <path d="M3 27 H29" />
+      <circle cx="16" cy="17" r="9" />
+      <path d="M10.5 14.5 L14 16 M21.5 14.5 L18 16" />
+      <path d="M12.5 21.5 H19.5" />
+      <path d="M5 10 Q7.5 8 5.5 5.5" />
+      <path d="M27 10 Q24.5 8 26.5 5.5" />
     </>
   ),
+  // 🦾 Armklemmen
   'kansetsu-waza': (
     <>
-      <circle cx="4" cy="11" r="2" />
-      <path d="M6 13 L23 13" />
-      <path d="M11 20 L17 20 L14 15 Z" />
-      <path d="M23 15 L23 21" />
-      <path d="M23 21 L20.5 18.5 M23 21 L25.5 18.5" />
-      <path d="M3 27 H29" />
+      <circle cx="5" cy="20" r="2.5" />
+      <path d="M7.5 20 L14.5 20" />
+      <circle cx="17" cy="20" r="2.5" />
+      <path d="M19 18 L24 10" />
+      <path d="M20.5 15 L22.5 16 M22 12.5 L24 13.5" />
+      <circle cx="25.5" cy="7" r="2.8" />
     </>
   ),
 };

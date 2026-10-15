@@ -36,7 +36,7 @@ const SEED: State = {
     { id: "ilvy", v: "Ilvy", a: "De Wolf", c: "OVJV", g: "V", l: 12, w: 50, b: "ORANJE", bl: "Oranje" },
     { id: "ivo", v: "Ivo", a: "Poot", c: "Michigami", g: "M", l: 12, w: 59, b: "ORANJE", bl: "Oranje + groene slip (13 in dec)", slip: "GROEN" },
     { id: "elin", v: "Elin", a: "Bogers", c: "Yoshi", g: "V", l: 14, w: 52, b: "ORANJE", bl: "Oranje" },
-    { id: "jaz", v: "Jaz", a: "Aarts", c: "via Cor Schuurbiers", g: "V", l: 13, w: 45, b: "BLAUW", bl: "Blauw (08-06-2013)" },
+    { id: "jaz", v: "Jaz", a: "Aarts", c: "Budoschool Cor Schuurbiers", g: "V", l: 13, w: 45, b: "BLAUW", bl: "Blauw (08-06-2013)" },
     { id: "bikkel", v: "Bikkel", a: "Verweij", c: "Michigami", g: "M", l: 17, w: 117, b: "BLAUW", bl: "Blauw" },
     { id: "ashley", v: "Ashley", a: "Koens", c: "Michigami", g: "V", l: 19, w: 65, b: "BLAUW", bl: "Blauw", uit: true },
     { id: "pepijn", v: "Pepijn", a: "Vortman", c: "Michigami", g: "M", l: 20, w: 80, b: "BRUIN", bl: "Bruin" },
@@ -80,6 +80,7 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
   const [dragId, setDragId] = useState<string | null>(null)
   const [dropState, setDropState] = useState<Record<string, "ok" | "nee">>({})
   const [menuVoor, setMenuVoor] = useState<{ id: string; x: number; y: number } | null>(null)
+  const [bewerken, setBewerken] = useState<string | null>(null)
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const justDragged = useRef(false)
   const isTouch = typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches
@@ -130,6 +131,10 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
       return { ...s, poeelen }
     })
     setGeselecteerd(null)
+  }
+  function bewerk(id: string, patch: Partial<Deelnemer>) {
+    update(s => ({ ...s, deelnemers: s.deelnemers.map(x => x.id === id ? { ...x, ...patch } : x) }))
+    setBewerken(null)
   }
   function toggleUit(id: string) {
     update(s => {
@@ -317,6 +322,7 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
     >
       <button onClick={e => { e.stopPropagation(); if (confirm(`${x.v} ${x.a} AFMELDEN? Hij/zij valt uit alle poelen en printformulieren.`)) toggleUit(x.id) }} title={x.uit ? "Weer aanmelden" : "Afmelden"} className="absolute right-1.5 top-1.5 text-gray-400 text-sm">{x.uit ? "↩" : "⊘"}</button>
       {pool && <button onClick={e => { e.stopPropagation(); if (confirm(`${x.v} ${x.a} terugzetten naar Deelnemers?`)) verplaats(x.id, null) }} title="Terug" className="absolute right-7 top-1.5 text-red-600 text-sm">✕</button>}
+      <button onClick={e => { e.stopPropagation(); setBewerken(bewerken === x.id ? null : x.id) }} title="Gegevens bewerken" className={`absolute top-1.5 text-gray-500 text-sm ${pool ? "right-12" : "right-7"} ${bewerken === x.id ? "text-[#a90000]" : ""}`}>✎</button>
       <div className={`font-semibold text-sm ${x.uit ? "line-through" : ""}`}>{x.v} {x.a}</div>
       <div className="text-[11px] text-gray-500">{x.c} · {x.g === "V" ? "meisje" : "jongen"}{x.uit ? " · AFGEMELD" : ""}</div>
       <div className="flex gap-3 mt-1 text-xs"><span>leeftijd <b>{x.l ?? "?"}</b></span><span>gewicht <b>{x.w ?? "?"} kg</b></span></div>
@@ -324,6 +330,7 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
         {x.slip && <span className="absolute right-0 top-0 bottom-0 w-1/3" style={{ background: BANDKLEUR[x.slip] }} />}
       </div>
       <div className="text-[10px] text-gray-500 mt-0.5">{x.bl}</div>
+      {bewerken === x.id && <BewerkForm x={x} onSave={p => bewerk(x.id, p)} onCancel={() => setBewerken(null)} />}
     </div>
   )
 
@@ -423,6 +430,34 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
           </div>
         )
       })()}
+    </div>
+  )
+}
+
+function BewerkForm({ x, onSave, onCancel }: { x: Deelnemer; onSave: (p: Partial<Deelnemer>) => void; onCancel: () => void }) {
+  const [v, setV] = useState(x.v); const [a, setA] = useState(x.a); const [c, setC] = useState(x.c)
+  const [g, setG] = useState<"M" | "V">(x.g)
+  const [l, setL] = useState(x.l == null ? "" : String(x.l)); const [w, setW] = useState(x.w == null ? "" : String(x.w))
+  const [b, setB] = useState(x.b); const [slip, setSlip] = useState(x.slip ?? ""); const [bl, setBl] = useState(x.bl)
+  function submit() {
+    if (!v.trim()) { alert("Voornaam is verplicht"); return }
+    onSave({ v: v.trim(), a: a.trim(), c: c.trim() || "onbekend", g, l: l === "" ? null : +l, w: w === "" ? null : +w, b, slip: slip || undefined, bl: bl.trim() || b.charAt(0) + b.slice(1).toLowerCase() })
+  }
+  return (
+    <div className="mt-2 pt-2 border-t border-gray-200 flex flex-wrap gap-1.5" onClick={e => e.stopPropagation()}>
+      <input value={v} onChange={e => setV(e.target.value)} placeholder="Voornaam" className="border border-gray-300 rounded px-1.5 py-1 text-xs w-20" />
+      <input value={a} onChange={e => setA(e.target.value)} placeholder="Achternaam" className="border border-gray-300 rounded px-1.5 py-1 text-xs w-24" />
+      <input value={c} onChange={e => setC(e.target.value)} placeholder="Vereniging" className="border border-gray-300 rounded px-1.5 py-1 text-xs w-full" />
+      <select value={g} onChange={e => setG(e.target.value as "M" | "V")} className="border border-gray-300 rounded px-1 py-1 text-xs"><option value="M">jongen</option><option value="V">meisje</option></select>
+      <input value={l} onChange={e => setL(e.target.value)} type="number" placeholder="Leeftijd" className="border border-gray-300 rounded px-1.5 py-1 text-xs w-14" />
+      <input value={w} onChange={e => setW(e.target.value)} type="number" placeholder="kg" className="border border-gray-300 rounded px-1.5 py-1 text-xs w-13" />
+      <select value={b} onChange={e => setB(e.target.value)} className="border border-gray-300 rounded px-1 py-1 text-xs">{BANDRANG.map(x2 => <option key={x2}>{x2}</option>)}</select>
+      <select value={slip} onChange={e => setSlip(e.target.value)} className="border border-gray-300 rounded px-1 py-1 text-xs"><option value="">geen slip</option>{BANDRANG.filter(x2 => x2 !== b).map(x2 => <option key={x2}>{x2}</option>)}</select>
+      <input value={bl} onChange={e => setBl(e.target.value)} placeholder="Band-tekst" className="border border-gray-300 rounded px-1.5 py-1 text-xs w-full" />
+      <div className="flex gap-1.5 w-full">
+        <button onClick={submit} className="bg-[#a90000] text-white rounded px-2.5 py-1 text-xs">Opslaan</button>
+        <button onClick={onCancel} className="border border-gray-300 rounded px-2.5 py-1 text-xs">Annuleren</button>
+      </div>
     </div>
   )
 }
