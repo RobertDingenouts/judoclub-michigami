@@ -163,30 +163,56 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
   function formulierHTML(po: Poel, i: number): string {
     const arr = sorteerList(po.m).filter(x => !x.uit)
     const ps = paren(arr.length)
-    const posities = [1, 2, 3, 4, 5, 6].slice(0, arr.length).map(n => `<tr><td>${n}de plaats</td><td></td><td></td></tr>`).join("")
-    const rijen = arr.map((x, j) => `<tr><td>${j + 1}</td><td>${x.v} ${x.a}</td><td>${x.c}</td>${ps.map(() => "<td></td>").join("")}<td></td><td></td><td></td></tr>`).join("")
+    const posities = arr.map((_, n) => `<tr><td>${n + 1}de plaats</td><td></td></tr>`).join("")
+    const rijen = arr.map((x, j) => {
+      const cells = ps.map(p => {
+        const [a, b] = p.split("/").map(Number)
+        const speelt = a === j + 1 || b === j + 1
+        return `<td class="${speelt ? "speelt" : "x"}"></td>`
+      }).join("")
+      return `<tr><td class="nr">${j + 1}</td><td class="naam">${x.v} ${x.a}</td><td class="ver">${x.c}</td>${cells}<td class="tot"></td><td class="tot"></td><td class="tot"></td></tr>`
+    }).join("")
     return `<div class="formulier">
-      <div class="kop"><div><h2>${po.naam}</h2><b>Jubileumtoernooi 50 jaar OVJV</b><br>Plaats: Oud-Vossemeer (De Vossenkuil) · Datum: 17-10-2026 · Organisator: Judoclub Michigami</div><div style="text-align:right">Mat nummer: ________</div></div>
-      <b>Resultaat:</b>
-      <table class="resultaten"><tr><th></th><th>naam judoka</th><th>vereniging</th></tr>${posities}</table>
-      <table><tr><th>nr</th><th>Naam</th><th>vereniging</th>${ps.map(p => `<th>${p}</th>`).join("")}<th>gewonnen</th><th>punten</th><th>resultaat</th></tr>${rijen}</table>
-      <div class="jury">Jurylid 1: ______________________ &nbsp; Jurylid 2: ______________________ &nbsp; Jurylid 3: ______________________<br>Scheidsrechter 1: ______________________ &nbsp; Scheidsrechter 2: ______________________</div>
-      <div class="regels">Puntentelling: Beslissing = 1 pt · Yuko = 5 pt · Waza-ari = 7 pt · Ippon = 10 pt. Shido's: 2 = yuko tegen, 3 = waza-ari tegen, 4 = hansoku-make. Osaekomi: 10s yuko / 15s waza-ari / 20s ippoon. Partijduren: juniors 2 min, seniors 3 min. Gelijk: beslissing scheidsrechter(s).</div>
+      <div class="kop">
+        <img src="${location.origin}/ovjv-logo.png" style="height:58px" />
+        <div class="kopMidden"><h2>${po.naam}</h2><b>Jubileumtoernooi — 50 jaar OVJV</b><br>Plaats: Oud-Vossemeer (De Vossenkuil) &nbsp;·&nbsp; Datum: zaterdag 17 oktober 2026 &nbsp;·&nbsp; Organisator: Judoclub Michigami</div>
+        <div class="kopRecht">Poel nr.: <b>${i + 1}</b><br>Mat nummer: ________</div>
+      </div>
+      <table class="grid"><tr><th class="nr">nr</th><th class="naam">Naam</th><th class="ver">vereniging</th>${ps.map(p => `<th class="pair">${p}</th>`).join("")}<th class="tot">gew.<br>partijen</th><th class="tot">aan.<br>punten</th><th class="tot">resultaat</th></tr>${rijen}</table>
+      <div class="onderkant">
+        <div class="resblok"><b>Resultaat:</b><table class="res"><tr><th></th><th>naam judoka</th></tr>${posities}</table></div>
+        <div class="juryblok">Jurylid 1: ______________________ &nbsp;&nbsp; Jurylid 2: ______________________<br><br>
+        Scheidsrechter 1: ______________ &nbsp; Scheidsrechter 2: ______________ &nbsp; Scheidsrechter 3: ______________</div>
+      </div>
+      <div class="regels">Puntentelling: Beslissing = 1 pt &nbsp;·&nbsp; Yuko = 5 pt &nbsp;·&nbsp; Waza-ari = 7 pt &nbsp;·&nbsp; Ippon = 10 pt &nbsp;&nbsp;|&nbsp;&nbsp; Shido's: 2 = yuko tegen &nbsp;·&nbsp; 3 = waza-ari tegen &nbsp;·&nbsp; 4 = hansoku-make &nbsp;&nbsp;|&nbsp;&nbsp; Osaekomi: 10s yuko / 15s waza-ari / 20s ippoon &nbsp;&nbsp;|&nbsp;&nbsp; Partijduren: juniors 2 min, seniors 3 min &nbsp;&nbsp;|&nbsp;&nbsp; Gelijk: beslissing scheidsrechter(s). &nbsp;&nbsp;Zwart vak = judoka speelt deze partij niet.</div>
     </div>`
   }
   function printPoelen(indices: number[]) {
-    const w = window.open("", "_blank", "width=900,height=700")
+    const w = window.open("", "_blank", "width=1000,height=700")
     if (!w) { alert("Pop-up geblokkeerd — sta pop-ups toe om te printen"); return }
     w.document.write(`<html><head><title>Poelformulieren</title><style>
-      body{font-family:'Times New Roman',serif;color:#000;margin:0}
-      .formulier{page-break-after:always;padding:14mm;font-size:12px}
-      .formulier h2{margin:0 0 4px;font-size:17px}
-      .kop{display:flex;justify-content:space-between;border-bottom:3px solid #a90000;padding-bottom:6px;margin-bottom:10px}
-      table{border-collapse:collapse;width:100%;margin-top:8px}
-      th,td{border:1px solid #000;padding:4px 3px;font-size:11px}
-      th{background:#eee}
-      .resultaten td{height:22px}
-      .jury{margin-top:10px;font-size:11px}.regels{margin-top:8px;font-size:10px;color:#333}
+      @page { size: A4 landscape; margin: 10mm; }
+      body{font-family:'Times New Roman',serif;color:#000;margin:0;background:#fff}
+      .formulier{page-break-after:always;padding:4mm 0}
+      .formulier h2{margin:0 0 2px;font-size:20px}
+      .kop{display:flex;align-items:center;gap:16px;border-bottom:3px solid #a90000;padding-bottom:6px;margin-bottom:8px}
+      .kopMidden{flex:1}
+      .kopRecht{text-align:right;font-size:13px;white-space:nowrap}
+      table{border-collapse:collapse;width:100%;table-layout:fixed}
+      th,td{border:1.5px solid #000;padding:5px 3px;font-size:12px;text-align:center}
+      th{background:#eee;font-size:11px}
+      .nr{width:8mm}.naam{width:40mm;text-align:left}.ver{width:28mm;text-align:left}
+      .pair{font-weight:bold}.tot{width:16mm}
+      td.naam,td.ver{text-align:left}
+      td.speelt{background:#fff;height:26px}
+      td.x{background:#1a1a1a}
+      .onderkant{display:flex;gap:24px;margin-top:10px;align-items:flex-start}
+      .resblok{min-width:200mm}
+      table.res{width:auto;table-layout:auto}
+      .res th,.res td{border:1.5px solid #000;padding:5px 6px;font-size:12px;text-align:left}
+      .res td{height:24px;width:80mm}
+      .juryblok{flex:1;font-size:13px;line-height:1.6}
+      .regels{margin-top:10px;font-size:10px;color:#333;border-top:1px solid #999;padding-top:4px}
       @media print{button{display:none}}
     </style></head><body>
       <button onclick="print()" style="margin:10px;padding:8px 16px">🖨 Print</button>
