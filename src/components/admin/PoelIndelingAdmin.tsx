@@ -79,6 +79,7 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
   const [showNieuw, setShowNieuw] = useState(false)
   const [dragId, setDragId] = useState<string | null>(null)
   const [dropState, setDropState] = useState<Record<string, "ok" | "nee">>({})
+  const [menuVoor, setMenuVoor] = useState<{ id: string; x: number; y: number } | null>(null)
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const justDragged = useRef(false)
   const isTouch = typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches
@@ -267,7 +268,6 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
   }
 
   // ---- touch (telefoon): long-press → "verplaatsen naar" menu ----
-  const [menuVoor, setMenuVoor] = useState<{ id: string; x: number; y: number } | null>(null)
   function onCardPointerDown(e: React.PointerEvent, x: Deelnemer) {
     if (x.uit || e.pointerType === "mouse") return
     const startX = e.clientX, startY = e.clientY
