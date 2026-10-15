@@ -83,6 +83,7 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
   const dragClone = useRef<HTMLDivElement | null>(null)
   const longPress = useRef<ReturnType<typeof setTimeout> | null>(null)
   const justDragged = useRef(false)
+  const isTouch = typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches
 
   // ---- laden ----
   useEffect(() => {
@@ -272,7 +273,9 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
     return el ? (el.closest("[data-kolomkey]") as HTMLElement | null)?.dataset.kolomkey ?? null : null
   }
   function startTouchDrag(card: HTMLElement, id: string, cx: number, cy: number) {
+    document.querySelectorAll("[data-dragclone]").forEach(n => n.remove())
     const clone = card.cloneNode(true) as HTMLDivElement
+    clone.setAttribute("data-dragclone", "1")
     clone.style.cssText = `position:fixed;z-index:9999;width:${card.offsetWidth}px;pointer-events:none;opacity:.9;transform:rotate(2deg) scale(1.03);box-shadow:0 10px 28px rgba(0,0,0,.3);margin:0`
     document.body.appendChild(clone)
     dragClone.current = clone
@@ -334,7 +337,7 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
 
   const Card = ({ x, pool }: { x: Deelnemer; pool: boolean }) => (
     <div
-      draggable={!x.uit}
+      draggable={!x.uit && !isTouch}
       onDragStart={e => { if (x.uit) { e.preventDefault(); return } e.dataTransfer.setData("text/plain", x.id); setDragId(x.id) }}
       onDragEnd={() => { setDragId(null); setDropState({}) }}
       onPointerDown={e => onCardPointerDown(e, x)}
