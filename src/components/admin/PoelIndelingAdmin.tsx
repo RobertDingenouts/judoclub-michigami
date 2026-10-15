@@ -176,9 +176,9 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
     }).join("")
     return `<div class="formulier">
       <div class="kop">
-        <img src="${location.origin}/ovjv-logo.png" style="height:58px" />
-        <div class="kopMidden"><h2>${po.naam}</h2><b>Jubileumtoernooi — 50 jaar OVJV</b><br>Plaats: Oud-Vossemeer (De Vossenkuil) &nbsp;·&nbsp; Datum: zaterdag 17 oktober 2026 &nbsp;·&nbsp; Organisator: Judoclub Michigami</div>
-        <div class="kopRecht">Poel nr.: <b>${i + 1}</b><br>Mat nummer: ________</div>
+        <img src="${location.origin}/ovjv-logo.png" style="height:72px" />
+        <div class="kopMidden"><h2>${po.naam}</h2><b>Jubileumtoernooi — 50 jaar OVJV</b><br>Plaats: Oud-Vossemeer (De Vossenkuil)<br>Datum: zaterdag 17 oktober 2026</div>
+        <div class="kopRecht">Poel nr.: <b>${i + 1}</b><div class="mat">Mat nummer: ________</div></div>
       </div>
       <table class="grid"><tr><th class="nr">nr</th><th class="naam">Naam</th><th class="ver">vereniging</th>${ps.map(p => `<th class="pair">${p}</th>`).join("")}<th class="tot">gew.<br>partijen</th><th class="tot">aan.<br>punten</th><th class="tot">resultaat</th></tr>${rijen}</table>
       <div class="onderkant">
@@ -197,22 +197,23 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
       html,body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
       body{font-family:'Times New Roman',serif;color:#000;margin:0;background:#fff}
       .formulier{page-break-after:always;padding:2mm 0}
-      .formulier h2{margin:0 0 2px;font-size:20px}
-      .kop{display:flex;align-items:center;gap:16px;border-bottom:3px solid #a90000;padding-bottom:6px;margin-bottom:8px}
+      .formulier h2{margin:0 0 4px;font-size:22px}
+      .kop{display:flex;align-items:center;gap:18px;border-bottom:3px solid #a90000;padding-bottom:10px;margin-bottom:12px;line-height:1.5}
       .kopMidden{flex:1}
       .kopRecht{text-align:right;font-size:13px;white-space:nowrap}
+      .kopRecht .mat{margin-top:14px}
       table{border-collapse:collapse;width:100%;table-layout:fixed}
-      th,td{border:1.5px solid #000;padding:5px 3px;font-size:12px;text-align:center;height:26px}
-      th{background:#e8e8e8;font-size:11px;height:30px}
+      th,td{border:1.5px solid #000;padding:5px 3px;font-size:12px;text-align:center;height:32px}
+      th{background:#e8e8e8;font-size:11px;height:34px}
       .nr{width:8mm}.naam{width:38mm;text-align:left}.ver{width:26mm;text-align:left}
       .pair{font-weight:bold}.tot{width:15mm}
       td.naam,td.ver{text-align:left}
       td.speelt{background:#fff}
       td.x{padding:0}
       td.x svg{display:block}
-      .onderkant{display:flex;gap:20px;margin-top:10px;align-items:flex-start}
+      .onderkant{display:flex;gap:20px;margin-top:14px;align-items:flex-start}
       .resblok table{width:auto;table-layout:auto}
-      .res th,.res td{border:1.5px solid #000;padding:4px 6px;font-size:12px;text-align:left;height:24px}
+      .res th,.res td{border:1.5px solid #000;padding:4px 6px;font-size:12px;text-align:left;height:28px}
       .res th{background:#e8e8e8}
       .res td.plaats{width:24mm}
       .res td.naam2{width:90mm}
