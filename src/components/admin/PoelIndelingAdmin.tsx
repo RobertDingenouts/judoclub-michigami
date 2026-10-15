@@ -82,7 +82,6 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const dragClone = useRef<HTMLDivElement | null>(null)
   const longPress = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const touchStart = useRef<{ x: number; y: number } | null>(null)
   const justDragged = useRef(false)
 
   // ---- laden ----
@@ -298,36 +297,39 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
   function onCardPointerDown(e: React.PointerEvent, x: Deelnemer) {
     if (x.uit || e.pointerType === "mouse") return
     const card = e.currentTarget as HTMLElement
-    touchStart.current = { x: e.clientX, y: e.clientY }
-    longPress.current = setTimeout(() => startTouchDrag(card, x.id, e.clientX, e.clientY), 350)
-    const onMove = (ev: PointerEvent) => {
-      const s = touchStart.current!
-      if (!dragClone.current) {
-        if (Math.abs(ev.clientX - s.x) > 12 || Math.abs(ev.clientY - s.y) > 12) {
+    const startX = e.clientX, startY = e.clientY
+    let dragging = false
+    longPress.current = setTimeout(() => { dragging = true; startTouchDrag(card, x.id, startX, startY) }, 350)
+    const onMove = (ev: TouchEvent) => {
+      const t = ev.touches[0]
+      if (!dragging) {
+        if (Math.abs(t.clientX - startX) > 12 || Math.abs(t.clientY - startY) > 12) {
           if (longPress.current) { clearTimeout(longPress.current); longPress.current = null }
           cleanup()
         }
         return
       }
       ev.preventDefault()
-      positionClone(ev.clientX, ev.clientY)
-      const key = kolomOnder(ev.clientX, ev.clientY)
+      positionClone(t.clientX, t.clientY)
+      const key = kolomOnder(t.clientX, t.clientY)
       setDropState(key ? { [key]: geldigVoor(x.id, key) ? "ok" : "nee" } : {})
     }
-    const onUp = (ev: PointerEvent) => {
+    const onEnd = (ev: TouchEvent) => {
       if (longPress.current) { clearTimeout(longPress.current); longPress.current = null }
-      if (dragClone.current) endTouchDrag(ev.clientX, ev.clientY, x.id)
+      if (dragging) {
+        const t = (ev.changedTouches && ev.changedTouches[0]) || { clientX: startX, clientY: startY }
+        endTouchDrag(t.clientX, t.clientY, x.id)
+      }
       cleanup()
     }
     const cleanup = () => {
-      document.removeEventListener("pointermove", onMove)
-      document.removeEventListener("pointerup", onUp)
-      document.removeEventListener("pointercancel", onUp)
-      touchStart.current = null
+      document.removeEventListener("touchmove", onMove)
+      document.removeEventListener("touchend", onEnd)
+      document.removeEventListener("touchcancel", onEnd)
     }
-    document.addEventListener("pointermove", onMove, { passive: false })
-    document.addEventListener("pointerup", onUp)
-    document.addEventListener("pointercancel", onUp)
+    document.addEventListener("touchmove", onMove, { passive: false })
+    document.addEventListener("touchend", onEnd)
+    document.addEventListener("touchcancel", onEnd)
   }
 
   const Card = ({ x, pool }: { x: Deelnemer; pool: boolean }) => (
