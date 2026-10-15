@@ -149,6 +149,15 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
   function nieuwePoel() {
     update(s => ({ ...s, poeelen: [...s.poeelen, { naam: "Poel " + (s.poeelen.length + 1), m: [] }] }))
   }
+  function verplaatsPoel(i: number, dir: number) {
+    const j = i + dir
+    if (!state || j < 0 || j >= state.poeelen.length) return
+    update(s => {
+      const ps = [...s.poeelen]
+      ;[ps[i], ps[j]] = [ps[j], ps[i]]
+      return { ...s, poeelen: ps.map((p, n) => ({ ...p, naam: `Poel ${n + 1}` })) }
+    })
+  }
   function verwijderPoel(i: number) {
     if (!confirm("Deze poel leegmaken/verwijderen? Deelnemers gaan terug.")) return
     update(s => ({ ...s, poeelen: s.poeelen.filter((_, k) => k !== i) }))
@@ -336,6 +345,8 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
           <div className="text-sm font-semibold">{po ? po.naam : "Deelnemers"}</div>
           <div className="text-[11px] text-gray-500">{po ? stats[i!] : `${rest.filter(id => !pers(id)?.uit).length} niet ingedeeld`}</div>
           {po && <div className="flex gap-1">
+            <button onClick={e => { e.stopPropagation(); verplaatsPoel(i!, -1) }} disabled={i === 0} title="Eerder in volgorde" className="text-gray-600 rounded px-1.5 py-1 text-xs border border-gray-200 disabled:opacity-30">↑</button>
+            <button onClick={e => { e.stopPropagation(); verplaatsPoel(i!, 1) }} disabled={i === state!.poeelen.length - 1} title="Later in volgorde" className="text-gray-600 rounded px-1.5 py-1 text-xs border border-gray-200 disabled:opacity-30">↓</button>
             <button onClick={e => { e.stopPropagation(); printPoelen([i!]) }} className="bg-[#a90000] text-white rounded px-2 py-1 text-xs">🖨</button>
             <button onClick={e => { e.stopPropagation(); verwijderPoel(i!) }} className="text-red-600 rounded px-1.5 py-1 text-xs border border-gray-200">✕</button>
           </div>}

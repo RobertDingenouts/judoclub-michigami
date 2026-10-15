@@ -28,17 +28,17 @@ export function NewsSlider({ articles: articlesNl, onNavigate }: { articles: New
   const total = articles.length;
   if (total === 0) return null;
 
-  const goTo = useCallback((index: number) => {
-    setDirection(index > current ? 1 : index < current ? -1 : 0);
+  const goTo = useCallback((index: number, dir?: number) => {
+    setDirection(dir ?? (index > current ? 1 : index < current ? -1 : 0));
     setCurrent(index);
   }, [current]);
 
   const goNext = useCallback(() => {
-    goTo((current + 1) % total);
+    goTo((current + 1) % total, 1);
   }, [current, total, goTo]);
 
   const goPrev = useCallback(() => {
-    goTo((current - 1 + total) % total);
+    goTo((current - 1 + total) % total, -1);
   }, [current, total, goTo]);
 
   // Preload alle slider-foto's (geen witte flash bij doorbladeren)

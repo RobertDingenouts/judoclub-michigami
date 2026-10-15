@@ -59,7 +59,7 @@ const CATEGORIES: Record<string, Category> = {
   'ukemi-waza': {
     nameNl: 'Valbreektechnieken',
     nameJa: 'Ukemi-waza',
-    icon: '🛡️',
+    icon: '受',
     techniques: [
       { id: 'ukemi-1', nameJa: 'Ushiro-ukemi', nameNl: 'Achterwaarts vallen', youtubeId: '_g7rvsxTkz8' },
       { id: 'ukemi-2', nameJa: 'Yoko-ukemi', nameNl: 'Zijwaarts vallen', youtubeId: 'JCwK1Ia4jsc' },
@@ -70,7 +70,7 @@ const CATEGORIES: Record<string, Category> = {
   'ashi-waza': {
     nameNl: 'Beenworpen',
     nameJa: 'Ashi-waza',
-    icon: '🦵',
+    icon: '足',
     techniques: [
       { id: 'ashi-1', nameJa: 'O-soto-gari', nameNl: 'Grote buitenwaartse veeg', youtubeId: 'c-A_nP7mKAc' },
       { id: 'ashi-2', nameJa: 'De-ashi-barai', nameNl: 'Voorwaartse voetveeg', youtubeId: '4BUUvqxi_Kk' },
@@ -84,15 +84,15 @@ const CATEGORIES: Record<string, Category> = {
       { id: 'ashi-10', nameJa: 'Ko-soto-gari', nameNl: 'Kleine buitenwaartse veeg', youtubeId: 'jeQ541ScLB4' },
       { id: 'ashi-11', nameJa: 'Sasae-tsurikomi-ashi', nameNl: 'Ondersteunende oplichtende voet', youtubeId: '699i--pvYmE' },
       { id: 'ashi-12', nameJa: 'Harai-tsurikomi-ashi', nameNl: 'Veeg-oplichtende voet', youtubeId: 'gGPXvWL8VbE' },
-      { id: 'ashi-13', nameJa: 'Soto-gake', nameNl: 'Buitenwaartse haak', youtubeId: '_1eygIXLD_w' },
-      { id: 'ashi-14', nameJa: 'Ko-uchi-makikomi', nameNl: 'Kleine binnenwaartse meidraai', youtubeId: 'ROeayhvom9U' },
-      { id: 'ashi-15', nameJa: 'Ashi-guruma', nameNl: 'Been-wiel' },
+      { id: 'ashi-13', nameJa: 'Soto-gake', nameNl: 'Buitenwaartse haak' },
+      { id: 'ashi-14', nameJa: 'Ko-uchi-makikomi', nameNl: 'Kleine binnenwaartse meidraai', youtubeId: '_1eygIXLD_w' },
+      { id: 'ashi-15', nameJa: 'Ashi-guruma', nameNl: 'Been-wiel', youtubeId: 'ROeayhvom9U' },
     ]
   },
   'koshi-waza': {
     nameNl: 'Heupworpen',
     nameJa: 'Koshi-waza',
-    icon: '🔄',
+    icon: '腰',
     techniques: [
       { id: 'koshi-1', nameJa: 'Uki-goshi', nameNl: 'Zwevende heupworp', youtubeId: 'bPKwtB4lyOQ' },
       { id: 'koshi-2', nameJa: 'Kubi-nage', nameNl: 'Nekworp', youtubeId: 'F-4fyNwx52w' },
@@ -105,16 +105,16 @@ const CATEGORIES: Record<string, Category> = {
       { id: 'koshi-9', nameJa: 'Utsuri-goshi', nameNl: 'Veranderende heupworp', youtubeId: '4pQd_bEnlf0' },
       { id: 'koshi-10', nameJa: 'Uchi-mata', nameNl: 'Binnenwaartse dijworp', youtubeId: 'iUpSu5J-bgw' },
       { id: 'koshi-11', nameJa: 'O-goshi', nameNl: 'Grote heupworp', youtubeId: 'yhu1mfy2vJ4' },
-      { id: 'koshi-12', nameJa: 'Ko-tsuri-goshi', nameNl: 'Kleine opgetilde heupworp', youtubeId: 'SnZciTAY9vc' },
-      { id: 'koshi-13', nameJa: 'O-guruma', nameNl: 'Groot wiel', youtubeId: 'MGlyKmSuzdc' },
-      { id: 'koshi-14', nameJa: 'Yama-arashi', nameNl: 'Bergstorm' },
+      { id: 'koshi-12', nameJa: 'Ko-tsuri-goshi', nameNl: 'Kleine opgetilde heupworp', youtubeId: 'aNrgTx4--L0' },
+      { id: 'koshi-13', nameJa: 'O-guruma', nameNl: 'Groot wiel', youtubeId: 'SnZciTAY9vc' },
+      { id: 'koshi-14', nameJa: 'Yama-arashi', nameNl: 'Bergstorm', youtubeId: 'MGlyKmSuzdc' },
       { id: 'koshi-15', nameJa: 'Obi-goshi', nameNl: 'Riemplaats heupworp' },
     ]
   },
   'kata-waza': {
     nameNl: 'Schouderworpen',
     nameJa: 'Kata-waza',
-    icon: '💪',
+    icon: '肩',
     techniques: [
       { id: 'kata-1', nameJa: 'Ippon-seoi-nage', nameNl: 'Eenarmige schouderworp', youtubeId: 'FQnOlCxo4oI' },
       { id: 'kata-2', nameJa: 'Seoi-nage', nameNl: 'Schouderworp', youtubeId: 'zIq0xI0ogxk' },
@@ -127,13 +127,13 @@ const CATEGORIES: Record<string, Category> = {
   'te-waza': {
     nameNl: 'Armworpen',
     nameJa: 'Te-waza',
-    icon: '🤚',
+    icon: '手',
     techniques: [
       { id: 'te-1', nameJa: 'Tai-otoshi', nameNl: 'Lichaamsval', youtubeId: '4x6S3Q-Ktv8' },
       { id: 'te-2', nameJa: 'Uki-otoshi', nameNl: 'Zwevende val', youtubeId: '6H5tmncOY4Q' },
       { id: 'te-3', nameJa: 'Hiji-otoshi', nameNl: 'Elleboogval', youtubeId: 'oEI1bdbubVU' },
       { id: 'te-4', nameJa: 'Sukui-nage', nameNl: 'Scheppende worp', youtubeId: 'vU6aJ2kFxoI' },
-      { id: 'te-5', nameJa: 'Mochiage-otoshi', nameNl: 'Optillende val', youtubeId: '5lFXv3crN30' },
+      { id: 'te-5', nameJa: 'Mochiage-otoshi', nameNl: 'Optillende val' },
       { id: 'te-6', nameJa: 'Sumi-otoshi', nameNl: 'Hoekval', youtubeId: 'lLU9wv52ni0' },
       { id: 'te-7', nameJa: 'Obi-otoshi', nameNl: 'Riemval', youtubeId: 'ff8U2TVZIYI' },
       { id: 'te-8', nameJa: 'Kata-ashi-dori', nameNl: 'Eenbeenshouderworp', youtubeId: 'VVoMqFNVGfc' },
@@ -143,7 +143,7 @@ const CATEGORIES: Record<string, Category> = {
   'sutemi-waza': {
     nameNl: 'Offerworpen',
     nameJa: 'Sutemi-waza',
-    icon: '⬇️',
+    icon: '捨',
     techniques: [
       { id: 'sutemi-1', nameJa: 'Tomoe-nage', nameNl: 'Cirkelworp', youtubeId: '880WbHvHv6A' },
       { id: 'sutemi-2', nameJa: 'Yoko-tomoe', nameNl: 'Zijwaartse cirkelworp', youtubeId: 'lNzMK4hk-zQ' },
@@ -165,7 +165,7 @@ const CATEGORIES: Record<string, Category> = {
   'osaekomi-waza': {
     nameNl: 'Houdgrepen',
     nameJa: 'Osaekomi-waza',
-    icon: '🔒',
+    icon: '固',
     techniques: [
       { id: 'osaekomi-1', nameJa: 'Kesa-gatame', nameNl: 'Scarf-houdgreep', youtubeId: 'NDaQuJOFBYk' },
       { id: 'osaekomi-2', nameJa: 'Kuzure-kesa-gatame', nameNl: 'Gewijzigde scarf-houdgreep', youtubeId: 'Q2fb9jaoUFQ' },
@@ -186,7 +186,7 @@ const CATEGORIES: Record<string, Category> = {
   'shime-waza': {
     nameNl: 'Wurgingen',
     nameJa: 'Shime-waza',
-    icon: '😤',
+    icon: '締',
     techniques: [
       { id: 'shime-1', nameJa: 'Nami-juji-jime', nameNl: 'Gewone kruisverwurging', youtubeId: 'k2cHry9HByQ' },
       { id: 'shime-2', nameJa: 'Gyaku-juji-jime', nameNl: 'Omgekeerde kruisverwurging', youtubeId: 't3tQriIPdlI' },
@@ -205,7 +205,7 @@ const CATEGORIES: Record<string, Category> = {
   'kansetsu-waza': {
     nameNl: 'Armklemmen',
     nameJa: 'Kansetsu-waza',
-    icon: '🦾',
+    icon: '極',
     techniques: [
       { id: 'kansetsu-1', nameJa: 'Juji-gatame', nameNl: 'Kruis-armklem', youtubeId: 'OWgSOlCuMXw' },
       { id: 'kansetsu-2', nameJa: 'Ude-garami', nameNl: 'Gekruiste armklem', youtubeId: 'AIlTvZb4RlE' },
@@ -308,7 +308,7 @@ export function ExamDashboard() {
           const bgColor = BELT_COLORS[belt.color] || '#ccc';
 
           return (
-            <AnimatedButton key={belt.id} onClick={() => { setSelectedBeltId(belt.id); }} variants={subtleHover}>
+            <AnimatedButton key={belt.id} onClick={() => { setSelectedBeltId(belt.id); setShowDirectTransition(false); }}>
               <div className={`relative w-12 h-6 rounded transition-all duration-300 ${isActive ? 'scale-110 ring-2 ring-white ring-offset-2 ring-offset-[#a90000]' : 'hover:scale-105'}`} style={{ background: bgColor, boxShadow: isActive ? '0 4px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2)' : '0 2px 4px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.2)' }} title={t(belt.name)}>
                 <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] whitespace-nowrap opacity-0 hover:opacity-100 transition-opacity">
                   {t(belt.name)}
@@ -355,7 +355,7 @@ export function ExamDashboard() {
                   className="w-full p-3 sm:p-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
                 >
                 <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center text-lg sm:text-xl shadow-sm">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center text-xl sm:text-2xl font-bold text-[#a90000] shadow-sm">
                     {cat.icon}
                   </div>
                   <div className="text-left">
@@ -464,29 +464,29 @@ export function ExamDashboard() {
             </div>
           </div>
 
-          {/* Direct Transition Toggle */}
+          {/* Nieuw vanaf — keus van welke band je over gaat */}
           <div>
-            <label className="block text-sm font-semibold text-[#a90000] mb-2 uppercase tracking-wide">{t('Directe overgang')}</label>
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => setShowDirectTransition(!showDirectTransition)}
-                className={`w-12 h-6 rounded-lg transition-colors relative ${showDirectTransition ? 'bg-[#DC143C]' : 'bg-gray-300'}`}
-              >
-                <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform shadow ${showDirectTransition ? 'left-7' : 'left-1'}`}></div>
-              </button>
-              <span className="text-sm text-gray-600">{t('Van band overslaan')}</span>
+            <label className="block text-sm font-semibold text-[#a90000] mb-2 uppercase tracking-wide">{t('Nieuw vanaf')}</label>
+            <div className="flex flex-wrap gap-2">
+              {(() => {
+                const idx = BELT_LEVELS.findIndex(b => b.id === selectedBeltId)
+                const opts = [BELT_LEVELS[idx - 1], BELT_LEVELS[idx - 2]].filter(Boolean)
+                if (!opts.length) return <span className="text-xs text-gray-500">{t('Eerste niveau — alles is nieuw')}</span>
+                return opts.map(b => {
+                  const actief = viewMode === 'new' && (showDirectTransition ? fromBeltId === b.id : b.id === opts[0].id)
+                  return (
+                    <button
+                      key={b.id}
+                      onClick={() => { setFromBeltId(b.id); setShowDirectTransition(b.id !== opts[0].id); setViewMode('new'); }}
+                      className={`px-3 py-1.5 text-xs font-semibold rounded-lg border-2 transition-all ${actief ? 'border-[#DC143C] bg-[#DC143C] text-white' : 'border-gray-300 text-gray-600 hover:border-[#DC143C] hover:text-[#DC143C]'}`}
+                    >
+                      Nieuw vanaf {t(b.name)}
+                    </button>
+                  )
+                })
+              })()}
             </div>
-            {showDirectTransition && (
-              <select
-                value={fromBeltId}
-                onChange={(e) => setFromBeltId(e.target.value)}
-                className="w-full mt-2 p-2 border-2 border-gray-300 rounded-lg text-sm focus:border-[#a90000] focus:outline-none"
-              >
-                {BELT_LEVELS.filter(b => !b.isSlip).map(belt => (
-                  <option key={belt.id} value={belt.id}>{t(belt.name)}</option>
-                ))}
-              </select>
-            )}
+            <p className="text-[11px] text-gray-500 mt-1.5">{t('Gebruik dit als je een band of slip overslaat — er worden dan meer technieken verwacht.')}</p>
           </div>
         </div>
       </div>
