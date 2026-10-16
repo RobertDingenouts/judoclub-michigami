@@ -211,32 +211,38 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
     if (!w) { alert("Pop-up geblokkeerd — sta pop-ups toe om te printen"); return }
     const ok = (x: Deelnemer) => !x.uit && x.verwacht !== false
     const sortNaam = (a: Deelnemer, b: Deelnemer) => (a.v + a.a).localeCompare(b.v + b.a)
-    const rows = (arr: Deelnemer[]) => arr.sort(sortNaam).map(x => `<tr><td class="k"></td><td class="n">${x.v} ${x.a}</td><td>${x.c}</td><td>${x.l ?? "?"}</td><td>${x.bl}</td></tr>`).join("")
-    const groepen = state!.poeelen
-      .map(p => ({ naam: p.naam, arr: p.m.map(pers).filter((x): x is Deelnemer => !!x && ok(x)) }))
-      .filter(g => g.arr.length > 0)
-    const zonder = state!.deelnemers.filter(x => ok(x) && !inPoel(x.id))
-    const totaal = groepen.reduce((s, g) => s + g.arr.length, 0) + zonder.length
+    // a-d groepering op poelnummer, zoals het ouderwetse inschrijfblad: Id | vereniging | voornaam | achternaam | vink
+    const idVan = new Map<string, number>()
+    state!.poeelen.forEach((p, i) => p.m.forEach(id => idVan.set(id, i + 1)))
+    const rijen = state!.deelnemers.filter(ok).sort((a, b) => {
+      const ia = idVan.get(a.id) ?? 99, ib = idVan.get(b.id) ?? 99
+      return ia - ib || sortNaam(a, b)
+    }).map((x, n, arr) => {
+      const id = idVan.get(x.id) ?? "–"
+      const vorige = arr[n - 1] ? (idVan.get(arr[n - 1].id) ?? 99) : null
+      const scheiding = vorige !== null && vorige !== (idVan.get(x.id) ?? 99) ? " grp" : ""
+      return `<tr class="${scheiding}"><td class="id">${id}</td><td>${x.c}</td><td>${x.v}</td><td class="n">${x.a}</td><td class="k"></td></tr>`
+    }).join("")
+    const totaal = state!.deelnemers.filter(ok).length
     w.document.write(`<html><head><title>Aanwezigheidslijst</title><style>
-      @page { size: A4 portrait; margin: 14mm; }
+      @page { size: A4 portrait; margin: 12mm 14mm; }
       html,body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-      body{font-family:'Times New Roman',serif;color:#000;margin:0}
-      h1{font-size:20px;margin:0 0 2px} .sub{font-size:13px;color:#333;margin-bottom:14px}
-      h2{font-size:14px;margin:14px 0 4px;border-bottom:2px solid #a90000;padding-bottom:2px}
-      table{border-collapse:collapse;width:100%;font-size:13px}
-      th,td{border:1px solid #999;padding:5px 7px;text-align:left}
-      th{background:#eee;font-size:11px}
-      td.k{width:22px} td.n{width:52mm;font-weight:bold}
-      td.k::after{content:"";display:inline-block;width:13px;height:13px;border:1.5px solid #000;vertical-align:middle}
-      .totaal{margin-top:14px;font-size:13px}
+      body{font-family:Arial,Helvetica,sans-serif;color:#000;margin:0}
+      h1{font-size:15px;margin:0 0 1px} .sub{font-size:11px;color:#333;margin-bottom:8px}
+      table{border-collapse:collapse;width:100%;font-size:12px}
+      th,td{border-bottom:1px solid #bbb;padding:3.5px 6px;text-align:left}
+      th{border-bottom:2px solid #000;font-size:10px;text-transform:uppercase;letter-spacing:.4px}
+      td.id{width:10mm;font-weight:bold} td.n{width:45mm} td.k{width:14mm}
+      tr.grp td{border-top:2px solid #000}
+      td.k::after{content:"";display:inline-block;width:12px;height:12px;border:1.5px solid #000;vertical-align:middle}
+      .totaal{margin-top:8px;font-size:11px;color:#333}
       @media print{button{display:none}}
     </style></head><body>
       <button onclick="print()" style="margin:10px;padding:8px 16px">🖨 Print</button>
       <h1>Aanwezigheidslijst — Jubileumtoernooi 50 jaar OVJV</h1>
-      <div class="sub">Zaterdag 17 oktober 2026 · Oud-Vossemeer (De Vossenkuil) · vink aan bij binnenkomst</div>
-      ${groepen.map(g => `<h2>${g.naam} (${g.arr.length})</h2><table><tr><th></th><th>naam</th><th>vereniging</th><th>leeft.</th><th>band</th></tr>${rows(g.arr)}</table>`).join("")}
-      ${zonder.length ? `<h2>Nog niet ingedeeld (${zonder.length})</h2><table><tr><th></th><th>naam</th><th>vereniging</th><th>leeft.</th><th>band</th></tr>${rows(zonder)}</table>` : ""}
-      <div class="totaal"><b>Verwacht: ${totaal} deelnemers.</b> &nbsp;&nbsp; Afwezig gemeld: ${state!.deelnemers.filter(x => !x.uit && x.verwacht === false).length}</div>
+      <div class="sub">Zaterdag 17 oktober 2026 · Oud-Vossemeer (De Vossenkuil) · Id = polennummer · vink aan bij opkomst</div>
+      <table><tr><th>Id</th><th>Vereniging</th><th>Voornaam</th><th>Achternaam</th><th></th></tr>${rijen}</table>
+      <div class="totaal"><b>Verwacht: ${totaal} deelnemers</b> · afgemeld: ${state!.deelnemers.filter(x => x.uit).length} · afwezig gemeld: ${state!.deelnemers.filter(x => !x.uit && x.verwacht === false).length}</div>
     </body></html>`)
     w.document.close()
   }
