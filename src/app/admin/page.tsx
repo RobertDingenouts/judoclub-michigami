@@ -90,7 +90,7 @@ export default async function AdminStart() {
     db.member.findMany({
       where: { clubStatus: 'GESTOPT' },
       select: { id: true, firstName: true, lastName: true, leaveDate: true },
-      orderBy: { leaveDate: 'desc' }, take: 30,
+      orderBy: { leaveDate: 'desc' }, take: 60,
     }),
     // CRM-groei: ruwe data voor de kwartaalgrafiek (nieuwe/gestopte/proef-leden).
     db.member.findMany({
