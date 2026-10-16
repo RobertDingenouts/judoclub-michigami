@@ -50,7 +50,7 @@ export default async function AanwezigheidPage({
           <Link key={p.label} href={qs({ periode: p.label })}
             className={`rounded-full border px-3.5 py-1.5 text-xs font-medium ${p.label === periode && !params.van ? 'border-[#a90000] bg-[#a90000] text-white' : 'border-gray-300 bg-white text-gray-600'}`}>{p.label}</Link>
         ))}
-        <Link href={`/admin/aanwezigheid?periode=&van=${nu.getFullYear()}-01-01&tot=${nu.getFullYear() + 1}-12-31&groepen=${groepen.join(',')}`}
+        <Link href={`/admin/aanwezigheid?periode=&van=${nu.getFullYear() + 1}-01-01&tot=${nu.getFullYear() + 2}-01-01&groepen=${groepen.join(',')}`}
           className={`rounded-full border px-3.5 py-1.5 text-xs font-medium ${params.van ? 'border-[#a90000] bg-[#a90000] text-white' : 'border-gray-300 bg-white text-gray-600'}`}>
           📅 heel {nu.getFullYear() + 1}
         </Link>

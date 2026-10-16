@@ -185,7 +185,7 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
       const cells = ps.map(p => {
         const [a, b] = p.split("/").map(Number)
         const speelt = a === j + 1 || b === j + 1
-        return speelt ? `<td class="speelt"></td>` : `<td class="x"><svg width="100%" height="100%" preserveAspectRatio="none"><rect width="100%" height="100%" fill="#111"/></svg></td>`
+        return speelt ? `<td class="speelt"></td>` : `<td class="x"><svg width="100%" height="100%" preserveAspectRatio="none"><rect width="100%" height="100%" fill="#555"/></svg></td>`
       }).join("")
       return `<tr><td class="nr">${j + 1}</td><td class="naam">${x.v} ${x.a}</td><td class="ver">${x.c}</td>${cells}<td class="tot"></td><td class="tot"></td><td class="tot"></td></tr>`
     }).join("")
@@ -201,7 +201,7 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
         <div class="juryblok">Jurylid 1: ____________________<br>Jurylid 2: ____________________<br><br>
         Scheidsrechter 1: ______________<br>Scheidsrechter 2: ______________<br>Scheidsrechter 3: ______________</div>
       </div>
-      <div class="regels">Puntentelling: Beslissing = 1 pt &nbsp;·&nbsp; Yuko = 5 pt &nbsp;·&nbsp; Waza-ari = 7 pt &nbsp;·&nbsp; Ippon = 10 pt &nbsp;&nbsp;|&nbsp;&nbsp; Shido's: 2 = yuko tegen &nbsp;·&nbsp; 3 = waza-ari tegen &nbsp;·&nbsp; 4 = hansoku-make &nbsp;&nbsp;|&nbsp;&nbsp; Osaekomi: 10s yuko / 15s waza-ari / 20s ippoon &nbsp;&nbsp;|&nbsp;&nbsp; Partijduren: juniors 2 min, seniors 3 min &nbsp;&nbsp;|&nbsp;&nbsp; Gelijk: beslissing scheidsrechter(s). &nbsp;&nbsp;Zwart vak = judoka speelt deze partij niet.</div>
+      <div class="regels">Puntentelling: Beslissing = 1 pt &nbsp;·&nbsp; Yuko = 5 pt &nbsp;·&nbsp; Waza-ari = 7 pt &nbsp;·&nbsp; Ippon = 10 pt &nbsp;&nbsp;|&nbsp;&nbsp; Shido's: 2 = yuko tegen &nbsp;·&nbsp; 3 = waza-ari tegen &nbsp;·&nbsp; 4 = hansoku-make &nbsp;&nbsp;|&nbsp;&nbsp; Osaekomi: 10s yuko / 15s waza-ari / 20s ippoon &nbsp;&nbsp;|&nbsp;&nbsp; Partijduren: juniors 2 min, seniors 3 min &nbsp;&nbsp;|&nbsp;&nbsp; Gelijk: beslissing scheidsrechter(s). &nbsp;&nbsp;Donkergrijs vak = judoka speelt deze partij niet.</div>
     </div>`
   }
   function printPoelen(indices: number[]) {
@@ -224,8 +224,8 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
       .pair{font-weight:bold}.tot{width:15mm}
       td.naam,td.ver{text-align:left}
       td.speelt{background:#fff}
-      td.x{padding:0}
-      td.x svg{display:block}
+      td.x{padding:0;position:relative;background:#555}
+      td.x svg{display:block;position:absolute;inset:0;width:100%;height:100%}
       .onderkant{display:flex;gap:20px;margin-top:14px;align-items:flex-start}
       .resblok table{width:auto;table-layout:auto}
       .res th,.res td{border:1.5px solid #000;padding:4px 6px;font-size:12px;text-align:left;height:28px}
