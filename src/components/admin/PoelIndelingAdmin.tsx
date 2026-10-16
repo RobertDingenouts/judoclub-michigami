@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react"
 // ---- types ----
 type Deelnemer = {
   id: string; v: string; a: string; c: string; g: "M" | "V";
-  l: number | null; w: number | null; b: string; bl: string; slip?: string; uit?: boolean; uitVan?: number; vast?: boolean
+  l: number | null; w: number | null; b: string; bl: string; slip?: string; uit?: boolean; uitVan?: number; vast?: boolean; verwacht?: boolean
 }
 type Poel = { naam: string; m: string[] }
 type State = { deelnemers: Deelnemer[]; poeelen: Poel[] }
@@ -81,6 +81,7 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
   const [dropState, setDropState] = useState<Record<string, "ok" | "nee">>({})
   const [menuVoor, setMenuVoor] = useState<{ id: string; x: number; y: number } | null>(null)
   const [bewerken, setBewerken] = useState<string | null>(null)
+  const [toonAanw, setToonAanw] = useState(false)
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const justDragged = useRef(false)
   const isTouch = typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches
@@ -204,6 +205,40 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
       </div>
       <div class="regels">Puntentelling: Beslissing = 1 pt &nbsp;·&nbsp; Yuko = 5 pt &nbsp;·&nbsp; Waza-ari = 7 pt &nbsp;·&nbsp; Ippon = 10 pt &nbsp;&nbsp;|&nbsp;&nbsp; Shido's: 2 = yuko tegen &nbsp;·&nbsp; 3 = waza-ari tegen &nbsp;·&nbsp; 4 = hansoku-make &nbsp;&nbsp;|&nbsp;&nbsp; Osaekomi: 10s yuko / 15s waza-ari / 20s ippoon &nbsp;&nbsp;|&nbsp;&nbsp; Partijduren: juniors 2 min, seniors 3 min &nbsp;&nbsp;|&nbsp;&nbsp; Gelijk: beslissing scheidsrechter(s). &nbsp;&nbsp;Donkergrijs vak = judoka speelt deze partij niet.</div>
     </div>`
+  }
+  function printAanwezigheid() {
+    const w = window.open("", "_blank", "width=900,height=700")
+    if (!w) { alert("Pop-up geblokkeerd — sta pop-ups toe om te printen"); return }
+    const ok = (x: Deelnemer) => !x.uit && x.verwacht !== false
+    const sortNaam = (a: Deelnemer, b: Deelnemer) => (a.v + a.a).localeCompare(b.v + b.a)
+    const rows = (arr: Deelnemer[]) => arr.sort(sortNaam).map(x => `<tr><td class="k"></td><td class="n">${x.v} ${x.a}</td><td>${x.c}</td><td>${x.l ?? "?"}</td><td>${x.bl}</td></tr>`).join("")
+    const groepen = state!.poeelen
+      .map(p => ({ naam: p.naam, arr: p.m.map(pers).filter((x): x is Deelnemer => !!x && ok(x)) }))
+      .filter(g => g.arr.length > 0)
+    const zonder = state!.deelnemers.filter(x => ok(x) && !inPoel(x.id))
+    const totaal = groepen.reduce((s, g) => s + g.arr.length, 0) + zonder.length
+    w.document.write(`<html><head><title>Aanwezigheidslijst</title><style>
+      @page { size: A4 portrait; margin: 14mm; }
+      html,body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+      body{font-family:'Times New Roman',serif;color:#000;margin:0}
+      h1{font-size:20px;margin:0 0 2px} .sub{font-size:13px;color:#333;margin-bottom:14px}
+      h2{font-size:14px;margin:14px 0 4px;border-bottom:2px solid #a90000;padding-bottom:2px}
+      table{border-collapse:collapse;width:100%;font-size:13px}
+      th,td{border:1px solid #999;padding:5px 7px;text-align:left}
+      th{background:#eee;font-size:11px}
+      td.k{width:22px} td.n{width:52mm;font-weight:bold}
+      td.k::after{content:"";display:inline-block;width:13px;height:13px;border:1.5px solid #000;vertical-align:middle}
+      .totaal{margin-top:14px;font-size:13px}
+      @media print{button{display:none}}
+    </style></head><body>
+      <button onclick="print()" style="margin:10px;padding:8px 16px">🖨 Print</button>
+      <h1>Aanwezigheidslijst — Jubileumtoernooi 50 jaar OVJV</h1>
+      <div class="sub">Zaterdag 17 oktober 2026 · Oud-Vossemeer (De Vossenkuil) · vink aan bij binnenkomst</div>
+      ${groepen.map(g => `<h2>${g.naam} (${g.arr.length})</h2><table><tr><th></th><th>naam</th><th>vereniging</th><th>leeft.</th><th>band</th></tr>${rows(g.arr)}</table>`).join("")}
+      ${zonder.length ? `<h2>Nog niet ingedeeld (${zonder.length})</h2><table><tr><th></th><th>naam</th><th>vereniging</th><th>leeft.</th><th>band</th></tr>${rows(zonder)}</table>` : ""}
+      <div class="totaal"><b>Verwacht: ${totaal} deelnemers.</b> &nbsp;&nbsp; Afwezig gemeld: ${state!.deelnemers.filter(x => !x.uit && x.verwacht === false).length}</div>
+    </body></html>`)
+    w.document.close()
   }
   function printPoelen(indices: number[]) {
     const w = window.open("", "_blank", "width=1000,height=700")
@@ -385,9 +420,30 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
         <button onClick={() => setShowNieuw(s => !s)} className="bg-[#a90000] text-white rounded-lg px-3 py-1.5 text-sm">+ Deelnemer</button>
         <button onClick={nieuwePoel} className="bg-[#a90000] text-white rounded-lg px-3 py-1.5 text-sm">+ Nieuwe poel</button>
         <button onClick={() => printPoelen(state.poeelen.map((_, i) => i))} className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm">🖨 Print alle poelen</button>
+        <button onClick={() => setToonAanw(s => !s)} className={`rounded-lg px-3 py-1.5 text-sm ${toonAanw ? "bg-[#2a2a2a] text-white" : "border border-gray-300"}`}>📋 Aanwezigheid</button>
         <button onClick={herstel} className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm">Herstel start</button>
         <span className="ml-auto text-xs text-gray-500">{actief} deelnemers · {state.poeelen.length} poelen · {status}</span>
       </div>
+      {toonAanw && (
+        <div className="mb-3 rounded-xl border border-gray-200 bg-white p-3">
+          <div className="flex flex-wrap items-center gap-2 mb-2">
+            <b className="text-sm">📋 Aanwezigheid toernooi</b>
+            <span className="text-[11px] text-gray-500">vink aan wie erbij moet zijn — automatisch opgeslagen; afgevinkten verdwijnen uit de print</span>
+            <button onClick={() => update(s => ({ ...s, deelnemers: s.deelnemers.map(d => ({ ...d, verwacht: true })) }))} className="border border-gray-300 rounded px-2 py-1 text-xs">alles aan</button>
+            <button onClick={() => update(s => ({ ...s, deelnemers: s.deelnemers.map(d => ({ ...d, verwacht: false })) }))} className="border border-gray-300 rounded px-2 py-1 text-xs">alles uit</button>
+            <button onClick={printAanwezigheid} className="ml-auto bg-[#a90000] text-white rounded-lg px-3 py-1.5 text-sm">🖨 Print aanwezigheidslijst</button>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-1">
+            {state.deelnemers.filter(d => !d.uit).sort((a, b) => (a.v + a.a).localeCompare(b.v + b.a)).map(d => (
+              <label key={d.id} className="flex items-center gap-2 text-sm cursor-pointer py-0.5">
+                <input type="checkbox" checked={d.verwacht !== false} onChange={() => bewerk(d.id, { verwacht: d.verwacht === false })} className="w-4 h-4 accent-[#a90000]" />
+                <span className={d.verwacht === false ? "text-gray-400 line-through" : ""}>{d.v} {d.a}</span>
+                <span className="text-[11px] text-gray-500 truncate">{d.c} · {inPoel(d.id)?.naam || "niet ingedeeld"}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
       <div className="flex flex-wrap gap-3 items-start">
         <Kolom kind="toew" />
         {state.poeelen.map((_, i) => <Kolom key={i} kind="poel" i={i} />)}
