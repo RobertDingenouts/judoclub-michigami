@@ -225,17 +225,17 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
     }).join("")
     const totaal = state!.deelnemers.filter(ok).length
     w.document.write(`<html><head><title>Aanwezigheidslijst</title><style>
-      @page { size: A4 portrait; margin: 12mm 14mm; }
+      @page { size: A4 portrait; margin: 10mm 12mm; }
       html,body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
       body{font-family:Arial,Helvetica,sans-serif;color:#000;margin:0}
-      h1{font-size:15px;margin:0 0 1px} .sub{font-size:11px;color:#333;margin-bottom:8px}
-      table{border-collapse:collapse;width:100%;font-size:12px}
-      th,td{border-bottom:1px solid #bbb;padding:3.5px 6px;text-align:left}
-      th{border-bottom:2px solid #000;font-size:10px;text-transform:uppercase;letter-spacing:.4px}
+      h1{font-size:14px;margin:0 0 1px} .sub{font-size:10.5px;color:#333;margin-bottom:6px}
+      table{border-collapse:collapse;width:100%;font-size:11px}
+      th,td{border-bottom:1px solid #bbb;padding:2.5px 6px;text-align:left}
+      th{border-bottom:2px solid #000;font-size:9.5px;text-transform:uppercase;letter-spacing:.4px}
       td.id{width:10mm;font-weight:bold} td.n{width:45mm} td.k{width:14mm}
       tr.grp td{border-top:2px solid #000}
       td.k::after{content:"";display:inline-block;width:12px;height:12px;border:1.5px solid #000;vertical-align:middle}
-      .totaal{margin-top:8px;font-size:11px;color:#333}
+      .totaal{margin-top:6px;font-size:10.5px;color:#333}
       @media print{button{display:none}}
     </style></head><body>
       <button onclick="print()" style="margin:10px;padding:8px 16px">🖨 Print</button>
