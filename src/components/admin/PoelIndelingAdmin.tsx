@@ -230,7 +230,7 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
       body{font-family:Arial,Helvetica,sans-serif;color:#000;margin:0}
       h1{font-size:14px;margin:0 0 1px} .sub{font-size:10.5px;color:#333;margin-bottom:6px}
       table{border-collapse:collapse;width:100%;font-size:11px}
-      th,td{border-bottom:1px solid #bbb;padding:2.5px 6px;text-align:left}
+      th,td{border-bottom:1px solid #bbb;padding:2px 6px;text-align:left}
       th{border-bottom:2px solid #000;font-size:9.5px;text-transform:uppercase;letter-spacing:.4px}
       td.id{width:10mm;font-weight:bold} td.n{width:45mm} td.k{width:14mm}
       tr.grp td{border-top:2px solid #000}
