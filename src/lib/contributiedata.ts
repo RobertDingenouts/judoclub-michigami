@@ -2,6 +2,7 @@
 // Zowel de pagina /admin/contributie als de widget op het startscherm gebruikt
 // dit — dezelfde rijen, dezelfde regels (periodefilter, PROEF/SENIOREN uit).
 import { db } from '@/lib/db'
+import type { Prisma } from '@prisma/client'
 
 export type ContribItem = { omschrijving: string; bedrag: number }
 export type ContribRij = {
@@ -33,23 +34,24 @@ function kwartaalRange(label: string): { start: Date; end: Date } | null {
 // Zet het volgende kwartaal klaar zodra het in beeld komt: periode + facturen
 // voor iedereen die aan het begin van die periode lid is. Idempotent — bestaande
 // periodes/facturen worden nooit aangeraakt.
-async function zorgVoorPeriode(label: string) {
-  const range = kwartaalRange(label)
-  if (!range) return null
-  const bestaand = await db.contributionPeriod.findUnique({ where: { label } })
-  if (bestaand) return bestaand
-  const created = await db.contributionPeriod.create({ data: { label, start: range.start, end: range.end } })
+async function aanmaakPayments(period: { id: string; amount: Prisma.Decimal | number; start: Date; end: Date }) {
   const leden = await db.member.findMany({
     where: {
       clubStatus: { notIn: ['PROEF', 'GESTOPT'] },
-      joinDate: { lte: range.end },
-      OR: [{ leaveDate: null }, { leaveDate: { gte: range.start } }],
+      joinDate: { lte: period.end },
+      OR: [{ leaveDate: null }, { leaveDate: { gte: period.start } }],
+      // Alleen leden die in deze periode nog géén rij hebben (idempotent).
+      payments: { none: { periodId: period.id } },
     },
     select: { id: true, clubStatus: true },
   })
+  if (leden.length === 0) return
+  // Backfill in een al gestarte periode: vervaldatum wordt vandaag, anders staat
+  // een pas ingeschreven lid meteen 'te laat' in het overzicht.
+  const due = period.start < new Date() ? new Date() : period.start
   await db.payment.createMany({
     data: leden.map(m => ({
-      memberId: m.id, periodId: created.id, amount: created.amount, dueDate: range.start,
+      memberId: m.id, periodId: period.id, amount: period.amount, dueDate: due,
       // Vrijgestelden én reserves zijn voorgoed vrijgesteld: elke nieuwe periode
       // krijgt meteen VIJGESTELD, nooit OPEN (anders staan trainers e.d.
       // structureel 'schuldig' in het overzicht).
@@ -57,6 +59,22 @@ async function zorgVoorPeriode(label: string) {
     })),
     skipDuplicates: true,
   })
+}
+
+async function zorgVoorPeriode(label: string) {
+  const range = kwartaalRange(label)
+  if (!range) return null
+  const bestaand = await db.contributionPeriod.findUnique({ where: { label } })
+  if (bestaand) {
+    // Wie pas ná het aanmaken van de periode inschreef (of in die periode van
+    // PROEF naar LID ging) kreeg destijds geen payment-rij → geen factuur
+    // mogelijk. Backfill die rijen alsnog, maar alleen voor de lopende of
+    // toekomstige periode — verleden periodes laten we met rust.
+    if (bestaand.end >= new Date()) await aanmaakPayments(bestaand)
+    return bestaand
+  }
+  const created = await db.contributionPeriod.create({ data: { label, start: range.start, end: range.end } })
+  await aanmaakPayments(created)
   return created
 }
 
