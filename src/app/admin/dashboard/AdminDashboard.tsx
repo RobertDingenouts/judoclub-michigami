@@ -71,6 +71,7 @@ export type DashData = {
   geplandeExamens: { id: string; naam: string; datum: string }[]
   vlaggen: { id: string; naam: string; status: string; groep: string }[]
   recentGestopt: { id: string; naam: string; leaveDate: string | null }[]
+  groei: { kwartalen: { key: string; label: string; nieuw: number; gestopt: number; proef: number }[]; proefNu: number }
 }
 
 
@@ -103,6 +104,7 @@ const WIDGETS: WDef[] = [
   { i: 'gestopt', titel: '🚪 Recent gestopt', def: { x: 0, y: 24, w: 5, h: 4, minW: 2, minH: 2 } },
   { i: 'betald', titel: '✅ Recent betaald', def: { x: 5, y: 24, w: 5, h: 4, minW: 2, minH: 2 } },
   { i: 'snel', titel: '⚡ Snel naar', def: { x: 10, y: 24, w: 7, h: 4, minW: 2, minH: 2 } },
+  { i: 'groei', titel: '📈 Leden per kwartaal', def: { x: 17, y: 24, w: 7, h: 5, minW: 3, minH: 3 } },
 ]
 
 const LS_LAYOUT = 'mj-dash-layout-v7'
@@ -383,6 +385,7 @@ function Widget({ id, d }: { id: string; d: DashData }) {
     case 'inschrijvingen': return <WInschrijvingen d={d} />
     case 'trend': return <WTrend d={d} />
     case 'gestopt': return <WGestopt d={d} />
+    case 'groei': return <WGroei d={d} />
     case 'betald': return <WRecentBetald d={d} />
     case 'snel': return <WSnel />
     default: return null
@@ -666,13 +669,58 @@ function WTrend({ d }: { d: DashData }) {
 // ── Recent gestopt ─────────────────────────────────────────────────────────
 function WGestopt({ d }: { d: DashData }) {
   return (
-    <div className="space-y-1">
+    <div className="max-h-full space-y-1 overflow-y-auto">
       {d.recentGestopt.length === 0 ? <Leeg tekst="Niemand gestopt" /> : d.recentGestopt.map(m => (
         <Link key={m.id} href="/admin/leden" className="flex items-center justify-between rounded px-1 py-0.5 text-[11px] hover:bg-gray-50">
           <span className="truncate text-[#2a2a2a]">{m.naam}</span>
           <span className="shrink-0 text-[9px] text-gray-400">{m.leaveDate ? new Date(m.leaveDate).toLocaleDateString('nl-NL') : '—'}</span>
         </Link>
       ))}
+    </div>
+  )
+}
+
+// ── Leden per kwartaal (CRM-groei) ─────────────────────────────────────────
+function WGroei({ d }: { d: DashData }) {
+  const k = d.groei.kwartalen
+  const max = Math.max(4, ...k.map(x => Math.max(x.nieuw, x.gestopt, x.proef)))
+  const W = 340, H = 118, baseY = H - 15
+  const groupW = W / k.length, barW = Math.min(11, (groupW - 8) / 3)
+  const C = { nieuw: '#16a34a', gestopt: '#a90000', proef: '#d97706' }
+  const dit = k[k.length - 1]
+  const netto = dit.nieuw - dit.gestopt
+  return (
+    <div className="flex h-full flex-col">
+      <div className="mb-1 flex flex-wrap gap-x-3 gap-y-0.5 text-[10px] text-gray-600">
+        <span>Actief <b>{d.tiles.actieveLeden}</b></span>
+        <span style={{ color: C.proef }}>Proef nu <b>{d.groei.proefNu}</b></span>
+        <span style={{ color: C.nieuw }}>Nieuw {dit.label} <b>{dit.nieuw}</b></span>
+        <span style={{ color: C.gestopt }}>Gestopt <b>{dit.gestopt}</b></span>
+        <span>Netto <b style={{ color: netto >= 0 ? C.nieuw : C.gestopt }}>{netto >= 0 ? '+' : ''}{netto}</b></span>
+      </div>
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full flex-1" preserveAspectRatio="none">
+        <line x1={0} y1={baseY} x2={W} y2={baseY} stroke="#e5e5e5" />
+        {k.map((x, i) => (
+          <g key={x.key}>
+            {([['nieuw', x.nieuw, C.nieuw], ['gestopt', x.gestopt, C.gestopt], ['proef', x.proef, C.proef]] as const).map(([f, v, c], j) => {
+              const h = v === 0 ? 0 : Math.max(3, (v / max) * (baseY - 22))
+              const bx = i * groupW + (groupW - (barW * 3 + 2)) / 2 + j * (barW + 1)
+              return (
+                <g key={f}>
+                  <rect x={bx} y={baseY - h} width={barW} height={h} rx={1.5} fill={c} opacity={0.9} />
+                  {v > 0 && <text x={bx + barW / 2} y={baseY - h - 2.5} textAnchor="middle" fontSize="7" fill="#666">{v}</text>}
+                </g>
+              )
+            })}
+            <text x={i * groupW + groupW / 2} y={H - 4} textAnchor="middle" fontSize="7.5" fill="#888">{x.label}</text>
+          </g>
+        ))}
+      </svg>
+      <div className="mt-0.5 flex gap-3 text-[9px] text-gray-500">
+        <span><i className="mr-1 inline-block h-2 w-2 rounded-sm align-middle" style={{ background: C.nieuw }} />nieuw</span>
+        <span><i className="mr-1 inline-block h-2 w-2 rounded-sm align-middle" style={{ background: C.gestopt }} />gestopt</span>
+        <span><i className="mr-1 inline-block h-2 w-2 rounded-sm align-middle" style={{ background: C.proef }} />proef</span>
+      </div>
     </div>
   )
 }

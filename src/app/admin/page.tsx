@@ -22,7 +22,7 @@ export default async function AdminStart() {
     actieveLeden, pendingApps, openPayments, nogTeBetalen, allePeriodes,
     komendeDagen, dagenWeek,
     attTotal,
-    ledenVoorExamen, gevlagden, recentGestopt, zoekAlle,
+    ledenVoorExamen, gevlagden, recentGestopt, groeiRuW, zoekAlle,
     openRekeningen, recentBetald,
     examOpen, diplomaRecent,
   ] = await Promise.all([
@@ -90,7 +90,11 @@ export default async function AdminStart() {
     db.member.findMany({
       where: { clubStatus: 'GESTOPT' },
       select: { id: true, firstName: true, lastName: true, leaveDate: true },
-      orderBy: { leaveDate: 'desc' }, take: 8,
+      orderBy: { leaveDate: 'desc' }, take: 15,
+    }),
+    // CRM-groei: ruwe data voor de kwartaalgrafiek (nieuwe/gestopte/proef-leden).
+    db.member.findMany({
+      select: { joinDate: true, leaveDate: true, clubStatus: true },
     }),
     // Zoekdataset startpagina: WERKELIJK iedereen (ook senioren, trainers,
     // vrijgestelden, gearchiveerden) — de examenlijst laat die groepen weg,
@@ -194,6 +198,22 @@ export default async function AdminStart() {
     }
   })
 
+  // ── CRM-groei: per kwartaal (terugkijkend 8) instroom/uitroom/proef ──────
+  const groeiKwartalen: { key: string; label: string; nieuw: number; gestopt: number; proef: number }[] = []
+  for (let i = 7; i >= 0; i--) {
+    const dt = new Date(now.getFullYear(), now.getMonth() - i * 3, 1)
+    const y = dt.getFullYear(), q = Math.floor(dt.getMonth() / 3) + 1
+    groeiKwartalen.push({ key: `${y}Q${q}`, label: `Q${q} '${String(y).slice(2)}`, nieuw: 0, gestopt: 0, proef: 0 })
+  }
+  const groeiIdx = (d: Date) => groeiKwartalen.findIndex(x => x.key === `${d.getFullYear()}Q${Math.floor(d.getMonth() / 3) + 1}`)
+  let proefNu = 0
+  for (const m of groeiRuW) {
+    const isProef = m.clubStatus === 'PROEF'
+    if (isProef) proefNu++
+    if (m.joinDate) { const i = groeiIdx(m.joinDate); if (i >= 0) groeiKwartalen[i][isProef ? 'proef' : 'nieuw']++ }
+    if (m.leaveDate) { const i = groeiIdx(m.leaveDate); if (i >= 0) groeiKwartalen[i].gestopt++ }
+  }
+
   const d: DashData = {
     nowIso: now.toISOString(),
     kwLabel: kw,
@@ -247,6 +267,7 @@ export default async function AdminStart() {
     recentGestopt: recentGestopt.map(m => ({
       id: m.id, naam: `${m.firstName} ${m.lastName}`, leaveDate: m.leaveDate?.toISOString().slice(0, 10) ?? null,
     })),
+    groei: { kwartalen: groeiKwartalen, proefNu },
   }
 
   return <AdminDashboard d={d} />
