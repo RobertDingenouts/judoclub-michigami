@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react"
 // ---- types ----
 type Deelnemer = {
   id: string; v: string; a: string; c: string; g: "M" | "V";
-  l: number | null; w: number | null; b: string; bl: string; slip?: string; uit?: boolean; uitVan?: number
+  l: number | null; w: number | null; b: string; bl: string; slip?: string; uit?: boolean; uitVan?: number; vast?: boolean
 }
 type Poel = { naam: string; m: string[] }
 type State = { deelnemers: Deelnemer[]; poeelen: Poel[] }
@@ -115,6 +115,7 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
     const arr = ids.map(pers).filter(Boolean) as Deelnemer[]
     arr.sort((a, b) => {
       if (!!a.uit !== !!b.uit) return a.uit ? 1 : -1
+      if (!!a.vast !== !!b.vast) return a.vast ? 1 : -1
       if (sorteer === "leeftijd") return (a.l ?? 999) - (b.l ?? 999) || (a.w ?? 999) - (b.w ?? 999)
       if (sorteer === "gewicht") return (a.w ?? 999) - (b.w ?? 999) || (a.l ?? 999) - (b.l ?? 999)
       if (sorteer === "band") return BANDRANG.indexOf(a.b) - BANDRANG.indexOf(b.b) || (a.l ?? 0) - (b.l ?? 0)
@@ -325,6 +326,7 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
       {pool && <button onClick={e => { e.stopPropagation(); if (confirm(`${x.v} ${x.a} terugzetten naar Deelnemers?`)) verplaats(x.id, null) }} title="Terug" className="absolute right-7 top-1.5 text-red-600 text-sm">✕</button>}
       <button onClick={e => { e.stopPropagation(); setBewerken(bewerken === x.id ? null : x.id) }} title="Gegevens bewerken" className={`absolute top-1.5 text-gray-500 text-sm ${pool ? "right-12" : "right-7"} ${bewerken === x.id ? "text-[#a90000]" : ""}`}>✎</button>
       {!x.uit && <button onClick={e => { e.stopPropagation(); const r = e.currentTarget.getBoundingClientRect(); setMenuVoor({ id: x.id, x: Math.min(r.left, window.innerWidth - 230), y: Math.min(r.bottom + 4, window.innerHeight - 330) }) }} title="Verplaatsen naar..." className="absolute top-1.5 text-gray-500 hover:text-[#a90000] text-sm" style={{ right: pool ? "4.25rem" : "3rem" }}>⇄</button>}
+      {pool && !x.uit && <button onClick={e => { e.stopPropagation(); bewerk(x.id, { vast: !x.vast }) }} title={x.vast ? "Losmaken: weer meesorteren" : "Vastzetten onderaan deze poel"} className={`absolute top-1.5 text-sm ${x.vast ? "text-[#a90000]" : "text-gray-400 hover:text-[#a90000]"}`} style={{ right: "5.5rem" }}>📌</button>}
       <div className={`font-semibold text-sm ${x.uit ? "line-through" : ""}`}>{x.v} {x.a}</div>
       <div className="text-[11px] text-gray-500">{x.c} · {x.g === "V" ? "meisje" : "jongen"}{x.uit ? " · AFGEMELD" : ""}</div>
       <div className="flex gap-3 mt-1 text-xs"><span>leeftijd <b>{x.l ?? "?"}</b></span><span>gewicht <b>{x.w ?? "?"} kg</b></span></div>
