@@ -31,6 +31,7 @@ export function SidebarContent({ activeSection, onSelect }: { activeSection: Sec
     lestijden: ['lestijd', 'lestijden', 'tijd', 'tijden', 'time', 'times', 'rooster', 'schedule', 'training', 'trainen', 'woensdag', 'vrijdag', 'wednesday', 'friday'],
     locatie: ['adres', 'address', 'locatie', 'location', 'hal', 'zaal', 'knotwilg', 'vossenkuil', 'steenbergen', 'vossemeer', 'parkeren', 'parking', 'route'],
     contact: ['mail', 'email', 'bellen', 'telefoon', 'phone', 'vraag', 'question', 'contact', 'whatsapp'],
+    'wat-is-judo': ['judo', 'uitleg', 'wat is', 'beginner', 'beginners', 'hoe werkt', 'band', 'banden', 'slip', 'slips', 'graad', 'graden', 'kyu', 'dan', 'black belt', 'zachte weg', 'les', 'lesopbouw', 'judoles', 'proefles', 'kleding', 'judogi', 'pak', 'wat is judo', 'what is judo'],
     technieken: ['worp', 'worpen', 'techniek', 'technieken', 'technique', 'techniques', 'uchi mata', 'go kyaku', 'harai', 'kata', 'val', 'breakfall'],
     exameneisen: ['examen', 'examens', 'exam', 'exams', 'eisen', 'requirements', 'band', 'slip', 'kyu', 'dan', 'graden', 'slagingskans'],
     cursusjapans: ['japans', 'japanes', 'japan', 'woorden', 'words', 'termen', 'terms', 'vocabulaire', 'cursus', 'course', 'quiz', 'flashcards'],

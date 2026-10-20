@@ -1290,3 +1290,215 @@ nextjs-portal {
   width: 10px; height: 10px; border-right: 2px solid #a90000; border-bottom: 2px solid #a90000;
   opacity: 0.7;
 }
+
+
+/* ============ WAT IS JUDO — "OP DE MAT" (2026, from scratch) ============= */
+/* Tatami-esthetiek, bandenbalk, rode zegels. Geen JS-animaties: alles CSS.
+   Twee thema's via is-light/is-dark + prefers-color-scheme. */
+.waj-root {
+  --wj-bg-a: #efe9da;
+  --wj-bg-b: #e2dac5;
+  --wj-ink: #241f19;
+  --wj-ink-soft: rgba(36, 31, 25, 0.72);
+  --wj-ink-faint: rgba(36, 31, 25, 0.45);
+  --wj-red: #a90000;
+  --wj-card: rgba(255, 253, 248, 0.82);
+  --wj-card-border: rgba(120, 96, 48, 0.22);
+  --wj-card-shadow: 0 20px 44px -26px rgba(60, 45, 20, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --wj-hairline: rgba(120, 96, 48, 0.26);
+  --wj-ghost: rgba(36, 31, 25, 0.07);
+  --wj-tatami: rgba(90, 72, 40, 0.06);
+}
+.waj-root.is-dark {
+  --wj-bg-a: #16170f;
+  --wj-bg-b: #0d0e08;
+  --wj-ink: #e9e6d6;
+  --wj-ink-soft: rgba(233, 230, 214, 0.75);
+  --wj-ink-faint: rgba(233, 230, 214, 0.45);
+  --wj-red: #e0524f;
+  --wj-card: rgba(240, 238, 224, 0.055);
+  --wj-card-border: rgba(233, 226, 214, 0.13);
+  --wj-card-shadow: 0 20px 44px -26px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 252, 245, 0.08);
+  --wj-hairline: rgba(233, 226, 214, 0.16);
+  --wj-ghost: rgba(233, 230, 214, 0.08);
+  --wj-tatami: rgba(233, 226, 214, 0.045);
+}
+@media (prefers-color-scheme: dark) {
+  .waj-root:not(.is-light) {
+    --wj-bg-a: #16170f; --wj-bg-b: #0d0e08;
+    --wj-ink: #e9e6d6; --wj-ink-soft: rgba(233, 230, 214, 0.75); --wj-ink-faint: rgba(233, 230, 214, 0.45);
+    --wj-red: #e0524f;
+    --wj-card: rgba(240, 238, 224, 0.055); --wj-card-border: rgba(233, 226, 214, 0.13);
+    --wj-card-shadow: 0 20px 44px -26px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 252, 245, 0.08);
+    --wj-hairline: rgba(233, 226, 214, 0.16); --wj-ghost: rgba(233, 230, 214, 0.08);
+    --wj-tatami: rgba(233, 226, 214, 0.045);
+  }
+}
+.waj-root {
+  background:
+    repeating-linear-gradient(90deg, var(--wj-tatami) 0 1px, transparent 1px 13px),
+    repeating-linear-gradient(0deg, var(--wj-tatami) 0 1px, transparent 1px 13px),
+    radial-gradient(1000px 520px at 82% -10%, rgba(169, 0, 0, 0.07), transparent 60%),
+    linear-gradient(178deg, var(--wj-bg-a) 0%, var(--wj-bg-b) 100%);
+  color: var(--wj-ink);
+}
+.waj-mincho { font-family: var(--font-zen-mincho), serif; }
+.waj-kaku   { font-family: var(--font-zen-kaku), sans-serif; }
+
+/* bandenbalk bovenin: kleurt zich terwijl je leest */
+.waj-beltbar {
+  position: sticky; top: 0; z-index: 30;
+  height: 4px; width: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #f6f3ea, #f2c200, #e8791e, #2f9e52, #1f5fbf, #6b3f1d, #17140f);
+}
+@supports (animation-timeline: scroll()) {
+  .waj-beltbar {
+    transform-origin: left center;
+    transform: scaleX(0);
+    animation: waj-beltfill linear both;
+    animation-timeline: scroll(nearest block);
+  }
+}
+@keyframes waj-beltfill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+/* hoofdstukken */
+.waj-chapter {
+  position: relative;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 3.5rem 1.25rem 4rem;
+}
+@media (min-width: 640px) { .waj-chapter { padding: 4.5rem 2rem 5rem; } }
+
+.waj-card {
+  position: relative;
+  background: var(--wj-card);
+  border: 1px solid var(--wj-card-border);
+  border-radius: 1.25rem;
+  box-shadow: var(--wj-card-shadow);
+}
+
+.waj-rule { display: inline-block; width: 40px; height: 1px; background: var(--wj-red); opacity: 0.55; }
+
+/* rode zegel-stamp */
+.waj-stamp {
+  position: absolute; top: 1rem; right: 1rem; z-index: 2;
+  display: grid; place-items: center;
+  min-width: 2.4rem; height: 2.4rem; padding: 0 .35rem;
+  border: 2px solid var(--wj-red); border-radius: .55rem;
+  color: var(--wj-red); font-weight: 900; font-size: .8rem; line-height: 1;
+  background: rgba(169, 0, 0, 0.06);
+  transform: rotate(-7deg);
+  opacity: .85;
+}
+
+/* ghost-kanji achter koppen */
+.waj-ghost {
+  position: absolute; right: -0.15em; top: -0.45em; z-index: 0;
+  font-size: clamp(5.5rem, 13vw, 10rem); font-weight: 900; line-height: 1;
+  color: var(--wj-ghost); pointer-events: none; user-select: none;
+}
+
+/* hero */
+.waj-enso {
+  position: absolute; left: 50%; top: 44%; transform: translate(-50%, -50%);
+  font-size: clamp(9rem, 34vmin, 21rem); font-weight: 900; line-height: 1;
+  color: var(--wj-ghost); pointer-events: none; user-select: none; white-space: nowrap;
+}
+.waj-vkanji {
+  writing-mode: vertical-rl; letter-spacing: .35em;
+  font-size: 3.2rem; font-weight: 900; color: var(--wj-ghost);
+}
+.waj-arrow {
+  display: block; width: 1px; height: 34px;
+  background: linear-gradient(180deg, var(--wj-red), transparent);
+  position: relative;
+}
+.waj-arrow::after {
+  content: ""; position: absolute; left: 50%; bottom: 0;
+  width: 7px; height: 7px; border-right: 1px solid var(--wj-red); border-bottom: 1px solid var(--wj-red);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+/* les-timeline */
+.waj-timeline { position: relative; display: grid; gap: .9rem; }
+.waj-timeline::before {
+  content: ""; position: absolute; left: 1.24rem; top: 1.2rem; bottom: 1.2rem; width: 2px;
+  background: linear-gradient(180deg, var(--wj-red), var(--wj-hairline));
+  opacity: .5;
+}
+.waj-step { position: relative; display: grid; grid-template-columns: 2.5rem 1fr; gap: 1rem; align-items: start; }
+.waj-step-dot {
+  width: 2.5rem; height: 2.5rem; border-radius: 9999px;
+  display: grid; place-items: center;
+  background: var(--wj-card); border: 1.5px solid var(--wj-red);
+  color: var(--wj-red); font-weight: 900; font-size: 1rem;
+  position: relative; z-index: 1;
+}
+
+/* banden-ladder */
+.waj-beltrow { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: .6rem; }
+.waj-belt-col { position: relative; }
+.waj-belt {
+  position: relative; width: 100%; height: 7.2rem;
+  border-radius: .5rem; border: 1px solid;
+  box-shadow: 0 10px 20px -12px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+.waj-belt-stitch {
+  position: absolute; left: 10%; right: 10%; bottom: .55rem; height: 2px; border-radius: 2px;
+  background: rgba(0, 0, 0, 0.22);
+}
+.waj-belt-arrow {
+  position: absolute; top: 3.1rem; right: -0.62rem; z-index: 2;
+  color: var(--wj-ink-faint); font-size: .85rem;
+}
+@media (max-width: 767px) {
+  .waj-beltrow { grid-template-columns: 1fr; gap: .55rem; }
+  .waj-belt-col { display: grid; grid-template-columns: 1fr 8.5rem; align-items: center; gap: .8rem; }
+  .waj-belt { height: 1.5rem; }
+  .waj-belt-stitch { bottom: .3rem; }
+  .waj-belt-col > div:last-child { text-align: right; margin-top: 0 !important; }
+  .waj-belt-arrow { display: none; }
+}
+
+/* technieken */
+.waj-count {
+  min-width: 2.3rem; text-align: center;
+  border: 1px solid var(--wj-hairline); border-radius: 999px;
+  padding: .2rem .55rem; font-size: .8rem; font-weight: 800;
+  color: var(--wj-red);
+}
+.waj-chip {
+  font-size: .7rem; font-weight: 600;
+  padding: .25rem .6rem; border-radius: 999px;
+  border: 1px solid var(--wj-hairline);
+  color: var(--wj-ink-soft);
+  background: rgba(169, 0, 0, 0.05);
+}
+
+/* links */
+.waj-link {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-size: .85rem; font-weight: 700; color: var(--wj-red);
+  border-bottom: 1px solid transparent; transition: border-color .15s ease;
+}
+.waj-link:hover { border-bottom-color: var(--wj-red); }
+
+/* scroll-reveals: native CSS, fallback = altijd zichtbaar */
+@supports (animation-timeline: view()) {
+  .waj-reveal {
+    opacity: 0;
+    animation: waj-rise linear both;
+    animation-timeline: view();
+    animation-range: entry 4% to entry 38%;
+  }
+}
+@keyframes waj-rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .waj-reveal { animation: none !important; opacity: 1 !important; }
+  .waj-beltbar { animation: none !important; transform: none !important; }
+}

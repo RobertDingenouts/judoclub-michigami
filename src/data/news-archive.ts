@@ -18,6 +18,15 @@ export const newsArchive: NewsYear[] = [
     articles: [
 
       {
+        id: "jubileumtoernooi-2026",
+        title: "Jubileumtoernooi — 50 jaar judo in Steenbergen en Oud-Vossemeer! 🥋",
+        content:
+          "Zaterdag 17 oktober was het een feestelijke dag in De Vossenkuil in Oud-Vossemeer: wij vierden ons 50-jarig bestaan met de 47e editie van het jubileumtoernooi. Voorzitter Jos Hommel opende de dag met een woord vooraf en bedankte onze vaste clubvrijwilligers, die er elk jaar weer staan, met bloemen. Daarna werden alle ouders uitgenodigd om met een gratis drankje het jubileum samen te vieren.\n\nNa een gezamenlijke groet en warming-up ging de eerste poule van start: een spectaculaire poule met de grote judoka's, van ervaren zwarte banden tot blauwe banden, die erg aan elkaar gewaagd waren en scheidsrechter werden gedaan door onze ervaren Jan Bouterse. Met dat voorbeeld volgden daarna nog zeven poules op twee matten met jongere judoka's, die net zo fanatiek judo lieten zien. In totaal streden 23 judoka's van vijf verenigingen in acht poules.\n\nOnze eigen judoka's deden het erg goed:\n🥇 Vive Dingenouts, Luuk van Adrichem en Manuel van Hees wonnen hun poule\n🥈 Marina van Hees en Ivo Poot werden tweede\n🥉 Pepijn Vortman, Mika Morice en Lotte van der Werf werden derde\n\nOok de andere verenigingen gingen tevreden naar huis: Lindert Bogers en Floris van Dijk (Yoshi), Nathan van Dieren en Ilvy De Wolf (OVJV) en Jaz Aarts (Budoschool Cor Schuurbiers) wonnen hun poule.\n\nVóór de prijsuitreiking was er nog aandacht voor een ander jubileum: Robin en Pascal vierden hun 30-jarig judojubileum. De kleinzonen van grondlegger Koos van Wezel zijn al 30 jaar te vinden op de mat en achter deze club — zonder hen was er waarschijnlijk geen judo meer in Steenbergen en Oud-Vossemeer. 👏\n\nOndanks de helaas weinig aanmeldingen was het een geslaagde en leuke dag waar oude en nieuwe generaties elkaar weer vonden. Na het opruimen hebben we allemaal nog samen een drankje gedaan. Grote dank aan de vaste ploeg vrijwilligers die dit mogelijk maakte, de fanatieke deelnemers en de ouders! 👊\n\nHet volledige toernooirapport met alle scores per poule is te downloaden als PDF: https://judoclubmichigami.nl/downloads/uitslagen-jubileumtoernooi-2026.pdf\n\nOp zondag 8 november staat de volgende editie van het Lintjestoernooi in Roosendaal op het programma. Wil je ook meedoen? Inschrijven kan via: https://budoschool-corschuurbiers.nl/3-3/",
+        date: "2026-10-17",
+        imageUrl: "/instagram/202610/jubileum-actie-rook.webp",
+      },
+
+      {
         id: "lintjestoernooi-oktober-2026",
         title: "Lintjestoernooi — trots op onze judoka's! 🥋",
         content:

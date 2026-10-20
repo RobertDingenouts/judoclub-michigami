@@ -5,13 +5,14 @@ import {
   Play, Eye, EyeOff, CheckCircle2, XCircle, Award, Trophy, Ban,
   Flame, Star, Users, Mail, Facebook, Youtube, ArrowRight,
   BookOpen, Shield, CircleDot, Sparkles, Video, Camera, Filter,
-  Plus, List, Layers, Search, Music, History
+  Plus, List, Layers, Search, Music, History, GraduationCap
 } from 'lucide-react';
 
 // Backward compatibility alias - defined first to allow circular reference
 export type SectionId =
   | 'home'
   | 'agenda'
+  | 'wat-is-judo'
   | 'technieken'
   | 'exameneisen'
   | 'cursusjapans'
@@ -71,6 +72,7 @@ export const navGroups: NavGroup[] = [
     label: 'Judo School',
     emoji: '🥋',
     items: [
+      { key: 'wat-is-judo', label: 'Wat is Judo', icon: <GraduationCap className="w-4 h-4" /> },
       { key: 'technieken', label: 'Technieken', icon: <Swords className="w-4 h-4" /> },
       { key: 'exameneisen', label: 'Exameneisen', icon: <Target className="w-4 h-4" /> },
       { key: 'cursusjapans', label: 'Cursus Japans', icon: <BookOpen className="w-4 h-4" /> },
@@ -129,6 +131,7 @@ export const groupHubMap: Record<string, Section> = {
 export const sectionLabels: Record<Section, string> = {
   home: 'Home',
   agenda: 'Agenda',
+  'wat-is-judo': 'Wat is Judo',
   technieken: 'Technieken',
   exameneisen: 'Exameneisen',
   cursusjapans: 'Cursus Japans',

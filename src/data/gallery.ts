@@ -40,6 +40,18 @@ export const galleryData: GalleryAlbum[] = [
     order: 1,
     images: [
 
+      { src: "/instagram/202610/jubileum-actie-rook.webp", caption: "Jubileumtoernooi — opening in de schijnwerpers", fullSrc: "/instagram/202610/jubileum-actie-rook.webp" },
+      { src: "/instagram/202610/jubileum-twee-judoka-rook.webp", caption: "Jubileumtoernooi — twee judoka in de schijnwerpers", fullSrc: "/instagram/202610/jubileum-twee-judoka-rook.webp" },
+      { src: "/instagram/202610/jubileum-trofee.webp", caption: "Jubileumtoernooi — de trofee", fullSrc: "/instagram/202610/jubileum-trofee.webp" },
+      { src: "/instagram/202610/jubileum-rij-judoka.webp", caption: "Jubileumtoernooi — gezamenlijke opening met alle deelnemers", fullSrc: "/instagram/202610/jubileum-rij-judoka.webp" },
+      { src: "/instagram/202610/jubileum-groep-mat.webp", caption: "Jubileumtoernooi — warming-up op de mat", fullSrc: "/instagram/202610/jubileum-groep-mat.webp" },
+      { src: "/instagram/202610/jubileum-onderscheiding.webp", caption: "Jubileumtoernooi — dank en bloemen voor onze vaste vrijwilligers", fullSrc: "/instagram/202610/jubileum-onderscheiding.webp" },
+      { src: "/instagram/202610/jubileum-boekje-uitreiking.webp", caption: "Jubileumtoernooi — 30 jaar Robin en Pascal", fullSrc: "/instagram/202610/jubileum-boekje-uitreiking.webp" },
+      { src: "/instagram/202610/jubileum-omhelzing-groen.webp", caption: "Jubileumtoernooi — gefeliciteerd!", fullSrc: "/instagram/202610/jubileum-omhelzing-groen.webp" },
+      { src: "/instagram/202610/jubileum-omhelzing-mat1.webp", caption: "Jubileumtoernooi — na afloop op mat 1", fullSrc: "/instagram/202610/jubileum-omhelzing-mat1.webp" },
+      { src: "/instagram/202610/jubileum-felicitatie.webp", caption: "Jubileumtoernooi — prijzen in de poulefase", fullSrc: "/instagram/202610/jubileum-felicitatie.webp" },
+      { src: "/instagram/202610/jubileum-handdruk.webp", caption: "Jubileumtoernooi — sportieve handdruk", fullSrc: "/instagram/202610/jubileum-handdruk.webp" },
+      { src: "/instagram/202610/jubileum-buig.webp", caption: "Jubileumtoernooi — bedankt met een buig", fullSrc: "/instagram/202610/jubileum-buig.webp" },
       { src: "/instagram/202602/17880571311378479.webp", caption: "Examenresultaten — mooie vooruitgang! 🎉", fullSrc: "/instagram/202602/17880571311378479.webp" },
       { src: "/instagram/202602/18086493668155953.webp", caption: "Lintjestoernooi — Mika, Lotte, Vive en Luuk!", fullSrc: "/instagram/202602/18086493668155953.webp" },
     ],

@@ -21,6 +21,7 @@ import { SidebarContent } from '@/components/SidebarContent';
 import { MobileActionBar } from '@/components/MobileActionBar';
 import { HomeSection } from '@/components/sections/HomeSection';
 import { InfoSection } from '@/components/sections/InfoSection';
+import { WhatIsJudoSection } from '@/components/sections/WhatIsJudoSection';
 import { AgendaSection } from '@/components/sections/AgendaSection';
 import { TechniquesSection } from '@/components/sections/TechniquesSection';
 import { CategoryHubSection } from '@/components/sections/CategoryHubSection';
@@ -60,6 +61,10 @@ const sectionMeta: Record<Section, { title: string; description: string }> = {
   'agenda': {
     title: 'Agenda & Trainingstijden | Judoclub Michigami',
     description: 'Trainingstijden en agenda van Judoclub Michigami Steenbergen. Judolessen voor alle niveaus.',
+  },
+  'wat-is-judo': {
+    title: 'Wat is Judo? Uitleg over judo, banden en technieken | Judoclub Michigami',
+    description: 'Ontdek hoe judo werkt: opbouw van een judoles, het bandensysteem met slips en examens, en welke technieken je leert. Van witte band tot zwarte band bij Judoclub Michigami.',
   },
   'technieken': {
     title: 'Judo Technieken | Judoclub Michigami',
@@ -385,6 +390,7 @@ export default function MichigamiApp() {
             >
             {activeSection === 'home' && <HomeSection onNavigate={setActiveSection} />}
             {activeSection === 'agenda' && <AgendaSection />}
+            {activeSection === 'wat-is-judo' && <WhatIsJudoSection onNavigate={setActiveSection} />}
             {activeSection === 'technieken' && <TechniquesSection />}
             {activeSection === 'exameneisen' && <ExamDashboard />}
             {activeSection === 'cursusjapans' && <JapaneseCourseSection />}
