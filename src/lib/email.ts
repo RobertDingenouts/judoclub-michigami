@@ -16,9 +16,11 @@ const APP_NAME = 'Judoclub Michigami'
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://judoclubmichigami.nl'
 
 // Transporter wordt lazy geïnitialiseerd (één keer per runtime)
-let transporter: nodemailer.Transporter | null = null
+// nodemailer 10: type heet Mail i.p.v. Transporter — ReturnType houdt dit versie-onafhankelijk
+type MailTransporter = ReturnType<typeof nodemailer.createTransport>
+let transporter: MailTransporter | null = null
 
-function getTransporter(): nodemailer.Transporter {
+function getTransporter(): MailTransporter {
   if (transporter) return transporter
 
   const host = process.env.MAIL_HOST
