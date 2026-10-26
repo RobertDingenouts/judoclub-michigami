@@ -17,7 +17,7 @@ export default async function LedenLayout({ children }: { children: React.ReactN
     <LangProviderShell>
       <div className="flex min-h-screen bg-[#f5f5f0]">
         {/* Sidebar */}
-        <aside className="hidden w-[260px] flex-col border-r border-gray-200 bg-white lg:flex">
+        <aside className="hidden w-[260px] flex-col border-r border-gray-200 bg-white lg:flex print:hidden">
           <LedenSidebarNav />
         </aside>
 
@@ -25,8 +25,8 @@ export default async function LedenLayout({ children }: { children: React.ReactN
         <LedenHeader />
 
         {/* Main content */}
-        <main className="min-h-screen flex-1 pt-14 lg:pt-0">
-          <div className="p-6 lg:p-8">
+        <main className="min-h-screen flex-1 pt-14 lg:pt-0 print:pt-0">
+          <div className="p-6 lg:p-8 print:p-0">
             {children}
           </div>
         </main>

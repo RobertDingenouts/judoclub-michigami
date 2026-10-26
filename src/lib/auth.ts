@@ -28,7 +28,9 @@ export async function getSession() {
     password: SESSION_SECRET,
     cookieName: 'michigami-admin',
     cookieOptions: {
-      secure: process.env.NODE_ENV === 'production',
+      // Op de lokale testserver (next start via http://Tailscale-IP) MOET secure uit,
+      // anders weigert de browser de sessie-cookie en kan niemand inloggen.
+      secure: process.env.NODE_ENV === 'production' && process.env.SESSION_COOKIE_SECURE !== 'false',
       httpOnly: true,
       sameSite: 'lax',
       maxAge: 60 * 60 * 24, // 24 hours

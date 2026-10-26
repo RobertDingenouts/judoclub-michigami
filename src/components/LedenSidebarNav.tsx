@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { href: '/leden/voortgang', icon: '📈', label: 'Voortgang' },
   { href: "/leden/diploma's", icon: '🏆', label: "Diploma's" },
   { href: '/leden/cursus-japans', icon: '🇯🇵', label: 'Cursus Japans' },
+  { href: '/leden/prijslijst', icon: '🛒', label: 'Materiaal & Prijzen' },
   { href: '/leden/profiel/bewerken', icon: '👤', label: 'Profiel' },
 ];
 

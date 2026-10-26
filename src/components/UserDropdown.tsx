@@ -174,15 +174,26 @@ export function UserDropdown({ onSectionChange }: { onSectionChange?: (section: 
           </div>
 
           <div className="py-1">
-            {/* Profile */}
+            {/* Leden dashboard */}
             <a
-              href="/leden/profiel/bewerken"
+              href="/leden"
               className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-[#fdf6f6] hover:text-[#a90000] transition-colors"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
               </svg>
-              {t('Profiel & Instellingen')}
+              {t('Leden Dashboard')}
+            </a>
+
+            {/* Voortgang */}
+            <a
+              href="/leden/voortgang"
+              className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-[#fdf6f6] hover:text-[#a90000] transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+              </svg>
+              {t('Voortgang')}
             </a>
 
             {/* Diplomas */}
@@ -194,6 +205,39 @@ export function UserDropdown({ onSectionChange }: { onSectionChange?: (section: 
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               {t("Mijn Diploma's")}
+            </a>
+
+            {/* Cursus Japans */}
+            <a
+              href="/leden/cursus-japans"
+              className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-[#fdf6f6] hover:text-[#a90000] transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
+              {t('Cursus Japans')}
+            </a>
+
+            {/* Materiaal & Prijzen */}
+            <a
+              href="/leden/prijslijst"
+              className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-[#fdf6f6] hover:text-[#a90000] transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+              {t('Materiaal & Prijzen')}
+            </a>
+
+            {/* Profile */}
+            <a
+              href="/leden/profiel/bewerken"
+              className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-[#fdf6f6] hover:text-[#a90000] transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              {t('Profiel & Instellingen')}
             </a>
 
             {/* Admin Dashboard — only for admins */}
@@ -278,17 +322,29 @@ export function MobileUserAvatar({ onSectionChange }: { onSectionChange?: (secti
         )}
       </button>
 
-      {/* Tooltip-style dropdown on hover/focus — mobile friendly tap target */}
-      <div className="absolute bottom-full right-0 mb-2 w-48 bg-white rounded-lg shadow-xl border border-gray-100 overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all z-50">
+      {/* Tooltip-style dropdown — avatar zit links in de balk, dus menu naar RECHTS openen (left-0) */}
+      <div className="absolute bottom-full left-0 mb-2 w-60 max-w-[calc(100vw-24px)] bg-white rounded-lg shadow-xl border border-gray-100 overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all z-50">
         <div className="p-2 border-b border-gray-100 bg-[#fdf6f6]">
           <p className="text-xs font-semibold text-gray-800">{displayName}</p>
         </div>
         <div className="py-1">
-          <a href="/leden/profiel/bewerken" className="flex items-center gap-2 px-3 py-2 text-xs text-gray-700 hover:bg-[#fdf6f6] hover:text-[#a90000]">
-            👤 {t('Profiel')}
+          <a href="/leden" className="flex items-center gap-2.5 px-3.5 py-2.5 text-[13px] text-gray-700 hover:bg-[#fdf6f6] hover:text-[#a90000]">
+            📊 {t('Leden Dashboard')}
           </a>
-          <a href="/leden/diploma's" className="flex items-center gap-2 px-3 py-2 text-xs text-gray-700 hover:bg-[#fdf6f6] hover:text-[#a90000]">
+          <a href="/leden/voortgang" className="flex items-center gap-2.5 px-3.5 py-2.5 text-[13px] text-gray-700 hover:bg-[#fdf6f6] hover:text-[#a90000]">
+            📈 {t('Voortgang')}
+          </a>
+          <a href="/leden/diploma's" className="flex items-center gap-2.5 px-3.5 py-2.5 text-[13px] text-gray-700 hover:bg-[#fdf6f6] hover:text-[#a90000]">
             🏅 {t("Diploma's")}
+          </a>
+          <a href="/leden/cursus-japans" className="flex items-center gap-2.5 px-3.5 py-2.5 text-[13px] text-gray-700 hover:bg-[#fdf6f6] hover:text-[#a90000]">
+            🇯🇵 {t('Cursus Japans')}
+          </a>
+          <a href="/leden/prijslijst" className="flex items-center gap-2.5 px-3.5 py-2.5 text-[13px] text-gray-700 hover:bg-[#fdf6f6] hover:text-[#a90000]">
+            🛒 {t('Materiaal & Prijzen')}
+          </a>
+          <a href="/leden/profiel/bewerken" className="flex items-center gap-2.5 px-3.5 py-2.5 text-[13px] text-gray-700 hover:bg-[#fdf6f6] hover:text-[#a90000]">
+            👤 {t('Profiel')}
           </a>
           {user.role === 'ADMIN' && (
             <a href="/admin" className="flex items-center gap-2 px-3 py-2 text-xs text-[#a90000] font-medium hover:bg-[#fdf6f6]">

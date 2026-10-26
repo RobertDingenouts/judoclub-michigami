@@ -1502,3 +1502,26 @@ nextjs-portal {
   .waj-reveal { animation: none !important; opacity: 1 !important; }
   .waj-beltbar { animation: none !important; transform: none !important; }
 }
+
+/* Prijslijst print: 2 A4-tjes, verticale Excel-tabellen in huisstijl */
+@media print {
+  @page { size: A4 portrait; margin: 12mm; }
+  html, body { background: #fff !important; }
+  .prijslijst-print .print-h2 { font-size: 11pt; font-weight: 800; color: #2a2a2a; border-left: 2.2mm solid #a90000; padding-left: 2.5mm; }
+  .prijslijst-print .print-card { background: #fdf6f6; border-left: 1.2mm solid #a90000; border-radius: 1.5mm; padding: 2.6mm 3.2mm; }
+  .prijslijst-print table { border-collapse: collapse; }
+  .prijslijst-print .print-vertical { table-layout: fixed; border: 2.5px solid #000; }
+  .prijslijst-print .print-vertical th { background: #fff; color: #000; border: 1px solid #000; font-size: 8.8pt; font-weight: 800; padding: 1.8mm 1.2mm; text-align: center; vertical-align: bottom; }
+  .prijslijst-print .print-vertical td { border: 1px solid #000; padding: 2.55mm 1.5mm; font-size: 9.3pt; line-height: 1.25; text-align: right; white-space: nowrap; }
+  .prijslijst-print .print-vertical td:first-child { text-align: left; }
+  .prijslijst-print .band-tabel { width: auto; min-width: 52mm; }
+  .prijslijst-print .print-card .printfoto { background: #fff; border-color: #ccc; }
+  .prijslijst-print .printfoto { border: 1px solid #ddd; border-radius: 2.5mm; background: #f7f7f7; }
+  .prijslijst-print .print-pagina-2 { break-before: page; }
+  .prijslijst-print > div.flex { gap: 5mm; margin-bottom: 5mm; }
+  .prijslijst-print .print-card { margin-bottom: 3.5mm; }
+  .prijslijst-print .print-pagina-2 .print-vertical th { padding: 1.7mm 1.4mm; }
+  .prijslijst-print .print-pagina-2 .print-vertical td { padding: 1.6mm 1.4mm; font-size: 8.9pt; }
+  .prijslijst-print .print-pagina-2 .printfoto { height: 50mm; }
+  .prijslijst-print .print-pagina-2 > div.flex { gap: 3.5mm; margin-bottom: 3mm; }
+}
