@@ -423,3 +423,36 @@ model TournamentSetup {
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
 }
+
+model InventoryItem {
+  id         String   @id @default(cuid())
+  artikelNr  String   @unique
+  ean        String?
+  product    String
+  maat       String?
+  inkoopIncl Decimal  @db.Decimal(6, 2)
+  webPrijs   Decimal  @db.Decimal(6, 2)
+  clubPrijs  Decimal  @db.Decimal(6, 2)
+  voorraad   Int      @default(0)
+  actief     Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model InventoryMove {
+  id         String   @id @default(cuid())
+  artikelNr  String
+  product    String
+  maat       String?
+  soort      String   // VERKOOP | INKOOP | CORRECTIE
+  aantal     Int      // positief = erbij, negatief = eraf
+  prijs      Decimal  @db.Decimal(6, 2)
+  memberId   String?
+  memberNaam String?
+  periode    String?
+  reden      String?
+  createdAt  DateTime @default(now())
+
+  @@index([artikelNr])
+  @@index([createdAt])
+}

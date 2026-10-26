@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { useT } from '@/i18n/LangContext'
-import { PRICE_PRODUCTS, CLUB_PRICE_META, fmtEuro } from '@/data/price-list'
+import { PRICE_PRODUCTS, CLUB_PRICE_META, fmtEuro, fmtClubEuro } from '@/data/price-list'
 
 // Bestellingen gaan via WhatsApp naar Pascal (materiaalbeheer).
 const PASCAL_WA_NUMMER = '31615662630'
@@ -101,7 +101,7 @@ export function PrijslijstClient() {
             <tr key={r.maat}>
               <td>{r.maat} cm</td>
               <td>{fmtEuro(r.web)}</td>
-              <td className="font-bold text-[#a90000]">{fmtEuro(r.club)}</td>
+              <td className="font-bold text-[#a90000]">{fmtClubEuro(r.club)}</td>
             </tr>
           ))}
         </tbody>
@@ -136,7 +136,7 @@ export function PrijslijstClient() {
           <p className="min-w-0 flex-1 text-[8.8pt] leading-snug text-gray-700">{t('Voor elke bandgraad, in alle lengtes (150–330 cm). De juiste lengte bepaal je samen met je leraar. Nieuwe leden starten met een paarse band.')}</p>
           <table className="print-vertical band-tabel border-collapse">
             <thead><tr><th>{splitHead('Prijs internet')}</th><th>{splitHead('Prijs bij vereniging')}</th></tr></thead>
-            <tbody><tr><td>{fmtEuro(CLUB_PRICE_META.bandWebPrijs)}</td><td className="font-bold text-[#a90000]">{fmtEuro(CLUB_PRICE_META.bandClubPrijs)}</td></tr></tbody>
+            <tbody><tr><td>{fmtEuro(CLUB_PRICE_META.bandWebPrijs)}</td><td className="font-bold text-[#a90000]">{fmtClubEuro(CLUB_PRICE_META.bandClubPrijs)}</td></tr></tbody>
           </table>
         </div>
 
@@ -180,7 +180,7 @@ export function PrijslijstClient() {
                 <tr key={r.maat} className="border-b border-gray-100 last:border-0">
                   <td className="py-2 pr-2 text-gray-700">{r.maat} cm</td>
                   <td className="py-2 pr-2 text-right text-gray-400 line-through decoration-gray-300">{fmtEuro(r.web)}</td>
-                  <td className="py-2 pr-2 text-right font-semibold text-[#a90000]">{fmtEuro(r.club)}</td>
+                  <td className="py-2 pr-2 text-right font-semibold text-[#a90000]">{fmtClubEuro(r.club)}</td>
                   <td className="py-2 pl-2 text-right">{selBtn(`${p.id}:${r.maat}`)}</td>
                 </tr>
               ))}
@@ -204,7 +204,7 @@ export function PrijslijstClient() {
           <div className="flex items-center gap-4">
             <div className="text-right">
               <p className="text-xs text-gray-400 line-through">{fmtEuro(CLUB_PRICE_META.bandWebPrijs)}</p>
-              <p className="text-2xl font-bold text-[#a90000]">{fmtEuro(CLUB_PRICE_META.bandClubPrijs)}</p>
+              <p className="text-2xl font-bold text-[#a90000]">{fmtClubEuro(CLUB_PRICE_META.bandClubPrijs)}</p>
             </div>
             {selBtn(BAND_KEY)}
           </div>

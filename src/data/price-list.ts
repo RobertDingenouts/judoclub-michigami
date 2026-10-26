@@ -92,7 +92,12 @@ export const PRICE_PRODUCTS: PriceProduct[] = [
 ];
 
 export function fmtEuro(value: number): string {
-  // NL-notatie: € 42,55 — hele bedragen zonder centen ruis (€ 38)
+  // NL-notatie met altijd twee decimalen (€ 125,00) → kolommen staan op één lijn
+  return `\u20AC\u00A0${value.toFixed(2).replace('.', ',')}`;
+}
+
+export function fmtClubEuro(value: number): string {
+  // Clubprijzen zijn rond: hele bedragen zonder centen (€ 38), uitschieters wél met cent (€ 7,50)
   return Number.isInteger(value)
     ? `\u20AC\u00A0${value}`
     : `\u20AC\u00A0${value.toFixed(2).replace('.', ',')}`;

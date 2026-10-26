@@ -10,6 +10,7 @@ const TABS = [
   { href: '/admin/leden', icon: '👥', label: 'Leden' },
   { href: '/admin/aanwezigheid', icon: '📅', label: 'Lessen' },
   { href: '/admin/contributie', icon: '💰', label: 'Contributie' },
+  { href: '/admin/materiaal', icon: '📦', label: 'Materiaal' },
 ]
 
 const MEER = [
@@ -18,7 +19,7 @@ const MEER = [
   { href: '/admin/poelen', icon: '🥋', label: 'Poelen' },
   { href: '/admin/diplomas', icon: '🏆', label: "Diploma's" },
   { href: '/diploma/verifieren', icon: '🔍', label: 'Diploma verifiëren' },
-
+  { href: '/leden/prijslijst', icon: '🏷️', label: 'Prijslijst (print)' },
 ]
 
 export function AdminMobileNav() {
