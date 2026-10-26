@@ -188,7 +188,7 @@ export default function InschrijvingenClient({ applications }: InschrijvingenCli
               className={`cursor-pointer rounded-lg border p-4 shadow-sm transition hover:border-[#a90000]/40 hover:shadow-md ${
               app.status === 'PENDING' ? 'border-yellow-200 bg-yellow-50/30' : 'border-gray-200 bg-white'
             }`}>
-              <div className="flex items-start justify-between gap-4">
+              <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-3 flex-wrap">
                     <h3 className="font-semibold text-[#2a2a2a]">
@@ -212,7 +212,7 @@ export default function InschrijvingenClient({ applications }: InschrijvingenCli
                     Verzonden op {formatDateTime(app.createdAt)}
                   </div>
                 </div>
-                <div className="flex gap-2" onClick={e => e.stopPropagation()}>
+                <div className="flex flex-wrap gap-2 sm:shrink-0" onClick={e => e.stopPropagation()}>
                   <button onClick={() => { setSelectedApp(app); }}
                     className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50">
                     Details
