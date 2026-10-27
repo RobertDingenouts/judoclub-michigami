@@ -586,6 +586,7 @@ export const DICT_EN: Record<string, string> = {
   'Alle': 'All',
   'Leer je judo-band netjes knopen': 'Learn to tie your judo belt neatly',
   'Tips': 'Tips',
+'Werkt de video niet? Bekijk hem op YouTube': 'Video not working? Watch it on YouTube',
   "Downloadbare PDF's met judotechnieken en exameneisen": 'Downloadable PDFs with judo techniques and exam requirements',
   'Bestand downloaden': 'Download file',
   'Beelden van onze judoclub en trainingen': 'Footage of our judo club and trainings',

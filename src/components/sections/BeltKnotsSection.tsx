@@ -52,13 +52,24 @@ export function BeltKnotsSection() {
             <iframe
               width="100%"
               height="100%"
-              src={`https://www.youtube.com/embed/${beltKnotVideos[activeVideo].youtubeId}`}
+              src={`https://www.youtube-nocookie.com/embed/${beltKnotVideos[activeVideo].youtubeId}?rel=0`}
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
               className="w-full h-full"
             />
           </div>
+
+          <p className="text-xs text-gray-500 -mt-2 mb-2">
+            <a
+              href={`https://www.youtube.com/watch?v=${beltKnotVideos[activeVideo].youtubeId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#a90000] hover:underline"
+            >
+              {t('Werkt de video niet? Bekijk hem op YouTube')}
+            </a>
+          </p>
 
           {/* Tips */}
           <div className="mt-4 sm:mt-6">

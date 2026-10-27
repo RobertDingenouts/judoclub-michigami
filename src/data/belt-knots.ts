@@ -14,14 +14,14 @@ export interface BeltKnotInfo {
 export const beltKnotVideos: BeltKnotVideo[] = [
   {
     title: 'Voor beginners',
-    description: 'Leer de basis van het knopen van je judo-band voor beginners.',
-    youtubeId: 'F8WPa52pn7Y',
+    description: 'Stap voor stap je judoband knopen — gewoon in het Nederlands (Judo Zuid-West).',
+    youtubeId: 'JtAXjWBGCxk',
     level: 'beginner',
   },
   {
     title: 'Voor gevorderden',
-    description: 'Een snellere, meer geavanceerde techniek voor ervaren judoka\'s.',
-    youtubeId: 'wElOOdex_K4',
+    description: 'De PRO-truc voor een snelle, strakke knoop (Judo Zuid-West).',
+    youtubeId: 'txCJypstf68',
     level: 'advanced',
   },
 ];
