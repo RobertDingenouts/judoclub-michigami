@@ -58,6 +58,7 @@ export const navGroups: NavGroup[] = [
     emoji: '🏠',
     items: [
       { key: 'home', label: 'Home', icon: <Home className="w-4 h-4" /> },
+      { key: 'wat-is-judo', label: 'Wat is Judo', icon: <GraduationCap className="w-4 h-4" /> },
       { key: 'agenda', label: 'Agenda', icon: <Calendar className="w-4 h-4" /> },
       { key: 'info', label: 'Over Ons', icon: <Info className="w-4 h-4" /> },
       { key: 'timeline', label: 'Tijdlijn', icon: <History className="w-4 h-4" /> },
@@ -72,7 +73,6 @@ export const navGroups: NavGroup[] = [
     label: 'Judo School',
     emoji: '🥋',
     items: [
-      { key: 'wat-is-judo', label: 'Wat is Judo', icon: <GraduationCap className="w-4 h-4" /> },
       { key: 'technieken', label: 'Technieken', icon: <Swords className="w-4 h-4" /> },
       { key: 'exameneisen', label: 'Exameneisen', icon: <Target className="w-4 h-4" /> },
       { key: 'cursusjapans', label: 'Cursus Japans', icon: <BookOpen className="w-4 h-4" /> },

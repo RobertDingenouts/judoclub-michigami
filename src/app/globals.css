@@ -1485,21 +1485,12 @@ nextjs-portal {
 }
 .waj-link:hover { border-bottom-color: var(--wj-red); }
 
-/* scroll-reveals: native CSS, fallback = altijd zichtbaar */
-@supports (animation-timeline: view()) {
-  .waj-reveal {
-    opacity: 0;
-    animation: waj-rise linear both;
-    animation-timeline: view();
-    animation-range: entry 4% to entry 38%;
-  }
-}
-@keyframes waj-rise {
-  from { opacity: 0; transform: translateY(18px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
+/* Wat-is-judo-reveals: bewust GEEN scroll-driven animatie. De sectie-wrapper
+   (.waj-root) heeft overflow:hidden voor de ghost-kanji; dat maakt hem tot het
+   'dichtstbijzijnde scroll-container'-ankerpunt voor view(), waardoor reveals
+   op halve doorzichtigheid blijven hangen (okt 2026 bug). Content = altijd leesbaar. */
+.waj-reveal { opacity: 1; }
 @media (prefers-reduced-motion: reduce) {
-  .waj-reveal { animation: none !important; opacity: 1 !important; }
   .waj-beltbar { animation: none !important; transform: none !important; }
 }
 

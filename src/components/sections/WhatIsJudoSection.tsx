@@ -104,7 +104,7 @@ export function WhatIsJudoSection({ onNavigate }: { onNavigate?: (s: Section) =>
 
   const lessonSteps = [
     { jp: '礼', nl: t('Groeten'), body: t('Iedere les begint en eindigt met een buiging. De judoka’s zitten op volgorde van band in een rij, de “judozit”. Respect voor elkaar is de basis van alles.') },
-    { jp: '準備', nl: t('Opwarmen'), body: t('Renmen, stretchen en spelletjes — vaak al met judo-bewegingen erin verwerkt. Het lichaam gaat klaarstaan om veilig te kunnen rollen.') },
+    { jp: '準備', nl: t('Opwarmen'), body: t('Rennen, stretchen en spelletjes — vaak al met judo-bewegingen erin verwerkt. Het lichaam gaat klaarstaan om veilig te kunnen rollen.') },
     { jp: '受身', nl: t('Vallen leren'), body: t('De belangrijkste vaardigheid van judo: veilig vallen op de mat, voorwaarts, achterwaarts, opzij. Wie goed kan vallen, blesseert zich bijna nooit — daarom is judo veiliger dan het eruitziet.') },
     { jp: '打込', nl: t('Techniek oefenen'), body: t('De leraar laat een worp of houdgreep zien. Daarna oefen je die stap voor stap met een partner: eerst aannemen, dan instappen, dan werpen. Net zo lang tot het vanzelf gaat.') },
     { jp: '乱取', nl: t('Vrij trainen (randori)'), body: t('Alles wat je geleerd hebt in de praktijk proberen tegen een maatje — met controle en respect. Hier wordt judo een puzzel: hoe pak jij iemand, en hoe ontwijkt hij het?') },
@@ -112,7 +112,7 @@ export function WhatIsJudoSection({ onNavigate }: { onNavigate?: (s: Section) =>
   ];
 
   const kit = [
-    { jp: '最初', nl: t('Eerste les'), body: t('Gewone sportkleding zonder ritsen, knopen of gespen — een trainings- of joggingpak is perfect. Meenemen: een flesje water en slippers voor erbij.') },
+    { jp: '最初', nl: t('Eerste les'), body: t('Een lange broek en een lang shirt zonder knopen, ritsen, gespen of scherpe delen, en waar een beetje aan getrokken mag worden — een trainings- of joggingpak is perfect. Meenemen: slippers voor erbij.') },
     { jp: '柔道着', nl: t('Judogi'), body: t('Het witte judopak dat je later draagt, met daarin je band. Niet verplicht bij het starten, maar na een paar lessen wel zo handig — je kunt ze via de leraar bestellen.') },
     { jp: '爪', nl: t('Verzorgd'), body: t('Judo doe je op blote voeten: korte nagels (vingers én tenen), geen sieraden en schone voeten. Zo bescherm je jezelf en je partner.') },
   ];
