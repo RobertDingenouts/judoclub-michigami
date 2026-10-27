@@ -6,9 +6,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { TrialLessonForm } from '@/components/sections/TrialLessonForm';
 import { onOpenProeflesForm } from '@/lib/form-events';
 import { useT } from '@/i18n/LangContext';
+import { useAuthUser } from '@/lib/use-auth-user';
 
 export function StickyCTA({ onNavigate }: { onNavigate?: (section: string) => void }) {
   const { t } = useT();
+  const authUser = useAuthUser();
   const [formOpen, setFormOpen] = useState(false);
 
   // Listen for global form open events (from InfoSection, MembershipSection, etc.)
@@ -19,11 +21,11 @@ export function StickyCTA({ onNavigate }: { onNavigate?: (section: string) => vo
   return (
     <>
       {/* Desktop: Fixed top-right button — shu vermilion, gold hairline */}
-      <button onClick={() => setFormOpen(true)} className="hidden md:flex fixed top-4 right-4 z-50 items-center gap-2 bg-gradient-to-b from-[#c00000] to-[#8c0000] text-white pl-4 pr-5 py-3 font-bold text-base shadow-lg shadow-[#a90000]/30 hover:shadow-xl hover:scale-[1.03] active:scale-[0.98] transition-all duration-200 cursor-pointer rounded-lg border border-[#8c0000]">
+      {!authUser && <button onClick={() => setFormOpen(true)} className="hidden md:flex fixed top-4 right-4 z-50 items-center gap-2 bg-gradient-to-b from-[#c00000] to-[#8c0000] text-white pl-4 pr-5 py-3 font-bold text-base shadow-lg shadow-[#a90000]/30 hover:shadow-xl hover:scale-[1.03] active:scale-[0.98] transition-all duration-200 cursor-pointer rounded-lg border border-[#8c0000]">
         <Calendar className="w-5 h-5" />
         {t('Gratis Proefles')}
         <span aria-hidden className="font-mincho text-[10px] text-white/70 tracking-widest ml-0.5">体験</span>
-      </button>
+      </button>}
 
       {/* Mobile bottom bar replaced by MobileActionBar — hidden */}
 

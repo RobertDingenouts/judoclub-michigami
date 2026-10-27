@@ -10,9 +10,11 @@ import { AnimatedCard, AnimatedButton, subtleHover } from '@/components/ui/anima
 import { UserDropdown } from '@/components/UserDropdown';
 import { LangToggle } from '@/components/LangToggle';
 import { useT } from '@/i18n/LangContext';
+import { useAuthUser } from '@/lib/use-auth-user';
 
 export function SidebarContent({ activeSection, onSelect, onProefles }: { activeSection: Section; onSelect: (s: Section) => void; onProefles?: () => void }) {
   const { t } = useT();
+  const authUser = useAuthUser();
   const [searchQuery, setSearchQuery] = useState('');
   const [openGroup, setOpenGroup] = useState<string | null>(null);
 
@@ -167,8 +169,8 @@ export function SidebarContent({ activeSection, onSelect, onProefles }: { active
         </div>
       </ScrollArea>
 
-      {/* Proefles-CTA (sinds okt 2026 dé ingang: er is geen onderste balk meer) */}
-      {onProefles && (
+      {/* Proefles-CTA — alleen voor niet-leden (ingelogd = al lid) */}
+      {onProefles && !authUser && (
         <div className="px-3 pt-2">
           <button
             onClick={onProefles}
