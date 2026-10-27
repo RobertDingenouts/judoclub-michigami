@@ -58,6 +58,7 @@ export async function PATCH(
       ...(body.location !== undefined && { location: body.location || null }),
       ...(body.gender !== undefined && { gender: body.gender || null }),
       ...(body.phone2 !== undefined && { phone2: body.phone2 || null }),
+      ...(body.whatsappGroup !== undefined && { whatsappGroup: body.whatsappGroup || null }),
       ...(body.address !== undefined && { address: body.address || null }),
       ...(body.postalCode !== undefined && { postalCode: body.postalCode || null }),
       ...(body.city !== undefined && { city: body.city || null }),

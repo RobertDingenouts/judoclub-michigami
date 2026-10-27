@@ -101,6 +101,12 @@ export default async function StudentDetailPage({
             <DetailRow label="Noodtel" value={member.emergencyContactPhone || '-'} />
             <DetailRow label="Gebruikersnaam" value={member.user.name || '-'} />
             <DetailRow label="Telefoon 2" value={member.phone2 || '-'} />
+            <DetailRow
+              label="Groepsapp"
+              value={
+                ({ ja1: 'Ja — telefoonnummer 1', ja2: 'Ja — telefoonnummer 2', ja12: 'Ja — beide telefoonnummers' } as Record<string, string>)[member.whatsappGroup || ''] || 'Niet toegevoegd'
+              }
+            />
             <DetailRow label="Adres" value={[member.address, member.postalCode, member.city].filter(Boolean).join(' · ') || '-'} />
             <DetailRow label="Geslacht" value={member.gender || '-'} />
             <DetailRow label="Groep" value={member.primaryGroup ? (GROEP_LABEL[member.primaryGroup as keyof typeof GROEP_LABEL] ?? member.primaryGroup) : '-'} />

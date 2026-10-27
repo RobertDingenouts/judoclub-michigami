@@ -12,6 +12,7 @@ interface StudentData {
   email: string | null
   phone: string | null
   phone2: string | null
+  whatsappGroup: string | null
   dateOfBirth: string | null
   currentBelt: string | null
   location: string | null
@@ -149,6 +150,7 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
         email: formData.get('email') as string || null,
         phone: formData.get('phone') as string || null,
         phone2: formData.get('phone2') as string || null,
+        whatsappGroup: formData.get('whatsappGroup') as string || null,
         dateOfBirth: formData.get('dateOfBirth') as string || null,
         currentBelt: formData.get('currentBelt') as string || null,
         location: formData.get('location') as string || null,
@@ -240,6 +242,19 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
             <FormField label="E-mail" name="email" type="email" defaultValue={student.email || ''} />
             <FormField label="Telefoon" name="phone" type="tel" defaultValue={student.phone || ''} />
             <FormField label="Telefoon (2e)" name="phone2" type="tel" defaultValue={student.phone2 || ''} />
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-gray-700">Groepsapp</label>
+              <select
+                name="whatsappGroup"
+                defaultValue={student.whatsappGroup || ''}
+                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+              >
+                <option value="">Nee, bedankt</option>
+                <option value="ja1">Ja — telefoonnummer 1</option>
+                <option value="ja2">Ja — telefoonnummer 2</option>
+                <option value="ja12">Ja — beide telefoonnummers</option>
+              </select>
+            </div>
             <FormField label="Geboortedatum" name="dateOfBirth" type="date" defaultValue={student.dateOfBirth ? new Date(student.dateOfBirth).toISOString().split('T')[0] : ''} />
             <FormField label="Lid vanaf" name="joinDate" type="date" defaultValue={student.joinDate ? new Date(student.joinDate).toISOString().split('T')[0] : ''} />
             <FormField label="Adres" name="address" defaultValue={student.address || ''} />
