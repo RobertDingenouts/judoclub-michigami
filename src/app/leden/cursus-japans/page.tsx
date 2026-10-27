@@ -208,7 +208,7 @@ export default async function CursusJapansPage() {
                   {/* Action */}
                   {course?.isUnlocked && !course.isPassed && (
                     <a
-                      href="/#cursus-japans"
+                      href="/#cursusjapans"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="px-4 py-2 bg-[#a90000] hover:bg-[#8c0000] text-white text-sm font-semibold rounded-lg transition-colors shadow-sm whitespace-nowrap inline-block"

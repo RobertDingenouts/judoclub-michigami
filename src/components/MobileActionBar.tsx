@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Home, CalendarDays, Info, UserPlus, MoreHorizontal } from 'lucide-react';
 import { type SectionId } from './nav-config';
-import { MobileUserAvatar } from './UserDropdown';
+import { getBeltLabel } from '@/lib/belt-utils';
 import { LangToggle } from './LangToggle';
 import { useT } from '@/i18n/LangContext';
 import {
@@ -48,13 +48,26 @@ export function MobileActionBar({ activeSection, onSectionChange, onProeflesClic
   const { t } = useT();
   const [moreOpen, setMoreOpen] = useState(false);
 
+  const [user, setUser] = useState<any | null>(null);
+  useEffect(() => {
+    fetch('/api/auth/me').then(r => r.json()).then(d => { if (d.authenticated && d.user) setUser(d.user); }).catch(() => {});
+  }, []);
+
+  const lidLinks: { href: string; label: string; show?: boolean }[] = user ? [
+    { href: '/leden', label: 'Leden Dashboard' },
+    { href: '/leden/voortgang', label: 'Voortgang' },
+    { href: "/leden/diploma's", label: "Mijn Diploma's" },
+    { href: '/leden/cursus-japans', label: 'Cursus Japans' },
+    { href: '/leden/prijslijst', label: 'Materiaal & Prijzen' },
+    { href: '/leden/profiel/bewerken', label: 'Profiel & Instellingen' },
+    { href: '/admin', label: 'Admin Dashboard', show: user.role === 'ADMIN' },
+  ] : [];
+
   return (
     <div className="md:hidden fixed bottom-4 left-3 right-3 z-50 pointer-events-none">
       <div
         className="flex gap-1.5 pointer-events-auto items-center justify-between bg-white/85 backdrop-blur-md rounded-2xl border border-[#2a2a2a]/10 shadow-lg px-2 py-1.5"
       >
-        {/* User avatar — shows when logged in */}
-        <MobileUserAvatar onSectionChange={(s) => { onSectionChange(s as SectionId); setMoreOpen(false); }} />
         {mainItems.map((item) => (
           <button
             key={item.id + item.label}
@@ -94,6 +107,26 @@ export function MobileActionBar({ activeSection, onSectionChange, onProeflesClic
               </DrawerTitle>
             </DrawerHeader>
             <div className="px-4 pb-6 space-y-1">
+              {user && (
+                <>
+                  <div className="flex items-center gap-3 px-1 pt-1 pb-2">
+                    <span className="w-9 h-9 rounded-lg bg-[#a90000] text-white text-[11px] font-bold flex items-center justify-center">
+                      {((user.member?.firstName || user.name || '·').trim().split(' ').map((n: string) => n[0]).join('') || '·').toUpperCase().slice(0, 2)}
+                    </span>
+                    <div>
+                      <p className="text-sm font-semibold text-[#2a2a2a]">{user.member?.firstName || user.name}</p>
+                      {(user.member?.currentBelt || user.currentBelt) && <p className="text-[11px] text-gray-500">{getBeltLabel(user.member?.currentBelt || user.currentBelt)}</p>}
+                    </div>
+                  </div>
+                  {lidLinks.filter(l => l.show !== false).map(l => (
+                    <a key={l.href} href={l.href}
+                      className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-[#2a2a2a] hover:bg-[#fdf6f6] active:scale-[0.99]">
+                      <span>{t(l.label)}</span>
+                    </a>
+                  ))}
+                  <div className="border-t border-[#2a2a2a]/10 my-2" />
+                </>
+              )}
               <div className="flex justify-center py-2 border-b border-[#2a2a2a]/10 mb-2">
                 <LangToggle />
               </div>
@@ -122,6 +155,13 @@ export function MobileActionBar({ activeSection, onSectionChange, onProeflesClic
                   </button>
                 )
               ))}
+              {user && (
+                <button
+                  onClick={async () => { await fetch('/api/auth/logout', { method: 'POST' }); window.location.href = '/'; }}
+                  className="w-full flex items-center gap-3 px-4 py-3 mt-3 rounded-lg text-sm font-medium text-gray-500 hover:text-red-600 hover:bg-red-50 active:scale-[0.99]">
+                  <span>{t('Uitloggen')}</span>
+                </button>
+              )}
             </div>
           </DrawerContent>
         </Drawer>
