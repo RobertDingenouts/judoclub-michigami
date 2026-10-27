@@ -339,8 +339,8 @@ function Chapter({ index, data }: { index: number; data: (typeof storyChapters)[
         {ghost}
       </span>
 
-      <div className={cn('relative z-10 flex items-start gap-5', flip && 'sm:flex-row-reverse')}>
-        <div className="flex flex-col items-center gap-3 pt-1">
+      <div className={cn('relative z-10 flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-5', flip && 'sm:flex-row-reverse')}>
+        <div className="flex flex-row items-center gap-3 pt-1 sm:flex-col sm:items-center">
           <Stamp>{data.number}</Stamp>
           <span className="story-vtext story-mincho hidden text-3xl sm:block" style={{ color: 'var(--st-ghost)' }} aria-hidden>
             {data.kanji}
