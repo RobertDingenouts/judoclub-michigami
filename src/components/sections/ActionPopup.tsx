@@ -21,9 +21,17 @@ export function ActionPopup() {
     } catch {
       // localStorage niet beschikbaar — popup tonen
     }
-    // Korte vertraging zodat de pagina eerst is geladen
-    const t = setTimeout(() => setOpen(true), 1200);
-    return () => clearTimeout(t);
+    // Inlogd = al lid: actie-popup (proefles-aanmelding) overslaan,
+    // en andere popups (Rabo ClubSupport) hun kans geven.
+    let alive = true;
+    let t: ReturnType<typeof setTimeout> | undefined;
+    const show = () => { t = setTimeout(() => setOpen(true), 1200); };
+    fetch('/api/auth/me').then(r => r.json()).then(d => {
+      if (!alive) return;
+      if (d.authenticated) { window.dispatchEvent(new CustomEvent('actie-popup-gezien')); return; }
+      show();
+    }).catch(show);
+    return () => { alive = false; if (t) clearTimeout(t); };
   }, []);
 
   const close = () => {

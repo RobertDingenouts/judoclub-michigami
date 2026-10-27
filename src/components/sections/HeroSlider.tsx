@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import { openProeflesForm } from '@/lib/form-events';
 import { useT } from '@/i18n/LangContext';
+import { useAuthUser } from '@/lib/use-auth-user';
 
 // Curated, rustige selectie — geen 30 foto's meer, alleen de sterkste
 const heroImages = [
@@ -19,6 +20,7 @@ const heroImages = [
 ];
 
 export function HeroSlider() {
+  const authUser = useAuthUser();
   const { t } = useT();
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -113,12 +115,14 @@ export function HeroSlider() {
           </p>
 
           <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3">
-            <button
-              onClick={openProeflesForm}
-              className="btn-shu inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-base font-semibold"
-            >
-              {t('Gratis proefles')}
-            </button>
+            {!authUser && (
+              <button
+                onClick={openProeflesForm}
+                className="btn-shu inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-base font-semibold"
+              >
+                {t('Gratis proefles')}
+              </button>
+            )}
             <a
               href="/inschrijven"
               className="btn-outline-kin inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-base font-semibold"
