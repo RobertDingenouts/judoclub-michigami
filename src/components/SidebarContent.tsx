@@ -4,14 +4,14 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Search, ChevronRight, Facebook, Mail, Youtube } from 'lucide-react';
+import { Search, ChevronRight, Facebook, Mail, Youtube, UserPlus } from 'lucide-react';
 import { navGroups, groupHubMap, type Section } from '@/components/nav-config';
 import { AnimatedCard, AnimatedButton, subtleHover } from '@/components/ui/animated-card';
 import { UserDropdown } from '@/components/UserDropdown';
 import { LangToggle } from '@/components/LangToggle';
 import { useT } from '@/i18n/LangContext';
 
-export function SidebarContent({ activeSection, onSelect }: { activeSection: Section; onSelect: (s: Section) => void }) {
+export function SidebarContent({ activeSection, onSelect, onProefles }: { activeSection: Section; onSelect: (s: Section) => void; onProefles?: () => void }) {
   const { t } = useT();
   const [searchQuery, setSearchQuery] = useState('');
   const [openGroup, setOpenGroup] = useState<string | null>(null);
@@ -166,6 +166,19 @@ export function SidebarContent({ activeSection, onSelect }: { activeSection: Sec
           ))}
         </div>
       </ScrollArea>
+
+      {/* Proefles-CTA (sinds okt 2026 dé ingang: er is geen onderste balk meer) */}
+      {onProefles && (
+        <div className="px-3 pt-2">
+          <button
+            onClick={onProefles}
+            className="w-full inline-flex items-center justify-center gap-2 h-11 rounded-xl text-sm font-bold text-white shadow-md active:scale-[0.98] transition-all"
+            style={{ backgroundColor: '#a90000' }}>
+            <UserPlus className="w-4 h-4" />
+            <span>{t('Proefles')}</span>
+          </button>
+        </div>
+      )}
 
       {/* Login Button or User Dropdown */}
       <div className="px-3 py-2">

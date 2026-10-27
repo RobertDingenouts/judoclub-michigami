@@ -18,7 +18,6 @@ import { NewsSection } from '@/components/sections/NewsSection';
 import { TechniquesCardSection } from '@/components/sections/TechniquesCardSection';
 import { LegalSection } from '@/components/sections/LegalSection';
 import { SidebarContent } from '@/components/SidebarContent';
-import { MobileActionBar } from '@/components/MobileActionBar';
 import { HomeSection } from '@/components/sections/HomeSection';
 import { InfoSection } from '@/components/sections/InfoSection';
 import { WhatIsJudoSection } from '@/components/sections/WhatIsJudoSection';
@@ -328,7 +327,7 @@ export default function MichigamiApp() {
 
       {/* Desktop Sidebar — washi paper */}
       <aside className="hidden md:flex flex-col w-64 bg-washi border-r border-[#2a2a2a]/10 min-h-screen fixed left-0 top-0 z-40 shadow-lg shadow-black/5">
-        <SidebarContent activeSection={activeSection} onSelect={(s) => setActiveSection(s)} />
+        <SidebarContent activeSection={activeSection} onSelect={(s) => setActiveSection(s)} onProefles={() => setProeflesOpen(true)} />
       </aside>
 
       {/* Sidebar Content — Mobile: hamburger button + overlay */}
@@ -364,7 +363,7 @@ export default function MichigamiApp() {
               className="w-72 bg-washi border-r border-[#2a2a2a]/10 min-h-screen shadow-2xl max-w-[calc(100vw-1rem)]"
               onClick={(e) => e.stopPropagation()}
             >
-              <SidebarContent activeSection={activeSection} onSelect={(s) => { setActiveSection(s); setSidebarOpen(false); }} />
+              <SidebarContent activeSection={activeSection} onSelect={(s) => { setActiveSection(s); setSidebarOpen(false); }} onProefles={() => { setProeflesOpen(true); setSidebarOpen(false); }} />
             </motion.aside>
           </motion.div>
         )}
@@ -428,7 +427,7 @@ export default function MichigamiApp() {
       </main>
 
       {/* Mobile Action Bar (merged single bar) */}
-      <MobileActionBar activeSection={activeSection} onSectionChange={setActiveSection} onProeflesClick={() => setProeflesOpen(true)} />
+
 
       {/* Sticky CTA + Form Modal (global) */}
       <StickyCTA onNavigate={(s) => setActiveSection(s as Section)} />

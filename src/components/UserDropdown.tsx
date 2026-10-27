@@ -158,7 +158,7 @@ export function UserDropdown({ onSectionChange }: { onSectionChange?: (section: 
 
       {/* Dropdown menu */}
       {open && (
-        <div className="absolute bottom-full left-0 right-0 mb-2 bg-white rounded-lg shadow-xl border border-gray-100 overflow-hidden z-50 animate-in slide-in-from-bottom-2">
+        <div className="absolute bottom-full left-0 right-0 mb-2 max-h-[65dvh] overflow-y-auto bg-white rounded-lg shadow-xl border border-gray-100 z-50 animate-in slide-in-from-bottom-2">
           <div className="p-2 border-b border-gray-100">
             <p className="text-sm font-semibold text-gray-800 px-2 py-1">{displayName}</p>
             <p className="text-xs text-gray-400 px-2 pb-1">{user.email}</p>
