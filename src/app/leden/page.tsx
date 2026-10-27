@@ -69,13 +69,10 @@ export default async function LedenDashboard() {
         />
       </div>
 
-      {/* Quick actions */}
+      {/* Snel naartoe — alleen bestemmingen die niet al als kaart boven staan */}
       <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-lg font-semibold text-[#2a2a2a]"><T k="Snelle Acties" /></h2>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <QuickAction href="/leden/voortgang" icon="📈" title="Mijn Voortgang" desc="Examens en banden" />
-          <QuickAction href="/leden/diploma's" icon="🏆" title="Mijn Diploma's" desc="Bekijk en download" />
-          <QuickAction href="/leden/cursus-japans" icon="🇯🇵" title="Cursus Japans" desc="Leer + quiz" />
+        <h2 className="mb-4 text-lg font-semibold text-[#2a2a2a]"><T k="Snel naartoe" /></h2>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <QuickAction href="/leden/prijslijst" icon="🛒" title="Materiaal & Prijzen" desc="Judopak en band" />
           <a href="/#agenda" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 rounded-lg border border-gray-200 p-4 transition-colors hover:border-[#a90000] hover:bg-[#fdf6f6]">
             <span className="text-xl">📅</span>
@@ -84,6 +81,7 @@ export default async function LedenDashboard() {
               <p className="text-xs text-gray-500"><T k="Bekijk agenda op website" /></p>
             </div>
           </a>
+          <QuickAction href="/leden/profiel/bewerken" icon="👤" title="Mijn Profiel" desc="Gegevens en gezin" />
         </div>
       </div>
 

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { LogoutButton } from '@/components/LogoutButton';
 import { LangToggle } from '@/components/LangToggle';
 import { useT } from '@/i18n/LangContext';
+import { usePathname } from 'next/navigation';
 
 const NAV_ITEMS = [
   { href: '/leden', icon: '📊', label: 'Overzicht' },
@@ -16,6 +17,8 @@ const NAV_ITEMS = [
 
 export function LedenSidebarNav() {
   const { t } = useT();
+  const pathname = usePathname();
+  const onDashboard = pathname === '/leden' || pathname === '/leden/';
   return (
     <>
       <div className="border-b border-gray-200 p-5">
@@ -49,9 +52,11 @@ export function LedenSidebarNav() {
           <LangToggle />
         </div>
         <div className="mt-3 text-center">
-          <Link href="/leden" className="text-xs text-gray-500 hover:text-[#a90000]">
-            ← {t('Leden Dashboard')}
-          </Link>
+          {!onDashboard && (
+            <Link href="/leden" className="text-xs text-gray-500 hover:text-[#a90000]">
+              ← {t('Leden Dashboard')}
+            </Link>
+          )}
           <Link href="/" className="text-xs text-gray-400 hover:text-[#a90000]">
             {t('Naar website')}
           </Link>

@@ -390,6 +390,8 @@ export const DICT_EN: Record<string, string> = {
   'Wanneer je een judo examen haalt, ontvang je automatisch een digitaal diploma.': 'When you pass a judo exam, you automatically receive a digital diploma.',
   'Download PDF': 'Download PDF',
   'Mijn Profiel': 'My Profile',
+'Snel naartoe': 'Quick links',
+  'Gegevens en gezin': 'Details and family',
   'Je persoonlijke gegevens en statistieken': 'Your personal details and statistics',
   'Log in om je profiel te bekijken.': 'Log in to view your profile.',
   'Persoonlijke Gegevens': 'Personal Details',
