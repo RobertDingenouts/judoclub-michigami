@@ -1,39 +1,59 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { isAdmin } from '@/lib/auth'
-import { kwartaalVan } from '@/lib/admin2'
 
 export const dynamic = 'force-dynamic'
 
 type FactItem = { omschrijving: string; bedrag: number; artikelNr?: string; aantal?: number }
+type Mode = 'kwartaal' | 'materiaal'
 
-async function huidigePeriode() {
+const isMateriaalPeriod = (label: string) => label.startsWith('Materiaal')
+
+// kwartaal → lopende (of meest recente) contributieperiode, nooi materiaelperiodes.
+// materiaal → eigen eenmalige periode 'Materiaal <jaar>', wordt aangemaakt als hij nog niet bestaat.
+async function doelPeriode(mode: Mode) {
   const now = new Date()
+  if (mode === 'materiaal') {
+    const label = `Materiaal ${now.getFullYear()}`
+    const bestaand = await db.contributionPeriod.findUnique({ where: { label } })
+    if (bestaand) return bestaand
+    const eindeJaar = new Date(now.getFullYear(), 11, 31)
+    return db.contributionPeriod.create({ data: { label, start: now, end: eindeJaar, amount: 0 } })
+  }
   const lopend = await db.contributionPeriod.findFirst({
-    where: { start: { lte: now }, end: { gte: now } },
+    where: { start: { lte: now }, end: { gte: now }, label: { not: { startsWith: 'Materiaal' } } },
     orderBy: { start: 'desc' },
   })
   if (lopend) return lopend
   // buiten elke periode (bijv. begin januari): pak de meest recente
-  return db.contributionPeriod.findFirst({ orderBy: { start: 'desc' } })
+  return db.contributionPeriod.findFirst({
+    where: { label: { not: { startsWith: 'Materiaal' } } },
+    orderBy: { start: 'desc' },
+  })
 }
 
-function parseItems(raw: string | null, periodeLabel: string, periodeBedrag: number): FactItem[] {
+function standaardItems(periode: { label: string; amount: unknown }): FactItem[] {
+  if (isMateriaalPeriod(periode.label)) return [] // materiaalfactuur heeft alleen artikelen
+  return [{ omschrijving: `Contributie ${periode.label}`, bedrag: Number(periode.amount) }]
+}
+
+function parseItems(raw: string | null, periode: { label: string; amount: unknown }): FactItem[] {
   if (raw) {
-    try { return JSON.parse(raw) as FactItem[] } catch { /* val terug op contributie */ }
+    try { return JSON.parse(raw) as FactItem[] } catch { /* val terug op standaard */ }
   }
-  return [{ omschrijving: `Contributie ${periodeLabel}`, bedrag: periodeBedrag }]
+  return standaardItems(periode)
 }
 
-// GET ?memberId= → huidige factuurregels van dat lid (in de lopende periode)
+// GET ?memberId=&mode=kwartaal|materiaal → huidige factuurregels van dat lid
 export async function GET(req: NextRequest) {
   if (!(await isAdmin())) return NextResponse.json({ error: 'Geen admin' }, { status: 403 })
   const memberId = req.nextUrl.searchParams.get('memberId')
+  const mode = (req.nextUrl.searchParams.get('mode') === 'materiaal' ? 'materiaal' : 'kwartaal') as Mode
   if (!memberId) return NextResponse.json({ error: 'memberId nodig' }, { status: 400 })
-  const periode = await huidigePeriode()
+  const periode = await doelPeriode(mode)
   if (!periode) return NextResponse.json({ error: 'geen contributieperiode gevonden' }, { status: 500 })
   const payment = await db.payment.findUnique({ where: { memberId_periodId: { memberId, periodId: periode.id } } })
-  const items = parseItems(payment?.items ?? null, periode.label, Number(periode.amount))
+  const items = parseItems(payment?.items ?? null, periode)
   return NextResponse.json({
     periodeLabel: periode.label,
     paymentId: payment?.id ?? null,
@@ -43,16 +63,16 @@ export async function GET(req: NextRequest) {
   })
 }
 
-// POST { itemId, memberId, aantal } → artikel op factuur van het lid (clubprijs), voorraad -= aantal
+// POST { itemId, memberId, aantal, mode } → artikel op factuur van het lid (clubprijs), voorraad -= aantal
 export async function POST(req: NextRequest) {
   if (!(await isAdmin())) return NextResponse.json({ error: 'Geen admin' }, { status: 403 })
-  const { itemId, memberId, aantal = 1 } = await req.json()
+  const { itemId, memberId, aantal = 1, mode = 'kwartaal' } = await req.json()
   if (!itemId || !memberId) return NextResponse.json({ error: 'itemId en memberId nodig' }, { status: 400 })
 
   const [item, member, periode] = await Promise.all([
     db.inventoryItem.findUnique({ where: { id: itemId } }),
     db.member.findUnique({ where: { id: memberId } }),
-    huidigePeriode(),
+    doelPeriode(mode === 'materiaal' ? 'materiaal' : 'kwartaal'),
   ])
   if (!item) return NextResponse.json({ error: 'artikel niet gevonden' }, { status: 404 })
   if (!member) return NextResponse.json({ error: 'lid niet gevonden' }, { status: 404 })
@@ -66,7 +86,7 @@ export async function POST(req: NextRequest) {
     })
   }
 
-  const items = parseItems(payment.items, periode.label, Number(periode.amount))
+  const items = parseItems(payment.items, periode)
   const bestaand = items.find(x => x.artikelNr === item.artikelNr)
   const clubPrijs = Number(item.clubPrijs)
   if (bestaand) {
@@ -91,7 +111,7 @@ export async function POST(req: NextRequest) {
     },
   })
 
-  return NextResponse.json({ ok: true, items, totaal: som, voorraad: updatedItem.voorraad, paymentId: payment.id })
+  return NextResponse.json({ ok: true, items, totaal: som, voorraad: updatedItem.voorraad, paymentId: payment.id, periodeLabel: periode.label })
 }
 
 // DELETE { paymentId, artikelNr } → materiaallijn van de factuur af, retour in voorraad
@@ -102,7 +122,7 @@ export async function DELETE(req: NextRequest) {
 
   const p = await db.payment.findUnique({ where: { id: paymentId }, include: { period: true } })
   if (!p) return NextResponse.json({ error: 'payment niet gevonden' }, { status: 404 })
-  const items = parseItems(p.items, p.period.label, Number(p.period.amount))
+  const items = parseItems(p.items, p.period)
   const lijn = items.find(x => x.artikelNr === artikelNr)
   if (!lijn) return NextResponse.json({ error: 'lijn niet op deze factuur' }, { status: 404 })
   const volgende = items.filter(x => x.artikelNr !== artikelNr)
@@ -116,10 +136,20 @@ export async function DELETE(req: NextRequest) {
     })
   }
 
-  // geen materiaallijnen meer over → hele factuur terug naar standaard contributielijn
+  if (isMateriaalPeriod(p.period.label)) {
+    // losse materiaalfactuur: geen regels meer over → factuur doet niet te bestaan
+    if (!materiaallijnenOver) {
+      await db.payment.delete({ where: { id: paymentId } })
+      return NextResponse.json({ ok: true, items: [], paymentRemoved: true })
+    }
+    await db.payment.update({ where: { id: paymentId }, data: { items: JSON.stringify(volgende), amount: Math.round(volgende.reduce((s, x) => s + x.bedrag, 0) * 100) / 100 } })
+    return NextResponse.json({ ok: true, items: volgende })
+  }
+
+  // contributiefactuur: geen materiaallijnen meer over → hele factuur terug naar standaard contributielijn
   const data: Record<string, unknown> = materiaallijnenOver
     ? { items: JSON.stringify(volgende), amount: Math.round(volgende.reduce((s, x) => s + x.bedrag, 0) * 100) / 100 }
     : { items: null, amount: p.period.amount }
   await db.payment.update({ where: { id: paymentId }, data })
-  return NextResponse.json({ ok: true, items: materiaallijnenOver ? volgende : parseItems(null, p.period.label, Number(p.period.amount)) })
+  return NextResponse.json({ ok: true, items: materiaallijnenOver ? volgende : standaardItems(p.period) })
 }

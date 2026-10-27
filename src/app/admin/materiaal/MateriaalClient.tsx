@@ -67,6 +67,7 @@ export default function MateriaalClient() {
   const [memberId, setMemberId] = useState('')
   const [fact, setFact] = useState<{ periodeLabel: string; paymentId: string | null; status: string | null; items: FactItem[]; totaal: number } | null>(null)
   const [zoekLid, setZoekLid] = useState('')
+  const [modus, setModus] = useState<'kwartaal' | 'materiaal'>('kwartaal')
   const [artikelId, setArtikelId] = useState('')
   const [aantal, setAantal] = useState(1)
   const [pq, setPq] = useState('')
@@ -74,14 +75,14 @@ export default function MateriaalClient() {
 
   useEffect(() => {
     if (!memberId) { setFact(null); return }
-    fetch(`/api/admin2/inventory/verkoop?memberId=${memberId}`).then(r => r.json()).then(d => setFact(d.error ? null : d))
-  }, [memberId])
+    fetch(`/api/admin2/inventory/verkoop?memberId=${memberId}&mode=${modus}`).then(r => r.json()).then(d => setFact(d.error ? null : d))
+  }, [memberId, modus])
 
   async function voegToe() {
     if (!artikelId || !memberId) { say('Kies eerst een lid en een artikel', true); return }
     const r = await fetch('/api/admin2/inventory/verkoop', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ itemId: artikelId, memberId, aantal }),
+      body: JSON.stringify({ itemId: artikelId, memberId, aantal, mode: modus }),
     })
     const d = await r.json()
     if (!r.ok) { say(d.error || 'Mislukt', true); return }
@@ -99,7 +100,7 @@ export default function MateriaalClient() {
     })
     const d = await r.json()
     if (!r.ok) { say(d.error || 'Mislukt', true); return }
-    setFact(f => f && { ...f, items: d.items })
+    setFact(f => f && { ...f, items: d.items, paymentId: d.paymentRemoved ? null : f.paymentId })
     say('Regel verwijderd — artikel retour in voorraad')
     laad()
   }
@@ -197,17 +198,21 @@ export default function MateriaalClient() {
 
             <h2 className="mb-2 mt-5 text-sm font-bold text-[#2a2a2a]">2 · Kies het artikel</h2>
             <input value={pq} onChange={e => setPq(e.target.value)} placeholder="Zoek artikel of maat…" className="mb-2 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none" />
-            <div className="flex gap-2">
-              <select value={artikelId} onChange={e => setArtikelId(e.target.value)} className="min-w-0 flex-1 rounded-lg border border-gray-300 bg-white px-2 py-2 text-sm">
+            <div className="flex flex-wrap gap-2">
+              <select value={artikelId} onChange={e => setArtikelId(e.target.value)} className="w-full min-w-0 rounded-lg border border-gray-300 bg-white px-2 py-2 text-sm sm:flex-1">
                 <option value="">— kies —</option>
                 {koopbaar.map(i => <option key={i.id} value={i.id}>{i.product.replace('Budo Band - Vechtsportband - ', 'Band — ')}{i.maat ? ` · ${i.maat}` : ''} — {eur(i.clubPrijs)} {i.voorraad === 0 ? '(0 op voorraad)' : `(${i.voorraad})`}</option>)}
               </select>
               <input type="number" min={1} value={aantal} onChange={e => setAantal(Math.max(1, Number(e.target.value)))} className="w-16 rounded-lg border border-gray-300 px-2 py-2 text-center text-sm" />
-              <button onClick={voegToe} className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700">Toevoegen</button>
+              <button onClick={voegToe} className="flex-1 rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 sm:flex-none">Toevoegen</button>
             </div>
           </div>
 
           <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+            <div className="mb-2 flex gap-1.5 rounded-lg bg-gray-100 p-1 text-xs font-semibold">
+              <button onClick={() => setModus('kwartaal')} className={`flex-1 rounded-md px-2 py-1.5 ${modus === 'kwartaal' ? 'bg-white text-[#a90000] shadow-sm' : 'text-gray-500'}`}>Bij contributiefactuur</button>
+              <button onClick={() => setModus('materiaal')} className={`flex-1 rounded-md px-2 py-1.5 ${modus === 'materiaal' ? 'bg-white text-[#a90000] shadow-sm' : 'text-gray-500'}`}>Losse materiaalfactuur</button>
+            </div>
             <h2 className="mb-2 text-sm font-bold text-[#2a2a2a]">Factuur {fact ? <span className="font-normal text-gray-500">({fact.periodeLabel}{fact.status ? ` · ${fact.status}` : ' · nog geen factuur'})</span> : ''}</h2>
             {!fact && <p className="text-sm text-gray-400">Nog niets gekozen. Na selectie van een lid verschijnt hier zijn actuele factuur.</p>}
             {fact && (
@@ -226,7 +231,7 @@ export default function MateriaalClient() {
                 </tbody>
               </table>
             )}
-            <p className="mt-3 text-xs text-gray-400">Regels komen op de normale contributiefactuur te staan (Contributie-admin → factuur-PDF). Afmelden van een regel brengt het artikel terug in de voorraad.</p>
+            <p className="mt-3 text-xs text-gray-400">Bij <b>bijdragefactuur</b> gaan de artikelen bij de contributieregels van het kwartaal. Bij <b>losse materiaalfactuur</b> komt alles op een eigen factuur (periode <i>Materiaal {new Date().getFullYear()}</i>) — handig als het kwartaal al betaald is. Te genereren via Contributie-admin → gekozen periode → factuur-PDF. Een regel afmelden brengt het artikel terug in de voorraad.</p>
           </div>
         </div>
       )}
