@@ -49,8 +49,11 @@ export function LedenSidebarNav() {
           <LangToggle />
         </div>
         <div className="mt-3 text-center">
+          <Link href="/leden" className="text-xs text-gray-500 hover:text-[#a90000]">
+            ← {t('Leden Dashboard')}
+          </Link>
           <Link href="/" className="text-xs text-gray-400 hover:text-[#a90000]">
-            ← {t('Terug naar website')}
+            {t('Naar website')}
           </Link>
         </div>
       </div>

@@ -73,11 +73,7 @@ function TimelineItem({ event: evNl, index, occurrence = 0 }: { event: TimelineE
               <span className={`font-heading leading-none ${event.isMilestone ? 'text-3xl sm:text-4xl text-[var(--shu-700)]' : 'text-2xl sm:text-3xl text-[var(--sumi-900)]'}`}>
                 {event.year}
               </span>
-              {event.isMilestone && (
-                <span className="text-[10px] uppercase tracking-[0.3em] text-[var(--kin-700)]">
-                  mijlpaal
-                </span>
-              )}
+
             </div>
 
             <h3 className="font-heading text-base sm:text-lg text-[var(--sumi-900)] leading-snug">

@@ -30,6 +30,7 @@ import { ProfileSection } from '@/components/sections/ProfileSection';
 import { ExamApprovalSection } from '@/components/sections/ExamApprovalSection';
 import { MusicSection } from '@/components/sections/MusicSection';
 import { MiniPlayer } from '@/components/MiniPlayer';
+import { useMusicPlayer } from '@/context/MusicPlayerContext';
 import { SeoFooter } from '@/components/SeoFooter';
 import { MusicPlayerProvider } from '@/context/MusicPlayerContext';
 import { LangProvider } from '@/i18n/LangContext';
@@ -201,6 +202,15 @@ function updateMetaTags(section: Section) {
 
 // Valid section keys for hash deep-links (e.g. /#muziek)
 const VALID_SECTIONS = new Set(Object.keys(sectionMeta));
+
+
+/* Lege ruimte onder de sectie alleen wanneer de zwevende muziekspeler actief is,
+   zodat diens knoppen de laatste regels tekst niet overdekken (tijdlijn/over-ons). */
+function PlayerClearance() {
+  const mp = useMusicPlayer();
+  if (!mp.album || !mp.currentTrack) return null;
+  return <div aria-hidden className="h-24" />;
+}
 
 export default function MichigamiApp() {
   // Start at 'home' to match the server render (hydration-safe).
@@ -385,7 +395,7 @@ export default function MichigamiApp() {
               animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
               exit={{ opacity: 0, y: -10, filter: 'blur(2px)' }}
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              className="p-2 sm:p-4 md:p-8 max-w-[100vw] mx-auto w-full pb-[8rem] sm:pb-0"
+              className="p-2 sm:p-4 md:p-8 max-w-[100vw] mx-auto w-full"
             >
             {activeSection === 'home' && <HomeSection onNavigate={setActiveSection} />}
             {activeSection === 'agenda' && <AgendaSection />}
@@ -420,7 +430,8 @@ export default function MichigamiApp() {
             </motion.div>
           </AnimatePresence>
           {/* SEO-footer: binnen het scrollgebied, dus geen overlap meer met de content */}
-          <div className="pb-[7rem] sm:pb-[5rem]"><SeoFooter /></div>
+          <div><SeoFooter /></div>
+          <PlayerClearance />
           </div>
         </ScrollArea>
         </div>

@@ -13,9 +13,14 @@ export function LedenHeader() {
         </div>
         <span className="text-sm font-bold">{t('Leden')}</span>
       </div>
-      <Link href="/" className="text-xs text-gray-500 hover:text-[#a90000]">
-        ← {t('Website')}
-      </Link>
+      <div className="flex items-center gap-3">
+        <Link href="/leden" className="text-xs text-gray-600 hover:text-[#a90000]">
+          ← {t('Dashboard')}
+        </Link>
+        <Link href="/" className="text-xs text-gray-400 hover:text-[#a90000]">
+          {t('Website')}
+        </Link>
+      </div>
     </div>
   );
 }

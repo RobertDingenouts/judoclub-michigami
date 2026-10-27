@@ -753,13 +753,12 @@
     width: calc(100% + 16px);
     max-width: none;
     margin: -8px;
-    margin-bottom: -8rem;      /* mobiel: parent pb-[8rem] (tabbar-clearance) */
   }
-  @media (min-width: 40rem) {  /* sm: parent p-4 (16px) + sm:pb-0 */
-    .zen-fullbleed { width: calc(100% + 32px); margin: -16px; margin-bottom: 0; }
+  @media (min-width: 40rem) {  /* sm: parent p-4 (16px) */
+    .zen-fullbleed { width: calc(100% + 32px); margin: -16px; }
   }
   @media (min-width: 48rem) {  /* md: parent p-8 (32px) */
-    .zen-fullbleed { width: calc(100% + 64px); margin: -32px; margin-bottom: 0; }
+    .zen-fullbleed { width: calc(100% + 64px); margin: -32px; }
   }
 
   /* Sakura-bloesemval — heel rustig */

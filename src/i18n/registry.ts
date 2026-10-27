@@ -255,6 +255,8 @@ export const DICT_EN: Record<string, string> = {
   'Terug naar website': 'Back to website',
   'Leden': 'Members',
   'Website': 'Website',
+'Naar website': 'To website',
+  'Dashboard': 'Dashboard',
   'Welkom': 'Welcome',
   'Jouw ledendashboard bij Judoclub Michigami': 'Your member dashboard at Judoclub Michigami',
   'Huidige Band': 'Current belt',

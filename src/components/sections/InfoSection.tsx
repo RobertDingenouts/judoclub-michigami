@@ -10,6 +10,7 @@ import { storyChapters } from '@/data/story-chapters';
 import { useT } from '@/i18n/LangContext';
 import { storyFor } from '@/i18n/content';
 import type { Section } from '@/components/nav-config';
+import { useAuthUser } from '@/lib/use-auth-user';
 
 /* ============================================================================
    OVER ONS — "HET VERHAAL VAN DE ZACHTE WEG" (2026)
@@ -47,6 +48,7 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
   const chapters = storyFor(lang);
   const [signupOpen, setSignupOpen] = useState(false);
   const dark = useSystemDark();
+  const authUser = useAuthUser();
   const rootRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
 
@@ -288,6 +290,7 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
           <p className="story-reveal story-kaku mx-auto mt-6 max-w-lg text-base font-light leading-relaxed sm:text-lg" style={{ color: 'var(--st-ink-soft)' }}>
             {t('De volgende hoofdstukken worden hier geschreven, op de matten in Steenbergen en Oud-Vossemeer. Wil je erbij horen?')}
           </p>
+          {!authUser && (
           <div className="story-reveal mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Button onClick={() => onNavigate?.('leden')} className="story-sheen px-7 py-3 text-white" style={{ background: 'linear-gradient(135deg, #c1100c, var(--shu-600))', boxShadow: '0 14px 36px -12px rgba(169,0,0,0.6)' }}>
               {t('Boek een proefles')}
@@ -298,6 +301,7 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
               {t('Lid worden')}
             </Button>
           </div>
+          )}
 
           {signupOpen && (
             <div className="story-card relative mt-8 rounded-xl p-6 text-left">

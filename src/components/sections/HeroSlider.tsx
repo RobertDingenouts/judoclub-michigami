@@ -123,13 +123,15 @@ export function HeroSlider() {
                 {t('Gratis proefles')}
               </button>
             )}
-            <a
-              href="/inschrijven"
-              className="btn-outline-kin inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-base font-semibold"
-            >
-              {t('Lid worden')}
-              <ArrowRight className="w-5 h-5" />
-            </a>
+            {!authUser && (
+              <a
+                href="/inschrijven"
+                className="btn-outline-kin inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-base font-semibold"
+              >
+                {t('Lid worden')}
+                <ArrowRight className="w-5 h-5" />
+              </a>
+            )}
           </div>
 
           <p className="mt-6 text-[11px] sm:text-xs text-white/50 tracking-[0.3em]">
