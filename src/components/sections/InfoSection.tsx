@@ -162,6 +162,14 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
         </div>
       </section>
 
+      {/* ══════════════════ DE DOCUMENTAIRE — kijken eerst ══════════════════ */}
+      <section className="relative mx-auto mt-16 max-w-4xl px-5 sm:px-8">
+        <DocuEmbed className="story-reveal" />
+        <p className="story-kaku mx-auto mt-4 max-w-xl text-center text-sm" style={{ color: 'var(--st-ink-soft)' }}>
+          {t('Zes minuten, van Tokio 1882 tot twee locaties in Steenbergen en Oud-Vossemeer — of lees het verhaal hieronder verder.')}
+        </p>
+      </section>
+
       {/* ══════════════════ HOOFDSTUKKEN — de rol ══════════════════ */}
       <section className="relative mx-auto max-w-6xl px-5 pb-8 sm:px-8">
         <div className="story-reveal flex items-end gap-5">
@@ -197,17 +205,6 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
             ))}
           </div>
         </div>
-      </section>
-
-      {/* ══════════════════ DE DOCUMENTAIRE ══════════════════ */}
-      <section className="relative mx-auto mt-28 max-w-4xl px-5 sm:px-8">
-        <div className="story-reveal text-center">
-          <h2 className="story-mincho text-3xl font-black sm:text-4xl" style={{ color: 'var(--st-ink)' }}>{t('Ons verhaal op film')}</h2>
-          <p className="story-kaku mx-auto mt-2 max-w-lg text-sm" style={{ color: 'var(--st-ink-soft)' }}>
-            {t('Ruim zes minuten: van Tokio 1882 tot twee locaties in Steenbergen en Oud-Vossemeer — het verhaal van de zachte weg, ons verhaal.')}
-          </p>
-        </div>
-        <DocuEmbed className="story-reveal mt-10" />
       </section>
 
       {/* ══════════════════ EERBETUIGINGEN ══════════════════ */}
