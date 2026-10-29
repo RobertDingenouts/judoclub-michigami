@@ -199,6 +199,17 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
         </div>
       </section>
 
+      {/* ══════════════════ DE DOCUMENTAIRE ══════════════════ */}
+      <section className="relative mx-auto mt-28 max-w-4xl px-5 sm:px-8">
+        <div className="story-reveal text-center">
+          <h2 className="story-mincho text-3xl font-black sm:text-4xl" style={{ color: 'var(--st-ink)' }}>{t('Ons verhaal op film')}</h2>
+          <p className="story-kaku mx-auto mt-2 max-w-lg text-sm" style={{ color: 'var(--st-ink-soft)' }}>
+            {t('Ruim zes minuten: van Tokio 1882 tot twee locaties in Steenbergen en Oud-Vossemeer — het verhaal van de zachte weg, ons verhaal.')}
+          </p>
+        </div>
+        <DocuEmbed className="story-reveal mt-10" />
+      </section>
+
       {/* ══════════════════ EERBETUIGINGEN ══════════════════ */}
       <section className="relative mx-auto mt-28 max-w-5xl px-5 sm:px-8">
         <div className="story-reveal text-center">
@@ -394,6 +405,50 @@ function Chapter({ index, data }: { index: number; data: (typeof storyChapters)[
         </div>
       </div>
     </article>
+  );
+}
+
+/* --- Documentaire-embed (facade: poster → klik → iframe) ------------------- */
+function DocuEmbed({ className = '' }: { className?: string }) {
+  const { t } = useT();
+  const [open, setOpen] = useState(false);
+  return (
+    <div className={cn('story-card overflow-hidden', className)}>
+      <div className="relative aspect-video w-full">
+        {open ? (
+          <iframe
+            className="absolute inset-0 h-full w-full"
+            src="https://www.youtube-nocookie.com/embed/2Y2AwNtH3Qk?autoplay=1&rel=0"
+            title={t('De Zachte Weg — documentaire van Judoclub Michigami')}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
+          />
+        ) : (
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            className="group absolute inset-0 h-full w-full cursor-pointer"
+            aria-label={t('Bekijk de documentaire')}
+          >
+            <Image src="/images/docu-poster.jpg" alt="" fill sizes="(max-width: 896px) 100vw, 896px" className="object-cover" priority={false} />
+            <span className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.05) 40%, rgba(0,0,0,0.42))' }} aria-hidden />
+            <span
+              className="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full transition-transform duration-300 group-hover:scale-110 sm:h-20 sm:w-20"
+              style={{ background: 'rgba(169,0,0,0.92)', boxShadow: '0 10px 34px -8px rgba(0,0,0,0.65)' }}
+              aria-hidden
+            >
+              <svg width="26" height="30" viewBox="0 0 26 30" fill="none">
+                <path d="M2 2.5 23.5 15 2 27.5V2.5Z" fill="#fff" />
+              </svg>
+            </span>
+            <span className="story-kaku absolute bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap text-[10px] uppercase tracking-[0.28em] text-white/85">
+              {t('6:29 · klik om te bekijken')}
+            </span>
+          </button>
+        )}
+      </div>
+    </div>
   );
 }
 

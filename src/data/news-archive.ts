@@ -18,6 +18,16 @@ export const newsArchive: NewsYear[] = [
     articles: [
 
       {
+        id: "documentaire-de-zachte-weg",
+        title: "Ons verhaal te zien als mini-documentaire \ud83c\udfac",
+        content:
+          "Het verhaal van onze club is vastgelegd in een mini-documentaire van ruim zes minuten: van Jigoro Kano in 1882 en de komst van judo naar Nederland, via Koos van Wezel en de gouden jaren, tot de fusie met de OVJV in 2027. Met oude foto's en beelden uit ons eigen archief en een vertelling die alles aan elkaar praat. Via de hoofdstukken in de beschrijving spring je direct naar een onderdeel naar keuze. Kijken en delen mag: https://youtu.be/2Y2AwNtH3Qk",
+        date: "2026-10-29",
+        imageUrl: "/images/docu-poster.jpg",
+      },
+
+
+      {
         id: "jubileumtoernooi-2026",
         title: "Jubileumtoernooi — 50 jaar judo in Oud-Vossemeer! 🥋",
         content:
