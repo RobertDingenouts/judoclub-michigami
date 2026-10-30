@@ -1,4 +1,5 @@
 import { T } from '@/components/T'
+import { SeasonalLogo } from '@/components/SeasonalLogo'
 import { PrintPriceListButton } from './PrintPriceListButton'
 import { PrijslijstClient } from './PrijslijstClient'
 
@@ -9,7 +10,7 @@ export default function PrijslijstPage() {
     <div className="mx-auto max-w-3xl space-y-6 pb-24">
       {/* Print-only kop: staat alleen op het papier/PDF */}
       <div className="mb-3 hidden items-center gap-4 border-b-[2.5px] border-[#a90000] pb-2.5 print:flex">
-        <img src="/logo-hd.png" alt="Judoclub Michigami" className="h-[20mm] w-[20mm] object-contain" />
+        <SeasonalLogo alt="Judoclub Michigami" className="h-[20mm] w-[20mm] object-contain" />
         <div>
           <h1 className="text-[16pt] font-bold text-[#a90000]"><T k="Judoclub Michigami — Prijslijst materiaal" /></h1>
           <p className="mt-0.5 text-[9pt] text-gray-500"><T k="Judopakken & banden · rechtstreeks inkoop bij Matsuru · Steenbergen / Oud-Vossemeer" /></p>

@@ -1,6 +1,7 @@
 'use client';
 
 import { type SectionId, sectionLabels } from './nav-config';
+import { SeasonalLogo } from '@/components/SeasonalLogo';
 import { AnimatePresence, motion } from 'framer-motion';
 
 interface SidebarProps {
@@ -27,7 +28,7 @@ export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
         <div className="flex items-center gap-3">
           {/* Logo */}
           <div className="w-10 h-10 flex items-center justify-center">
-            <img src="/logo-hd.png" alt="Michigami" className="w-10 h-10 object-contain" />
+            <SeasonalLogo className="w-10 h-10 object-contain" />
           </div>
           <div>
             <h1 className="text-lg font-bold text-judo-red">Michigami</h1>

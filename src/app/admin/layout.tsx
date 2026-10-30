@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { SeasonalLogo } from '@/components/SeasonalLogo'
 import { isAdmin } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import { LogoutButton } from '@/components/LogoutButton'
@@ -41,7 +42,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <div className="border-b border-gray-200 p-5">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#fdf6f6]">
-              <img src="/logo-hd.png" alt="Michigami" className="h-8 w-8 object-contain" />
+              <SeasonalLogo className="h-8 w-8 object-contain" />
             </div>
             <div>
               <h1 className="text-sm font-bold text-[#2a2a2a]">Michigami</h1>
@@ -68,7 +69,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between border-b border-white/60 bg-white/70 p-3 backdrop-blur-xl lg:hidden">
         <div className="flex items-center gap-2">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#fdf6f6]">
-            <img src="/logo-hd.png" alt="Michigami" className="h-7 w-7 object-contain" />
+            <SeasonalLogo className="h-7 w-7 object-contain" />
           </div>
           <span className="text-sm font-bold">Clubdashboard</span>
         </div>

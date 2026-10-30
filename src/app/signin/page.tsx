@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { SeasonalLogo } from '@/components/SeasonalLogo'
 import { useFormStatus } from 'react-dom'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -127,11 +128,7 @@ function SignInInner() {
         {/* Logo */}
         <div className="mb-8 text-center">
           <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-lg bg-gradient-to-br from-[#fdf6f6] to-white p-1 shadow-sm ring-4 ring-[#a90000]/10">
-            <img
-              src="/logo-hd.png"
-              alt="Judoclub Michigami"
-              className="h-16 w-16 object-contain rounded-full"
-            />
+            <SeasonalLogo alt="Judoclub Michigami" className="h-16 w-16 object-contain rounded-full" />
           </div>
           <h1 className="font-display text-3xl font-bold text-[#2a2a2a]">{t('Leden Login')}</h1>
           <p className="mt-1 text-sm text-gray-500">Judoclub Michigami</p>

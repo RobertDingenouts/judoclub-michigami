@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { SeasonalLogo } from '@/components/SeasonalLogo'
 import { useFormStatus } from 'react-dom'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -84,11 +85,7 @@ export default function LoginPage() {
         {/* Logo */}
         <div className="mb-8 text-center">
           <div className="mx-auto mb-4 h-16 w-16">
-            <img
-              src="/logo-hd.png"
-              alt="Judoclub Michigami"
-              className="h-16 w-16 object-contain rounded-full"
-            />
+            <SeasonalLogo alt="Judoclub Michigami" className="h-16 w-16 object-contain rounded-full" />
           </div>
           <h1 className="text-2xl font-bold text-[#2a2a2a]">Admin Dashboard</h1>
           <p className="mt-1 text-sm text-gray-500">Judoclub Michigami</p>

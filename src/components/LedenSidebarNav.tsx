@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { SeasonalLogo } from '@/components/SeasonalLogo';
 import { LogoutButton } from '@/components/LogoutButton';
 import { LangToggle } from '@/components/LangToggle';
 import { useT } from '@/i18n/LangContext';
@@ -24,7 +25,7 @@ export function LedenSidebarNav() {
       <div className="border-b border-gray-200 p-5">
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#fdf6f6]">
-            <img src="/logo-hd.png" alt="Michigami" className="h-8 w-8 object-contain" />
+            <SeasonalLogo className="h-8 w-8 object-contain" />
           </div>
           <div>
             <h1 className="text-sm font-bold text-[#2a2a2a]">{t('Michigami Leden')}</h1>

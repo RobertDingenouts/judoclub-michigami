@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { SeasonalLogo } from '@/components/SeasonalLogo'
 import { useT } from '@/i18n/LangContext'
 import { LangToggle } from '@/components/LangToggle'
 import { LangProvider } from '@/i18n/LangContext'
@@ -41,7 +42,7 @@ function SignUpInner() {
 
       <div className="relative z-10 w-full max-w-md rounded-lg border border-white/60 bg-white/90 p-8 shadow-[0_8px_40px_-8px_rgba(169,0,0,0.18)] backdrop-blur-xl text-center">
         <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-lg bg-gradient-to-br from-[#fdf6f6] to-white p-1 shadow-sm ring-4 ring-[#a90000]/10 mx-auto">
-          <img src="/logo-hd.png" alt="Judoclub Michigami" className="h-16 w-16 object-contain rounded-full" />
+          <SeasonalLogo alt="Judoclub Michigami" className="h-16 w-16 object-contain rounded-full" />
         </div>
 
         <h1 className="font-display text-2xl font-bold text-[#2a2a2a]">{t('Account aanmaken?')}</h1>

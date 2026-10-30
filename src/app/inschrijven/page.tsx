@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { SeasonalLogo } from '@/components/SeasonalLogo'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { TRAINING_GROUPS } from '@/lib/student-progress-types'
@@ -148,7 +149,7 @@ function InschrijvenInner() {
         {/* Logo + Title */}
         <div className="mb-8 text-center">
           <div className="mx-auto mb-4 h-20 w-20">
-            <img src="/logo-hd.png" alt="Judoclub Michigami" className="h-20 w-20 object-contain rounded-full" />
+            <SeasonalLogo alt="Judoclub Michigami" className="h-20 w-20 object-contain rounded-full" />
           </div>
           <h1 className="text-3xl font-bold text-[#2a2a2a]">{t('Inschrijven')}</h1>
           <p className="mt-2 text-gray-600">{t('Vul het formulier in om je aan te melden bij Judoclub Michigami')}</p>

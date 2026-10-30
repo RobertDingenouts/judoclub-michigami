@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { JsonLd } from "@/components/JsonLd";
 import { PWARegister } from "@/components/PWARegister";
+import { SeasonalFavicon } from "@/components/SeasonalLogo";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -178,6 +179,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${inter.variable} ${rokkitt.variable} ${oswald.variable} ${notoSansJp.variable} ${shipporiMincho.variable} ${fraunces.variable} ${karla.variable} ${zenOldMincho.variable} ${zenKakuGothic.variable} antialiased text-foreground`}
       >
+        <SeasonalFavicon />
         <PWARegister />
         {children}
         <Toaster />

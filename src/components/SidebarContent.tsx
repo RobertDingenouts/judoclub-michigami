@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { SeasonalLogo } from '@/components/SeasonalLogo';
 import { AnimatePresence, motion } from 'framer-motion';
-import Image from 'next/image';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Search, ChevronRight, Facebook, Mail, Youtube, UserPlus } from 'lucide-react';
 import { navGroups, groupHubMap, type Section } from '@/components/nav-config';
@@ -70,7 +70,7 @@ export function SidebarContent({ activeSection, onSelect, onProefles }: { active
         <div className="relative">
           <AnimatedCard variants={subtleHover}>
             <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-white to-[#fbf9f4] border border-[#2a2a2a]/10 flex items-center justify-center mb-2 shadow-sm ring-2 ring-white/60">
-              <Image src="/logo.png" alt="Judoclub Michigami" width={72} height={72} className="object-contain" />
+              <SeasonalLogo className="w-[72px] h-[72px] object-contain" />
             </div>
           </AnimatedCard>
           {/* Hanko seal — 道 (dō — de weg, Michigami) */}
