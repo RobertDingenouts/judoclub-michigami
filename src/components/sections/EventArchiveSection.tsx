@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { GhostSpot } from '@/components/GhostSpot';
 import { useT } from '@/i18n/LangContext';
 import { yearAgendas, archiveEvents, type AgendaItem, type YearAgenda, type ArchiveEvent } from '@/data/events';
 import { agenda2025ItemFor, archiveEventFor } from '@/i18n/content';
@@ -158,7 +157,6 @@ export function EventArchiveSection() {
     <div className="space-y-6">
       {/* Header */}
       <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-lg p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
-            <GhostSpot className="absolute -bottom-1 left-10 w-5 text-white/20" />
         <svg
           viewBox="0 0 100 80"
           className="absolute top-0 right-0 w-20 sm:w-24 md:w-32 h-20 sm:h-24 md:h-32 text-white opacity-[0.06]"
