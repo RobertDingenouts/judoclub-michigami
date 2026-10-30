@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { GhostSpot } from '@/components/GhostSpot'
 import { SeasonalLogo } from '@/components/SeasonalLogo'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -147,7 +148,8 @@ function InschrijvenInner() {
 
       <div className="mx-auto max-w-3xl px-4 py-8">
         {/* Logo + Title */}
-        <div className="mb-8 text-center">
+        <div className="mb-8 text-center relative">
+            <GhostSpot className="absolute -top-1 -right-1 w-7 text-[#2a2a2a]/15" />
           <div className="mx-auto mb-4 h-20 w-20">
             <SeasonalLogo alt="Judoclub Michigami" className="h-20 w-20 object-contain rounded-full" />
           </div>

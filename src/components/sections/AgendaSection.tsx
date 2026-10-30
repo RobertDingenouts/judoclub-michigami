@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { GhostSpot } from '@/components/GhostSpot'
 import { Calendar, Flame, MapPin, Clock, ArrowRight, Ban, Trophy, XCircle, CircleDot } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { agendaItems } from '@/data/agenda';
@@ -241,6 +242,7 @@ export function AgendaSection() {
       <div className="space-y-4">
       {/* Header — gradient branding zoals oude agenda */}
       <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-lg p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
+            <GhostSpot className="absolute top-2 right-1/3 w-4 text-white/20" />
         <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">Judoclub Michigami</h1>
         <p className="text-white/80 mt-1 text-xs sm:text-sm">{t('Activiteitenkalender')} <span className="font-bold text-[#fce0e0]">{yearLabel}</span></p>
         <div className="w-10 sm:w-12 md:w-16 h-0.5 sm:h-1 bg-white/30 rounded-lg mt-2 sm:mt-3" />

@@ -1,6 +1,7 @@
 'use client';
 
 import { scheduleInfo } from '@/data/schedule';
+import { GhostSpot } from '@/components/GhostSpot'
 import { Clock } from 'lucide-react';
 import { useT } from '@/i18n/LangContext';
 import type { Section } from '@/components/nav-config';
@@ -11,6 +12,7 @@ export function ScheduleSection({ onNavigate }: { onNavigate?: (s: Section) => v
     <div className="space-y-6">
       {/* Header */}
       <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-lg p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
+            <GhostSpot className="absolute -bottom-0.5 right-8 w-6 text-white/25" />
         <svg
           viewBox="0 0 100 80"
           className="absolute top-0 right-0 w-20 sm:w-24 md:w-32 h-20 sm:h-24 md:h-32 text-white opacity-[0.06]"

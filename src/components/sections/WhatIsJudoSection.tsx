@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { GhostSpot } from '@/components/GhostSpot'
 import { GraduationCap, ArrowRight, MapPin, Clock, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useT } from '@/i18n/LangContext';
@@ -45,6 +46,7 @@ function ChapterHead({ kanji, eyebrow, title }: { kanji: string; eyebrow: string
     <header className="waj-reveal relative mb-8 sm:mb-10">
       <span className="waj-ghost waj-mincho" aria-hidden>{kanji}</span>
       <div className="relative">
+            <GhostSpot className="absolute top-2 right-1 w-6 text-[#8a8a80]/25" />
         <div className="mb-2 flex items-center gap-3">
           <span className="waj-rule" aria-hidden />
           <span className="waj-kaku text-[11px] font-semibold uppercase tracking-[0.38em]" style={{ color: 'var(--wj-red)' }}>

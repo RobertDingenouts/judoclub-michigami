@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useMemo } from 'react';
+import { GhostSpot } from '@/components/GhostSpot'
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { ChevronRight, ScrollText, Award } from 'lucide-react';
@@ -113,6 +114,7 @@ export function InfoSection({ onNavigate }: { onNavigate?: (s: Section) => void 
         <span className="story-vkanji story-vkanji-sm absolute left-5 top-1/2 hidden -translate-y-1/2 lg:block" aria-hidden>柔道始</span>
 
         <div className="relative z-10 flex flex-col items-center">
+            <GhostSpot className="absolute top-0 right-0 w-8 text-[#8a8a80]/30" />
           <div className="story-reveal flex items-center gap-4">
             <span className="story-rule" aria-hidden />
             <span className="story-kaku text-[11px] font-semibold uppercase tracking-[0.42em]" style={{ color: 'var(--st-gold)' }}>

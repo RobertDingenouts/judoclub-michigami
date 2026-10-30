@@ -1,6 +1,7 @@
 'use client';
 
 import { techniquesCards } from '@/data/techniques-card';
+import { GhostSpot } from '@/components/GhostSpot'
 import Image from 'next/image';
 import { AnimatedCard, AnimatedButton } from '@/components/ui/animated-card';
 import { useT } from '@/i18n/LangContext';
@@ -13,6 +14,7 @@ export function TechniquesCardSection() {
       {/* Header */}
       <AnimatedCard>
         <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-lg p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
+            <GhostSpot className="absolute bottom-1 left-6 w-5 text-white/30" />
           <svg
             viewBox="0 0 100 80"
             className="absolute top-0 right-0 w-20 sm:w-24 md:w-32 h-20 sm:h-24 md:h-32 text-white opacity-[0.06]"

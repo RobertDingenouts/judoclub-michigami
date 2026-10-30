@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { GhostSpot } from '@/components/GhostSpot'
 import { getLevels, type JudoLevel, type JudoTerm, beltColors } from '@/data/japanese-course';
 import { Lock, Unlock, Trophy, ChevronLeft, ChevronRight, RotateCcw, Volume2, VolumeX, Star, ImageOff, Play, X } from 'lucide-react';
 import { techniqueCategories } from '@/data/techniques';
@@ -443,6 +444,7 @@ export function QuizMode({ level, onPass, onNext, onPrev }: { level: JudoLevel; 
     const passed = percentage >= 80;
     return (
       <div className="bg-white rounded-lg shadow-sm border border-[#e9e0cf] p-6 sm:p-8 text-center relative overflow-hidden">
+            <GhostSpot className="absolute bottom-2 right-2 w-7 text-[#a90000]/15" />
         {passed && (
           <div className="absolute inset-0 bg-gradient-to-br from-yellow-50 via-green-50 to-transparent opacity-50" />
         )}

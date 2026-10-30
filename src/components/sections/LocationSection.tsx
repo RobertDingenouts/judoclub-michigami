@@ -1,6 +1,7 @@
 'use client';
 
 import { locationData } from '@/data/location';
+import { GhostSpot } from '@/components/GhostSpot'
 import { GoogleMapEmbed } from './GoogleMapEmbed';
 import { useT } from '@/i18n/LangContext';
 
@@ -10,6 +11,7 @@ export function LocationSection() {
     <div className="space-y-6 pb-4 sm:pb-0">
       {/* Header */}
       <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-lg p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
+            <GhostSpot className="absolute -bottom-0.5 right-1/4 w-5 text-white/30" />
         <svg
           viewBox="0 0 100 80"
           className="absolute top-0 right-0 w-20 sm:w-24 md:w-32 h-20 sm:h-24 md:h-32 text-white opacity-[0.06]"

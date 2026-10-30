@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { GhostSpot } from '@/components/GhostSpot'
 import { Mail, Phone, MapPin, Send, Check } from 'lucide-react';
 import { contactInfo } from '@/data/contact';
 import { useT } from '@/i18n/LangContext';
@@ -229,6 +230,7 @@ export function ContactSection() {
     <div className="space-y-8">
       {/* Header */}
       <div className="bg-gradient-to-r from-[#a90000] to-[#8c0000] rounded-lg p-4 sm:p-5 md:p-6 lg:p-8 text-white shadow-lg relative overflow-hidden">
+            <GhostSpot className="absolute bottom-1 right-1/2 w-5 text-white/25" />
         <svg
           viewBox="0 0 100 80"
           className="absolute top-0 right-0 w-20 sm:w-24 md:w-32 h-20 sm:h-24 md:h-32 text-white opacity-[0.06]"
