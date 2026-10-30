@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { GhostSpot } from '@/components/GhostSpot'
 import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import { galleryData, type GalleryImage, fullResSrc } from '@/data/gallery';
@@ -340,7 +339,6 @@ export function PhotoGallery() {
   return (
     <div className="ink-paper zen-fullbleed zen-scroll relative min-h-screen overflow-hidden">
       <div className="relative z-10 mx-auto max-w-5xl px-4 sm:px-6 py-10 sm:py-14">
-            <GhostSpot className="absolute top-2 right-2 w-6 text-[#8a8a80]/25" />
         {/* Header */}
         <div className="text-center mb-10 sm:mb-12">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[var(--shu-600)] border border-[var(--kin-400)]/40 mb-4">
