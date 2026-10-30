@@ -84,7 +84,7 @@ export function HeroSlider() {
 
       {/* Egale, kalme overlay — eentje, rustig verloop + extra donker aan de tekstkant */}
       <div className="absolute inset-0 z-20 bg-gradient-to-t from-[#14120e]/85 via-[#14120e]/35 to-[#14120e]/25" />
-            <GhostSpot className="absolute bottom-6 right-1/4 w-7 text-white/15" />
+            <GhostSpot className="absolute bottom-6 right-1/4 z-30 w-7 text-white/20" />
       <div className="absolute inset-0 z-20 bg-gradient-to-r from-[#14120e]/55 via-transparent to-transparent" />
 
       {/* Verticale kanji — alleen desktop, rustig */}
