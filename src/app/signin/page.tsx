@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { GhostSpot } from '@/components/GhostSpot'
 import { SeasonalLogo } from '@/components/SeasonalLogo'
 import { useFormStatus } from 'react-dom'
 import { useRouter } from 'next/navigation'
@@ -126,7 +125,6 @@ function SignInInner() {
       </div>
 
       <div className="relative z-10 w-full max-w-md rounded-lg border border-white/60 bg-white/90 p-8 shadow-[0_8px_40px_-8px_rgba(169,0,0,0.18)] backdrop-blur-xl">
-            <GhostSpot className="absolute bottom-3 right-4 w-6 text-[#a90000]/20" />
         {/* Logo */}
         <div className="mb-8 text-center">
           <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-lg bg-gradient-to-br from-[#fdf6f6] to-white p-1 shadow-sm ring-4 ring-[#a90000]/10">
