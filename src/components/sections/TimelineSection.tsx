@@ -148,8 +148,8 @@ export function TimelineSection({ onNavigate }: { onNavigate?: (s: Section) => v
       <InkBleeds tone="light" className="opacity-60" />
       <SakuraPetals count={14} className="opacity-90" />
 
-      <div className="relative z-10 max-w-4xl mx-auto px-5 sm:px-10 py-10 sm:py-16"
-            <GhostSpot className="absolute top-2 right-0 w-6 text-[#8a8a80]/25" />>
+      <div className="relative z-10 max-w-4xl mx-auto px-5 sm:px-10 py-10 sm:py-16">
+            <GhostSpot className="absolute top-2 right-0 w-6 text-[#8a8a80]/25" />
         {/* Header */}
         <motion.div
           ref={headerRef}
