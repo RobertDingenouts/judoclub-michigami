@@ -240,6 +240,8 @@ export default function MichigamiApp() {
   useEffect(() => {
     const handler = () => setProeflesOpen(true);
     window.addEventListener('open-proefles', handler);
+    // Deep link vanaf /inschrijven: /?proefles=1 opent de proefles-drawer direct
+    if (new URLSearchParams(window.location.search).get('proefles')) setProeflesOpen(true);
     return () => window.removeEventListener('open-proefles', handler);
   }, []);
 

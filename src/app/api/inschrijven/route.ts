@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
     })
 
     if (existing) {
-      return NextResponse.json({ success: false, error: 'Er is al een openstaande inschrijving voor dit e-mailadres' }, { status: 409 })
+      return NextResponse.json({ success: false, error: 'Er is al een openstaande inschrijving voor dit e-mailadres. Bij meerdere kinderen heeft elk kind een eigen e-mailadres nodig — lukt dat niet? Neem dan contact met ons op.' }, { status: 409 })
     }
 
     // Check if email already exists as a member
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
     })
 
     if (existingUser) {
-      return NextResponse.json({ success: false, error: 'Dit e-mailadres is al geregistreerd als lid' }, { status: 409 })
+      return NextResponse.json({ success: false, error: 'Dit e-mailadres is al in gebruik door een ander lid. Elk kind heeft een eigen account nodig — band, examens en diploma’s horen bij dat account. Gebruik voor een tweede kind een ander e-mailadres of neem contact met ons op.' }, { status: 409 })
     }
 
     // Create application

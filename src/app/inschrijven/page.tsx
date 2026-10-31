@@ -155,6 +155,16 @@ function InschrijvenInner() {
           <p className="mt-2 text-gray-600">{t('Vul het formulier in om je aan te melden bij Judoclub Michigami')}</p>
         </div>
 
+        {/* Let op: eerst proeflessen, pas daarna inschrijven */}
+        <div className="mb-8 rounded-lg border border-[#e9d8a6] bg-[#fff8e6] p-4 text-sm text-gray-700">
+          <p>
+            {t('Eerst kijken of judo bevalt? Je hoeft je nog niet in te schrijven — je mag eerst 3 gratis proeflessen volgen. Inschrijven doe je pas als je zeker weet dat je lid wilt worden.')}
+          </p>
+          <a href="/?proefles=1" className="mt-3 inline-flex items-center gap-2 rounded-lg bg-[#a90000] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#8c0000]">
+            {t('Gratis proefles aanvragen')}
+          </a>
+        </div>
+
         {/* Progress steps */}
         <div className="mb-8 flex items-center justify-center gap-4">
           <div className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium ${step >= 1 ? 'bg-[#a90000] text-white' : 'bg-gray-200 text-gray-500'}`}>
@@ -201,6 +211,9 @@ function InschrijvenInner() {
                   <input type="email" required value={form.email} onChange={e => update('email', e.target.value)}
                     className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
                     placeholder="jan@voorbeeld.nl" />
+                  <p className="mt-1 text-xs text-gray-500">
+                    {t('Elk kind krijgt een eigen account — bij meerdere kinderen heeft elk kind een eigen e-mailadres nodig.')}
+                  </p>
                 </div>
                 <div>
                   <label className="mb-1.5 block text-sm font-medium text-gray-700">{t('Telefoonnummer')} *</label>
