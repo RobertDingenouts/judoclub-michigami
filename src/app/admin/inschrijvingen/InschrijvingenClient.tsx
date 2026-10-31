@@ -8,6 +8,8 @@ interface Application {
   lastName: string
   email: string
   phone: string | null
+  phone2: string | null
+  whatsappGroup: string | null
   dateOfBirth: Date | null
   gender: string | null
   address: string | null
@@ -295,7 +297,8 @@ export default function InschrijvingenClient({ applications }: InschrijvingenCli
             {/* App details summary */}
             <div className="mt-3 rounded-lg border border-gray-200 bg-gray-50 p-3 text-sm space-y-1">
               <div><strong>E-mail:</strong> {selectedApp.email}</div>
-              <div><strong>Telefoon:</strong> {selectedApp.phone || '-'}</div>
+              <div><strong>Telefoon:</strong> {[selectedApp.phone, selectedApp.phone2].filter(Boolean).join(' / ') || '-'}</div>
+              <div><strong>Groepsapp:</strong> {selectedApp.whatsappGroup === 'ja1' ? `Nummer 1 (${selectedApp.phone || 'onbekend'})` : selectedApp.whatsappGroup === 'ja2' ? `Nummer 2 (${selectedApp.phone2 || 'onbekend'})` : selectedApp.whatsappGroup === 'ja12' ? 'Nummer 1 en 2' : selectedApp.whatsappGroup === '' ? 'Nee, bedankt' : '-'}</div>
               <div><strong>Locatie:</strong> {selectedApp.location === 'STeenbergen' ? 'Steenbergen' : 'Oud-Vossemeer'}</div>
               {selectedApp.isChild && <div><strong>Ouder:</strong> {selectedApp.parentName || '-'}</div>}
             </div>
@@ -386,7 +389,8 @@ export default function InschrijvingenClient({ applications }: InschrijvingenCli
                 <h3 className="text-sm font-semibold text-[#2a2a2a] mb-2">Persoonlijke gegevens</h3>
                 <div className="grid grid-cols-2 gap-2 text-sm">
                   <div><span className="text-gray-500">E-mail:</span> {selectedApp.email}</div>
-                  <div><span className="text-gray-500">Telefoon:</span> {selectedApp.phone || '-'}</div>
+                  <div><span className="text-gray-500">Telefoon:</span> {[selectedApp.phone, selectedApp.phone2].filter(Boolean).join(' / ') || '-'}</div>
+                  <div><span className="text-gray-500">Groepsapp:</span> {selectedApp.whatsappGroup === 'ja1' ? 'Nummer 1' : selectedApp.whatsappGroup === 'ja2' ? 'Nummer 2' : selectedApp.whatsappGroup === 'ja12' ? 'Nummer 1 en 2' : selectedApp.whatsappGroup === '' ? 'Nee, bedankt' : '-'}</div>
                   <div><span className="text-gray-500">Geboortedatum:</span> {selectedApp.dateOfBirth ? formatDate(selectedApp.dateOfBirth) : '-'}</div>
                   <div><span className="text-gray-500">Geslacht:</span> {selectedApp.gender || '-'}</div>
                   <div className="col-span-2"><span className="text-gray-500">Adres:</span> {selectedApp.address || '-'} {selectedApp.postalCode || ''} {selectedApp.city || ''}</div>

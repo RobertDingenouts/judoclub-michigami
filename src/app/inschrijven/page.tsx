@@ -33,6 +33,8 @@ function InschrijvenInner() {
     lastName: '',
     email: '',
     phone: '',
+    phone2: '',
+    whatsappGroup: 'ja1',
     dateOfBirth: '',
     gender: '',
     address: '',
@@ -220,6 +222,29 @@ function InschrijvenInner() {
                   <input type="tel" required value={form.phone} onChange={e => update('phone', e.target.value)}
                     className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
                     placeholder="06-12345678" />
+                </div>
+              </div>
+
+              {/* Telefoon 2 + groepsapp */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium text-gray-700">{t('Telefoonnummer 2 (optioneel)')}</label>
+                  <input type="tel" value={form.phone2} onChange={e => update('phone2', e.target.value)}
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+                    placeholder="06-87654321" />
+                </div>
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium text-gray-700">{t('WhatsApp-groepsapp van de club')}</label>
+                  <select value={form.whatsappGroup} onChange={e => update('whatsappGroup', e.target.value)}
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]">
+                    <option value="ja1">{t('Ja — telefoonnummer 1')}</option>
+                    <option value="ja2">{t('Ja — telefoonnummer 2')}</option>
+                    <option value="ja12">{t('Ja — beide telefoonnummers')}</option>
+                    <option value="">{t('Nee, bedankt')}</option>
+                  </select>
+                  <p className="mt-1 text-xs text-gray-500">
+                    {t('Via dit nummer nodigen we je uit voor de groepsapp met nieuws over lessen en toernooien.')}
+                  </p>
                 </div>
               </div>
 

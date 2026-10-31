@@ -267,6 +267,8 @@ model MembershipApplication {
   lastName         String
   email            String
   phone            String?
+  phone2           String?
+  whatsappGroup    String?
   dateOfBirth      DateTime?
   gender           String?
   address          String?
