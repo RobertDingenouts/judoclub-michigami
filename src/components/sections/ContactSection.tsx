@@ -18,6 +18,7 @@ interface ContactFormData {
 const SUBJECTS = [
   'Algemene vraag',
   'Proefles / inschrijving',
+  'Afmelden / opzeggen',
   'Training & agenda',
   'Toernooi / evenement',
   'Sponsoring / samenwerking',
@@ -219,6 +220,11 @@ function ContactForm() {
           {t('Verstuur via email')}
         </button>
       </div>
+
+      {/* Info: afmelden */}
+      <p className="text-xs text-gray-500 border-t border-[#e9e0cf] pt-3">
+        {t('Afmelden? Dat kan gewoon per e-mail, WhatsApp of mondeling tijdens de les. De opzegtermijn is 1 maand voor het einde van het kwartaal.')}
+      </p>
     </div>
   );
 }

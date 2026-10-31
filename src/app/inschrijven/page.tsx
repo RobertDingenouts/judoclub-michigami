@@ -368,7 +368,8 @@ function InschrijvenInner() {
                 </div>
                 <ActionCostNote />
                 <p className="mt-3 text-xs text-gray-500">
-                  {t('Lidmaatschap wordt per kwartaal in rekening gebracht. Opzegtermijn is 1 maand voor het einde van het kwartaal.')}
+                  {t('Lidmaatschap wordt per kwartaal in rekening gebracht. Opzegtermijn is 1 maand voor het einde van het kwartaal.')}{' '}
+                  {t('Afmelden kan per e-mail, WhatsApp of mondeling tijdens de les.')}
                 </p>
               </div>
 
