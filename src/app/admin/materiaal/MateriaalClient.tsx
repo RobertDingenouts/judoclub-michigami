@@ -231,7 +231,13 @@ export default function MateriaalClient() {
                 </tbody>
               </table>
             )}
-            <p className="mt-3 text-xs text-gray-400">Bij <b>bijdragefactuur</b> gaan de artikelen bij de contributieregels van het kwartaal. Bij <b>losse materiaalfactuur</b> komt alles op een eigen factuur (periode <i>Materiaal {new Date().getFullYear()}</i>) — handig als het kwartaal al betaald is. Te genereren via Contributie-admin → gekozen periode → factuur-PDF. Een regel afmelden brengt het artikel terug in de voorraad.</p>
+            {fact?.paymentId && (
+              <a href={`/api/admin2/factuur?paymentId=${fact.paymentId}`} target="_blank" rel="noreferrer"
+                className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-[#a90000] px-4 py-2 text-sm font-semibold text-white hover:bg-[#8c0000]">
+                📄 Open of print factuur (PDF)
+              </a>
+            )}
+            <p className="mt-3 text-xs text-gray-400">Bij <b>bijdragefactuur</b> gaan de artikelen bij de contributieregels van het kwartaal. Bij <b>losse materiaalfactuur</b> komt alles op een eigen factuur (periode <i>Materiaal {new Date().getFullYear()}</i>) — handig als het kwartaal al betaald is. Direct openen/printen via de knop hierboven (PDF opent in de browser, daar te printen of te downloaden). Een regel afmelden brengt het artikel terug in de voorraad.</p>
           </div>
         </div>
       )}
