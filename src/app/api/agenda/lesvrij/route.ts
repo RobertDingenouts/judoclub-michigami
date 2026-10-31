@@ -31,7 +31,7 @@ export async function GET() {
   }
   const items = Object.entries(groepen).map(([key, g]) => {
     const [reden, loc] = key.split('|')
-    const display = g.aantal === 1
+    const display = g.van === g.tot
       ? new Date(g.van).toLocaleDateString('nl-NL', { day: 'numeric', month: 'long' })
       : `${new Date(g.van).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' })} t/m ${new Date(g.tot).toLocaleDateString('nl-NL', { day: 'numeric', month: 'long' })}`
     return {
