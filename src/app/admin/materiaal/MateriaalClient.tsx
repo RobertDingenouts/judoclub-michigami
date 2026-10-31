@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { LidInfoKnop } from '@/components/admin2/LidInfoKnop'
 
 type Item = { id: string; artikelNr: string; ean: string | null; product: string; maat: string | null; inkoopIncl: number; webPrijs: number; clubPrijs: number; voorraad: number }
 type Move = { id: string; artikelNr: string; product: string; maat: string | null; soort: string; aantal: number; prijs: number; memberNaam: string | null; periode: string | null; reden: string | null; createdAt: string }
@@ -75,6 +76,11 @@ export default function MateriaalClient() {
 
   useEffect(() => {
     if (!memberId) { setFact(null); return }
+    laadFact()
+  }, [memberId, modus])
+
+  const laadFact = useCallback(() => {
+    if (!memberId) return
     fetch(`/api/admin2/inventory/verkoop?memberId=${memberId}&mode=${modus}`).then(r => r.json()).then(d => setFact(d.error ? null : d))
   }, [memberId, modus])
 
@@ -194,7 +200,7 @@ export default function MateriaalClient() {
                 ))}
               </div>
             )}
-            {memberId && <p className="mt-2 text-xs text-green-700">Lid geselecteerd: <b>{lidNaam(memberId)}</b></p>}
+            {memberId && <p className="mt-2 flex items-center gap-2 text-xs text-green-700">Lid geselecteerd: <b>{lidNaam(memberId)}</b> <LidInfoKnop memberId={memberId} klas="rounded border border-gray-300 px-2 py-0.5 text-[11px] font-semibold text-gray-600 hover:border-[#a90000] hover:text-[#a90000]" /></p>}
 
             <h2 className="mb-2 mt-5 text-sm font-bold text-[#2a2a2a]">2 · Kies het artikel</h2>
             <input value={pq} onChange={e => setPq(e.target.value)} placeholder="Zoek artikel of maat…" className="mb-2 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none" />
@@ -236,6 +242,9 @@ export default function MateriaalClient() {
                 className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-[#a90000] px-4 py-2 text-sm font-semibold text-white hover:bg-[#8c0000]">
                 📄 Open of print factuur (PDF)
               </a>
+            )}
+            {fact?.paymentId && fact.items.some(x => !x.artikelNr) && (
+              <ContribBedragEditor fact={fact} onOpgeslagen={laadFact} />
             )}
             <p className="mt-3 text-xs text-gray-400">Bij <b>bijdragefactuur</b> gaan de artikelen bij de contributieregels van het kwartaal. Bij <b>losse materiaalfactuur</b> komt alles op een eigen factuur (periode <i>Materiaal {new Date().getFullYear()}</i>) — handig als het kwartaal al betaald is. Direct openen/printen via de knop hierboven (PDF opent in de browser, daar te printen of te downloaden). Een regel afmelden brengt het artikel terug in de voorraad.</p>
           </div>
@@ -280,6 +289,57 @@ export default function MateriaalClient() {
         />
       )}
     </div>
+  )
+}
+
+// Contributie-/vrije regels op de factuur aanpassen (bv. net lid → 2/3 kwartaal).
+// Materiaalregels (met artikelNr) blijven intact; payment-edit preserves die.
+function ContribBedragEditor({ fact, onOpgeslagen }: {
+  fact: { paymentId: string | null; items: FactItem[]; totaal: number }
+  onOpgeslagen: () => void
+}) {
+  const [bedragen, setBedragen] = useState<Record<number, string>>({})
+  const [busy, setBusy] = useState(false)
+  const [melding, setMelding] = useState('')
+
+  const nieuwTotaal = fact.items.reduce((s, x, i) => s + (bedragen[i] !== undefined ? (parseFloat(String(bedragen[i]).replace(',', '.')) || 0) : x.bedrag), 0)
+
+  async function opslaan() {
+    if (!fact.paymentId) return
+    setBusy(true); setMelding('')
+    const items = fact.items.map((x, i) => ({ ...x, bedrag: bedragen[i] !== undefined ? (parseFloat(String(bedragen[i]).replace(',', '.')) || 0) : x.bedrag }))
+    const r = await fetch('/api/admin2/payment-edit', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ paymentId: fact.paymentId, items }),
+    })
+    const d = await r.json()
+    setBusy(false)
+    if (!r.ok) { setMelding(d.error || 'Mislukt'); return }
+    setMelding(`Opgeslagen — totaal ${Number(d.amount).toLocaleString('nl-NL', { style: 'currency', currency: 'EUR' })}`)
+    onOpgeslagen()
+  }
+
+  return (
+    <details className="mt-3">
+      <summary className="cursor-pointer text-xs font-semibold text-[#a90000]">✏️ Contributiebedrag aanpassen (bv. net lid → naar verhouding)</summary>
+      <div className="mt-2 space-y-1.5">
+        {fact.items.map((x, i) => x.artikelNr ? null : (
+          <div key={i} className="flex items-center gap-2">
+            <span className="min-w-0 flex-1 text-sm text-gray-600">{x.omschrijving}</span>
+            <input defaultValue={x.bedrag} onChange={e => setBedragen(p => ({ ...p, [i]: e.target.value }))} inputMode="decimal"
+              className="w-24 rounded-lg border border-gray-300 px-2 py-1 text-right text-sm focus:border-[#a90000] focus:outline-none" />
+          </div>
+        ))}
+        <div className="flex items-center gap-2">
+          <button onClick={opslaan} disabled={busy}
+            className="rounded-lg bg-[#a90000] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#8c0000] disabled:opacity-50">
+            Opslaan — totaal {Number(nieuwTotaal.toFixed(2)).toLocaleString('nl-NL', { style: 'currency', currency: 'EUR' })}
+          </button>
+          {melding && <span className="text-xs text-green-700">{melding}</span>}
+        </div>
+        <p className="text-[11px] text-gray-400">Tip: 2 van de 3 maanden = ⅔ van het kwartaalbedrag (€42 → €28). Via "herstel standaard" op het contributiescherm gaat dit terug naar het normale bedrag.</p>
+      </div>
+    </details>
   )
 }
 

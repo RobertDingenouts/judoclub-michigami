@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { PAYMENT_INFO, GROEP_LABEL } from '@/lib/admin2'
+import { LidInfoKnop } from '@/components/admin2/LidInfoKnop'
 
 type Item = { omschrijving: string; bedrag: number }
 type Rij = {
@@ -37,6 +38,7 @@ export function ContributieBoard({ rows, periode, periodId, totaalOpen, toonGest
   const [busy, setBusy] = useState<string | null>(null)
   const [genereren, setGenereren] = useState(false)
   const [bewerken, setBewerken] = useState<string | null>(null)
+  const [materiaalLid, setMateriaalLid] = useState<Rij | null>(null)
   const [bevestigBulk, setBevestigBulk] = useState(false)
   const [bulkDue, setBulkDue] = useState<string | null>(null)
 
@@ -291,6 +293,10 @@ export function ContributieBoard({ rows, periode, periodId, totaalOpen, toonGest
                     🧾 Factuur
                   </button>
                 )}
+                <button onClick={() => setMateriaalLid(r)}
+                  className="rounded-lg border border-gray-300 px-3 py-2 text-xs font-semibold text-gray-600 hover:border-[#a90000] hover:text-[#a90000]"
+                  title="Artikel uit voorraad op deze factuur zetten (pak, band, …)">📦 + Artikel</button>
+                <LidInfoKnop memberId={r.memberId} />
                 <a href={`/admin/students/${r.memberId}`}
                   className="rounded-lg border border-gray-300 px-3 py-2 text-xs font-semibold text-gray-600 hover:border-[#a90000] hover:text-[#a90000]"
                   title="Volledig dossier van dit lid">👤 Lid</a>
@@ -334,7 +340,85 @@ export function ContributieBoard({ rows, periode, periodId, totaalOpen, toonGest
           </div>
         )}
       </div>
+
+      {materiaalLid && (
+        <MateriaalPicker
+          memberId={materiaalLid.memberId}
+          lidNaam={materiaalLid.naam}
+          periode={periode}
+          periodId={periodId}
+          sluit={() => setMateriaalLid(null)}
+          sluitEnVervers={() => { setMateriaalLid(null); router.refresh() }}
+        />
+      )}
     </>
+  )
+}
+
+// Artikelen uit de clubvoorraad op de factuur van dit lid zetten — inclusief
+// voorraadcorrectie en logboek, dezelfde route als Materiaal → Op factuur.
+function MateriaalPicker({ memberId, lidNaam, periode, periodId, sluit, sluitEnVervers }: {
+  memberId: string; lidNaam: string; periode: string; periodId: string; sluit: () => void; sluitEnVervers: () => void
+}) {
+  type Art = { id: string; product: string; maat: string | null; clubPrijs: number; voorraad: number }
+  const [arts, setArts] = useState<Art[] | null>(null)
+  const [q, setQ] = useState('')
+  const [artikelId, setArtikelId] = useState('')
+  const [aantal, setAantal] = useState(1)
+  const [toast, setToast] = useState('')
+  const [totaalToegevoegd, setTotaalToegevoegd] = useState(0)
+
+  useEffect(() => {
+    fetch('/api/admin2/inventory').then(r => r.json()).then(d => setArts(d.items ?? [])).catch(() => setArts([]))
+  }, [])
+
+  const zichtbaar = (arts ?? []).filter(a => `${a.product} ${a.maat ?? ''}`.toLowerCase().includes(q.toLowerCase()))
+
+  async function voegToe() {
+    if (!artikelId) return
+    const gekozen = artikelId
+    const r = await fetch('/api/admin2/inventory/verkoop', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ itemId: gekozen, memberId, aantal, mode: 'kwartaal', periodId }),
+    })
+    const d = await r.json()
+    if (!r.ok) { setToast(d.error || 'Mislukt'); return }
+    setToast(`Toegevoegd — factuurtotaal ${Number(d.totaal).toLocaleString('nl-NL', { style: 'currency', currency: 'EUR' })}`)
+    setTotaalToegevoegd(t => t + 1)
+    setAantal(1)
+    setArtikelId('')
+    setArts(prev => prev ? prev.map(a => a.id === gekozen ? { ...a, voorraad: d.voorraad } : a) : prev)
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4" onClick={sluitEnVervers}>
+      <div className="my-8 w-full max-w-md rounded-xl bg-white p-5 shadow-xl" onClick={e => e.stopPropagation()}>
+        <div className="mb-2 flex items-center justify-between">
+          <h3 className="font-bold text-[#2a2a2a]">📦 Artikel op factuur — {lidNaam} <span className="text-sm font-normal text-gray-500">({periode})</span></h3>
+          <button onClick={sluitEnVervers} className="text-gray-400 hover:text-gray-700">✕</button>
+        </div>
+        <input value={q} onChange={e => setQ(e.target.value)} placeholder="Zoek artikel of maat…"
+          className="mb-2 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none" />
+        {!arts && <p className="text-sm text-gray-400">Artikelen laden…</p>}
+        {arts && (
+          <div className="flex flex-wrap gap-2">
+            <select value={artikelId} onChange={e => setArtikelId(e.target.value)} className="min-w-0 flex-1 rounded-lg border border-gray-300 bg-white px-2 py-2 text-sm">
+              <option value="">— kies —</option>
+              {zichtbaar.map(a => <option key={a.id} value={a.id}>{a.product.replace('Budo Band - Vechtsportband - ', 'Band — ')}{a.maat ? ` · ${a.maat}` : ''} — {Number(a.clubPrijs).toLocaleString('nl-NL', { style: 'currency', currency: 'EUR' })}{a.voorraad === 0 ? ' (0 op voorraad)' : ` (${a.voorraad})`}</option>)}
+            </select>
+            <input type="number" min={1} value={aantal} onChange={e => setAantal(Math.max(1, Number(e.target.value)))} className="w-16 rounded-lg border border-gray-300 px-2 py-2 text-center text-sm" />
+            <button onClick={voegToe} disabled={!artikelId} className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-40">Toevoegen</button>
+          </div>
+        )}
+        {toast && <p className="mt-2 text-sm text-green-700">{toast}</p>}
+        <div className="mt-4 flex justify-end gap-2">
+          <button onClick={sluitEnVervers} className="rounded-lg bg-[#a90000] px-4 py-2 text-sm font-semibold text-white hover:bg-[#8c0000]">
+            {totaalToegevoegd > 0 ? `Klaar (${totaalToegevoegd} ${totaalToegevoegd === 1 ? 'regel' : 'regels'} toegevoegd)` : 'Sluiten'}
+          </button>
+        </div>
+        <p className="mt-2 text-[11px] text-gray-400">Meerdere artikelen achter elkaar kan; de lijst ververst na sluiten. Voorraad en logboek lopen automatisch mee.</p>
+      </div>
+    </div>
   )
 }
 

@@ -17,7 +17,12 @@ export async function POST(req: NextRequest) {
   const data: Record<string, unknown> = {}
   if (Array.isArray(items)) {
     const clean = items
-      .map((x: any) => ({ omschrijving: String(x.omschrijving ?? '').trim(), bedrag: Math.round((Number(x.bedrag) || 0) * 100) / 100 }))
+      .map((x: any) => ({
+        omschrijving: String(x.omschrijving ?? '').trim(),
+        bedrag: Math.round((Number(x.bedrag) || 0) * 100) / 100,
+        // materiaal-regels hun artikelkoppeling laten behouden (retour-voorraad blijft werken)
+        ...(x.artikelNr ? { artikelNr: String(x.artikelNr), aantal: Number(x.aantal) || 1 } : {}),
+      }))
       .filter(x => x.omschrijving || x.bedrag)
     if (clean.length === 0) {
       // herstellen: standaard contributielijn + standaardbedrag van de periode

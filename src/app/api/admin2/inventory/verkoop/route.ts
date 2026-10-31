@@ -11,8 +11,13 @@ const isMateriaalPeriod = (label: string) => label.startsWith('Materiaal')
 
 // kwartaal → lopende (of meest recente) contributieperiode, nooi materiaelperiodes.
 // materiaal → eigen eenmalige periode 'Materiaal <jaar>', wordt aangemaakt als hij nog niet bestaat.
-async function doelPeriode(mode: Mode) {
+async function doelPeriode(mode: Mode, periodId?: string | null) {
   const now = new Date()
+  if (periodId) {
+    // vanaf bijv. het contributieboard:explicit gekozen periode (nooit een materiaalfactuur raken)
+    const p = await db.contributionPeriod.findUnique({ where: { id: periodId } })
+    if (p) return p
+  }
   if (mode === 'materiaal') {
     const label = `Materiaal ${now.getFullYear()}`
     const bestaand = await db.contributionPeriod.findUnique({ where: { label } })
@@ -49,8 +54,9 @@ export async function GET(req: NextRequest) {
   if (!(await isAdmin())) return NextResponse.json({ error: 'Geen admin' }, { status: 403 })
   const memberId = req.nextUrl.searchParams.get('memberId')
   const mode = (req.nextUrl.searchParams.get('mode') === 'materiaal' ? 'materiaal' : 'kwartaal') as Mode
+  const periodId = req.nextUrl.searchParams.get('periodId')
   if (!memberId) return NextResponse.json({ error: 'memberId nodig' }, { status: 400 })
-  const periode = await doelPeriode(mode)
+  const periode = await doelPeriode(mode, periodId)
   if (!periode) return NextResponse.json({ error: 'geen contributieperiode gevonden' }, { status: 500 })
   const payment = await db.payment.findUnique({ where: { memberId_periodId: { memberId, periodId: periode.id } } })
   const items = parseItems(payment?.items ?? null, periode)
@@ -66,13 +72,13 @@ export async function GET(req: NextRequest) {
 // POST { itemId, memberId, aantal, mode } → artikel op factuur van het lid (clubprijs), voorraad -= aantal
 export async function POST(req: NextRequest) {
   if (!(await isAdmin())) return NextResponse.json({ error: 'Geen admin' }, { status: 403 })
-  const { itemId, memberId, aantal = 1, mode = 'kwartaal' } = await req.json()
+  const { itemId, memberId, aantal = 1, mode = 'kwartaal', periodId = null } = await req.json()
   if (!itemId || !memberId) return NextResponse.json({ error: 'itemId en memberId nodig' }, { status: 400 })
 
   const [item, member, periode] = await Promise.all([
     db.inventoryItem.findUnique({ where: { id: itemId } }),
     db.member.findUnique({ where: { id: memberId } }),
-    doelPeriode(mode === 'materiaal' ? 'materiaal' : 'kwartaal'),
+    doelPeriode(mode === 'materiaal' ? 'materiaal' : 'kwartaal', periodId),
   ])
   if (!item) return NextResponse.json({ error: 'artikel niet gevonden' }, { status: 404 })
   if (!member) return NextResponse.json({ error: 'lid niet gevonden' }, { status: 404 })
