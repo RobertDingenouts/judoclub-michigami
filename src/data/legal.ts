@@ -31,7 +31,7 @@ export const legalDocuments: LegalDocument[] = [
       {
         heading: '3. Lidmaatschap en Inschrijving',
         content:
-          '3.1 Proeflessen: Nieuwe leden mogen drie proeflessen gratis volgen om kennis te maken met judo bij Judoclub Michigami Steenbergen.\n\n3.2 Inschrijving: Lidmaatschap is mogelijk voor iedereen vanaf 6 jaar. Na de proeflessen dien je je in te schrijven via het inschrijfformulier op onze website.\n\n3.3 Beëindiging Lidmaatschap: Beëindiging van het lidmaatschap kan schriftelijk voor het begin van het volgende kwartaal.',
+          '3.1 Proeflessen: Nieuwe leden mogen drie proeflessen gratis volgen om kennis te maken met judo bij Judoclub Michigami Steenbergen.\n\n3.2 Inschrijving: Lidmaatschap is mogelijk voor iedereen vanaf 6 jaar. Na de proeflessen dien je je in te schrijven via het inschrijfformulier op onze website.\n\n3.3 Beëindiging Lidmaatschap: Je kunt je afmelden per e-mail, WhatsApp of mondeling tijdens een les. Geef het uiterlijk één maand voor het einde van een kwartaal door; je lidmaatschap stopt dan per het einde van dat kwartaal.',
       },
       {
         heading: '4. Contributie en Kosten',
