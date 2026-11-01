@@ -1,5 +1,5 @@
 /* PWA Service Worker — Judoclub Michigami */
-const CACHE_NAME = "michigami-v165-20261101";
+const CACHE_NAME = "michigami-v166-20261101";
 
 // Assets to pre-cache on install (critical for offline)
 const PRECACHE_URLS = [
