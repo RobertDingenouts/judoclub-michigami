@@ -418,6 +418,24 @@ model Competition {
   @@index([date])
 }
 
+model TournamentEntry {
+  id            String   @id @default(cuid())
+  toernooi      String   // slug, bijv. kersttoernooi-shintai-2026
+  naam          String   // voornaam + achternaam judoka
+  geslacht      String   // Man | Vrouw
+  leeftijd      Int
+  gewicht       Float    // kg
+  band          String   // bandkleur
+  niveau        String   // A | B | C | D (Shintai-omschrijving)
+  betaald       Boolean  @default(false)
+  opmerking     String?
+  ingediendDoor String?  // e-mail van ingelogde inzender (optioneel)
+  aangemaakt    DateTime @default(now())
+  bijgewerkt    DateTime @updatedAt
+
+  @@index([toernooi])
+}
+
 model TournamentSetup {
   id        String   @id @default(cuid())
   toernooi  String   @unique
