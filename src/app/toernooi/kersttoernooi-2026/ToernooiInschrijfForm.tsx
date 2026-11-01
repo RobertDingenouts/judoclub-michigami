@@ -113,10 +113,10 @@ export default function ToernooiInschrijfForm({ cfg, slug }: { cfg: Cfg; slug: s
           <h1 className="text-2xl font-bold text-[#2a2a2a]">Ingeschreven!</h1>
           <p className="mt-3 text-gray-600">
             We nemen <strong>{naam}</strong> op in de clublijst voor het {cfg.titel} op {cfg.datum}.
-            Vóór {cfg.deadlineShintai} geven we alle inschrijvingen in één keer door aan {cfg.organisator}.
+            We geven alle inschrijvingen in één keer namens de club door aan {cfg.organisator}.
           </p>
           <p className="mt-4 text-sm text-gray-500">
-            Fout ingevuld of toch niet dabei? Mail <a className="text-[#a90000] font-semibold" href="mailto:judoclub_michigami@hotmail.com">judoclub_michigami@hotmail.com</a>, dan passen we het aan.
+            Iets fout ingevuld of toch niet mee? Mail <a className="text-[#a90000] font-semibold" href="mailto:judoclub_michigami@hotmail.com">judoclub_michigami@hotmail.com</a>, dan passen we het aan.
           </p>
           <a href="/" className="inline-block mt-6 rounded-xl bg-[#a90000] px-5 py-2.5 text-white font-semibold hover:bg-[#8c0000]">Terug naar de site</a>
         </div>
@@ -139,7 +139,7 @@ export default function ToernooiInschrijfForm({ cfg, slug }: { cfg: Cfg; slug: s
           {cfg.iban && <li>💳 Storten op IBAN <strong className="select-all">{cfg.iban}</strong> t.n.v. Judoclub Michigami.</li>}
           <li>✍️ Bij de overschrijving vermelden: <strong>{cfg.betalingskenmerk}</strong>. De club maakt het totaal in één keer over naar {cfg.organisator}.</li>
           <li>👨‍👩‍👧 Ouders/familie zijn welkom als toeschouwer (€ 1,00 entree voor volwassenen, kinderen gratis)</li>
-          <li>📅 Inschrijven via ons t/m <strong>{cfg.deadlineLeden}</strong> — onze deadline bij {cfg.organisator} is {cfg.deadlineShintai}</li>
+          <li>📅 Inschrijven via ons t/m <strong>{cfg.deadlineLeden}</strong> — daarna gaan we de clublijst naar {cfg.organisator} sturen, dus wees er op tijd bij</li>
         </ul>
         <p className="mt-3 text-sm text-[#a90000] font-semibold">Alleen voor leden van Judoclub Michigami.</p>
       </div>
