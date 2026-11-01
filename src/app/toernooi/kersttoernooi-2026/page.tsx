@@ -9,6 +9,7 @@ export const metadata = {
 }
 
 export default function Kersttoernooi2026Page() {
-  const cfg = TOERNOOIEN['kersttoernooi-shintai-2026']
+  // deadlineShintai is alleen interne clubinfo — niet meesturen naar de client
+  const { deadlineShintai: _intern, ...cfg } = TOERNOOIEN['kersttoernooi-shintai-2026']
   return <ToernooiInschrijfForm cfg={cfg} slug='kersttoernooi-shintai-2026' />
 }

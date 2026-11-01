@@ -7,7 +7,6 @@ interface Cfg {
   titel: string
   datum: string
   deadlineLeden: string
-  deadlineShintai: string
   inschrijfgeld: number
   organisator: string
   locatie: string
