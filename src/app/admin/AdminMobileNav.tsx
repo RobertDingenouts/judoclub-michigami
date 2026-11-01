@@ -45,10 +45,10 @@ export function AdminMobileNav() {
       {open && (
         <div className="fixed inset-0 z-[60] lg:hidden">
           <div className="absolute inset-0 bg-black/40" onClick={() => setOpen(false)} />
-          <div className="absolute bottom-0 left-0 right-0 mx-auto w-[min(94%,520px)] rounded-t-2xl bg-white/95 pb-[env(safe-area-inset-bottom)] shadow-xl backdrop-blur-md">
+          <div className="absolute bottom-0 left-0 right-0 mx-auto w-[min(94%,520px)] rounded-t-xl bg-white/95 pb-[env(safe-area-inset-bottom)] shadow-xl backdrop-blur-md">
             <div className="flex items-center justify-between border-b border-gray-200 p-4">
               <span className="text-sm font-bold">Menu</span>
-              <button onClick={() => setOpen(false)} className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100" aria-label="Sluiten">
+              <button onClick={() => setOpen(false)} className="rounded-md p-1.5 text-gray-400 hover:bg-gray-100" aria-label="Sluiten">
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -60,7 +60,7 @@ export function AdminMobileNav() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setOpen(false)}
-                  className={`flex items-center gap-3 rounded-xl border px-4 py-3.5 text-sm font-medium ${
+                  className={`flex items-center gap-3 rounded-lg border px-4 py-3.5 text-sm font-medium ${
                     isActive(link.href) ? 'border-[#a90000]/30 bg-[#fdf6f6] text-[#a90000]' : 'border-gray-200 text-gray-700'
                   }`}
                 >

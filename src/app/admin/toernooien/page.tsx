@@ -37,7 +37,7 @@ export default async function AdminToernooienPage() {
                 <p className="mt-1 text-sm text-gray-500">{cfg.datum} · {entries.length} inschrijvingen</p>
               </div>
               <a href={`/api/toernooi-inschrijvingen/export?toernooi=${slug}`}
-                className="rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 hover:border-[#a90000] hover:text-[#a90000]">
+                className="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 hover:border-[#a90000] hover:text-[#a90000]">
                 {EXPORT_LABELS[slug] ?? '⬇ Inleverformulier (xlsx)'}
               </a>
             </div>
