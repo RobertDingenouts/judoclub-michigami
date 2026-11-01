@@ -277,7 +277,7 @@ export function AgendaSection() {
                   <td className="px-3 py-4 text-center">{item.special ? <span className="text-lg">⭐</span> : getEmojiIcon(item.emoji)}</td>
                   <td className="px-5 py-4">
                     <span className={`font-semibold ${item.cancelled ? 'text-[#c00000]' : isPast ? 'text-gray-400 font-medium' : 'text-[#c00000]'}`}>{item.event}</span>
-                    {item.special && <span className="ml-2 special-badge">🎉 50-jarig!</span>}
+                    {item.specialBadge && <span className="ml-2 special-badge">{item.specialBadge}</span>}
                     {item.eventSub && <span className={`block text-sm mt-0.5 ${isPast ? 'text-gray-400' : 'text-gray-500'}`}>{item.eventSub}</span>}
                   </td>
                   <td className={`px-5 py-4 text-sm ${isPast ? 'text-gray-400' : 'text-gray-600'}`}>
@@ -333,7 +333,7 @@ export function AgendaSection() {
               <div className={`px-4 py-3 flex items-center gap-2.5 border-b-2 ${item.cancelled ? 'bg-gradient-to-r from-red-50 to-red-50/30 border-red-100' : isPast ? 'bg-gradient-to-r from-gray-50 to-gray-50/30 border-gray-100' : item.special ? 'bg-gradient-to-r from-yellow-50 to-yellow-50/50 border-yellow-200' : 'bg-gradient-to-r from-[#fdf6f6] to-white border-[#e8d0d0]'}`}>
                 {item.special ? <span className="text-base">⭐</span> : getEmojiIcon(item.emoji, "w-4 h-4")}
                 <span className={`text-sm font-bold ${item.cancelled ? 'text-[#c00000] line-through' : isPast ? 'text-gray-400' : item.special ? 'text-[#b8860b]' : 'text-[#8c0000]'}`}>{item.displayDate}</span>
-                {item.special && <span className="special-badge-mobile">🎉 50-jarig!</span>}
+                {item.specialBadge && <span className="special-badge-mobile">{item.specialBadge}</span>}
                 {item.cancelled && <Badge variant="destructive" className="text-[9px] ml-auto px-2 py-0.5">{t('AFGELAST')}</Badge>}
                 {isPast && !item.cancelled && <Badge variant="secondary" className="text-[9px] ml-auto px-2 py-0.5">{t('Voorbij')}</Badge>}
               </div>
