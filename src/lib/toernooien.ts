@@ -40,7 +40,7 @@ export const TOERNOOIEN: Record<string, ToernooiConfig> = {
     locatie: 'Sporthal de Kannebuis, Poelekes 12, 4661 LR Halsteren',
     // Clubrekening waar leden het inschrijfgeld naartoe storten. Veld mag leeg
     // zijn (dan verschijnt de IBAN-regel niet); vóór livezetten controleren!
-    iban: '',
+    iban: 'NL13 RABO 0136 9125 08',
     betalingskenmerk: 'naam judoka + Shintai kersttoernooi',
     contact: {
       naam: 'Robert Dingenouts',
@@ -68,7 +68,7 @@ export const TOERNOOIEN: Record<string, ToernooiConfig> = {
     inschrijfgeld: 6,
     organisator: 'JC. Yoshi-Kwai',
     locatie: 'Sporthal Luisbekelaar, Luisbekelaar z/n, 2140 Borgerhout (Antwerpen)',
-    iban: '',
+    iban: 'NL13 RABO 0136 9125 08',
     betalingskenmerk: 'naam judoka + Yoshi-Kwai pre-tornooi',
     contact: {
       naam: 'Robert Dingenouts',
