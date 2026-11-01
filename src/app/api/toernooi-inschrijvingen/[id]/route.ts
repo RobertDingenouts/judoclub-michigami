@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { isAdmin } from '@/lib/auth'
-import { NIVEAUS, BANDEN } from '@/lib/toernooien'
+import { niveauOptiesVoor, BANDEN } from '@/lib/toernooien'
 
 export const dynamic = 'force-dynamic'
 
@@ -23,7 +23,15 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     if (Number.isFinite(n) && n >= 10 && n <= 200) data.gewicht = n
   }
   if ((BANDEN as readonly string[]).includes(body.band)) data.band = body.band
-  if (NIVEAUS[body.niveau]) data.niveau = body.niveau
+  if (typeof body.geboortedatum === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(body.geboortedatum)) {
+    data.geboortedatum = body.geboortedatum
+  } else if (body.geboortedatum === null) {
+    data.geboortedatum = null
+  }
+  if (body.niveau !== undefined) {
+    const bestaand = await db.tournamentEntry.findUnique({ where: { id }, select: { toernooi: true } })
+    if (bestaand && niveauOptiesVoor(bestaand.toernooi)[body.niveau]) data.niveau = body.niveau
+  }
   if (typeof body.betaald === 'boolean') data.betaald = body.betaald
   if (typeof body.opmerking === 'string') data.opmerking = body.opmerking.trim().slice(0, 500) || null
 

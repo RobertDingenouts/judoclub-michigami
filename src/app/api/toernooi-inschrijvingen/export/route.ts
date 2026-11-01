@@ -1,13 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { isAdmin } from '@/lib/auth'
-import { TOERNOOIEN } from '@/lib/toernooien'
+import { TOERNOOIEN, splitNaam, isoNaarDmYyyy } from '@/lib/toernooien'
 import ExcelJS from 'exceljs'
 
 export const dynamic = 'force-dynamic'
 
 // GET /api/toernooi-inschrijvingen/export?toernooi=<slug>
-// Bouwt het exacte Shintai-inleverformaat (xlsx) uit de inschrijvingen.
+// Bouwt het exacte inleverformaat van de organisator uit de inschrijvingen:
+//   - Shintai    (xlsx, kolommen NR/NAAM/CLUB/MAN-VROUW/LEEFTIJD/GEWICHT/BAND/NIVEAU)
+//   - Yoshi-Kwai (xlsx naar hun inschrijvingsformulier: Familienaam/Voornaam/
+//                 M-V/Geb Dat/Graad kyu/Pré = X/Gew in kg, met clubkopteksten)
 export async function GET(req: NextRequest) {
   if (!(await isAdmin())) return NextResponse.json({ error: 'Geen admin' }, { status: 403 })
 
@@ -23,9 +26,70 @@ export async function GET(req: NextRequest) {
   const wb = new ExcelJS.Workbook()
   wb.creator = 'Judoclub Michigami'
   wb.created = new Date()
-  const ws = wb.addWorksheet('Inschrijfformulier')
 
   const boldFont: Partial<ExcelJS.Font> = { bold: true }
+
+  if (cfg.exportFormat === 'yoshikwai') {
+    const ws = wb.addWorksheet('Blad1')
+
+    // Kopteksten zoals in hun originele inschrijvingsformulier-Tornooi.xls
+    ws.getCell('B3').value = 'DEELNEMENDE CLUB :'
+    ws.getCell('B3').font = boldFont
+    ws.getCell('C3').value = 'Judoclub Michigami'
+    ws.getCell('F3').value = '21 februari 2027'
+    ws.getCell('B5').value = 'Plaats wedstrijd: Sted. Sporthal Luisbekelaar - Luisbekelaar z/n - 2140 Borgerhout'
+    ws.getCell('B7').value = 'Contactpersoon:'
+    ws.getCell('C7').value = cfg.contact.naam
+    ws.getCell('B8').value = 'Adres:'
+    ws.getCell('C8').value = cfg.locatie
+    ws.getCell('B9').value = 'E-mail:'
+    ws.getCell('C9').value = cfg.contact.email
+    ws.getCell('B10').value = 'Tel:'
+    ws.getCell('C10').value = cfg.contact.telefoon
+
+    const headers = ['Nr', 'Familienaam', 'Voornaam', 'M / V', 'Geb Dat', 'Graad kyu', 'Pré = X', 'Gew in kg']
+    const hdrRow = ws.getRow(12)
+    headers.forEach((h, i) => { hdrRow.getCell(i + 1).value = h })
+    hdrRow.font = boldFont
+    hdrRow.eachCell(c => {
+      c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFEEEEEE' } }
+      c.border = { bottom: { style: 'thin' }, top: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } }
+    })
+
+    entries.forEach((e, i) => {
+      const { voornaam, familienaam } = splitNaam(e.naam)
+      const row = ws.getRow(13 + i)
+      row.values = [
+        i + 1,
+        familienaam,
+        voornaam,
+        e.geslacht === 'Man' ? 'M' : 'V',
+        e.geboortedatum ? isoNaarDmYyyy(e.geboortedatum) : '',
+        e.band,
+        e.niveau === 'Pre' ? 'X' : '',
+        e.gewicht,
+      ]
+      row.eachCell({ includeEmpty: true }, c => {
+        c.border = { top: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' }, bottom: { style: 'thin' } }
+      })
+    })
+
+    ws.getColumn(1).width = 6
+    ws.getColumn(2).width = 22
+    ws.getColumn(3).width = 18
+    ws.getColumn(4).width = 8
+    ws.getColumn(5).width = 12
+    ws.getColumn(6).width = 11
+    ws.getColumn(7).width = 9
+    ws.getColumn(8).width = 11
+
+    const buf = await wb.xlsx.writeBuffer()
+    return downloadExcel(buf, `inschrijvingsformulier-Tornooi - Judoclub Michigami (${entries.length} deelnemers).xlsx`)
+  }
+
+  // ---- Shintai-layout ----
+  const ws = wb.addWorksheet('Inschrijfformulier')
+
   ws.getCell('A1').value = cfg.shintaiTitel
   ws.getCell('A1').font = { bold: true, size: 14 }
   ws.getCell('A2').value = 'NAAM CLUB / VERENIGING'
@@ -78,7 +142,10 @@ export async function GET(req: NextRequest) {
   ws.getColumn(8).width = 9
 
   const buf = await wb.xlsx.writeBuffer()
-  const bestandsnaam = `Inschrijfformulier Shintai Kersttoernooi 13 december 2026 - Michigami (${entries.length} deelnemers).xlsx`
+  return downloadExcel(buf, `Inschrijfformulier Shintai Kersttoernooi 13 december 2026 - Michigami (${entries.length} deelnemers).xlsx`)
+}
+
+function downloadExcel(buf: ExcelJS.Buffer, bestandsnaam: string) {
   return new NextResponse(Buffer.from(buf as ArrayBuffer), {
     headers: {
       'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',

@@ -1,4 +1,4 @@
-import ToernooiInschrijfForm from './ToernooiInschrijfForm'
+import ToernooiInschrijfForm from '@/components/toernooi/ToernooiInschrijfForm'
 import { TOERNOOIEN } from '@/lib/toernooien'
 
 export const dynamic = 'force-dynamic'
@@ -11,5 +11,5 @@ export const metadata = {
 export default function Kersttoernooi2026Page() {
   // deadlineShintai is alleen interne clubinfo — niet meesturen naar de client
   const { deadlineShintai: _intern, ...cfg } = TOERNOOIEN['kersttoernooi-shintai-2026']
-  return <ToernooiInschrijfForm cfg={cfg} slug='kersttoernooi-shintai-2026' />
+  return <ToernooiInschrijfForm cfg={cfg} slug='kersttoernooi-shintai-2026' headerEmoji='🎄' />
 }

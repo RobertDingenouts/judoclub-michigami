@@ -426,7 +426,8 @@ model TournamentEntry {
   leeftijd      Int
   gewicht       Float    // kg
   band          String   // bandkleur
-  niveau        String   // A | B | C | D (Shintai-omschrijving)
+  niveau        String   // per toernooi: Shintai A|B|C|D, Yoshi-Kwai Pre|Competitie
+  geboortedatum String?  // ISO yyyy-mm-dd; verplicht bij toernooien die geboortedatum vragen
   betaald       Boolean  @default(false)
   opmerking     String?
   ingediendDoor String?  // e-mail van ingelogde inzender (optioneel)

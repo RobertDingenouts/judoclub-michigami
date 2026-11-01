@@ -1,20 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { NIVEAUS, BANDEN } from '@/lib/toernooien'
-
-interface Cfg {
-  titel: string
-  datum: string
-  deadlineLeden: string
-  inschrijfgeld: number
-  organisator: string
-  locatie: string
-  iban: string
-  betalingskenmerk: string
-}
-
-const TOERNOOIDATUM = new Date('2026-12-13')
+import { BANDEN, niveauOptiesVoor, type ToernooiConfig } from '@/lib/toernooien'
 
 function bandNaam(currentBelt: string | null | undefined): string {
   if (!currentBelt) return ''
@@ -42,9 +29,14 @@ function leeftijdOp(dob: string, op: Date): number | null {
   return age >= 0 ? age : null
 }
 
-export default function ToernooiInschrijfForm({ cfg, slug }: { cfg: Cfg; slug: string }) {
+export default function ToernooiInschrijfForm({ cfg, slug, headerEmoji = '🥋' }: {
+  cfg: Omit<ToernooiConfig, 'deadlineShintai'> // interne inleverdatum blijft op de server
+  slug: string
+  headerEmoji?: string
+}) {
   const [naam, setNaam] = useState('')
   const [geslacht, setGeslacht] = useState('')
+  const [geboortedatum, setGeboortedatum] = useState('')
   const [leeftijd, setLeeftijd] = useState('')
   const [gewicht, setGewicht] = useState('')
   const [band, setBand] = useState('')
@@ -55,7 +47,10 @@ export default function ToernooiInschrijfForm({ cfg, slug }: { cfg: Cfg; slug: s
   const [fout, setFout] = useState('')
   const [ingelogdNaam, setIngelogdNaam] = useState('')
 
-  // Logen we? Dan naam/geslacht/leeftijd/band alvast invullen.
+  const niveauOpts = niveauOptiesVoor(slug)
+  const toernooiDate = new Date(cfg.toernooidatumISO)
+
+  // Logen we? Dan naam/geslacht/gebdatum/leeftijd/band alvast invullen.
   useEffect(() => {
     fetch('/api/auth/me')
       .then(r => r.json())
@@ -70,14 +65,25 @@ export default function ToernooiInschrijfForm({ cfg, slug }: { cfg: Cfg; slug: s
         }
         if (m?.gender) setGeslacht(geslachtNorm(m.gender))
         if (m?.dateOfBirth) {
-          const a = leeftijdOp(m.dateOfBirth, TOERNOOIDATUM)
+          const iso = new Date(m.dateOfBirth).toISOString().slice(0, 10)
+          setGeboortedatum(iso)
+          const a = leeftijdOp(m.dateOfBirth, toernooiDate)
           if (a !== null) setLeeftijd(String(a))
         }
         const b = bandNaam(d.user?.currentBelt || m?.currentBelt)
         if (b) setBand(b)
       })
       .catch(() => { /* niet ingelogd — gewoon leeg formulier */ })
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [slug])
+
+  function onGeboortedatum(v: string) {
+    setGeboortedatum(v)
+    if (/^\d{4}-\d{2}-\d{2}$/.test(v)) {
+      const a = leeftijdOp(v, toernooiDate)
+      if (a !== null) setLeeftijd(String(a))
+    }
+  }
 
   async function verstuur(e: React.FormEvent) {
     e.preventDefault()
@@ -88,7 +94,7 @@ export default function ToernooiInschrijfForm({ cfg, slug }: { cfg: Cfg; slug: s
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          toernooi: slug, naam, geslacht, leeftijd, gewicht, band, niveau, betaald, opmerking,
+          toernooi: slug, naam, geslacht, leeftijd, geboortedatum, gewicht, band, niveau, betaald, opmerking,
         }),
       })
       const d = await res.json()
@@ -111,7 +117,7 @@ export default function ToernooiInschrijfForm({ cfg, slug }: { cfg: Cfg; slug: s
           <div className="text-5xl mb-4">🥋✅</div>
           <h1 className="text-2xl font-bold text-[#2a2a2a]">Ingeschreven!</h1>
           <p className="mt-3 text-gray-600">
-            We nemen <strong>{naam}</strong> op in de clublijst voor het {cfg.titel} op {cfg.datum}.
+            We nemen <strong>{naam}</strong> op in de clublijst voor {cfg.titel} op {cfg.datum}.
             We geven alle inschrijvingen in één keer namens de club door aan {cfg.organisator}.
           </p>
           <p className="mt-4 text-sm text-gray-500">
@@ -129,19 +135,24 @@ export default function ToernooiInschrijfForm({ cfg, slug }: { cfg: Cfg; slug: s
     <div className="mx-auto max-w-2xl px-4 py-8">
       {/* Info */}
       <div className="rounded-2xl bg-[#f5f5f0] border border-gray-200 p-6 mb-6">
-        <h1 className="text-2xl md:text-3xl font-bold text-[#2a2a2a]">🎄 {cfg.titel}</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-[#2a2a2a]">{headerEmoji} {cfg.titel}</h1>
         <p className="mt-2 text-gray-700"><strong>{cfg.datum}</strong> · {cfg.locatie}</p>
         <ul className="mt-3 space-y-1 text-sm text-gray-600">
-          <li>🥇 Recreatief toernooi voor alle leeftijden vanaf 6 jaar — <strong>iedereen krijgt een prijs en oorkonde</strong></li>
-          <li>⚖️ Start {`09.40`} uur, eerste weging 9.00–9.15 uur (jongsten eerst). Weegtijden komen ~1,5 week van tevoren.</li>
-          <li>💶 Inschrijfgeld <strong>€ {cfg.inschrijfgeld.toFixed(2)} per judoka</strong> — naar Judoclub Michigami.</li>
+          {cfg.infoRegels.map((regel, i) => (
+            <li key={i}>{regel.replace('{bedrag}', cfg.inschrijfgeld.toFixed(2))}</li>
+          ))}
           {cfg.iban && <li>💳 Storten op IBAN <strong className="select-all">{cfg.iban}</strong> t.n.v. Judoclub Michigami.</li>}
           <li>✍️ Bij de overschrijving vermelden: <strong>{cfg.betalingskenmerk}</strong>. De club maakt het totaal in één keer over naar {cfg.organisator}.</li>
-          <li>👨‍👩‍👧 Ouders/familie zijn welkom als toeschouwer (€ 1,00 entree voor volwassenen, kinderen gratis)</li>
           <li>📅 Inschrijven via ons t/m <strong>{cfg.deadlineLeden}</strong> — daarna gaan we de clublijst naar {cfg.organisator} sturen, dus wees er op tijd bij</li>
         </ul>
         <p className="mt-3 text-sm text-[#a90000] font-semibold">Alleen voor leden van Judoclub Michigami.</p>
       </div>
+
+      {cfg.waarschuwing && (
+        <div className="mb-6 rounded-2xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
+          <strong>⚠️ Goed om te weten:</strong> {cfg.waarschuwing}
+        </div>
+      )}
 
       {ingelogdNaam && (
         <p className="mb-4 text-sm text-gray-500">
@@ -168,10 +179,18 @@ export default function ToernooiInschrijfForm({ cfg, slug }: { cfg: Cfg; slug: s
               ))}
             </div>
           </div>
-          <div>
-            <label className="block text-sm font-semibold text-[#2a2a2a] mb-1">Leeftijd op {`13-12-2026`} *</label>
-            <input className={veld} required type="number" min={4} max={70} value={leeftijd} onChange={e => setLeeftijd(e.target.value)} placeholder="jaar" />
-          </div>
+          {cfg.vraagGeboortedatum ? (
+            <div>
+              <label className="block text-sm font-semibold text-[#2a2a2a] mb-1">Geboortedatum *</label>
+              <input className={veld} required type="date" min="2005-01-01" max={cfg.toernooidatumISO} value={geboortedatum} onChange={e => onGeboortedatum(e.target.value)} />
+              <p className="mt-1 text-xs text-gray-500">De leeftijdscategorie wordt automatisch bepaald op deze datum{leeftijd ? ` — je wordt ${leeftijd} jaar op de toernooidag` : ''}.</p>
+            </div>
+          ) : (
+            <div>
+              <label className="block text-sm font-semibold text-[#2a2a2a] mb-1">Leeftijd op {cfg.leeftijdDatumLabel} *</label>
+              <input className={veld} required type="number" min={4} max={70} value={leeftijd} onChange={e => setLeeftijd(e.target.value)} placeholder="jaar" />
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -190,9 +209,9 @@ export default function ToernooiInschrijfForm({ cfg, slug }: { cfg: Cfg; slug: s
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-[#2a2a2a] mb-2">Niveau — hoe ervaring heeft de judoka? *</label>
+          <label className="block text-sm font-semibold text-[#2a2a2a] mb-2">{cfg.vraagGeboortedatum ? 'In welke categorie wil de judoka meedoen? *' : 'Niveau — hoe ervaring heeft de judoka? *'}</label>
           <div className="space-y-2">
-            {Object.entries(NIVEAUS).map(([k, desc]) => (
+            {Object.entries(niveauOpts).map(([k, desc]) => (
               <label key={k} className={`flex items-start gap-3 rounded-xl border p-3 cursor-pointer ${niveau === k ? 'border-[#a90000] bg-[#a90000]/5' : 'border-gray-300'}`}>
                 <input type="radio" name="niveau" className="mt-1 accent-[#a90000]" checked={niveau === k} onChange={() => setNiveau(k)} />
                 <span className="text-sm text-gray-700"><strong>{k}</strong> — {desc}</span>
@@ -216,13 +235,13 @@ export default function ToernooiInschrijfForm({ cfg, slug }: { cfg: Cfg; slug: s
 
         {fout && <p className="rounded-xl bg-red-50 border border-red-200 text-red-700 px-4 py-3 text-sm">{fout}</p>}
 
-        <button type="submit" disabled={status === 'sending' || !geslacht || !niveau || !band}
+        <button type="submit" disabled={status === 'sending' || !geslacht || !niveau || !band || (cfg.vraagGeboortedatum && !geboortedatum)}
           className="w-full rounded-xl bg-[#a90000] py-3 text-white font-bold text-lg hover:bg-[#8c0000] disabled:opacity-50">
           {status === 'sending' ? 'Versturen…' : 'Inschrijven 🥋'}
         </button>
       </form>
 
-      <p className="mt-4 text-center text-xs text-gray-400">Vragen? {`judoclub_michigami@hotmail.com`}</p>
+      <p className="mt-4 text-center text-xs text-gray-400">Vragen? judoclub_michigami@hotmail.com</p>
     </div>
   )
 }

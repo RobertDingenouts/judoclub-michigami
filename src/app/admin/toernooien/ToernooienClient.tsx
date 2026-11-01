@@ -1,13 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import { NIVEAUS, BANDEN } from '@/lib/toernooien'
+import { BANDEN, niveauOptiesVoor } from '@/lib/toernooien'
 
 interface Entry {
   id: string
   naam: string
   geslacht: string
   leeftijd: number
+  geboortedatum: string | null
   gewicht: number
   band: string
   niveau: string
@@ -18,18 +19,18 @@ interface Entry {
 }
 
 const BAND_OPTS = BANDEN as readonly string[]
-const NIVEAU_OPTS = Object.keys(NIVEAUS)
 const inp = 'w-full rounded-lg border border-gray-300 px-2 py-1.5 text-sm focus:border-[#a90000] focus:outline-none'
 
 export default function ToernooienClient({ entries: initial, slug, cfg }: {
   entries: Entry[]
   slug: string
-  cfg: { inschrijfgeld: number; deadlineShintai: string; deadlineLeden: string }
+  cfg: { inschrijfgeld: number; deadlineShintai: string; deadlineLeden: string; vraagGeboortedatum?: boolean; organisator: string }
 }) {
   const [entries, setEntries] = useState<Entry[]>(initial)
   const [dirty, setDirty] = useState<Record<string, boolean>>({})
   const [busy, setBusy] = useState<string>('')
   const [melding, setMelding] = useState('')
+  const niveauOpts = Object.keys(niveauOptiesVoor(slug))
 
   function set(id: string, field: string, value: any) {
     setEntries(es => es.map(e => e.id === id ? { ...e, [field]: value } : e))
@@ -44,8 +45,8 @@ export default function ToernooienClient({ entries: initial, slug, cfg }: {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        naam: e.naam, geslacht: e.geslacht, leeftijd: e.leeftijd, gewicht: e.gewicht,
-        band: e.band, niveau: e.niveau, betaald: e.betaald, opmerking: e.opmerking,
+        naam: e.naam, geslacht: e.geslacht, leeftijd: e.leeftijd, geboortedatum: e.geboortedatum,
+        gewicht: e.gewicht, band: e.band, niveau: e.niveau, betaald: e.betaald, opmerking: e.opmerking,
       }),
     })
     const d = await res.json()
@@ -72,16 +73,26 @@ export default function ToernooienClient({ entries: initial, slug, cfg }: {
   async function handmatig() {
     const naam = prompt('Naam judoka (voor- en achternaam):')
     if (!naam) return
-    const leeftijd = prompt('Leeftijd op 13-12-2026:')
+    let leeftijd = '', geboortedatum = ''
+    if (cfg.vraagGeboortedatum) {
+      geboortedatum = prompt('Geboortedatum (jjjj-mm-dd):') || ''
+      const j = new Date(geboortedatum), t = new Date(slug.includes('yoshikwai') ? '2027-02-21' : '2026-12-13')
+      let a = t.getFullYear() - j.getFullYear()
+      const mm = t.getMonth() - j.getMonth()
+      if (mm < 0 || (mm === 0 && t.getDate() < j.getDate())) a--
+      leeftijd = String(a)
+    } else {
+      leeftijd = prompt('Leeftijd op toernooidag:') || ''
+    }
     const gewicht = prompt('Gewicht (kg):')
     const geslacht = prompt('Geslacht (Man/Vrouw):')
     const band = prompt('Bandkleur (Wit/Geel/Oranje/Groen/Blauw/Bruin/Zwart):')
-    const niveau = prompt('Niveau (A/B/C/D):')
+    const niveau = prompt(`Niveau (${Object.keys(niveauOptiesVoor(slug)).join('/')}):`)
     setBusy('nieuw')
     const res = await fetch('/api/toernooi-inschrijvingen', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ toernooi: slug, naam, geslacht, leeftijd, gewicht, band, niveau, betaald: false }),
+      body: JSON.stringify({ toernooi: slug, naam, geslacht, leeftijd, geboortedatum, gewicht, band, niveau, betaald: false }),
     })
     const d = await res.json()
     setBusy('')
@@ -102,7 +113,7 @@ export default function ToernooienClient({ entries: initial, slug, cfg }: {
       <div className="flex flex-wrap gap-3">
         <Stat label="Deelnemers" value={String(entries.length)} />
         <Stat label={`Betaald (€ ${cfg.inschrijfgeld})`} value={`${betaaldAantal} / ${entries.length}`} />
-        <Stat label="Totaal aan Shintai" value={`€ ${totaal.toFixed(2)}`} />
+        <Stat label="Totaal in te zamelen" value={`€ ${totaal.toFixed(2)}`} />
         <button onClick={handmatig} disabled={busy === 'nieuw'}
           className="rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:border-[#a90000] hover:text-[#a90000]">
           ＋ Handmatig toevoegen
@@ -110,9 +121,9 @@ export default function ToernooienClient({ entries: initial, slug, cfg }: {
       </div>
 
       <p className="text-xs text-gray-500">
-        Leden schrijven in via <a className="text-[#a90000]" href={`/toernooi/${slug.replace('kersttoernooi-shintai-2026', 'kersttoernooi-2026')}`}>/toernooi/…</a>.
-        Foute invullingen hier rechtzetten en Bewaar drukken. Inleverformulier = knop rechtsboven (exact Shintai-formaat).
-        Interne deadline leden: {cfg.deadlineLeden} · Inleveren bij Shintai uiterlijk: {cfg.deadlineShintai}.
+        Leden schrijven in via <a className="text-[#a90000]" href={`/toernooi/${slug === 'kersttoernooi-shintai-2026' ? 'kersttoernooi-2026' : 'pre-tornooi-2027'}`}>/toernooi/…</a>.
+        Foute invullingen hier rechtzetten en Bewaar drukken. Inleverformulier = knop rechtsboven (exact formaat van de organisator).
+        Interne deadline leden: {cfg.deadlineLeden} · Inleveren bij {cfg.organisator} uiterlijk: {cfg.deadlineShintai}.
       </p>
 
       {melding && <p className="rounded-xl bg-[#f5f5f0] border border-gray-200 px-4 py-2 text-sm text-[#2a2a2a]">{melding}</p>}
@@ -129,6 +140,7 @@ export default function ToernooienClient({ entries: initial, slug, cfg }: {
               <th className="px-2 py-2 text-left">Gewicht</th>
               <th className="px-2 py-2 text-left">Band</th>
               <th className="px-2 py-2 text-left">Niveau</th>
+              {cfg.vraagGeboortedatum && <th className="px-2 py-2 text-left">Geb.datum</th>}
               <th className="px-2 py-2 text-left">€</th>
               <th className="px-3 py-2 text-left">Opmerking</th>
               <th className="px-3 py-2 text-right">Acties</th>
@@ -156,9 +168,12 @@ export default function ToernooienClient({ entries: initial, slug, cfg }: {
                 </td>
                 <td className="px-2 py-1">
                   <select className={inp} value={e.niveau} onChange={ev => set(e.id, 'niveau', ev.target.value)}>
-                    {NIVEAU_OPTS.map(n => <option key={n}>{n}</option>)}
+                    {niveauOpts.map(n => <option key={n}>{n}</option>)}
                   </select>
                 </td>
+                {cfg.vraagGeboortedatum && (
+                  <td className="px-2 py-1"><input className={inp + ' w-32'} type="date" value={e.geboortedatum || ''} onChange={ev => set(e.id, 'geboortedatum', ev.target.value || null)} /></td>
+                )}
                 <td className="px-2 py-1 text-center">
                   <input type="checkbox" className="accent-[#a90000] w-4 h-4" checked={e.betaald} onChange={ev => set(e.id, 'betaald', ev.target.checked)} />
                 </td>
@@ -176,7 +191,7 @@ export default function ToernooienClient({ entries: initial, slug, cfg }: {
               </tr>
             ))}
             {entries.length === 0 && (
-              <tr><td colSpan={10} className="px-4 py-8 text-center text-gray-400">Nog geen inschrijvingen — deel de link met leden.</td></tr>
+              <tr><td colSpan={cfg.vraagGeboortedatum ? 11 : 10} className="px-4 py-8 text-center text-gray-400">Nog geen inschrijvingen — deel de link met leden.</td></tr>
             )}
           </tbody>
         </table>
