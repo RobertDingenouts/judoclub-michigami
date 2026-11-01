@@ -11,6 +11,8 @@ interface Cfg {
   inschrijfgeld: number
   organisator: string
   locatie: string
+  iban: string
+  betalingskenmerk: string
 }
 
 const TOERNOOIDATUM = new Date('2026-12-13')
@@ -133,7 +135,9 @@ export default function ToernooiInschrijfForm({ cfg, slug }: { cfg: Cfg; slug: s
         <ul className="mt-3 space-y-1 text-sm text-gray-600">
           <li>🥇 Recreatief toernooi voor alle leeftijden vanaf 6 jaar — <strong>iedereen krijgt een prijs en oorkonde</strong></li>
           <li>⚖️ Start {`09.40`} uur, eerste weging 9.00–9.15 uur (jongsten eerst). Weegtijden komen ~1,5 week van tevoren.</li>
-          <li>💶 Inschrijfgeld <strong>€ {cfg.inschrijfgeld.toFixed(2)} per judoka</strong> — naar Judoclub Michigami; de club maakt het totaal over naar {cfg.organisator}.</li>
+          <li>💶 Inschrijfgeld <strong>€ {cfg.inschrijfgeld.toFixed(2)} per judoka</strong> — naar Judoclub Michigami.</li>
+          {cfg.iban && <li>💳 Storten op IBAN <strong className="select-all">{cfg.iban}</strong> t.n.v. Judoclub Michigami.</li>}
+          <li>✍️ Bij de overschrijving vermelden: <strong>{cfg.betalingskenmerk}</strong>. De club maakt het totaal in één keer over naar {cfg.organisator}.</li>
           <li>👨‍👩‍👧 Ouders/familie zijn welkom als toeschouwer (€ 1,00 entree voor volwassenen, kinderen gratis)</li>
           <li>📅 Inschrijven via ons t/m <strong>{cfg.deadlineLeden}</strong> — onze deadline bij {cfg.organisator} is {cfg.deadlineShintai}</li>
         </ul>
@@ -198,9 +202,9 @@ export default function ToernooiInschrijfForm({ cfg, slug }: { cfg: Cfg; slug: s
           </div>
         </div>
 
-        <label className="flex items-start gap-3 rounded-xl border border-gray-300 p-3 cursor-pointer">
+        <label className={`flex items-start gap-3 rounded-xl border p-3 cursor-pointer ${betaald ? 'border-[#a90000] bg-[#a90000]/5' : 'border-gray-300'}`}>
           <input type="checkbox" className="mt-1 accent-[#a90000]" checked={betaald} onChange={e => setBetaald(e.target.checked)} />
-          <span className="text-sm text-gray-700">De € {cfg.inschrijfgeld.toFixed(2)} inschrijfgeld is betaald aan Judoclub Michigami.<br /><span className="text-gray-500">Nog niet betaald? Vink het niet af — dan weten we dat het nog komt.</span></span>
+          <span className="text-sm text-gray-700">Ik heb de € {cfg.inschrijfgeld.toFixed(2)} inschrijfgeld overgemaakt naar Judoclub Michigami{cfg.iban ? ` (${cfg.iban})` : ''} en daarbij <strong>{cfg.betalingskenmerk}</strong> vermeld.<br /><span className="text-gray-500">Nog niet overgemaakt? Vink het niet af — dan houden we het bij, maar het geld moet er wel zijn vóór de deadline.</span></span>
         </label>
 
         <div>

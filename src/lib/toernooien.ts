@@ -10,6 +10,8 @@ export const TOERNOOIEN: Record<string, {
   inschrijfgeld: number      // € per judoka
   organisator: string
   locatie: string
+  iban: string             // clubrekening voor inschrijfgeld (leeg = regel verbergen)
+  betalingskenmerk: string // wat leden bij de overschrijving moeten vermelden
   contact: { naam: string; telefoon: string; email: string }
 }> = {
   'kersttoernooi-shintai-2026': {
@@ -21,6 +23,10 @@ export const TOERNOOIEN: Record<string, {
     inschrijfgeld: 15,
     organisator: 'Sportschool Shintai',
     locatie: 'Sporthal de Kannebuis, Poelekes 12, 4661 LR Halsteren',
+    // Clubrekening waar leden het inschrijfgeld naartoe storten. Veld mag leeg
+    // zijn (dan verschijnt de IBAN-regel niet); vóór livezetten controleren!
+    iban: '',
+    betalingskenmerk: 'naam judoka + Shintai kersttoernooi',
     contact: {
       naam: 'Robert Dingenouts',
       telefoon: '0648649912',
