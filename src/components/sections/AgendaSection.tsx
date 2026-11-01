@@ -17,8 +17,16 @@ function useLesvrijItems() {
     fetch('/api/agenda/lesvrij')
       .then(r => (r.ok ? r.json() : { items: [] }))
       .then(j => {
-        const statisch = new Set(agendaItems.map(i => i.compareDate + '|' + i.location));
-        const nieuw = (j.items ?? []).filter((i: any) => !statisch.has(i.compareDate + '|' + i.location));
+        // Locatie-normalisatie: statische entries gebruiken zaalnamen
+        // ("De Knotwilg"/"De Vossenkuil"), de lesvrij-API plaatsnamen
+        // ("Steenbergen"/"Oud-Vossemeer") — zonder deze normalisatie
+        // verschijnt dezelfde dag dubbel in de agenda.
+        const normLoc = (loc: string) =>
+          /knotwilg|steenbergen/i.test(loc) ? 'steenbergen'
+          : /vossenkuil|vossemeer/i.test(loc) ? 'oud-vossemeer'
+          : (loc || '').toLowerCase();
+        const statisch = new Set(agendaItems.map(i => i.compareDate + '|' + normLoc(i.location)));
+        const nieuw = (j.items ?? []).filter((i: any) => !statisch.has(i.compareDate + '|' + normLoc(i.location)));
         setExtra(nieuw);
       })
       .catch(() => {});
