@@ -15,6 +15,7 @@ const TABS = [
 
 const MEER = [
   { href: '/admin/inschrijvingen', icon: '📝', label: 'Inschrijvingen' },
+  { href: '/admin/toernooien', icon: '🥇', label: 'Toernooien' },
   { href: '/admin/exams', icon: '🎯', label: 'Examens' },
   { href: '/admin/poelen', icon: '🥋', label: 'Poelen' },
   { href: '/admin/diplomas', icon: '🏆', label: "Diploma's" },
