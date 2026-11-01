@@ -361,7 +361,7 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
       onContextMenu={e => { if (x.uit) return; e.preventDefault(); setMenuVoor({ id: x.id, x: Math.min(e.clientX, window.innerWidth - 230), y: Math.min(e.clientY, window.innerHeight - 330) }) }}
       onClick={e => { e.stopPropagation(); if (x.uit || justDragged.current) return; setGeselecteerd(g => g === x.id ? null : x.id) }}
       style={{ touchAction: "manipulation", WebkitTouchCallout: "none", userSelect: "none" }}
-      className={`relative rounded-lg border p-2.5 bg-white shadow-sm transition-all ${x.uit ? "opacity-40" : "cursor-grab"} ${dragId === x.id ? "opacity-30 scale-95 border-[#a90000] border-dashed" : geselecteerd === x.id ? "ring-2 ring-[#a90000]" : "border-gray-200"}`}
+      className={`relative rounded-sm border p-2.5 bg-white shadow-sm transition-all ${x.uit ? "opacity-40" : "cursor-grab"} ${dragId === x.id ? "opacity-30 scale-95 border-[#a90000] border-dashed" : geselecteerd === x.id ? "ring-2 ring-[#a90000]" : "border-gray-200"}`}
     >
       <button onClick={e => { e.stopPropagation(); if (confirm(`${x.v} ${x.a} AFMELDEN? Hij/zij valt uit alle poelen en printformulieren.`)) toggleUit(x.id) }} title={x.uit ? "Weer aanmelden" : "Afmelden"} className="absolute right-1.5 top-1.5 text-gray-400 text-sm">{x.uit ? "↩" : "⊘"}</button>
       {pool && <button onClick={e => { e.stopPropagation(); if (confirm(`${x.v} ${x.a} terugzetten naar Deelnemers?`)) verplaats(x.id, null) }} title="Terug" className="absolute right-7 top-1.5 text-red-600 text-sm">✕</button>}
@@ -391,7 +391,7 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
         onDragLeave={e => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setDropState(d => { const n = { ...d }; delete n[key]; return n }) }}
         onDrop={e => { e.preventDefault(); setDropState(d => { const n = { ...d }; delete n[key]; return n }); const id = e.dataTransfer.getData("text/plain"); if (geldigVoor(id, key)) verplaats(id, key); setDragId(null) }}
         onClick={() => { if (geselecteerd && geldigVoor(geselecteerd, key)) verplaats(geselecteerd, key) }}
-        className={`bg-white border rounded-xl min-w-[260px] flex-1 basis-[260px] max-w-[340px] transition-all ${ds === "ok" ? "ring-2 ring-green-500 bg-green-50" : ds === "nee" ? "ring-2 ring-red-500 bg-red-50" : "border-gray-200"}`}
+        className={`bg-white border rounded-md min-w-[260px] flex-1 basis-[260px] max-w-[340px] transition-all ${ds === "ok" ? "ring-2 ring-green-500 bg-green-50" : ds === "nee" ? "ring-2 ring-red-500 bg-red-50" : "border-gray-200"}`}
       >
         <div className="flex items-center justify-between gap-2 p-3 border-b border-gray-200">
           <div className="text-sm font-semibold">{po ? po.naam : "Deelnemers"}</div>
@@ -416,28 +416,28 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
     <div>
       <div className="flex flex-wrap items-center gap-2 mb-3">
         <label className="text-sm">Sorteer:
-          <select value={sorteer} onChange={e => setSorteer(e.target.value)} className="ml-1 border border-gray-300 rounded-lg px-2 py-1.5 text-sm">
+          <select value={sorteer} onChange={e => setSorteer(e.target.value)} className="ml-1 border border-gray-300 rounded-sm px-2 py-1.5 text-sm">
             <option value="leeftijd">Leeftijd → gewicht</option>
             <option value="gewicht">Gewicht</option>
             <option value="band">Band</option>
             <option value="naam">Naam</option>
           </select>
         </label>
-        <button onClick={() => setShowNieuw(s => !s)} className="bg-[#a90000] text-white rounded-lg px-3 py-1.5 text-sm">+ Deelnemer</button>
-        <button onClick={nieuwePoel} className="bg-[#a90000] text-white rounded-lg px-3 py-1.5 text-sm">+ Nieuwe poel</button>
-        <button onClick={() => printPoelen(state.poeelen.map((_, i) => i))} className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm">🖨 Print alle poelen</button>
-        <button onClick={() => setToonAanw(s => !s)} className={`rounded-lg px-3 py-1.5 text-sm ${toonAanw ? "bg-[#2a2a2a] text-white" : "border border-gray-300"}`}>📋 Aanwezigheid</button>
-        <button onClick={herstel} className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm">Herstel start</button>
+        <button onClick={() => setShowNieuw(s => !s)} className="bg-[#a90000] text-white rounded-sm px-3 py-1.5 text-sm">+ Deelnemer</button>
+        <button onClick={nieuwePoel} className="bg-[#a90000] text-white rounded-sm px-3 py-1.5 text-sm">+ Nieuwe poel</button>
+        <button onClick={() => printPoelen(state.poeelen.map((_, i) => i))} className="border border-gray-300 rounded-sm px-3 py-1.5 text-sm">🖨 Print alle poelen</button>
+        <button onClick={() => setToonAanw(s => !s)} className={`rounded-sm px-3 py-1.5 text-sm ${toonAanw ? "bg-[#2a2a2a] text-white" : "border border-gray-300"}`}>📋 Aanwezigheid</button>
+        <button onClick={herstel} className="border border-gray-300 rounded-sm px-3 py-1.5 text-sm">Herstel start</button>
         <span className="ml-auto text-xs text-gray-500">{actief} deelnemers · {state.poeelen.length} poelen · {status}</span>
       </div>
       {toonAanw && (
-        <div className="mb-3 rounded-xl border border-gray-200 bg-white p-3">
+        <div className="mb-3 rounded-md border border-gray-200 bg-white p-3">
           <div className="flex flex-wrap items-center gap-2 mb-2">
             <b className="text-sm">📋 Aanwezigheid toernooi</b>
             <span className="text-[11px] text-gray-500">vink aan wie erbij moet zijn — automatisch opgeslagen; afgevinkten verdwijnen uit de print</span>
             <button onClick={() => update(s => ({ ...s, deelnemers: s.deelnemers.map(d => ({ ...d, verwacht: true })) }))} className="border border-gray-300 rounded px-2 py-1 text-xs">alles aan</button>
             <button onClick={() => update(s => ({ ...s, deelnemers: s.deelnemers.map(d => ({ ...d, verwacht: false })) }))} className="border border-gray-300 rounded px-2 py-1 text-xs">alles uit</button>
-            <button onClick={printAanwezigheid} className="ml-auto bg-[#a90000] text-white rounded-lg px-3 py-1.5 text-sm">🖨 Print aanwezigheidslijst</button>
+            <button onClick={printAanwezigheid} className="ml-auto bg-[#a90000] text-white rounded-sm px-3 py-1.5 text-sm">🖨 Print aanwezigheidslijst</button>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-1">
             {state.deelnemers.filter(d => !d.uit).sort((a, b) => (a.v + a.a).localeCompare(b.v + b.a)).map(d => (
@@ -458,7 +458,7 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
           onDragOver={e => { e.preventDefault(); if (dragId) setDropState(d => ({ ...d, nieuw: geldigVoor(dragId, "nieuw") ? "ok" : "nee" })) }}
           onDragLeave={() => setDropState(d => { const n = { ...d }; delete n.nieuw; return n })}
           onDrop={e => { e.preventDefault(); setDropState(d => { const n = { ...d }; delete n.nieuw; return n }); const id = e.dataTransfer.getData("text/plain"); if (geldigVoor(id, "nieuw")) nieuwePoelMet(id); setDragId(null) }}
-          className={`rounded-xl border-2 border-dashed min-w-[260px] flex-1 basis-[260px] max-w-[340px] min-h-[120px] flex items-center justify-center text-sm text-gray-400 transition-all ${dropState.nieuw === "ok" ? "ring-2 ring-green-500 bg-green-50 text-green-700 border-green-400" : dropState.nieuw === "nee" ? "ring-2 ring-red-500 bg-red-50 text-red-600 border-red-400" : "border-gray-300 bg-white/50"}`}
+          className={`rounded-md border-2 border-dashed min-w-[260px] flex-1 basis-[260px] max-w-[340px] min-h-[120px] flex items-center justify-center text-sm text-gray-400 transition-all ${dropState.nieuw === "ok" ? "ring-2 ring-green-500 bg-green-50 text-green-700 border-green-400" : dropState.nieuw === "nee" ? "ring-2 ring-red-500 bg-red-50 text-red-600 border-red-400" : "border-gray-300 bg-white/50"}`}
         >
           ⬇ Sleep hierheen voor<br />nieuwe poel
         </div>
@@ -482,7 +482,7 @@ export default function PoelIndelingAdmin({ slug }: { slug: string }) {
         return (
           <div className="fixed inset-0 z-50" onClick={() => setMenuVoor(null)}>
             <div
-              className="absolute bg-white rounded-xl shadow-2xl border border-gray-200 py-1.5 w-[220px] max-h-[70vh] overflow-y-auto"
+              className="absolute bg-white rounded-md shadow-2xl border border-gray-200 py-1.5 w-[220px] max-h-[70vh] overflow-y-auto"
               style={{ left: menuVoor.x, top: menuVoor.y }}
               onClick={e => e.stopPropagation()}
             >

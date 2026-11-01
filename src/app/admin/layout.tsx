@@ -42,7 +42,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <aside className="hidden w-[240px] shrink-0 flex-col border-r border-white/60 bg-white/70 backdrop-blur-xl lg:flex lg:sticky lg:top-0 lg:h-screen">
         <div className="border-b border-gray-200 p-5">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#fdf6f6]">
+            <div className="flex h-9 w-9 items-center justify-center rounded-sm bg-[#fdf6f6]">
               <SeasonalLogo className="h-8 w-8 object-contain" />
             </div>
             <div>
@@ -69,7 +69,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       {/* Mobile header */}
       <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between border-b border-white/60 bg-white/70 p-3 backdrop-blur-xl lg:hidden">
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#fdf6f6]">
+          <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-[#fdf6f6]">
             <SeasonalLogo className="h-7 w-7 object-contain" />
           </div>
           <span className="text-sm font-bold">Clubdashboard</span>
@@ -95,7 +95,7 @@ function AdminLink({ href, icon, label }: { href: string; icon: string; label: s
   return (
     <Link
       href={href}
-      className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 hover:text-[#a90000]"
+      className="flex items-center gap-3 rounded-sm px-3 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 hover:text-[#a90000]"
     >
       <span className="text-base">{icon}</span>
       {label}

@@ -220,22 +220,22 @@ export default function AdminDashboard({ d }: { d: DashData }) {
           {!mobiel && (
             <>
               <button onClick={() => setEdit(e => !e)}
-                className={`rounded-lg border px-3 py-2 text-xs font-semibold ${edit ? 'border-[#a90000] bg-[#fdf6f6] text-[#a90000]' : 'border-gray-300 bg-white text-gray-600'}`}>
+                className={`rounded-sm border px-3 py-2 text-xs font-semibold ${edit ? 'border-[#a90000] bg-[#fdf6f6] text-[#a90000]' : 'border-gray-300 bg-white text-gray-600'}`}>
                 {edit ? '✓ Klaar' : '✋ Layout'}
               </button>
               <div className="relative">
-                <button onClick={() => setMenu(m => !m)} className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-600">
+                <button onClick={() => setMenu(m => !m)} className="rounded-sm border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-600">
                   Widgets {zichtbaar.length}/{WIDGETS.length} ▾
                 </button>
                 {menu && (
-                  <div className="absolute right-0 z-40 mt-1 w-72 rounded-xl border border-gray-200 bg-white p-2 shadow-xl">
+                  <div className="absolute right-0 z-40 mt-1 w-72 rounded-md border border-gray-200 bg-white p-2 shadow-xl">
                     {WIDGETS.map(w => (
-                      <label key={w.i} className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm hover:bg-gray-50">
+                      <label key={w.i} className="flex cursor-pointer items-center gap-2 rounded-sm px-2 py-1.5 text-sm hover:bg-gray-50">
                         <input type="checkbox" checked={!hidden.includes(w.i)} onChange={() => toggle(w.i)} />
                         <span className={`min-w-0 flex-1 truncate ${hidden.includes(w.i) ? 'text-gray-400' : 'text-[#2a2a2a]'}`}>{w.titel}</span>
                       </label>
                     ))}
-                    <button onClick={reset} className="mt-1 w-full rounded-lg bg-gray-100 px-2 py-1.5 text-left text-xs font-semibold text-gray-600 hover:bg-gray-200">↺ Standaard herstellen</button>
+                    <button onClick={reset} className="mt-1 w-full rounded-sm bg-gray-100 px-2 py-1.5 text-left text-xs font-semibold text-gray-600 hover:bg-gray-200">↺ Standaard herstellen</button>
                   </div>
                 )}
               </div>
@@ -243,18 +243,18 @@ export default function AdminDashboard({ d }: { d: DashData }) {
           )}
           <div className="flex items-center gap-2">
             <div className="relative">
-              <button onClick={() => setExportMenu(v => !v)} className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-600">⬇ Export ▾</button>
+              <button onClick={() => setExportMenu(v => !v)} className="rounded-sm border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-600">⬇ Export ▾</button>
               {exportMenu && (
-                <div className="absolute right-0 z-40 mt-1 w-56 rounded-xl border border-gray-200 bg-white p-1.5 shadow-xl">
+                <div className="absolute right-0 z-40 mt-1 w-56 rounded-md border border-gray-200 bg-white p-1.5 shadow-xl">
                   {([['leden', '📋 Volledige ledenlijst'], ['inschrijvingen', '📝 Nieuwe inschrijvingen'], ['contributie', '💶 Contributie (Q4)'], ['aanwezigheid', '📊 Aanwezigheid (90d)']] as [string, string][]).map(([k, lbl]) => (
                     <a key={k} href={`/api/admin2/export?lijst=${k}`} onClick={() => setExportMenu(false)}
-                      className="block rounded-lg px-2.5 py-2 text-xs font-medium text-[#2a2a2a] hover:bg-[#fdf6f6]">{lbl}</a>
+                      className="block rounded-sm px-2.5 py-2 text-xs font-medium text-[#2a2a2a] hover:bg-[#fdf6f6]">{lbl}</a>
                   ))}
                 </div>
               )}
             </div>
-            <Link href="/admin/aanwezigheid/les" className="rounded-xl bg-[#a90000] px-3.5 py-2 text-xs font-semibold text-white shadow-sm hover:bg-[#8c0000]">✏️ Les invullen</Link>
-                <Link href="/admin/materiaal" className="rounded-xl border border-gray-200 bg-white px-3.5 py-2 text-xs font-semibold text-gray-700 shadow-sm hover:border-[#a90000]/40">📦 Materiaal</Link>
+            <Link href="/admin/aanwezigheid/les" className="rounded-md bg-[#a90000] px-3.5 py-2 text-xs font-semibold text-white shadow-sm hover:bg-[#8c0000]">✏️ Les invullen</Link>
+                <Link href="/admin/materiaal" className="rounded-md border border-gray-200 bg-white px-3.5 py-2 text-xs font-semibold text-gray-700 shadow-sm hover:border-[#a90000]/40">📦 Materiaal</Link>
           </div>
         </div>
       </div>
@@ -275,9 +275,9 @@ export default function AdminDashboard({ d }: { d: DashData }) {
       {/* Zoombalk */}
       <div className="relative mb-3">
         <input value={zoek} onChange={e => setZoek(e.target.value)} placeholder="Zoek lid… (2+ letters)"
-          className="w-full rounded-xl border border-white/70 bg-white/60 px-3 py-2 text-sm shadow-sm backdrop-blur-md focus:border-[#a90000] focus:outline-none" />
+          className="w-full rounded-md border border-white/70 bg-white/60 px-3 py-2 text-sm shadow-sm backdrop-blur-md focus:border-[#a90000] focus:outline-none" />
         {zoekLeden.length > 0 && (
-          <div className="absolute left-0 right-0 z-40 mt-1 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl">
+          <div className="absolute left-0 right-0 z-40 mt-1 overflow-hidden rounded-md border border-gray-200 bg-white shadow-xl">
             {zoekLeden.map(l => (
               <Link key={l.id} href={`/admin/students/${l.id}`}
                 className="flex items-center justify-between border-b border-gray-50 px-3 py-2 text-sm last:border-0 hover:bg-[#fdf6f6]">
@@ -301,7 +301,7 @@ export default function AdminDashboard({ d }: { d: DashData }) {
       {/* Widgetraster */}
       <div ref={containerRef} className="w-full">
         {!mounted ? (
-          <div className="h-64 animate-pulse rounded-xl bg-gray-100" />
+          <div className="h-64 animate-pulse rounded-md bg-gray-100" />
         ) : mobiel ? (
           <TegelStart d={d} />
         ) : (
@@ -354,7 +354,7 @@ function TegelStart({ d }: { d: DashData }) {
     <div className="grid grid-cols-2 gap-2.5 pb-24">
       {tegels.map(tg => (
         <Link key={tg.href + tg.titel} href={tg.href}
-          className="flex flex-col gap-1 rounded-2xl border border-white/70 bg-white/60 p-3.5 shadow-sm backdrop-blur-md active:scale-[0.98] hover:border-[#a90000]/40">
+          className="flex flex-col gap-1 rounded-md border border-white/70 bg-white/60 p-3.5 shadow-sm backdrop-blur-md active:scale-[0.98] hover:border-[#a90000]/40">
           <span className="text-2xl leading-none">{tg.emoji}</span>
           <span className="mt-1 text-[13px] font-bold leading-tight text-[#2a2a2a]">{tg.titel}</span>
           <span className={`text-lg font-extrabold leading-tight ${tg.accent || 'text-[#2a2a2a]'}`}>{tg.metric}</span>
@@ -367,7 +367,7 @@ function TegelStart({ d }: { d: DashData }) {
 
 function Kpi({ href, label, value, sub, accent = '' }: { href: string; label: string; value: string | number; sub?: string; accent?: string }) {
   return (
-    <Link href={href} className="rounded-xl border border-white/70 bg-white/55 px-2 py-1 backdrop-blur-md hover:border-[#a90000]/40">
+    <Link href={href} className="rounded-md border border-white/70 bg-white/55 px-2 py-1 backdrop-blur-md hover:border-[#a90000]/40">
       <p className="truncate text-[10px] font-medium uppercase tracking-wide text-gray-400">{label}</p>
       <p className={`text-base font-bold leading-tight ${accent || 'text-[#2a2a2a]'}`}>{value}{sub && <span className="ml-1 text-[10px] font-medium text-gray-400">{sub}</span>}</p>
     </Link>
@@ -406,7 +406,7 @@ function WLessen({ d }: { d: DashData }) {
         const dt = new Date(l.datum)
         return (
           <Link key={l.id} href={`/admin/aanwezigheid/les?dag=${l.id}`}
-            className={`flex items-center justify-between gap-2 rounded-lg border px-2 py-1.5 hover:border-[#a90000]/50 ${vandaag ? 'border-[#a90000]/40 bg-[#fdf6f6]' : 'border-gray-100'}`}>
+            className={`flex items-center justify-between gap-2 rounded-sm border px-2 py-1.5 hover:border-[#a90000]/50 ${vandaag ? 'border-[#a90000]/40 bg-[#fdf6f6]' : 'border-gray-100'}`}>
             <div className="min-w-0">
               <p className="truncate text-xs font-semibold text-[#2a2a2a]">
                 {vandaag && <span className="mr-1 text-[#a90000]">●</span>}
@@ -547,7 +547,7 @@ function WVlaggen({ d }: { d: DashData }) {
   return (
     <div className="space-y-1">
       {d.vlaggen.length === 0 ? <Leeg tekst="Niemand gevlagd ✅" /> : d.vlaggen.map(v => (
-        <div key={v.id} className="flex items-center gap-1.5 rounded-lg border border-gray-100 px-2 py-1.5">
+        <div key={v.id} className="flex items-center gap-1.5 rounded-sm border border-gray-100 px-2 py-1.5">
           <Link href={`/admin/students/${v.id}`} className="min-w-0 flex-1 truncate text-xs font-medium text-[#2a2a2a] hover:text-[#a90000]">{v.naam}</Link>
           <span className="shrink-0 text-[9px] text-gray-400">{groepNaam(v.groep)}</span>
           <select value={vlagStatus[v.id] ?? v.status} onChange={e => zet(v.id, e.target.value)}
@@ -589,7 +589,7 @@ function WExamens({ d }: { d: DashData }) {
           ))}
         </div>
       )}
-      <Link href="/admin/exams/new" className="block rounded-lg bg-[#a90000] px-2 py-1.5 text-center text-[11px] font-semibold text-white hover:bg-[#8c0000]">+ Examen plannen</Link>
+      <Link href="/admin/exams/new" className="block rounded-sm bg-[#a90000] px-2 py-1.5 text-center text-[11px] font-semibold text-white hover:bg-[#8c0000]">+ Examen plannen</Link>
     </div>
   )
 }
@@ -634,7 +634,7 @@ function WInschrijvingen({ d }: { d: DashData }) {
   return (
     <div className="space-y-1">
       {lijst.length === 0 ? <Leeg tekst="Geen openstaande aanvragen ✅" /> : lijst.map(a => (
-        <div key={a.id} className="rounded-lg border border-gray-100 px-2 py-1.5">
+        <div key={a.id} className="rounded-sm border border-gray-100 px-2 py-1.5">
           <p className="truncate text-xs font-semibold text-[#2a2a2a]">{a.naam}</p>
           <p className="truncate text-[9px] text-gray-400">{a.groep} · {a.datum}</p>
           <div className="mt-1 flex gap-1">
@@ -757,7 +757,7 @@ function WSnel() {
   return (
     <div className="grid grid-cols-3 gap-1 lg:grid-cols-5">
       {links.map(([h, ic, lbl]) => (
-        <Link key={h} href={h} className="flex items-center gap-1 rounded-lg border border-gray-100 px-1.5 py-1.5 text-[10px] font-semibold text-[#2a2a2a] hover:border-[#a90000]/40 hover:text-[#a90000]">
+        <Link key={h} href={h} className="flex items-center gap-1 rounded-sm border border-gray-100 px-1.5 py-1.5 text-[10px] font-semibold text-[#2a2a2a] hover:border-[#a90000]/40 hover:text-[#a90000]">
           <span>{ic}</span><span className="truncate">{lbl}</span>
         </Link>
       ))}

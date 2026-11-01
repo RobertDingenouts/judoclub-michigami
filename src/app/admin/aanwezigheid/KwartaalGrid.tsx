@@ -167,21 +167,21 @@ export function KwartaalGrid({ dagen, leden, trainers = [], cellen }: { dagen: D
   return (
     <div className="space-y-5">
       {/* Dashboard-balk: sorteren + weergave */}
-      <div className="flex flex-wrap items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2">
+      <div className="flex flex-wrap items-center gap-2 rounded-md border border-gray-200 bg-white px-3 py-2">
         <span className="text-xs font-semibold text-gray-600">Sorteer:</span>
         <select value={sort} onChange={e => setSort(e.target.value as SortKey)}
-          className="rounded-lg border border-gray-300 bg-white px-2 py-1.5 text-xs text-gray-700 focus:border-[#a90000] focus:outline-none">
+          className="rounded-sm border border-gray-300 bg-white px-2 py-1.5 text-xs text-gray-700 focus:border-[#a90000] focus:outline-none">
           {SORTOPTIES.map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
         </select>
         <div className="ml-auto flex items-center gap-1.5">
           {undoStapel.length > 0 && (
-            <button onClick={undo} className="rounded-lg border border-green-400 bg-green-50 px-3 py-1.5 text-xs font-semibold text-green-700 hover:bg-green-100"
+            <button onClick={undo} className="rounded-sm border border-green-400 bg-green-50 px-3 py-1.5 text-xs font-semibold text-green-700 hover:bg-green-100"
               title={`Laatste wijziging ongedaan maken: ${undoStapel[undoStapel.length - 1].naam} → ${CLUBSTATUS_LABEL[undoStapel[undoStapel.length - 1].prev] ?? undoStapel[undoStapel.length - 1].prev}`}>
               ↩ {undoStapel[undoStapel.length - 1].naam.split(' ')[0]} terugdraaien
             </button>
           )}
           <button onClick={() => setCompact(c => !c)}
-            className={`rounded-lg border px-3 py-1.5 text-xs font-medium ${compact ? 'border-[#a90000] bg-[#fdf6f6] text-[#a90000]' : 'border-gray-300 bg-white text-gray-600'}`}>
+            className={`rounded-sm border px-3 py-1.5 text-xs font-medium ${compact ? 'border-[#a90000] bg-[#fdf6f6] text-[#a90000]' : 'border-gray-300 bg-white text-gray-600'}`}>
             {compact ? '▦ Ingeklapt' : '⬜ Groot'}
           </button>
         </div>
@@ -191,7 +191,7 @@ export function KwartaalGrid({ dagen, leden, trainers = [], cellen }: { dagen: D
         const gdagen = dagen.filter(d => d.groep === g)
         const gleden = sorteer(leden.filter(l => l.groep === g), gdagen)
         return (
-          <div key={g} className="overflow-x-auto rounded-xl border border-gray-200 bg-white">
+          <div key={g} className="overflow-x-auto rounded-md border border-gray-200 bg-white">
             <div className="flex items-center justify-between border-b border-gray-100 px-3 py-2">
               <h2 className="text-sm font-bold text-[#2a2a2a]">{GROEP_LABEL[g] ?? g}
                 <span className="ml-2 text-xs font-normal text-gray-400">{LOC_KORT[gdagen[0]?.locatie] ?? gdagen[0]?.locatie} · {gdagen.length} lessen</span>
@@ -228,7 +228,7 @@ export function KwartaalGrid({ dagen, leden, trainers = [], cellen }: { dagen: D
                         ))}
                         {d.cancelled && <span className="mt-0.5 block text-[10px] font-semibold text-red-600">GEANN. (verzet)</span>}
                         {vakDag === d.id ? (
-                          <div className="absolute left-1/2 top-full z-30 mt-1 w-44 -translate-x-1/2 rounded-lg border border-sky-400 bg-white p-2 text-left shadow-lg" onClick={e => e.stopPropagation()}>
+                          <div className="absolute left-1/2 top-full z-30 mt-1 w-44 -translate-x-1/2 rounded-sm border border-sky-400 bg-white p-2 text-left shadow-lg" onClick={e => e.stopPropagation()}>
                             <p className="mb-1 text-[10px] font-semibold text-sky-700">Vakantie — reden?</p>
                             <input autoFocus value={vakReden} onChange={e => setVakReden(e.target.value)}
                               onKeyDown={e => { if (e.key === 'Enter') zetVakantie(d.id, true); if (e.key === 'Escape') setVakDag(null) }}
@@ -287,7 +287,7 @@ export function KwartaalGrid({ dagen, leden, trainers = [], cellen }: { dagen: D
                         return (
                           <td key={d.id} className="p-0.5 text-center">
                             <button onClick={() => !gestopt && cycle(l.id, d.id)} disabled={gestopt}
-                              className={`mx-auto flex ${celKlas} items-center justify-center rounded-md border transition-all ${
+                              className={`mx-auto flex ${celKlas} items-center justify-center rounded-sm border transition-all ${
                                 busy === key ? 'opacity-50' : ''
                               } ${gestopt ? 'cursor-not-allowed border-gray-100 bg-gray-50 opacity-40' : info ? info.klas : 'border-gray-100 bg-gray-50 text-gray-300'}`}
                               title={info ? info.label : 'leeg'}>
@@ -343,7 +343,7 @@ export function KwartaalGrid({ dagen, leden, trainers = [], cellen }: { dagen: D
                         return (
                           <td key={d.id} className="p-0.5 text-center">
                             <button onClick={() => cycle(t.id, d.id)}
-                              className={`mx-auto flex ${celKlas} items-center justify-center rounded-md border transition-all ${busy === key ? 'opacity-50' : ''} ${info ? info.klas : 'border-gray-200 bg-white text-gray-300'}`}
+                              className={`mx-auto flex ${celKlas} items-center justify-center rounded-sm border transition-all ${busy === key ? 'opacity-50' : ''} ${info ? info.klas : 'border-gray-200 bg-white text-gray-300'}`}
                               title={info ? info.label : 'leeg'}>
                               {info ? info.emoji : '·'}
                             </button>

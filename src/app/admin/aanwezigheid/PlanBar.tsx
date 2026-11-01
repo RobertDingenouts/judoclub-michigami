@@ -35,14 +35,14 @@ export function PlanBar({ rangeLabel }: { rangeLabel: string }) {
   const heelVolgendJaar = () => plan(`${nu.getFullYear() + 1}-01-01`, `${nu.getFullYear() + 1}-12-31`)
 
   return (
-    <div className="flex flex-wrap items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2">
+    <div className="flex flex-wrap items-center gap-2 rounded-md border border-gray-200 bg-white px-3 py-2">
       <span className="text-xs font-semibold text-gray-600">📅 Plannen:</span>
-      <button onClick={restVanDitJaar} disabled={busy} className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:border-[#a90000] disabled:opacity-50">rest {nu.getFullYear()}</button>
-      <button onClick={heelVolgendJaar} disabled={busy} className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:border-[#a90000] disabled:opacity-50">heel {nu.getFullYear() + 1}</button>
-      <input type="date" value={van} onChange={e => setVan(e.target.value)} className="rounded-lg border border-gray-300 px-2 py-1.5 text-xs" />
+      <button onClick={restVanDitJaar} disabled={busy} className="rounded-sm border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:border-[#a90000] disabled:opacity-50">rest {nu.getFullYear()}</button>
+      <button onClick={heelVolgendJaar} disabled={busy} className="rounded-sm border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:border-[#a90000] disabled:opacity-50">heel {nu.getFullYear() + 1}</button>
+      <input type="date" value={van} onChange={e => setVan(e.target.value)} className="rounded-sm border border-gray-300 px-2 py-1.5 text-xs" />
       <span className="text-xs text-gray-400">t/m</span>
-      <input type="date" value={tot} onChange={e => setTot(e.target.value)} className="rounded-lg border border-gray-300 px-2 py-1.5 text-xs" />
-      <button onClick={() => van && tot && plan(van, tot)} disabled={busy || !van || !tot} className="rounded-lg bg-[#a90000] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#8c0000] disabled:opacity-50">Plan weken</button>
+      <input type="date" value={tot} onChange={e => setTot(e.target.value)} className="rounded-sm border border-gray-300 px-2 py-1.5 text-xs" />
+      <button onClick={() => van && tot && plan(van, tot)} disabled={busy || !van || !tot} className="rounded-sm bg-[#a90000] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#8c0000] disabled:opacity-50">Plan weken</button>
       {melding && <span className="text-xs font-medium text-green-700">{melding}</span>}
       <span className="ml-auto text-[11px] text-gray-400">huidig beeld: {rangeLabel}</span>
     </div>

@@ -100,7 +100,7 @@ export default async function DiplomasPage({
 
       {/* Error state */}
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-5 text-sm text-red-700">
+        <div className="rounded-sm border border-red-200 bg-red-50 p-5 text-sm text-red-700">
           <p className="font-semibold">Fout bij laden diploma&apos;s</p>
           <p className="mt-1">{error}</p>
         </div>
@@ -110,7 +110,7 @@ export default async function DiplomasPage({
       {!error && (
         <div className="grid grid-cols-3 gap-4">
           {(Object.keys(typeLabels) as DiplomaType[]).map((type) => (
-            <div key={type} className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+            <div key={type} className="rounded-sm border border-gray-200 bg-white p-4 shadow-sm">
               <p className="text-xs font-medium text-gray-500">{typeLabels[type]}</p>
               <p className="mt-1 text-2xl font-bold text-[#a90000]">{typeCounts[type] || 0}</p>
             </div>
@@ -122,22 +122,22 @@ export default async function DiplomasPage({
       <UploadDiplomaForm />
 
       {/* Verification section */}
-      <div className="rounded-lg border border-[#a90000]/20 bg-[#fdf6f6] p-5">
+      <div className="rounded-sm border border-[#a90000]/20 bg-[#fdf6f6] p-5">
         <h3 className="mb-3 text-sm font-semibold text-[#2a2a2a]">Diploma Verifiëren</h3>
         <form className="flex gap-3">
           <input
             type="text"
             name="verify"
             placeholder="Verificatiecode invoeren (bijv. JCM-XXXXXXX)"
-            className="flex-1 rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+            className="flex-1 rounded-sm border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
           />
-          <button type="submit" className="rounded-lg bg-[#a90000] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#8c0000]">
+          <button type="submit" className="rounded-sm bg-[#a90000] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#8c0000]">
             Verifiëren
           </button>
         </form>
 
         {verifiedDiploma && (
-          <div className="mt-4 rounded-lg border border-green-200 bg-green-50 p-4">
+          <div className="mt-4 rounded-sm border border-green-200 bg-green-50 p-4">
             <div className="flex items-start gap-3">
               <span className="text-xl">✅</span>
               <div>
@@ -166,7 +166,7 @@ export default async function DiplomasPage({
         )}
 
         {verifyCode && !verifiedDiploma && (
-          <div className="mt-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+          <div className="mt-4 rounded-sm border border-red-200 bg-red-50 p-3 text-sm text-red-700">
             Diploma niet gevonden met deze verificatiecode.
           </div>
         )}
@@ -184,7 +184,7 @@ export default async function DiplomasPage({
           {diplomas.length > 0 ? diplomas.map((diploma) => (
             <DiplomaRij key={diploma.id} diploma={diploma} />
           )) : (
-            <div className="rounded-lg border border-gray-200 bg-white p-12 text-center shadow-sm">
+            <div className="rounded-sm border border-gray-200 bg-white p-12 text-center shadow-sm">
               <p className="text-lg font-medium text-gray-400">Geen diploma&apos;s gevonden</p>
             </div>
           )}
@@ -200,7 +200,7 @@ export default async function DiplomasPage({
 function DiplomaRij({ diploma }: { diploma: any }) {
   const icoon = diploma.type === 'BELT_EXAM' ? '🎯' : diploma.type === 'COURSE_JAPANESE' ? '🇯🇵' : '🏆'
   return (
-    <div className="flex items-center gap-3 rounded-lg border border-gray-200 bg-white px-3 py-2">
+    <div className="flex items-center gap-3 rounded-sm border border-gray-200 bg-white px-3 py-2">
       <span className="shrink-0 text-base">{icoon}</span>
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm text-[#2a2a2a]">

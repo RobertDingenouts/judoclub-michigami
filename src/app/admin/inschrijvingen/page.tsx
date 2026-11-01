@@ -23,7 +23,7 @@ export default async function AdminInschrijvingenPage() {
           <p className="mt-1 text-sm text-gray-500">Beheer nieuwe lidmaatschapsaanvragen</p>
         </div>
         <a href="/api/admin2/export?lijst=inschrijvingen"
-          className="rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 hover:border-[#a90000] hover:text-[#a90000]">⬇ Excel</a>
+          className="rounded-md border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 hover:border-[#a90000] hover:text-[#a90000]">⬇ Excel</a>
       </div>
 
       {/* Client component: filter-blokjes + lijst + acties. Start met ALLE inschrijvingen. */}

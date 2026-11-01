@@ -48,7 +48,7 @@ export default async function StudentDetailPage({
         <div className="flex gap-2">
           <Link
             href={`/admin/students/${member.id}/edit`}
-            className="inline-flex items-center gap-2 rounded-lg bg-[#a90000] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#8c0000]"
+            className="inline-flex items-center gap-2 rounded-sm bg-[#a90000] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#8c0000]"
           >
             ✏️ Bewerken
           </Link>
@@ -56,18 +56,18 @@ export default async function StudentDetailPage({
       </div>
 
       {/* Profile card */}
-      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="rounded-sm border border-gray-200 bg-white p-6 shadow-sm">
         <div className="flex flex-col gap-6 sm:flex-row">
           {/* Avatar */}
           <div className="flex flex-col items-center gap-3">
             <div
-              className="flex h-20 w-20 items-center justify-center rounded-lg text-2xl font-bold text-white"
+              className="flex h-20 w-20 items-center justify-center rounded-sm text-2xl font-bold text-white"
               style={{ backgroundColor: BELT_COLORS[member.currentBelt as BeltLevel] || '#666' }}
             >
               {member.firstName[0]}{member.lastName[0]}
             </div>
             <span
-              className="inline-flex items-center gap-2 rounded-lg bg-gray-100 px-3 py-1 text-sm font-medium"
+              className="inline-flex items-center gap-2 rounded-sm bg-gray-100 px-3 py-1 text-sm font-medium"
             >
               <span
                 className="inline-flex h-3 w-3 rounded-full border border-gray-300"
@@ -117,7 +117,7 @@ export default async function StudentDetailPage({
         </div>
 
         {member.medicalNotes && (
-          <div className="mt-4 rounded-lg border border-yellow-200 bg-yellow-50 p-4">
+          <div className="mt-4 rounded-sm border border-yellow-200 bg-yellow-50 p-4">
             <p className="text-xs font-medium text-yellow-800">Medische Notities</p>
             <p className="mt-1 text-sm text-yellow-900">{member.medicalNotes}</p>
           </div>
@@ -134,11 +134,11 @@ export default async function StudentDetailPage({
 
       {/* Exam history */}
       {member.examAttempts.length > 0 && (
-        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+        <div className="rounded-sm border border-gray-200 bg-white p-6 shadow-sm">
           <h2 className="mb-4 text-lg font-semibold text-[#2a2a2a]">Examen Geschiedenis</h2>
           <div className="space-y-3">
             {member.examAttempts.map((exam) => (
-              <div key={exam.id} className="flex items-center justify-between rounded-lg border border-gray-100 p-4">
+              <div key={exam.id} className="flex items-center justify-between rounded-sm border border-gray-100 p-4">
                 <div className="flex items-center gap-3">
                   <span
                     className="inline-flex h-3 w-3 rounded-full border border-gray-300"
@@ -155,7 +155,7 @@ export default async function StudentDetailPage({
                   {exam.overallScore != null && (
                     <span className="text-sm font-bold">{exam.overallScore}/100</span>
                   )}
-                  <span className={`inline-flex rounded-lg px-2.5 py-0.5 text-xs font-medium ${
+                  <span className={`inline-flex rounded-sm px-2.5 py-0.5 text-xs font-medium ${
                     exam.status === 'COMPLETED_PASSED' ? 'bg-green-100 text-green-800' :
                     exam.status === 'COMPLETED_FAILED' ? 'bg-red-100 text-red-800' :
                     'bg-yellow-100 text-yellow-800'
@@ -173,7 +173,7 @@ export default async function StudentDetailPage({
 
       {/* Course progress */}
       {member.courseProgress.length > 0 && (
-        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+        <div className="rounded-sm border border-gray-200 bg-white p-6 shadow-sm">
           <h2 className="mb-4 text-lg font-semibold text-[#2a2a2a]">Cursus Japans Voortgang</h2>
           <div className="space-y-3">
             {member.courseProgress.map((course) => (
@@ -181,9 +181,9 @@ export default async function StudentDetailPage({
                 <span className="w-28 shrink-0 truncate text-xs font-medium text-gray-600">
                   {course.courseName.replace('japanese_', '').replace('_', ' ')}
                 </span>
-                <div className="flex-1 h-2.5 rounded-lg bg-gray-200">
+                <div className="flex-1 h-2.5 rounded-sm bg-gray-200">
                   <div
-                    className={`h-full rounded-lg ${
+                    className={`h-full rounded-sm ${
                       course.isPassed ? 'bg-green-500' : course.isUnlocked ? 'bg-[#a90000]' : 'bg-gray-400'
                     }`}
                     style={{ width: `${course.lessonsTotal > 0 ? (course.lessonsCompleted / course.lessonsTotal) * 100 : 0}%` }}
@@ -201,18 +201,18 @@ export default async function StudentDetailPage({
 
       {/* Diplomas */}
       {member.diplomas.length > 0 && (
-        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+        <div className="rounded-sm border border-gray-200 bg-white p-6 shadow-sm">
           <h2 className="mb-4 text-lg font-semibold text-[#2a2a2a]">Diploma&apos;s</h2>
           <div className="space-y-3">
             {member.diplomas.map((diploma) => (
-              <div key={diploma.id} className="flex items-center justify-between rounded-lg border border-gray-100 p-4">
+              <div key={diploma.id} className="flex items-center justify-between rounded-sm border border-gray-100 p-4">
                 <div>
                   <p className="text-sm font-medium">{diploma.title}</p>
                   <p className="text-xs text-gray-500">
                     {new Date(diploma.awardedAt).toLocaleDateString('nl-NL')} • {diploma.verificationCode}
                   </p>
                 </div>
-                <span className={`inline-flex rounded-lg px-2.5 py-0.5 text-xs font-medium ${
+                <span className={`inline-flex rounded-sm px-2.5 py-0.5 text-xs font-medium ${
                   diploma.type === 'BELT_EXAM' ? 'bg-red-100 text-red-800' :
                   diploma.type === 'COURSE_JAPANESE' ? 'bg-blue-100 text-blue-800' :
                   'bg-yellow-100 text-yellow-800'
@@ -228,11 +228,11 @@ export default async function StudentDetailPage({
 
       {/* Contributie */}
       {member.payments.length > 0 && (
-        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+        <div className="rounded-sm border border-gray-200 bg-white p-6 shadow-sm">
           <h2 className="mb-4 text-lg font-semibold text-[#2a2a2a]">Contributie ({member.payments.length})</h2>
           <div className="space-y-2">
             {member.payments.map(p => (
-              <div key={p.id} className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-gray-100 px-4 py-2 text-sm">
+              <div key={p.id} className="flex flex-wrap items-center justify-between gap-2 rounded-sm border border-gray-100 px-4 py-2 text-sm">
                 <span className="font-medium">{p.period.label}</span>
                 <span className="text-gray-500">€{Number(p.amount).toFixed(2)}</span>
                 {p.invoiceNumber && <span className="text-xs text-gray-400">#{p.invoiceNumber}</span>}
@@ -254,11 +254,11 @@ export default async function StudentDetailPage({
           if (a.status === 'AANWEZIG') perJaar[y].aanw++
         }
         return (
-          <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+          <div className="rounded-sm border border-gray-200 bg-white p-6 shadow-sm">
             <h2 className="mb-4 text-lg font-semibold text-[#2a2a2a]">Aanwezigheid ({member.attendance.length} registraties)</h2>
             <div className="flex flex-wrap gap-3">
               {Object.entries(perJaar).sort().map(([y, v]) => (
-                <div key={y} className="rounded-lg bg-gray-50 px-4 py-2 text-sm">
+                <div key={y} className="rounded-sm bg-gray-50 px-4 py-2 text-sm">
                   <span className="font-semibold">{y}</span>
                   <span className="ml-2 text-gray-500">{v.aanw}/{v.totaal} aanwezig</span>
                 </div>
@@ -270,13 +270,13 @@ export default async function StudentDetailPage({
 
       {/* Bondshistorie + toernooien */}
       {(member.bondHistory.length > 0 || member.competitions.length > 0) && (
-        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+        <div className="rounded-sm border border-gray-200 bg-white p-6 shadow-sm">
           {member.bondHistory.length > 0 && (
             <>
               <h2 className="mb-3 text-lg font-semibold text-[#2a2a2a]">Bondshistorie</h2>
               <div className="mb-4 flex flex-wrap gap-2">
                 {member.bondHistory.map(b => (
-                  <span key={b.id} className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-1 text-xs">
+                  <span key={b.id} className="inline-flex items-center gap-1.5 rounded-sm border border-gray-200 px-3 py-1 text-xs">
                     <span className="inline-block h-3 w-3 rounded-sm border border-gray-300" style={{ backgroundColor: BELT_COLORS[b.belt as BeltLevel] || '#ccc' }} />
                     {BELT_LABELS_NL[b.belt as BeltLevel] ?? b.belt} · {new Date(b.awardedAt).toLocaleDateString('nl-NL')}
                   </span>
@@ -289,7 +289,7 @@ export default async function StudentDetailPage({
               <h2 className="mb-3 text-lg font-semibold text-[#2a2a2a]">Toernooien</h2>
               <div className="space-y-2">
                 {member.competitions.map(c => (
-                  <div key={c.id} className="flex items-center justify-between rounded-lg border border-gray-100 px-4 py-2 text-sm">
+                  <div key={c.id} className="flex items-center justify-between rounded-sm border border-gray-100 px-4 py-2 text-sm">
                     <span>{c.name}</span>
                     <span className="text-xs text-gray-500">{new Date(c.date).toLocaleDateString('nl-NL')}{c.result ? ` · ${c.result}` : ''}</span>
                   </div>
@@ -314,7 +314,7 @@ function DetailRow({ label, value }: { label: string; value: string }) {
 
 function StatCard({ title, value, icon, isText }: { title: string; value: number | string; icon: string; isText?: boolean }) {
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+    <div className="rounded-sm border border-gray-200 bg-white p-4 shadow-sm">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-xs font-medium text-gray-500">{title}</p>

@@ -115,7 +115,7 @@ export default function MateriaalClient() {
 
   const tabBtn = (t: typeof tab, label: string) => (
     <button onClick={() => setTab(t)}
-      className={`rounded-lg px-4 py-2 text-sm font-semibold ${tab === t ? 'bg-[#a90000] text-white' : 'bg-white text-gray-700 border border-gray-200 hover:border-[#a90000]/40'}`}>
+      className={`rounded-sm px-4 py-2 text-sm font-semibold ${tab === t ? 'bg-[#a90000] text-white' : 'bg-white text-gray-700 border border-gray-200 hover:border-[#a90000]/40'}`}>
       {label}
     </button>
   )
@@ -130,7 +130,7 @@ export default function MateriaalClient() {
           <p className="text-sm text-gray-500">{items.length} artikelen · {stuks} stuks op voorraad · inkoopwaarde {eur(voorraadWaarde)}</p>
         </div>
         <div className="flex gap-2">
-          <button onClick={() => setShowNieuw(true)} className="rounded-lg bg-[#a90000] px-4 py-2 text-sm font-semibold text-white hover:bg-[#8c0000]">+ Nieuw artikel</button>
+          <button onClick={() => setShowNieuw(true)} className="rounded-sm bg-[#a90000] px-4 py-2 text-sm font-semibold text-white hover:bg-[#8c0000]">+ Nieuw artikel</button>
         </div>
       </div>
 
@@ -141,14 +141,14 @@ export default function MateriaalClient() {
       </div>
 
       {toast && (
-        <div className={`fixed bottom-20 left-1/2 z-50 -translate-x-1/2 rounded-lg px-4 py-2.5 text-sm font-medium text-white shadow-lg lg:bottom-6 ${toast.err ? 'bg-red-600' : 'bg-green-700'}`}>{toast.msg}</div>
+        <div className={`fixed bottom-20 left-1/2 z-50 -translate-x-1/2 rounded-sm px-4 py-2.5 text-sm font-medium text-white shadow-lg lg:bottom-6 ${toast.err ? 'bg-red-600' : 'bg-green-700'}`}>{toast.msg}</div>
       )}
 
       {tab === 'voorraad' && (
         <div>
           <input value={q} onChange={e => setQ(e.target.value)} placeholder="Zoek op product, maat, artikelnummer of EAN…"
-            className="mb-3 w-full max-w-md rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none" />
-          <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
+            className="mb-3 w-full max-w-md rounded-sm border border-gray-300 bg-white px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none" />
+          <div className="overflow-x-auto rounded-sm border border-gray-200 bg-white shadow-sm">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-gray-200 bg-[#f5f5f0] text-left text-xs uppercase tracking-wide text-gray-500">
@@ -187,13 +187,13 @@ export default function MateriaalClient() {
 
       {tab === 'factuur' && (
         <div className="grid gap-4 lg:grid-cols-2">
-          <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+          <div className="rounded-sm border border-gray-200 bg-white p-4 shadow-sm">
             <h2 className="mb-2 text-sm font-bold text-[#2a2a2a]">1 · Kies het lid</h2>
             <input list="ledenlijst" value={zoekLid} onChange={e => { setZoekLid(e.target.value); setMemberId('') }}
-              placeholder="Typ een naam…" className="mb-2 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none" />
+              placeholder="Typ een naam…" className="mb-2 w-full rounded-sm border border-gray-300 px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none" />
             <datalist id="ledenlijst">{members.map(m => <option key={m.id} value={`${m.firstName ?? ''} ${m.lastName ?? ''}`.trim()} />)}</datalist>
             {zoekLid && !memberId && (
-              <div className="max-h-44 overflow-y-auto rounded-lg border border-gray-200">
+              <div className="max-h-44 overflow-y-auto rounded-sm border border-gray-200">
                 {members.filter(m => `${m.firstName} ${m.lastName}`.toLowerCase().includes(zoekLid.toLowerCase())).slice(0, 30).map(m => (
                   <button key={m.id} onClick={() => { setMemberId(m.id); setZoekLid(`${m.firstName ?? ''} ${m.lastName ?? ''}`.trim()) }}
                     className="block w-full px-3 py-1.5 text-left text-sm hover:bg-[#fdf6f6]">{m.firstName} {m.lastName}</button>
@@ -203,21 +203,21 @@ export default function MateriaalClient() {
             {memberId && <p className="mt-2 flex items-center gap-2 text-xs text-green-700">Lid geselecteerd: <b>{lidNaam(memberId)}</b> <LidInfoKnop memberId={memberId} klas="rounded border border-gray-300 px-2 py-0.5 text-[11px] font-semibold text-gray-600 hover:border-[#a90000] hover:text-[#a90000]" /></p>}
 
             <h2 className="mb-2 mt-5 text-sm font-bold text-[#2a2a2a]">2 · Kies het artikel</h2>
-            <input value={pq} onChange={e => setPq(e.target.value)} placeholder="Zoek artikel of maat…" className="mb-2 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none" />
+            <input value={pq} onChange={e => setPq(e.target.value)} placeholder="Zoek artikel of maat…" className="mb-2 w-full rounded-sm border border-gray-300 px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none" />
             <div className="flex flex-wrap gap-2">
-              <select value={artikelId} onChange={e => setArtikelId(e.target.value)} className="w-full min-w-0 rounded-lg border border-gray-300 bg-white px-2 py-2 text-sm sm:flex-1">
+              <select value={artikelId} onChange={e => setArtikelId(e.target.value)} className="w-full min-w-0 rounded-sm border border-gray-300 bg-white px-2 py-2 text-sm sm:flex-1">
                 <option value="">— kies —</option>
                 {koopbaar.map(i => <option key={i.id} value={i.id}>{i.product.replace('Budo Band - Vechtsportband - ', 'Band — ')}{i.maat ? ` · ${i.maat}` : ''} — {eur(i.clubPrijs)} {i.voorraad === 0 ? '(0 op voorraad)' : `(${i.voorraad})`}</option>)}
               </select>
-              <input type="number" min={1} value={aantal} onChange={e => setAantal(Math.max(1, Number(e.target.value)))} className="w-16 rounded-lg border border-gray-300 px-2 py-2 text-center text-sm" />
-              <button onClick={voegToe} className="flex-1 rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 sm:flex-none">Toevoegen</button>
+              <input type="number" min={1} value={aantal} onChange={e => setAantal(Math.max(1, Number(e.target.value)))} className="w-16 rounded-sm border border-gray-300 px-2 py-2 text-center text-sm" />
+              <button onClick={voegToe} className="flex-1 rounded-sm bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 sm:flex-none">Toevoegen</button>
             </div>
           </div>
 
-          <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-            <div className="mb-2 flex gap-1.5 rounded-lg bg-gray-100 p-1 text-xs font-semibold">
-              <button onClick={() => setModus('kwartaal')} className={`flex-1 rounded-md px-2 py-1.5 ${modus === 'kwartaal' ? 'bg-white text-[#a90000] shadow-sm' : 'text-gray-500'}`}>Bij contributiefactuur</button>
-              <button onClick={() => setModus('materiaal')} className={`flex-1 rounded-md px-2 py-1.5 ${modus === 'materiaal' ? 'bg-white text-[#a90000] shadow-sm' : 'text-gray-500'}`}>Losse materiaalfactuur</button>
+          <div className="rounded-sm border border-gray-200 bg-white p-4 shadow-sm">
+            <div className="mb-2 flex gap-1.5 rounded-sm bg-gray-100 p-1 text-xs font-semibold">
+              <button onClick={() => setModus('kwartaal')} className={`flex-1 rounded-sm px-2 py-1.5 ${modus === 'kwartaal' ? 'bg-white text-[#a90000] shadow-sm' : 'text-gray-500'}`}>Bij contributiefactuur</button>
+              <button onClick={() => setModus('materiaal')} className={`flex-1 rounded-sm px-2 py-1.5 ${modus === 'materiaal' ? 'bg-white text-[#a90000] shadow-sm' : 'text-gray-500'}`}>Losse materiaalfactuur</button>
             </div>
             <h2 className="mb-2 text-sm font-bold text-[#2a2a2a]">Factuur {fact ? <span className="font-normal text-gray-500">({fact.periodeLabel}{fact.status ? ` · ${fact.status}` : ' · nog geen factuur'})</span> : ''}</h2>
             {!fact && <p className="text-sm text-gray-400">Nog niets gekozen. Na selectie van een lid verschijnt hier zijn actuele factuur.</p>}
@@ -239,7 +239,7 @@ export default function MateriaalClient() {
             )}
             {fact?.paymentId && (
               <a href={`/api/admin2/factuur?paymentId=${fact.paymentId}`} target="_blank" rel="noreferrer"
-                className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-[#a90000] px-4 py-2 text-sm font-semibold text-white hover:bg-[#8c0000]">
+                className="mt-3 inline-flex items-center gap-1.5 rounded-sm bg-[#a90000] px-4 py-2 text-sm font-semibold text-white hover:bg-[#8c0000]">
                 📄 Open of print factuur (PDF)
               </a>
             )}
@@ -252,7 +252,7 @@ export default function MateriaalClient() {
       )}
 
       {tab === 'logboek' && (
-        <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
+        <div className="overflow-x-auto rounded-sm border border-gray-200 bg-white shadow-sm">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-200 bg-[#f5f5f0] text-left text-xs uppercase tracking-wide text-gray-500">
@@ -327,12 +327,12 @@ function ContribBedragEditor({ fact, onOpgeslagen }: {
           <div key={i} className="flex items-center gap-2">
             <span className="min-w-0 flex-1 text-sm text-gray-600">{x.omschrijving}</span>
             <input defaultValue={x.bedrag} onChange={e => setBedragen(p => ({ ...p, [i]: e.target.value }))} inputMode="decimal"
-              className="w-24 rounded-lg border border-gray-300 px-2 py-1 text-right text-sm focus:border-[#a90000] focus:outline-none" />
+              className="w-24 rounded-sm border border-gray-300 px-2 py-1 text-right text-sm focus:border-[#a90000] focus:outline-none" />
           </div>
         ))}
         <div className="flex items-center gap-2">
           <button onClick={opslaan} disabled={busy}
-            className="rounded-lg bg-[#a90000] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#8c0000] disabled:opacity-50">
+            className="rounded-sm bg-[#a90000] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#8c0000] disabled:opacity-50">
             Opslaan — totaal {Number(nieuwTotaal.toFixed(2)).toLocaleString('nl-NL', { style: 'currency', currency: 'EUR' })}
           </button>
           {melding && <span className="text-xs text-green-700">{melding}</span>}
@@ -350,7 +350,7 @@ function NieuwArtikelModal({ item, sluit, opGeslaag }: { item: Item | null; slui
     <label className="block text-xs">
       <span className="text-gray-500">{label}</span>
       <input type={type} value={String(v[k] ?? '')} onChange={e => setV({ ...v, [k]: type === 'number' ? (e.target.value === '' ? '' : Number(e.target.value)) : e.target.value })}
-        className="mt-0.5 w-full rounded-lg border border-gray-300 px-2.5 py-1.5 text-sm focus:border-[#a90000] focus:outline-none" />
+        className="mt-0.5 w-full rounded-sm border border-gray-300 px-2.5 py-1.5 text-sm focus:border-[#a90000] focus:outline-none" />
     </label>
   )
   async function opslaan() {
@@ -366,7 +366,7 @@ function NieuwArtikelModal({ item, sluit, opGeslaag }: { item: Item | null; slui
   }
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="w-full max-w-md rounded-xl bg-white p-5 shadow-xl">
+      <div className="w-full max-w-md rounded-md bg-white p-5 shadow-xl">
         <h3 className="mb-3 font-bold text-[#2a2a2a]">{item ? `Artikel bijwerken (${item.artikelNr})` : 'Nieuw artikel'}</h3>
         <div className="grid grid-cols-2 gap-2.5">
           <div className="col-span-2">{veld('product', 'Product*', 'text')}</div>
@@ -379,8 +379,8 @@ function NieuwArtikelModal({ item, sluit, opGeslaag }: { item: Item | null; slui
         </div>
         {fout && <p className="mt-2 text-sm text-red-600">{fout}</p>}
         <div className="mt-4 flex gap-2">
-          <button onClick={sluit} className="flex-1 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Annuleren</button>
-          <button onClick={opslaan} className="flex-1 rounded-lg bg-[#a90000] px-4 py-2 text-sm font-semibold text-white hover:bg-[#8c0000]">{item ? 'Bijwerken' : 'Toevoegen'}</button>
+          <button onClick={sluit} className="flex-1 rounded-sm border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Annuleren</button>
+          <button onClick={opslaan} className="flex-1 rounded-sm bg-[#a90000] px-4 py-2 text-sm font-semibold text-white hover:bg-[#8c0000]">{item ? 'Bijwerken' : 'Toevoegen'}</button>
         </div>
       </div>
     </div>

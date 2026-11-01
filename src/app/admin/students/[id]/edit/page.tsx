@@ -120,7 +120,7 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
   if (error && !student) return (
     <div className="p-8">
       <Link href="/admin/leden" className="text-gray-400 hover:text-[#a90000] mb-4 inline-block">← Terug naar Leden</Link>
-      <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-center">
+      <div className="rounded-sm border border-red-200 bg-red-50 p-6 text-center">
         <p className="text-red-700">{error}</p>
       </div>
     </div>
@@ -206,10 +206,10 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
       </div>
 
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">{error}</div>
+        <div className="rounded-sm border border-red-200 bg-red-50 p-4 text-sm text-red-700">{error}</div>
       )}
       {newAccount && (
-        <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-900 space-y-2">
+        <div className="rounded-sm border border-blue-200 bg-blue-50 p-4 text-sm text-blue-900 space-y-2">
           <div className="flex items-start justify-between gap-3">
             <p className="font-semibold">Account aangemaakt — tijdelijk inloggegevens</p>
             <button onClick={() => setNewAccount(null)} className="text-blue-500 hover:text-blue-800 font-bold px-1" aria-label="Sluiten">×</button>
@@ -227,12 +227,12 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
         </div>
       )}
       {success && (
-        <div className="rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-700">
+        <div className="rounded-sm border border-green-200 bg-green-50 p-4 text-sm text-green-700">
           ✓ Student succesvol bijgewerkt
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm space-y-6">
+      <form onSubmit={handleSubmit} className="rounded-sm border border-gray-200 bg-white p-6 shadow-sm space-y-6">
         {/* Personal info */}
         <div>
           <h2 className="text-lg font-semibold text-[#2a2a2a] mb-4">Persoonlijke Gegevens</h2>
@@ -247,7 +247,7 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
               <select
                 name="whatsappGroup"
                 defaultValue={student.whatsappGroup || ''}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+                className="w-full rounded-sm border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
               >
                 <option value="">Nee, bedankt</option>
                 <option value="ja1">Ja — telefoonnummer 1</option>
@@ -265,7 +265,7 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
               <select
                 name="gender"
                 defaultValue={student.gender || ''}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+                className="w-full rounded-sm border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
               >
                 <option value="">Onbekend</option>
                 <option value="M">Man</option>
@@ -277,7 +277,7 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
               <select
                 name="currentBelt"
                 defaultValue={student.currentBelt || ''}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+                className="w-full rounded-sm border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
               >
                 <option value="">Geen band</option>
                 {BELTS.map(b => (
@@ -290,7 +290,7 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
               <select
                 name="role"
                 defaultValue={student.user?.role || 'MEMBER'}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+                className="w-full rounded-sm border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
               >
                 {ROLES.map(r => (
                   <option key={r.value} value={r.value}>{r.label}</option>
@@ -303,7 +303,7 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
               <select
                 name="clubStatus"
                 defaultValue={student.clubStatus || 'LID'}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+                className="w-full rounded-sm border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
               >
                 <option value="LID">Lid</option>
                 <option value="PROEF">Proefles</option>
@@ -318,7 +318,7 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
               <select
                 name="location"
                 defaultValue={student.location || ''}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+                className="w-full rounded-sm border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
               >
                 <option value="">Geen locatie</option>
                 <option value="STeenbergen">Steenbergen</option>
@@ -336,7 +336,7 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
             {GROEPEN.map(group => {
               const isSelected = (student.trainingGroups || []).includes(group.value) || student.primaryGroup === group.value
               return (
-                <label key={group.value} className="flex items-center gap-3 rounded-lg border border-gray-200 p-3 cursor-pointer hover:bg-gray-50">
+                <label key={group.value} className="flex items-center gap-3 rounded-sm border border-gray-200 p-3 cursor-pointer hover:bg-gray-50">
                   <input
                     type="checkbox"
                     name="trainingGroups"
@@ -359,7 +359,7 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
             <select
               name="primaryGroup"
               defaultValue={student.primaryGroup || ''}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+              className="w-full rounded-sm border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
             >
               <option value="">Geen hoofdgroep</option>
               {GROEPEN.map(g => (
@@ -367,7 +367,7 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
               ))}
             </select>
           </div>
-          <label className="mt-4 flex items-center gap-3 rounded-lg border border-gray-200 p-3 cursor-pointer hover:bg-gray-50">
+          <label className="mt-4 flex items-center gap-3 rounded-sm border border-gray-200 p-3 cursor-pointer hover:bg-gray-50">
             <input
               type="checkbox"
               name="isTrainer"
@@ -385,7 +385,7 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
             name="remarks"
             defaultValue={student.remarks || ''}
             rows={2}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+            className="w-full rounded-sm border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
             placeholder="Interne notities bij dit lid"
           />
         </div>
@@ -406,7 +406,7 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
             name="medicalNotes"
             defaultValue={student.medicalNotes || ''}
             rows={3}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+            className="w-full rounded-sm border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
             placeholder="Allergieën, aandoeningen, etc."
           />
         </div>
@@ -449,13 +449,13 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
           <button
             type="submit"
             disabled={saving}
-            className="inline-flex items-center gap-2 rounded-lg bg-[#a90000] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#8c0000] disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-sm bg-[#a90000] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#8c0000] disabled:opacity-50"
           >
             {saving ? 'Opslaan...' : 'Opslaan'}
           </button>
           <Link
             href={`/admin/students/${student.id}`}
-            className="inline-flex items-center gap-2 rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+            className="inline-flex items-center gap-2 rounded-sm border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
           >
             Annuleren
           </Link>
@@ -480,7 +480,7 @@ function FormField({ label, name, type = 'text', defaultValue = '', required = f
         defaultValue={defaultValue}
         required={required}
         placeholder={placeholder}
-        className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+        className="w-full rounded-sm border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
       />
     </div>
   )

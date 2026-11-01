@@ -92,10 +92,10 @@ export default function NewStudentPage() {
       </div>
 
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">{error}</div>
+        <div className="rounded-sm border border-red-200 bg-red-50 p-4 text-sm text-red-700">{error}</div>
       )}
 
-      <form onSubmit={handleSubmit} className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm space-y-6">
+      <form onSubmit={handleSubmit} className="rounded-sm border border-gray-200 bg-white p-6 shadow-sm space-y-6">
         {/* Personal info */}
         <div>
           <h2 className="text-lg font-semibold text-[#2a2a2a] mb-4">Persoonlijke Gegevens</h2>
@@ -109,7 +109,7 @@ export default function NewStudentPage() {
               <label className="mb-1.5 block text-sm font-medium text-gray-700">Band</label>
               <select
                 name="currentBelt"
-                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+                className="w-full rounded-sm border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
               >
                 <option value="">Geen band</option>
                 {BELTS.map(b => (
@@ -121,7 +121,7 @@ export default function NewStudentPage() {
               <label className="mb-1.5 block text-sm font-medium text-gray-700">Trainingslocatie</label>
               <select
                 name="location"
-                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+                className="w-full rounded-sm border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
               >
                 <option value="">Selecteer locatie</option>
                 <option value="STeenbergen">Steenbergen</option>
@@ -146,7 +146,7 @@ export default function NewStudentPage() {
           <textarea
             name="medicalNotes"
             rows={3}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+            className="w-full rounded-sm border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
             placeholder="Allergieën, aandoeningen, etc."
           />
         </div>
@@ -156,13 +156,13 @@ export default function NewStudentPage() {
           <button
             type="submit"
             disabled={saving}
-            className="inline-flex items-center gap-2 rounded-lg bg-[#a90000] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#8c0000] disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-sm bg-[#a90000] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#8c0000] disabled:opacity-50"
           >
             {saving ? 'Aanmaken...' : 'Student Toevoegen'}
           </button>
           <Link
             href="/admin/leden"
-            className="inline-flex items-center gap-2 rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+            className="inline-flex items-center gap-2 rounded-sm border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
           >
             Annuleren
           </Link>
@@ -185,7 +185,7 @@ function FormField({ label, name, type = 'text', required = false }: {
         name={name}
         type={type}
         required={required}
-        className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+        className="w-full rounded-sm border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
       />
     </div>
   )

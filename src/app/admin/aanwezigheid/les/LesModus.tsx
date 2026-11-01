@@ -193,7 +193,7 @@ export function LesModus({ dag, leden: initLeden, recenteDagen, historie }: { da
       </div>
 
       {/* Metrics: vandaag vs. gemiddelde van de verlopen lessen */}
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 rounded-xl border border-gray-200 bg-white px-3 py-2 text-xs text-gray-600">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 rounded-md border border-gray-200 bg-white px-3 py-2 text-xs text-gray-600">
         <span className="font-semibold uppercase tracking-wide text-gray-400">📊</span>
         <span>Vandaag: <b>{dagAanwezig}/{dagGemeld || ledenZonderTrainers.length}</b> aanwezig{pct(dagAanwezig, dagGemeld) !== null && <> · <b>{pct(dagAanwezig, dagGemeld)}%</b></>}</span>
         {verlopen > 0 && <>
@@ -203,26 +203,26 @@ export function LesModus({ dag, leden: initLeden, recenteDagen, historie }: { da
       </div>
 
       {/* Lesonderwerp */}
-      <div className="rounded-xl border border-gray-200 bg-white p-3">
+      <div className="rounded-md border border-gray-200 bg-white p-3">
         <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-gray-400">🎯 Onderwerp / activiteit van deze les</label>
         <input value={activity} onChange={e => setActivity(e.target.value)}
           onBlur={() => slaActivityOp(activity)}
           placeholder="bv. valvastheid + grondwerk"
-          className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none" />
+          className="w-full rounded-sm border border-gray-300 px-3 py-2.5 text-sm focus:border-[#a90000] focus:outline-none" />
       </div>
 
       {/* Lid zoeken en tijdelijk aan deze les toevoegen */}
-      <div className="rounded-xl border border-dashed border-gray-300 bg-white p-3">
+      <div className="rounded-md border border-dashed border-gray-300 bg-white p-3">
         <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-gray-400">➕ Lid zoeken en tijdelijk aan deze les toevoegen</label>
         <p className="mb-2 text-xs text-gray-400">Voor een lid dat normaal in een andere groep les heeft, een oud-lid dat meedoet, of iemand van de andere locatie. Hij blijft in zijn eigen groep — alleen deze les krijgt een registratie.</p>
         <input value={zoekQ} onChange={e => setZoekQ(e.target.value)}
           placeholder="Typ een naam (min. 2 letters)…"
-          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none" />
+          className="w-full rounded-sm border border-gray-300 px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none" />
         {zoekResult.length > 0 && (
           <div className="mt-2 space-y-1.5">
             {zoekResult.map(s => (
               <button key={s.id} onClick={() => voegLidToe(s)} disabled={zoekBusy}
-                className="flex w-full items-center justify-between gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-left text-sm hover:border-[#a90000]/50 disabled:opacity-50">
+                className="flex w-full items-center justify-between gap-2 rounded-sm border border-gray-200 bg-white px-3 py-2 text-left text-sm hover:border-[#a90000]/50 disabled:opacity-50">
                 <span className="flex items-center gap-2 font-medium text-[#2a2a2a]">
                   <BeltVak belt={s.band.huidig} size={10} />
                   {s.naam}
@@ -242,7 +242,7 @@ export function LesModus({ dag, leden: initLeden, recenteDagen, historie }: { da
       </div>
 
       {/* Gast / proefles toevoegen */}
-      <div className="rounded-xl border border-dashed border-gray-300 bg-white p-3">
+      <div className="rounded-md border border-dashed border-gray-300 bg-white p-3">
         {gastNaam === null ? (
           <button onClick={() => setGastNaam('')} className="text-sm font-medium text-[#a90000]">+ Gast / proefles toevoegen</button>
         ) : (
@@ -250,12 +250,12 @@ export function LesModus({ dag, leden: initLeden, recenteDagen, historie }: { da
             <input autoFocus value={gastNaam} onChange={e => setGastNaam(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && voegGastToe()}
               placeholder="Naam gast (voor + achternaam)"
-              className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none" />
+              className="flex-1 rounded-sm border border-gray-300 px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none" />
             <button onClick={voegGastToe} disabled={!gastNaam.trim() || gastBusy}
-              className="rounded-lg bg-[#a90000] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">
+              className="rounded-sm bg-[#a90000] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">
               {gastBusy ? '…' : 'Toevoegen'}
             </button>
-            <button onClick={() => setGastNaam(null)} className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-500">✕</button>
+            <button onClick={() => setGastNaam(null)} className="rounded-sm border border-gray-300 px-3 py-2 text-sm text-gray-500">✕</button>
           </div>
         )}
       </div>
@@ -263,7 +263,7 @@ export function LesModus({ dag, leden: initLeden, recenteDagen, historie }: { da
       {/* Ledenlijst met grote knoppen */}
       <div className="space-y-2">
         {leden.map(l => (
-          <div key={l.id} className={`rounded-xl border bg-white p-3 ${busy === l.id ? 'opacity-60' : ''}`}>
+          <div key={l.id} className={`rounded-md border bg-white p-3 ${busy === l.id ? 'opacity-60' : ''}`}>
             <div className="mb-2 flex items-center justify-between">
               <p className="flex items-center gap-2 text-sm font-semibold text-[#2a2a2a]">
                 <span>{l.naam}</span>
@@ -298,7 +298,7 @@ export function LesModus({ dag, leden: initLeden, recenteDagen, historie }: { da
             <div className="grid grid-cols-5 gap-1.5">
               {KNoppen.map(k => (
                 <button key={k.status} onClick={() => zetStatus(l.id, l.status === k.status ? null : k.status)}
-                  className={`min-h-[44px] rounded-lg border text-base font-semibold transition-all ${
+                  className={`min-h-[44px] rounded-sm border text-base font-semibold transition-all ${
                     l.status === k.status
                       ? 'border-[#a90000] bg-[#a90000] text-white shadow-inner'
                       : 'border-gray-200 bg-gray-50 text-gray-500 active:scale-95'
@@ -311,7 +311,7 @@ export function LesModus({ dag, leden: initLeden, recenteDagen, historie }: { da
           </div>
         ))}
         {leden.length === 0 && (
-          <div className="rounded-xl border border-gray-200 bg-white p-8 text-center text-sm text-gray-400">
+          <div className="rounded-md border border-gray-200 bg-white p-8 text-center text-sm text-gray-400">
             Geen leden in deze groep. Wijs groepen toe via Leden → lid → Bewerken.
           </div>
         )}

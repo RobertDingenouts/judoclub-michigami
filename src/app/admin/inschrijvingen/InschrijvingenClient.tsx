@@ -165,7 +165,7 @@ export default function InschrijvingenClient({ applications }: InschrijvingenCli
           const count = f === 'ALL' ? applications.length : applications.filter(a => a.status === f).length
           return (
           <button key={f} onClick={() => setFilter(f)}
-            className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+            className={`rounded-sm px-4 py-2 text-sm font-medium transition-colors ${
               filter === f
                 ? 'bg-[#a90000] text-white'
                 : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
@@ -179,7 +179,7 @@ export default function InschrijvingenClient({ applications }: InschrijvingenCli
 
       {/* Applications list */}
       {filtered.length === 0 ? (
-        <div className="rounded-lg border border-gray-200 bg-white p-8 text-center text-gray-500">
+        <div className="rounded-sm border border-gray-200 bg-white p-8 text-center text-gray-500">
           Geen inschrijvingen gevonden
         </div>
       ) : (
@@ -187,7 +187,7 @@ export default function InschrijvingenClient({ applications }: InschrijvingenCli
           {filtered.map(app => (
             <div key={app.id} role="button" tabIndex={0} onClick={() => setSelectedApp(app)}
               onKeyDown={e => { if (e.key === 'Enter') setSelectedApp(app) }}
-              className={`cursor-pointer rounded-lg border p-4 shadow-sm transition hover:border-[#a90000]/40 hover:shadow-md ${
+              className={`cursor-pointer rounded-sm border p-4 shadow-sm transition hover:border-[#a90000]/40 hover:shadow-md ${
               app.status === 'PENDING' ? 'border-yellow-200 bg-yellow-50/30' : 'border-gray-200 bg-white'
             }`}>
               <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -196,11 +196,11 @@ export default function InschrijvingenClient({ applications }: InschrijvingenCli
                     <h3 className="font-semibold text-[#2a2a2a]">
                       {app.firstName} {app.lastName}
                     </h3>
-                    <span className={`inline-flex items-center rounded-lg border px-2.5 py-0.5 text-xs font-medium ${statusColor(app.status)}`}>
+                    <span className={`inline-flex items-center rounded-sm border px-2.5 py-0.5 text-xs font-medium ${statusColor(app.status)}`}>
                       {formatStatus(app.status)}
                     </span>
                     {app.isChild && (
-                      <span className="inline-flex items-center rounded-lg bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
+                      <span className="inline-flex items-center rounded-sm bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
                         Kind
                       </span>
                     )}
@@ -216,21 +216,21 @@ export default function InschrijvingenClient({ applications }: InschrijvingenCli
                 </div>
                 <div className="flex flex-wrap gap-2 sm:shrink-0" onClick={e => e.stopPropagation()}>
                   <button onClick={() => { setSelectedApp(app); }}
-                    className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50">
+                    className="rounded-sm border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50">
                     Details
                   </button>
                   <button onClick={() => { setVerwijderModal(app); setVerwijderAlles(false) }} title="Deze inschrijving definitief verwijderen"
-                    className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-400 hover:border-red-400 hover:text-red-600">
+                    className="rounded-sm border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-400 hover:border-red-400 hover:text-red-600">
                     🗑
                   </button>
                   {app.status === 'PENDING' && (
                     <>
                       <button onClick={() => { setSelectedApp(app); setActionModal('APPROVE'); }}
-                        className="rounded-lg bg-green-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-green-700">
+                        className="rounded-sm bg-green-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-green-700">
                         Goedkeuren
                       </button>
                       <button onClick={() => { setSelectedApp(app); setActionModal('REJECT'); }}
-                        className="rounded-lg bg-red-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-red-700">
+                        className="rounded-sm bg-red-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-red-700">
                         Afwijzen
                       </button>
                     </>
@@ -245,7 +245,7 @@ export default function InschrijvingenClient({ applications }: InschrijvingenCli
       {/* Verwijder-bevestiging: expliciete waarschuwing, kan niet per ongeluk */}
       {verwijderModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
+          <div className="w-full max-w-md rounded-sm bg-white p-6 shadow-xl">
             <div className="mb-3 flex items-center gap-3">
               <span className="flex h-11 w-11 items-center justify-center rounded-full bg-red-100 text-xl">🗑</span>
               <h2 className="text-lg font-bold text-[#2a2a2a]">Definitief verwijderen?</h2>
@@ -257,7 +257,7 @@ export default function InschrijvingenClient({ applications }: InschrijvingenCli
               al een ledenrecord, dat verwijder je via Leden.
             </p>
             {verwijderModal.status === 'APPROVED' && (
-              <div className="mt-3 rounded-lg border border-amber-300 bg-amber-50 p-3 text-xs text-amber-900">
+              <div className="mt-3 rounded-sm border border-amber-300 bg-amber-50 p-3 text-xs text-amber-900">
                 <p className="font-semibold">⚠️ Deze inschrijving is goedgekeurd — er is een account en
                 ledenrecord aangemaakt.</p>
                 <label className="mt-2 flex cursor-pointer items-start gap-2">
@@ -270,15 +270,15 @@ export default function InschrijvingenClient({ applications }: InschrijvingenCli
               </div>
             )}
             {result && result.type === 'error' && (
-              <p className="mt-3 rounded-lg border border-red-200 bg-red-50 p-2 text-sm text-red-700">{result.message}</p>
+              <p className="mt-3 rounded-sm border border-red-200 bg-red-50 p-2 text-sm text-red-700">{result.message}</p>
             )}
             <div className="mt-5 flex gap-3">
               <button onClick={() => { setVerwijderModal(null); setResult(null); setVerwijderAlles(false) }}
-                className="flex-1 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                className="flex-1 rounded-sm border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
                 Annuleren
               </button>
               <button onClick={verwijderPermanent} disabled={verwijderBusy}
-                className="flex-1 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50">
+                className="flex-1 rounded-sm bg-red-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50">
                 {verwijderBusy ? 'Bezig…' : '🗑 Ja, definitief'}
               </button>
             </div>
@@ -289,13 +289,13 @@ export default function InschrijvingenClient({ applications }: InschrijvingenCli
       {/* Action Modal */}
       {selectedApp && actionModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-lg rounded-lg bg-white p-6 shadow-xl">
+          <div className="w-full max-w-lg rounded-sm bg-white p-6 shadow-xl">
             <h2 className="text-lg font-bold text-[#2a2a2a]">
               {actionModal === 'APPROVE' ? 'Goedkeuren' : 'Afwijzen'}: {selectedApp.firstName} {selectedApp.lastName}
             </h2>
 
             {/* App details summary */}
-            <div className="mt-3 rounded-lg border border-gray-200 bg-gray-50 p-3 text-sm space-y-1">
+            <div className="mt-3 rounded-sm border border-gray-200 bg-gray-50 p-3 text-sm space-y-1">
               <div><strong>E-mail:</strong> {selectedApp.email}</div>
               <div><strong>Telefoon:</strong> {[selectedApp.phone, selectedApp.phone2].filter(Boolean).join(' / ') || '-'}</div>
               <div><strong>Groepsapp:</strong> {selectedApp.whatsappGroup === 'ja1' ? `Nummer 1 (${selectedApp.phone || 'onbekend'})` : selectedApp.whatsappGroup === 'ja2' ? `Nummer 2 (${selectedApp.phone2 || 'onbekend'})` : selectedApp.whatsappGroup === 'ja12' ? 'Nummer 1 en 2' : selectedApp.whatsappGroup === '' ? 'Nee, bedankt' : '-'}</div>
@@ -307,7 +307,7 @@ export default function InschrijvingenClient({ applications }: InschrijvingenCli
               <div className="mt-4">
                 <label className="mb-1.5 block text-sm font-medium text-gray-700">Opmerking (optioneel)</label>
                 <textarea value={adminNotes} onChange={e => setAdminNotes(e.target.value)} rows={2}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+                  className="w-full rounded-sm border border-gray-300 px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
                   placeholder="Optionele notitie..." />
                 <p className="mt-2 text-xs text-gray-500">
                   Na goedkeuring wordt automatisch een account aangemaakt met een tijdelijk wachtwoord.
@@ -319,14 +319,14 @@ export default function InschrijvingenClient({ applications }: InschrijvingenCli
               <div className="mt-4">
                 <label className="mb-1.5 block text-sm font-medium text-gray-700">Reden van afwijzing *</label>
                 <textarea value={rejectionReason} onChange={e => setRejectionReason(e.target.value)} rows={3}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
+                  className="w-full rounded-sm border border-gray-300 px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none focus:ring-1 focus:ring-[#a90000]"
                   placeholder="Leg uit waarom deze inschrijving wordt afgewezen..." />
               </div>
             )}
 
             {/* Result message */}
             {result && (
-              <div className={`mt-4 rounded-lg border p-3 text-sm ${
+              <div className={`mt-4 rounded-sm border p-3 text-sm ${
                 result.type === 'success'
                   ? 'bg-green-50 text-green-800 border-green-200'
                   : 'bg-red-50 text-red-800 border-red-200'
@@ -348,12 +348,12 @@ export default function InschrijvingenClient({ applications }: InschrijvingenCli
             {/* Buttons */}
             <div className="mt-6 flex gap-3">
               <button onClick={closeModal}
-                className="flex-1 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                className="flex-1 rounded-sm border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
                 Sluiten
               </button>
               {!result && (
                 <button onClick={handleAction} disabled={processing}
-                  className={`flex-1 rounded-lg px-4 py-2.5 text-sm font-medium text-white transition-colors disabled:opacity-50 ${
+                  className={`flex-1 rounded-sm px-4 py-2.5 text-sm font-medium text-white transition-colors disabled:opacity-50 ${
                     actionModal === 'APPROVE'
                       ? 'bg-green-600 hover:bg-green-700'
                       : 'bg-red-600 hover:bg-red-700'
@@ -379,13 +379,13 @@ export default function InschrijvingenClient({ applications }: InschrijvingenCli
       {/* Details Modal (view only) */}
       {selectedApp && !actionModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-lg bg-white p-6 shadow-xl">
+          <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-sm bg-white p-6 shadow-xl">
             <h2 className="text-lg font-bold text-[#2a2a2a]">
               Details: {selectedApp.firstName} {selectedApp.lastName}
             </h2>
 
             <div className="mt-4 space-y-4">
-              <div className="rounded-lg border border-gray-200 bg-gray-50 p-3">
+              <div className="rounded-sm border border-gray-200 bg-gray-50 p-3">
                 <h3 className="text-sm font-semibold text-[#2a2a2a] mb-2">Persoonlijke gegevens</h3>
                 <div className="grid grid-cols-2 gap-2 text-sm">
                   <div><span className="text-gray-500">E-mail:</span> {selectedApp.email}</div>
@@ -397,7 +397,7 @@ export default function InschrijvingenClient({ applications }: InschrijvingenCli
                 </div>
               </div>
 
-              <div className="rounded-lg border border-gray-200 bg-gray-50 p-3">
+              <div className="rounded-sm border border-gray-200 bg-gray-50 p-3">
                 <h3 className="text-sm font-semibold text-[#2a2a2a] mb-2">Lidmaatschap</h3>
                 <div className="grid grid-cols-2 gap-2 text-sm">
                   <div><span className="text-gray-500">Locatie:</span> {selectedApp.location === 'STeenbergen' ? 'Steenbergen' : 'Oud-Vossemeer'}</div>
@@ -407,7 +407,7 @@ export default function InschrijvingenClient({ applications }: InschrijvingenCli
                 </div>
               </div>
 
-              <div className="rounded-lg border border-gray-200 bg-gray-50 p-3">
+              <div className="rounded-sm border border-gray-200 bg-gray-50 p-3">
                 <h3 className="text-sm font-semibold text-[#2a2a2a] mb-2">Akkoorden</h3>
                 <div className="space-y-1 text-sm">
                   <div><span className="text-gray-500">Kosten:</span> {selectedApp.costAgreed ? '✓ Akkoord' : '✗ Niet akkoord'}</div>
@@ -418,7 +418,7 @@ export default function InschrijvingenClient({ applications }: InschrijvingenCli
               </div>
 
               {selectedApp.isChild && (
-                <div className="rounded-lg border border-gray-200 bg-gray-50 p-3">
+                <div className="rounded-sm border border-gray-200 bg-gray-50 p-3">
                   <h3 className="text-sm font-semibold text-[#2a2a2a] mb-2">Ouder/Voogd</h3>
                   <div className="grid grid-cols-2 gap-2 text-sm">
                     <div><span className="text-gray-500">Naam:</span> {selectedApp.parentName || '-'}</div>
@@ -429,7 +429,7 @@ export default function InschrijvingenClient({ applications }: InschrijvingenCli
               )}
 
               {(selectedApp.medicalNotes || selectedApp.emergencyContact) && (
-                <div className="rounded-lg border border-gray-200 bg-gray-50 p-3">
+                <div className="rounded-sm border border-gray-200 bg-gray-50 p-3">
                   <h3 className="text-sm font-semibold text-[#2a2a2a] mb-2">Medisch & Noodcontact</h3>
                   <div className="space-y-2 text-sm">
                     {selectedApp.emergencyContact && <div><span className="text-gray-500">Noodcontact:</span> {selectedApp.emergencyContact}</div>}
@@ -450,17 +450,17 @@ export default function InschrijvingenClient({ applications }: InschrijvingenCli
 
             <div className="mt-6 flex gap-3">
               <button onClick={closeModal}
-                className="flex-1 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                className="flex-1 rounded-sm border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
                 Sluiten
               </button>
               {selectedApp.status === 'PENDING' && (
                 <>
                   <button onClick={() => setActionModal('APPROVE')}
-                    className="flex-1 rounded-lg bg-green-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-green-700">
+                    className="flex-1 rounded-sm bg-green-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-green-700">
                     Goedkeuren
                   </button>
                   <button onClick={() => setActionModal('REJECT')}
-                    className="flex-1 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-red-700">
+                    className="flex-1 rounded-sm bg-red-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-red-700">
                     Afwijzen
                   </button>
                 </>

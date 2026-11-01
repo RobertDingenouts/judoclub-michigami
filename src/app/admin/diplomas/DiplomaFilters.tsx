@@ -39,10 +39,10 @@ export function DiplomaFilters({ state, types, banden, jaren, totaal }: {
     state.q && `“${state.q}”`,
   ].filter(Boolean) as string[]
 
-  const sel = 'rounded-lg border border-gray-300 bg-white px-2.5 py-1.5 text-xs focus:border-[#a90000] focus:outline-none'
+  const sel = 'rounded-sm border border-gray-300 bg-white px-2.5 py-1.5 text-xs focus:border-[#a90000] focus:outline-none'
 
   return (
-    <details className="rounded-xl border border-gray-200 bg-white" open={actief.length > 0}>
+    <details className="rounded-md border border-gray-200 bg-white" open={actief.length > 0}>
       <summary className="flex cursor-pointer list-none items-center gap-2 px-3 py-2.5 text-sm font-semibold text-[#2a2a2a] [&::-webkit-details-marker]:hidden">
         <span>⚙️ Filter & sorteren</span>
         {actief.length > 0

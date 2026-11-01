@@ -27,16 +27,16 @@ export default async function ProgressPage() {
       </div>
 
       {/* Course Progress Section */}
-      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="rounded-sm border border-gray-200 bg-white p-6 shadow-sm">
         <h2 className="mb-4 text-lg font-semibold text-[#2a2a2a]">Cursus Japans Voortgang</h2>
 
         {students.length > 0 ? (
           <div className="space-y-4">
             {students.map((student) => (
-              <div key={student.id} className="rounded-lg border border-gray-100 p-4">
+              <div key={student.id} className="rounded-sm border border-gray-100 p-4">
                 <div className="mb-3 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#a90000]/10 text-xs font-bold text-[#a90000]">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-[#a90000]/10 text-xs font-bold text-[#a90000]">
                       {student.firstName[0]}{student.lastName[0]}
                     </div>
                     <div>
@@ -62,9 +62,9 @@ export default async function ProgressPage() {
 
                         {/* Progress bar */}
                         <div className="flex-1">
-                          <div className="h-2.5 overflow-hidden rounded-lg bg-gray-200">
+                          <div className="h-2.5 overflow-hidden rounded-sm bg-gray-200">
                             <div
-                              className={`h-full rounded-lg transition-all ${
+                              className={`h-full rounded-sm transition-all ${
                                 course.isPassed ? 'bg-green-500' : course.isUnlocked ? 'bg-[#a90000]' : 'bg-gray-400'
                               }`}
                               style={{ width: `${course.lessonsTotal > 0 ? (course.lessonsCompleted / course.lessonsTotal) * 100 : 0}%` }}

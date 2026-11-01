@@ -28,7 +28,7 @@ export default async function ContributiePage({
           </p>
         </div>
         <a href={`/api/admin2/export?lijst=contributie&periode=${label}`}
-          className="rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 hover:border-[#a90000] hover:text-[#a90000]">⬇ Excel ({label})</a>
+          className="rounded-md border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 hover:border-[#a90000] hover:text-[#a90000]">⬇ Excel ({label})</a>
       </div>
 
       {/* Periode-selectie: ingeklapt in één dropdown, ook op de telefoon compact */}

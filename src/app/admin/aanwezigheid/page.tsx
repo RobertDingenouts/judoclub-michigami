@@ -39,8 +39,8 @@ export default async function AanwezigheidPage({
         </div>
         <div className="flex items-center gap-2">
           <a href="/api/admin2/export?lijst=aanwezigheid"
-            className="rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 hover:border-[#a90000] hover:text-[#a90000]">⬇ Excel</a>
-          <Link href="/admin/aanwezigheid/les" className="rounded-xl bg-[#a90000] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#8c0000]">✏️ Lesmodus</Link>
+            className="rounded-md border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 hover:border-[#a90000] hover:text-[#a90000]">⬇ Excel</a>
+          <Link href="/admin/aanwezigheid/les" className="rounded-md bg-[#a90000] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#8c0000]">✏️ Lesmodus</Link>
         </div>
       </div>
 
@@ -85,7 +85,7 @@ export default async function AanwezigheidPage({
       </div>
 
       {groepen.length === 0 || dagen.length === 0 ? (
-        <div className="rounded-xl border border-gray-200 bg-white p-8 text-center text-sm text-gray-400">
+        <div className="rounded-md border border-gray-200 bg-white p-8 text-center text-sm text-gray-400">
           {groepen.length === 0 ? 'Geen groep geselecteerd — klik hierboven een groep.' : `Geen lessen in ${rangeLabel}. Gebruik "📅 Plannen" om het vooruit te plannen.`}
         </div>
       ) : (

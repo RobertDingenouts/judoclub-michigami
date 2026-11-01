@@ -122,19 +122,19 @@ export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: 
         <input
           value={q} onChange={e => setQ(e.target.value)}
           placeholder="Zoek naam…"
-          className="min-w-[180px] flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none"
+          className="min-w-[180px] flex-1 rounded-sm border border-gray-300 px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none"
         />
         <button onClick={() => setFiltersOpen(o => !o)}
-          className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 sm:hidden"
+          className="rounded-sm border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 sm:hidden"
           aria-expanded={filtersOpen}>
           ⚙️ Filters {filtersOpen ? '▲' : '▼'}
         </button>
         <a href="/api/admin2/export?lijst=leden"
-          className={`rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:border-[#a90000] hover:text-[#a90000] ${filtersOpen ? '' : 'hidden'} sm:inline-block`}
+          className={`rounded-sm border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:border-[#a90000] hover:text-[#a90000] ${filtersOpen ? '' : 'hidden'} sm:inline-block`}
           title="Volledige ledenlijst als Excel-bestand">⬇ Excel</a>
         <select
           value={sortKey} onChange={e => setSortKey(e.target.value as SortKey)}
-          className={`rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 focus:border-[#a90000] focus:outline-none ${filtersOpen ? '' : 'hidden'} sm:block`}
+          className={`rounded-sm border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 focus:border-[#a90000] focus:outline-none ${filtersOpen ? '' : 'hidden'} sm:block`}
           aria-label="Sorteren"
         >
           {SORTOPTIES.map(o => <option key={o.key} value={o.key}>↕ {o.label}</option>)}
@@ -171,7 +171,7 @@ export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: 
           <LidRij key={r.id} r={r} open={open === r.id} onToggle={() => setOpen(open === r.id ? null : r.id)} periodLabels={periodLabels} />
         ))}
         {filtered.length === 0 && (
-          <div className="rounded-xl border border-gray-200 bg-white p-8 text-center text-sm text-gray-400">Niets gevonden</div>
+          <div className="rounded-md border border-gray-200 bg-white p-8 text-center text-sm text-gray-400">Niets gevonden</div>
         )}
       </div>
     </>
@@ -206,7 +206,7 @@ function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; on
   }
 
   return (
-    <div className={`relative rounded-xl border bg-white transition-colors ${open ? 'border-[#a90000]/40' : 'border-gray-200'}`}>
+    <div className={`relative rounded-md border bg-white transition-colors ${open ? 'border-[#a90000]/40' : 'border-gray-200'}`}>
       <button
         onClick={onToggle}
         className="flex w-full items-center gap-3 p-3 text-left sm:gap-4"
@@ -275,7 +275,7 @@ function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; on
                 <label className="text-[11px] text-gray-500">Uitschrijven per:</label>
                 <input type="date" value={leave}
                   onChange={e => { setLeave(e.target.value) }}
-                  className="rounded-lg border border-gray-300 px-2 py-1 text-xs" />
+                  className="rounded-sm border border-gray-300 px-2 py-1 text-xs" />
                 {leave && <button onClick={() => zetStatus('GESTOPT', leave)} className="rounded-full bg-gray-800 px-2.5 py-1 text-[11px] font-medium text-white">Opslaan (gestopt per {new Date(leave).toLocaleDateString('nl-NL')})</button>}
               </div>
             </div>
@@ -340,28 +340,28 @@ function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; on
               ))}
             </div>
             <div className="mt-3 flex gap-2">
-              <Link href={`/admin/students/${r.id}/edit`} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium hover:border-[#a90000] hover:text-[#a90000]">✏️ Bewerken</Link>
-              <Link href={`/admin/students/${r.id}`} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium hover:border-[#a90000] hover:text-[#a90000]">Volledig dossier</Link>
-              <Link href={`/admin/contributie?lid=${r.id}`} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium hover:border-[#a90000] hover:text-[#a90000]">Factuur</Link>
+              <Link href={`/admin/students/${r.id}/edit`} className="rounded-sm border border-gray-200 px-3 py-1.5 text-xs font-medium hover:border-[#a90000] hover:text-[#a90000]">✏️ Bewerken</Link>
+              <Link href={`/admin/students/${r.id}`} className="rounded-sm border border-gray-200 px-3 py-1.5 text-xs font-medium hover:border-[#a90000] hover:text-[#a90000]">Volledig dossier</Link>
+              <Link href={`/admin/contributie?lid=${r.id}`} className="rounded-sm border border-gray-200 px-3 py-1.5 text-xs font-medium hover:border-[#a90000] hover:text-[#a90000]">Factuur</Link>
               {r.isActive ? (
                 <button onClick={async () => {
                   if (!confirm(`${r.firstName} ${r.lastName} naar de prullenbak? Het record verdwijnt uit de actieve lijsten (terug te zetten via het Archief-filter).`)) return
                   await fetch(`/api/admin/students/${r.id}`, { method: 'DELETE' })
                   router.refresh()
-                }} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-500 hover:border-red-300 hover:text-red-600">🗑 Prullenbak</button>
+                }} className="rounded-sm border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-500 hover:border-red-300 hover:text-red-600">🗑 Prullenbak</button>
               ) : (
                 <>
                   <button onClick={async () => {
                     if (!confirm(`${r.firstName} ${r.lastName} herstellen als actief lid?`)) return
                     await fetch(`/api/admin/students/${r.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ isActive: true }) })
                     router.refresh()
-                  }} className="rounded-lg border border-green-300 bg-green-50 px-3 py-1.5 text-xs font-medium text-green-700 hover:bg-green-100">♻️ Herstel</button>
+                  }} className="rounded-sm border border-green-300 bg-green-50 px-3 py-1.5 text-xs font-medium text-green-700 hover:bg-green-100">♻️ Herstel</button>
                   <button onClick={async () => {
                     if (!confirm(`${r.firstName} ${r.lastName} DEFINITIEF verwijderen? Dit kan niet ongedaan worden.`)) return
                     const res = await fetch(`/api/admin/students/${r.id}?permanent=true`, { method: 'DELETE' })
                     if (!res.ok) { alert(`Verwijderen mislukt: ${(await res.json().catch(() => ({}))).error || 'Onbekende fout'}`); return }
                     router.refresh()
-                  }} className="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50">🗑 Definitief</button>
+                  }} className="rounded-sm border border-red-200 px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50">🗑 Definitief</button>
                 </>
               )}
             </div>
@@ -405,7 +405,7 @@ function MergeBox({ r }: { r: Row }) {
   return (
     <div className="mt-3 border-t border-gray-100 pt-2">
       {!open ? (
-        <button onClick={zoek} className="rounded-lg border border-sky-300 bg-sky-50 px-3 py-1.5 text-xs font-medium text-sky-700 hover:bg-sky-100">
+        <button onClick={zoek} className="rounded-sm border border-sky-300 bg-sky-50 px-3 py-1.5 text-xs font-medium text-sky-700 hover:bg-sky-100">
           🔗 Samenvoegen met ingeschreven lid…
         </button>
       ) : (
@@ -414,7 +414,7 @@ function MergeBox({ r }: { r: Row }) {
           {kandidaten.filter(k => k.id !== r.id).length === 0 && <p className="text-xs text-gray-400">Geen andere records gevonden met deze naam.</p>}
           {kandidaten.filter(k => k.id !== r.id).map(k => (
             <button key={k.id} onClick={() => merge(k.id)} disabled={busy}
-              className="flex w-full items-center justify-between rounded-lg border border-gray-200 bg-white px-3 py-2 text-left text-xs hover:border-[#a90000]/50 disabled:opacity-50">
+              className="flex w-full items-center justify-between rounded-sm border border-gray-200 bg-white px-3 py-2 text-left text-xs hover:border-[#a90000]/50 disabled:opacity-50">
               <span className="font-medium text-[#2a2a2a]">{k.firstName} {k.lastName}</span>
               <span className="text-gray-400">{CLUB_STATUS_INFO[k.clubStatus]?.label ?? k.clubStatus} · {nlDatum(k.joinDate)}</span>
             </button>

@@ -50,10 +50,10 @@ export default async function ExamDetailPage({
       </div>
 
       {/* Exam info */}
-      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="rounded-sm border border-gray-200 bg-white p-6 shadow-sm">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
-            <div className={`flex h-14 w-14 items-center justify-center rounded-lg text-xl ${config.bg} ${config.text}`}>
+            <div className={`flex h-14 w-14 items-center justify-center rounded-sm text-xl ${config.bg} ${config.text}`}>
               {config.icon}
             </div>
             <div>
@@ -71,7 +71,7 @@ export default async function ExamDetailPage({
               </div>
             </div>
           </div>
-          <span className={`inline-flex rounded-lg px-3 py-1 text-sm font-medium ${config.bg} ${config.text}`}>
+          <span className={`inline-flex rounded-sm px-3 py-1 text-sm font-medium ${config.bg} ${config.text}`}>
             {config.label}
           </span>
         </div>
@@ -84,7 +84,7 @@ export default async function ExamDetailPage({
         </div>
 
         {exam.notes && (
-          <div className="mt-4 rounded-lg border border-gray-100 bg-gray-50 p-4">
+          <div className="mt-4 rounded-sm border border-gray-100 bg-gray-50 p-4">
             <p className="text-xs font-medium text-gray-500">Notities</p>
             <p className="mt-1 text-sm text-gray-700">{exam.notes}</p>
           </div>
@@ -93,13 +93,13 @@ export default async function ExamDetailPage({
 
       {/* Technique results */}
       {exam.results.length > 0 && (
-        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+        <div className="rounded-sm border border-gray-200 bg-white p-6 shadow-sm">
           <h2 className="mb-4 text-lg font-semibold text-[#2a2a2a]">
             Technieken ({exam.results.filter(r => r.passed).length}/{exam.results.length} geslaagd)
           </h2>
           <div className="space-y-2">
             {exam.results.map((result) => (
-              <div key={result.id} className="flex items-center justify-between rounded-lg border border-gray-100 p-3">
+              <div key={result.id} className="flex items-center justify-between rounded-sm border border-gray-100 p-3">
                 <div>
                   <p className="text-sm font-medium text-[#2a2a2a]">{result.techniqueName}</p>
                   {result.category && (
@@ -110,7 +110,7 @@ export default async function ExamDetailPage({
                   {result.score != null && (
                     <span className="text-sm font-bold">{result.score}/100</span>
                   )}
-                  <span className={`inline-flex rounded-lg px-2.5 py-0.5 text-xs font-medium ${
+                  <span className={`inline-flex rounded-sm px-2.5 py-0.5 text-xs font-medium ${
                     result.passed ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                   }`}>
                     {result.passed ? 'Geslaagd' : 'Niet geslaagd'}
@@ -124,7 +124,7 @@ export default async function ExamDetailPage({
             <div className="mt-4 space-y-2">
               <h3 className="text-sm font-semibold text-gray-700">Feedback</h3>
               {exam.results.filter(r => r.feedback).map((result) => (
-                <div key={result.id} className="rounded-lg border border-gray-100 bg-gray-50 p-3">
+                <div key={result.id} className="rounded-sm border border-gray-100 bg-gray-50 p-3">
                   <p className="text-xs font-medium text-gray-600">{result.techniqueName}</p>
                   <p className="mt-1 text-sm text-gray-700">{result.feedback}</p>
                 </div>
@@ -138,7 +138,7 @@ export default async function ExamDetailPage({
       <div className="flex justify-end">
         <Link
           href={`/admin/students/${exam.member?.id}`}
-          className="inline-flex items-center gap-2 rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+          className="inline-flex items-center gap-2 rounded-sm border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
         >
           → Naar student profiel
         </Link>

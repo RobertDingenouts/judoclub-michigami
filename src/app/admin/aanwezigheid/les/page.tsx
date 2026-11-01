@@ -28,12 +28,12 @@ export default async function LesModusPage({
       <div className="space-y-4">
         <Link href="/admin/aanwezigheid" className="text-sm text-gray-500 hover:text-[#a90000]">← Terug naar lessen</Link>
         <h1 className="text-2xl font-bold text-[#2a2a2a]">Les invullen</h1>
-        <div className="rounded-xl border border-gray-200 bg-white p-5">
+        <div className="rounded-md border border-gray-200 bg-white p-5">
           <p className="mb-3 text-sm text-gray-500">Nog geen lessen gepland rond vandaag. Kies een groep — de les wordt automatisch aangemaakt op de volgende lesdag van die groep:</p>
           <div className="grid grid-cols-2 gap-2">
             {GROEPEN.filter(g => g.value !== 'SENIOREN').map(g => (
               <a key={g.value} href={`/admin/aanwezigheid/les?datum=${volgende(dagVanGroep[g.value])}&groep=${g.value}`}
-                className="rounded-xl border border-gray-200 p-4 text-center text-sm font-semibold hover:border-[#a90000] hover:text-[#a90000]">
+                className="rounded-md border border-gray-200 p-4 text-center text-sm font-semibold hover:border-[#a90000] hover:text-[#a90000]">
                 {g.label}
                 <span className="mt-1 block text-[11px] font-normal text-gray-400">{g.dag}</span>
               </a>

@@ -181,25 +181,25 @@ export function ContributieBoard({ rows, periode, periodId, totaalOpen, toonGest
           <option value="status">Sorteer: status</option>
         </select>
         <button onClick={facturenBulk} disabled={genereren || openRows.length === 0}
-          className="rounded-xl bg-[#a90000] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#8c0000] disabled:opacity-40"
+          className="rounded-md bg-[#a90000] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#8c0000] disabled:opacity-40"
           title="Genereer PDF-facturen voor iedereen die nog niet betaald heeft — ook vóór de betaaldatum">
           🧾 Genereer facturen alle nog-niet-betaalden ({openRows.length})
         </button>
         {openRows.length > 0 && (
           <button onClick={() => setBevestigBulk(true)} disabled={genereren}
-            className="rounded-xl border border-green-600 px-4 py-2.5 text-sm font-semibold text-green-700 hover:bg-green-50 disabled:opacity-40">
+            className="rounded-md border border-green-600 px-4 py-2.5 text-sm font-semibold text-green-700 hover:bg-green-50 disabled:opacity-40">
             ✓ Alles betaald zetten ({openRows.length})
           </button>
         )}
         {schuldigRows.length > 0 && (
           <>
             <button onClick={() => bulkHerinnering('HERINNERING1')} disabled={genereren}
-              className="rounded-xl border border-amber-500 px-4 py-2.5 text-sm font-semibold text-amber-700 hover:bg-amber-50 disabled:opacity-40"
+              className="rounded-md border border-amber-500 px-4 py-2.5 text-sm font-semibold text-amber-700 hover:bg-amber-50 disabled:opacity-40"
               title={`Alle ${schuldigRows.length} schuldige facturen (vervaldatum verstreken) op 1e herinnering`}>
               🔔 1e herinnering → schuldigen ({schuldigRows.length})
             </button>
             <button onClick={() => bulkHerinnering('HERINNERING2')} disabled={genereren}
-              className="rounded-xl border border-orange-600 px-4 py-2.5 text-sm font-semibold text-orange-700 hover:bg-orange-50 disabled:opacity-40"
+              className="rounded-md border border-orange-600 px-4 py-2.5 text-sm font-semibold text-orange-700 hover:bg-orange-50 disabled:opacity-40"
               title={`Alle ${schuldigRows.length} schuldige facturen (vervaldatum verstreken) op 2e herinnering`}>
               🔔 2e herinnering → schuldigen ({schuldigRows.length})
             </button>
@@ -208,9 +208,9 @@ export function ContributieBoard({ rows, periode, periodId, totaalOpen, toonGest
         <label className="flex items-center gap-1.5 text-xs text-gray-600">
           <span className="font-medium">Vervaldatum allemaal:</span>
           <input type="date" value={bulkDue ?? ''} onChange={e => setBulkDue(e.target.value || null)}
-            className="rounded-lg border border-gray-300 px-2 py-1.5 text-xs focus:border-[#a90000] focus:outline-none" />
+            className="rounded-sm border border-gray-300 px-2 py-1.5 text-xs focus:border-[#a90000] focus:outline-none" />
           <button onClick={() => bulkDue && bulkActie({ dueDate: bulkDue })} disabled={!bulkDue || genereren}
-            className="rounded-lg bg-gray-800 px-3 py-1.5 text-xs font-semibold text-white hover:bg-gray-700 disabled:opacity-40">
+            className="rounded-sm bg-gray-800 px-3 py-1.5 text-xs font-semibold text-white hover:bg-gray-700 disabled:opacity-40">
             ✓ Setten
           </button>
         </label>
@@ -221,7 +221,7 @@ export function ContributieBoard({ rows, periode, periodId, totaalOpen, toonGest
       </div>
 
       {bevestigBulk && (
-        <div className="rounded-xl border-2 border-green-600 bg-green-50 p-4">
+        <div className="rounded-md border-2 border-green-600 bg-green-50 p-4">
           <p className="text-sm font-semibold text-[#2a2a2a]">
             {openRows.length} facturen in {periode} op betaald zetten?
           </p>
@@ -229,18 +229,18 @@ export function ContributieBoard({ rows, periode, periodId, totaalOpen, toonGest
             Totaal €{totaalOpen.toFixed(2).replace('.', ',')} — {periode} is dan volledig afgehandeld.
           </p>
           {openRows.some(r => r.clubStatus === 'GESTOPT') && (
-            <p className="mt-2 rounded-lg bg-amber-50 px-2 py-1 text-xs text-amber-800">
+            <p className="mt-2 rounded-sm bg-amber-50 px-2 py-1 text-xs text-amber-800">
               Let op: {openRows.filter(r => r.clubStatus === 'GESTOPT').length} van deze facturen horen bij
               {' '}gestopte leden. Wil je die overslaan, laat het weten — dan zet ik ze op vrijgesteld.
             </p>
           )}
           <div className="mt-3 flex gap-2">
             <button onClick={bulkBetaald} disabled={genereren}
-              className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50">
+              className="rounded-sm bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50">
               {genereren ? 'Bezig…' : `Ja, ${openRows.length} facturen op betaald`}
             </button>
             <button onClick={() => setBevestigBulk(false)} disabled={genereren}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-50">
+              className="rounded-sm border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-50">
               Annuleren
             </button>
           </div>
@@ -249,7 +249,7 @@ export function ContributieBoard({ rows, periode, periodId, totaalOpen, toonGest
 
       <div className="space-y-2">
         {getToon().map(r => (
-          <div key={r.memberId} className="rounded-xl border border-gray-200 bg-white p-3">
+          <div key={r.memberId} className="rounded-md border border-gray-200 bg-white p-3">
             <div className="flex flex-wrap items-center gap-3">
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-semibold text-[#2a2a2a]">
@@ -275,7 +275,7 @@ export function ContributieBoard({ rows, periode, periodId, totaalOpen, toonGest
               </div>
               <div className="flex shrink-0 gap-1.5">
                 {r.paymentId && (
-                  <label className="flex items-center gap-1 rounded-lg border border-gray-300 px-2 py-1 text-[11px] text-gray-600" title="Betaaldatum individueel instellen; invullen = automatisch op betaald, leeghalen = weer open">
+                  <label className="flex items-center gap-1 rounded-sm border border-gray-300 px-2 py-1 text-[11px] text-gray-600" title="Betaaldatum individueel instellen; invullen = automatisch op betaald, leeghalen = weer open">
                     💳 <input type="date" defaultValue={r.paidAt}
                       onChange={e => r.paymentId && zetBetaaldatum(r.paymentId, e.target.value)}
                       className="w-[110px] bg-transparent text-[11px] focus:outline-none" />
@@ -283,22 +283,22 @@ export function ContributieBoard({ rows, periode, periodId, totaalOpen, toonGest
                 )}
                 {r.paymentId && (
                   <button onClick={() => setBewerken(bewerken === r.paymentId ? null : r.paymentId)}
-                    className="rounded-lg border border-gray-300 px-3 py-2 text-xs font-semibold text-gray-600 hover:border-[#a90000] hover:text-[#a90000]">
+                    className="rounded-sm border border-gray-300 px-3 py-2 text-xs font-semibold text-gray-600 hover:border-[#a90000] hover:text-[#a90000]">
                     ✏️ Bedrag
                   </button>
                 )}
                 {r.paymentId && (
                   <button onClick={() => factuur(r.paymentId!)} disabled={busy === r.paymentId}
-                    className="rounded-lg border border-gray-300 px-3 py-2 text-xs font-semibold text-gray-600 hover:border-[#a90000] hover:text-[#a90000]">
+                    className="rounded-sm border border-gray-300 px-3 py-2 text-xs font-semibold text-gray-600 hover:border-[#a90000] hover:text-[#a90000]">
                     🧾 Factuur
                   </button>
                 )}
                 <button onClick={() => setMateriaalLid(r)}
-                  className="rounded-lg border border-gray-300 px-3 py-2 text-xs font-semibold text-gray-600 hover:border-[#a90000] hover:text-[#a90000]"
+                  className="rounded-sm border border-gray-300 px-3 py-2 text-xs font-semibold text-gray-600 hover:border-[#a90000] hover:text-[#a90000]"
                   title="Artikel uit voorraad op deze factuur zetten (pak, band, …)">📦 + Artikel</button>
                 <LidInfoKnop memberId={r.memberId} />
                 <a href={`/admin/students/${r.memberId}`}
-                  className="rounded-lg border border-gray-300 px-3 py-2 text-xs font-semibold text-gray-600 hover:border-[#a90000] hover:text-[#a90000]"
+                  className="rounded-sm border border-gray-300 px-3 py-2 text-xs font-semibold text-gray-600 hover:border-[#a90000] hover:text-[#a90000]"
                   title="Volledig dossier van dit lid">👤 Lid</a>
               </div>
             </div>
@@ -335,7 +335,7 @@ export function ContributieBoard({ rows, periode, periodId, totaalOpen, toonGest
           </div>
         ))}
         {getToon().length === 0 && (
-          <div className="rounded-xl border border-gray-200 bg-white p-8 text-center text-sm text-gray-400">
+          <div className="rounded-md border border-gray-200 bg-white p-8 text-center text-sm text-gray-400">
             {filter === 'open' ? (data.length > 0 ? `Niets open in ${periode} — vervaldatum nog niet geweest of alles betaald 🎉` : 'Geen leden gevonden') : 'Geen leden gevonden'}
           </div>
         )}
@@ -392,27 +392,27 @@ function MateriaalPicker({ memberId, lidNaam, periode, periodId, sluit, sluitEnV
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4" onClick={sluitEnVervers}>
-      <div className="my-8 w-full max-w-md rounded-xl bg-white p-5 shadow-xl" onClick={e => e.stopPropagation()}>
+      <div className="my-8 w-full max-w-md rounded-md bg-white p-5 shadow-xl" onClick={e => e.stopPropagation()}>
         <div className="mb-2 flex items-center justify-between">
           <h3 className="font-bold text-[#2a2a2a]">📦 Artikel op factuur — {lidNaam} <span className="text-sm font-normal text-gray-500">({periode})</span></h3>
           <button onClick={sluitEnVervers} className="text-gray-400 hover:text-gray-700">✕</button>
         </div>
         <input value={q} onChange={e => setQ(e.target.value)} placeholder="Zoek artikel of maat…"
-          className="mb-2 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none" />
+          className="mb-2 w-full rounded-sm border border-gray-300 px-3 py-2 text-sm focus:border-[#a90000] focus:outline-none" />
         {!arts && <p className="text-sm text-gray-400">Artikelen laden…</p>}
         {arts && (
           <div className="flex flex-wrap gap-2">
-            <select value={artikelId} onChange={e => setArtikelId(e.target.value)} className="min-w-0 flex-1 rounded-lg border border-gray-300 bg-white px-2 py-2 text-sm">
+            <select value={artikelId} onChange={e => setArtikelId(e.target.value)} className="min-w-0 flex-1 rounded-sm border border-gray-300 bg-white px-2 py-2 text-sm">
               <option value="">— kies —</option>
               {zichtbaar.map(a => <option key={a.id} value={a.id}>{a.product.replace('Budo Band - Vechtsportband - ', 'Band — ')}{a.maat ? ` · ${a.maat}` : ''} — {Number(a.clubPrijs).toLocaleString('nl-NL', { style: 'currency', currency: 'EUR' })}{a.voorraad === 0 ? ' (0 op voorraad)' : ` (${a.voorraad})`}</option>)}
             </select>
-            <input type="number" min={1} value={aantal} onChange={e => setAantal(Math.max(1, Number(e.target.value)))} className="w-16 rounded-lg border border-gray-300 px-2 py-2 text-center text-sm" />
-            <button onClick={voegToe} disabled={!artikelId} className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-40">Toevoegen</button>
+            <input type="number" min={1} value={aantal} onChange={e => setAantal(Math.max(1, Number(e.target.value)))} className="w-16 rounded-sm border border-gray-300 px-2 py-2 text-center text-sm" />
+            <button onClick={voegToe} disabled={!artikelId} className="rounded-sm bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-40">Toevoegen</button>
           </div>
         )}
         {toast && <p className="mt-2 text-sm text-green-700">{toast}</p>}
         <div className="mt-4 flex justify-end gap-2">
-          <button onClick={sluitEnVervers} className="rounded-lg bg-[#a90000] px-4 py-2 text-sm font-semibold text-white hover:bg-[#8c0000]">
+          <button onClick={sluitEnVervers} className="rounded-sm bg-[#a90000] px-4 py-2 text-sm font-semibold text-white hover:bg-[#8c0000]">
             {totaalToegevoegd > 0 ? `Klaar (${totaalToegevoegd} ${totaalToegevoegd === 1 ? 'regel' : 'regels'} toegevoegd)` : 'Sluiten'}
           </button>
         </div>
@@ -461,17 +461,17 @@ function FactuurEditor({ r, periode, onSaved }: { r: Rij; periode: string; onSav
   }
 
   return (
-    <div className="mt-3 rounded-lg border border-[#a90000]/30 bg-[#fdf6f6] p-3">
+    <div className="mt-3 rounded-sm border border-[#a90000]/30 bg-[#fdf6f6] p-3">
       <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-gray-500">Factuurlijnen {periode} — pas bedrag aan of voeg toe (materiaal, pak, mondelinge afspraak)</p>
       <div className="space-y-1.5">
         {items.map((it, i) => (
           <div key={i} className="flex gap-2">
             <input value={it.omschrijving} onChange={e => set(i, 'omschrijving', e.target.value)}
-              placeholder="Omschrijving" className="min-w-0 flex-1 rounded-lg border border-gray-300 px-2.5 py-1.5 text-sm" />
+              placeholder="Omschrijving" className="min-w-0 flex-1 rounded-sm border border-gray-300 px-2.5 py-1.5 text-sm" />
             <input value={String(it.bedrag)} onChange={e => set(i, 'bedrag', e.target.value)} inputMode="decimal"
-              className="w-24 rounded-lg border border-gray-300 px-2.5 py-1.5 text-right text-sm" />
+              className="w-24 rounded-sm border border-gray-300 px-2.5 py-1.5 text-right text-sm" />
             <button onClick={() => setItems(prev => prev.filter((_, j) => j !== i))}
-              className="rounded-lg px-2 text-gray-400 hover:text-red-600">✕</button>
+              className="rounded-sm px-2 text-gray-400 hover:text-red-600">✕</button>
           </div>
         ))}
       </div>
@@ -479,7 +479,7 @@ function FactuurEditor({ r, periode, onSaved }: { r: Rij; periode: string; onSav
         className="mt-2 text-xs font-medium text-[#a90000]">+ Regel toevoegen</button>
       <div className="mt-3 flex flex-wrap items-center gap-2">
         <button onClick={opslaan} disabled={busy}
-          className="rounded-lg bg-[#a90000] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">
+          className="rounded-sm bg-[#a90000] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">
           Opslaan — totaal €{totaal.toFixed(2).replace('.', ',')}
         </button>
         {r.items && <button onClick={herstel} className="text-xs text-gray-500 underline">herstel standaard contributie</button>}
