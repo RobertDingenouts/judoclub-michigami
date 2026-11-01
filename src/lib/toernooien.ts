@@ -23,6 +23,7 @@ export interface ToernooiConfig {
   niveauOpties?: Record<string, string> // standaard NIVEAUS
   infoRegels: string[]         // 📋-lijst boven het formulier; {bedrag} wordt ingevuld
   waarschuwing?: string        // ⚠️-blok boven het formulier (bijv. afgelingsrisico)
+  verplichtBetalingBijInschrijving?: boolean // true = betaald-vinkje verplicht vóór verzenden
 }
 
 export const TOERNOOIEN: Record<string, ToernooiConfig> = {
@@ -47,10 +48,11 @@ export const TOERNOOIEN: Record<string, ToernooiConfig> = {
       email: 'judoclub_michigami@hotmail.com',
     },
     exportFormat: 'shintai',
+    verplichtBetalingBijInschrijving: true,
     infoRegels: [
       '🥇 Recreatief toernooi voor alle leeftijden vanaf 6 jaar — iedereen krijgt een prijs en oorkonde',
       '⚖️ Start 09.40 uur, eerste weging 9.00–9.15 uur (jongsten eerst). Weegtijden komen ~1,5 week van tevoren.',
-      '💶 Inschrijfgeld € {bedrag} per judoka — naar Judoclub Michigami.',
+      '💶 Inschrijfgeld € {bedrag} per judoka — DIRECT overmaken bij inschrijving, naar Judoclub Michigami.',
       '👨‍👩‍👧 Ouders/familie zijn welkom als toeschouwer (€ 1,00 entree voor volwassenen, kinderen gratis)',
     ],
   },
@@ -74,6 +76,7 @@ export const TOERNOOIEN: Record<string, ToernooiConfig> = {
       email: 'judoclub_michigami@hotmail.com',
     },
     exportFormat: 'yoshikwai',
+    verplichtBetalingBijInschrijving: true,
     vraagGeboortedatum: true,
     niveauOpties: {
       Pre: 'Pre-categorie — voor (bijna) nieuwe wedstrijdjudoka\'s: geen straffen, wél uitleg van de scheidsrechter',
@@ -83,7 +86,7 @@ export const TOERNOOIEN: Record<string, ToernooiConfig> = {
       '🥋 Educatief tornooi: in de Pre-categorie worden geen straffen gegeven, wél uitleg; prijzen en medailles voor iedereen',
       '⚖️ De opgegeven uren zijn ALLEEN wegingstijden — de wedstrijden starten daarna (kampen kunnen uitlopen)',
       '🥎 Poules van maximaal 6, ingedeeld op geboortejaar, gewicht en niveau; meisjes kunnen bij jongens ingedeeld worden als er te weinig zijn',
-      '💶 Inschrijfgeld € {bedrag} per judoka — naar Judoclub Michigami.',
+      '💶 Inschrijfgeld € {bedrag} per judoka — DIRECT overmaken bij inschrijving, naar Judoclub Michigami.',
     ],
     waarschuwing: 'Vorig jaar ging dit toernooi niet door wegens te weinig deelnemers. Mocht het nu opnieuw afgelast worden, storten wij het betaalde bedrag volledig terug voor de ingeschreven deelnemers.',
   },

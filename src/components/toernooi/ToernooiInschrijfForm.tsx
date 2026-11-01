@@ -220,9 +220,9 @@ export default function ToernooiInschrijfForm({ cfg, slug, headerEmoji = '🥋' 
           </div>
         </div>
 
-        <label className={`flex items-start gap-3 rounded-xl border p-3 cursor-pointer ${betaald ? 'border-[#a90000] bg-[#a90000]/5' : 'border-gray-300'}`}>
+        <label className={`flex items-start gap-3 rounded-xl border p-3 cursor-pointer ${betaald ? 'border-[#a90000] bg-[#a90000]/5' : cfg.verplichtBetalingBijInschrijving ? 'border-amber-400 bg-amber-50' : 'border-gray-300'}`}>
           <input type="checkbox" className="mt-1 accent-[#a90000]" checked={betaald} onChange={e => setBetaald(e.target.checked)} />
-          <span className="text-sm text-gray-700">Ik heb de € {cfg.inschrijfgeld.toFixed(2)} inschrijfgeld overgemaakt naar Judoclub Michigami{cfg.iban ? ` (${cfg.iban})` : ''} en daarbij <strong>{cfg.betalingskenmerk}</strong> vermeld.<br /><span className="text-gray-500">Nog niet overgemaakt? Vink het niet af — dan houden we het bij, maar het geld moet er wel zijn vóór de deadline.</span></span>
+          <span className="text-sm text-gray-700">Ik heb de € {cfg.inschrijfgeld.toFixed(2)} inschrijfgeld overgemaakt naar Judoclub Michigami{cfg.iban ? ` (${cfg.iban})` : ''} en daarbij <strong>{cfg.betalingskenmerk}</strong> vermeld. <strong className="text-[#a90000]">(verplicht — eerst overmaken, dan inschrijven)</strong>{cfg.verplichtBetalingBijInschrijving && <><br /><span className="text-gray-500">Nog niet overgemaakt? Maak het bedrag eerst over, vink daarna dit hokje aan en schrijf in. De inschrijving is pas compleet als het bedrag op de clubrekening staat.</span></>}</span>
         </label>
 
         <div>
@@ -235,7 +235,7 @@ export default function ToernooiInschrijfForm({ cfg, slug, headerEmoji = '🥋' 
 
         {fout && <p className="rounded-xl bg-red-50 border border-red-200 text-red-700 px-4 py-3 text-sm">{fout}</p>}
 
-        <button type="submit" disabled={status === 'sending' || !geslacht || !niveau || !band || (cfg.vraagGeboortedatum && !geboortedatum)}
+        <button type="submit" disabled={status === 'sending' || !geslacht || !niveau || !band || (cfg.vraagGeboortedatum && !geboortedatum) || (cfg.verplichtBetalingBijInschrijving && !betaald)}
           className="w-full rounded-xl bg-[#a90000] py-3 text-white font-bold text-lg hover:bg-[#8c0000] disabled:opacity-50">
           {status === 'sending' ? 'Versturen…' : 'Inschrijven 🥋'}
         </button>

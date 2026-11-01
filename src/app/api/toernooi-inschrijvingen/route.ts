@@ -69,6 +69,9 @@ export async function POST(req: NextRequest) {
     if (cfg.vraagGeboortedatum && !geoDatum) {
       return NextResponse.json({ success: false, error: 'Geboortedatum is verplicht voor dit toernooi' }, { status: 400 })
     }
+    if (cfg.verplichtBetalingBijInschrijving && betaald !== true && betaald !== 'ja') {
+      return NextResponse.json({ success: false, error: 'Maak het inschrijfgeld eerst over op de clubrekening en vink daarna bevestigd aan — inschrijven kan pas daarna.' }, { status: 400 })
+    }
     if (!Number.isFinite(leeftijdN) || leeftijdN < 4 || leeftijdN > 70) {
       return NextResponse.json({ success: false, error: 'Leeftijd moet tussen 4 en 70 zijn' }, { status: 400 })
     }

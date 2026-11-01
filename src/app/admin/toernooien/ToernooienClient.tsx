@@ -88,11 +88,12 @@ export default function ToernooienClient({ entries: initial, slug, cfg }: {
     const geslacht = prompt('Geslacht (Man/Vrouw):')
     const band = prompt('Bandkleur (Wit/Geel/Oranje/Groen/Blauw/Bruin/Zwart):')
     const niveau = prompt(`Niveau (${Object.keys(niveauOptiesVoor(slug)).join('/')}):`)
+    const betaaldStr = prompt('Inschrijfgeld al voldaan? (ja/nee):')
     setBusy('nieuw')
     const res = await fetch('/api/toernooi-inschrijvingen', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ toernooi: slug, naam, geslacht, leeftijd, geboortedatum, gewicht, band, niveau, betaald: false }),
+      body: JSON.stringify({ toernooi: slug, naam, geslacht, leeftijd, geboortedatum, gewicht, band, niveau, betaald: betaaldStr === 'ja' }),
     })
     const d = await res.json()
     setBusy('')
