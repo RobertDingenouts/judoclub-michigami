@@ -113,7 +113,7 @@ export default function ToernooiInschrijfForm({ cfg, slug, headerEmoji = '🥋' 
   if (status === 'sent') {
     return (
       <div className="mx-auto max-w-xl px-4 py-10">
-        <div className="rounded-xl border border-[#a90000]/20 bg-white p-8 shadow-sm text-center">
+        <div className="rounded-md border border-[#a90000]/20 bg-white p-8 shadow-sm text-center">
           <div className="text-5xl mb-4">🥋✅</div>
           <h1 className="text-2xl font-bold text-[#2a2a2a]">Ingeschreven!</h1>
           <p className="mt-3 text-gray-600">
@@ -123,18 +123,18 @@ export default function ToernooiInschrijfForm({ cfg, slug, headerEmoji = '🥋' 
           <p className="mt-4 text-sm text-gray-500">
             Iets fout ingevuld of toch niet mee? Mail <a className="text-[#a90000] font-semibold" href="mailto:judoclub_michigami@hotmail.com">judoclub_michigami@hotmail.com</a>, dan passen we het aan.
           </p>
-          <a href="/" className="inline-block mt-6 rounded-lg bg-[#a90000] px-5 py-2.5 text-white font-semibold hover:bg-[#8c0000]">Terug naar de site</a>
+          <a href="/" className="inline-block mt-6 rounded-sm bg-[#a90000] px-5 py-2.5 text-white font-semibold hover:bg-[#8c0000]">Terug naar de site</a>
         </div>
       </div>
     )
   }
 
-  const veld = 'w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:border-[#a90000] focus:outline-none'
+  const veld = 'w-full rounded-sm border border-gray-300 px-4 py-2.5 focus:border-[#a90000] focus:outline-none'
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8">
       {/* Info */}
-      <div className="rounded-xl bg-[#f5f5f0] border border-gray-200 p-6 mb-6">
+      <div className="rounded-md bg-[#f5f5f0] border border-gray-200 p-6 mb-6">
         <h1 className="text-2xl md:text-3xl font-bold text-[#2a2a2a]">{headerEmoji} {cfg.titel}</h1>
         <p className="mt-2 text-gray-700"><strong>{cfg.datum}</strong> · {cfg.locatie}</p>
         <ul className="mt-3 space-y-1 text-sm text-gray-600">
@@ -149,7 +149,7 @@ export default function ToernooiInschrijfForm({ cfg, slug, headerEmoji = '🥋' 
       </div>
 
       {cfg.waarschuwing && (
-        <div className="mb-6 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
+        <div className="mb-6 rounded-md border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
           <strong>⚠️ Goed om te weten:</strong> {cfg.waarschuwing}
         </div>
       )}
@@ -161,7 +161,7 @@ export default function ToernooiInschrijfForm({ cfg, slug, headerEmoji = '🥋' 
       )}
 
       {/* Formulier */}
-      <form onSubmit={verstuur} className="space-y-5 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+      <form onSubmit={verstuur} className="space-y-5 rounded-md border border-gray-200 bg-white p-6 shadow-sm">
         <div>
           <label className="block text-sm font-semibold text-[#2a2a2a] mb-1">Naam judoka (voor- en achternaam) *</label>
           <input className={veld} required value={naam} onChange={e => setNaam(e.target.value)} placeholder="bijv. Vive Dingenouts" />
@@ -173,7 +173,7 @@ export default function ToernooiInschrijfForm({ cfg, slug, headerEmoji = '🥋' 
             <div className="flex gap-2">
               {['Man', 'Vrouw'].map(g => (
                 <button key={g} type="button" onClick={() => setGeslacht(g)}
-                  className={`flex-1 rounded-lg border px-4 py-2.5 font-medium ${geslacht === g ? 'border-[#a90000] bg-[#a90000] text-white' : 'border-gray-300 text-gray-700 hover:border-[#a90000]'}`}>
+                  className={`flex-1 rounded-sm border px-4 py-2.5 font-medium ${geslacht === g ? 'border-[#a90000] bg-[#a90000] text-white' : 'border-gray-300 text-gray-700 hover:border-[#a90000]'}`}>
                   {g}
                 </button>
               ))}
@@ -212,7 +212,7 @@ export default function ToernooiInschrijfForm({ cfg, slug, headerEmoji = '🥋' 
           <label className="block text-sm font-semibold text-[#2a2a2a] mb-2">{cfg.vraagGeboortedatum ? 'In welke categorie wil de judoka meedoen? *' : 'Niveau — hoe ervaring heeft de judoka? *'}</label>
           <div className="space-y-2">
             {Object.entries(niveauOpts).map(([k, desc]) => (
-              <label key={k} className={`flex items-start gap-3 rounded-lg border p-3 cursor-pointer ${niveau === k ? 'border-[#a90000] bg-[#a90000]/5' : 'border-gray-300'}`}>
+              <label key={k} className={`flex items-start gap-3 rounded-sm border p-3 cursor-pointer ${niveau === k ? 'border-[#a90000] bg-[#a90000]/5' : 'border-gray-300'}`}>
                 <input type="radio" name="niveau" className="mt-1 accent-[#a90000]" checked={niveau === k} onChange={() => setNiveau(k)} />
                 <span className="text-sm text-gray-700"><strong>{k}</strong> — {desc}</span>
               </label>
@@ -220,7 +220,7 @@ export default function ToernooiInschrijfForm({ cfg, slug, headerEmoji = '🥋' 
           </div>
         </div>
 
-        <label className={`flex items-start gap-3 rounded-lg border p-3 cursor-pointer ${betaald ? 'border-[#a90000] bg-[#a90000]/5' : cfg.verplichtBetalingBijInschrijving ? 'border-amber-400 bg-amber-50' : 'border-gray-300'}`}>
+        <label className={`flex items-start gap-3 rounded-sm border p-3 cursor-pointer ${betaald ? 'border-[#a90000] bg-[#a90000]/5' : cfg.verplichtBetalingBijInschrijving ? 'border-amber-400 bg-amber-50' : 'border-gray-300'}`}>
           <input type="checkbox" className="mt-1 accent-[#a90000]" checked={betaald} onChange={e => setBetaald(e.target.checked)} />
           <span className="text-sm text-gray-700">Ik heb de € {cfg.inschrijfgeld.toFixed(2)} inschrijfgeld overgemaakt naar Judoclub Michigami{cfg.iban ? ` (${cfg.iban})` : ''} en daarbij <strong>{cfg.betalingskenmerk}</strong> vermeld. <strong className="text-[#a90000]">(verplicht — eerst overmaken, dan inschrijven)</strong>{cfg.verplichtBetalingBijInschrijving && <><br /><span className="text-gray-500">Nog niet overgemaakt? Maak het bedrag eerst over, vink daarna dit hokje aan en schrijf in. De inschrijving is pas compleet als het bedrag op de clubrekening staat.</span></>}</span>
         </label>
@@ -233,10 +233,10 @@ export default function ToernooiInschrijfForm({ cfg, slug, headerEmoji = '🥋' 
         {/* Honeypot voor bots — mensen zien dit veld niet */}
         <input type="text" name="firmenaam" className="hidden" tabIndex={-1} autoComplete="off" />
 
-        {fout && <p className="rounded-lg bg-red-50 border border-red-200 text-red-700 px-4 py-3 text-sm">{fout}</p>}
+        {fout && <p className="rounded-sm bg-red-50 border border-red-200 text-red-700 px-4 py-3 text-sm">{fout}</p>}
 
         <button type="submit" disabled={status === 'sending' || !geslacht || !niveau || !band || (cfg.vraagGeboortedatum && !geboortedatum) || (cfg.verplichtBetalingBijInschrijving && !betaald)}
-          className="w-full rounded-lg bg-[#a90000] py-3 text-white font-bold text-lg hover:bg-[#8c0000] disabled:opacity-50">
+          className="w-full rounded-sm bg-[#a90000] py-3 text-white font-bold text-lg hover:bg-[#8c0000] disabled:opacity-50">
           {status === 'sending' ? 'Versturen…' : 'Inschrijven 🥋'}
         </button>
       </form>

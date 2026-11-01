@@ -19,7 +19,7 @@ interface Entry {
 }
 
 const BAND_OPTS = BANDEN as readonly string[]
-const inp = 'w-full rounded-md border border-gray-300 px-2 py-1.5 text-sm focus:border-[#a90000] focus:outline-none'
+const inp = 'w-full rounded-sm border border-gray-300 px-2 py-1.5 text-sm focus:border-[#a90000] focus:outline-none'
 
 export default function ToernooienClient({ entries: initial, slug, cfg }: {
   entries: Entry[]
@@ -116,7 +116,7 @@ export default function ToernooienClient({ entries: initial, slug, cfg }: {
         <Stat label={`Betaald (€ ${cfg.inschrijfgeld})`} value={`${betaaldAantal} / ${entries.length}`} />
         <Stat label="Totaal in te zamelen" value={`€ ${totaal.toFixed(2)}`} />
         <button onClick={handmatig} disabled={busy === 'nieuw'}
-          className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:border-[#a90000] hover:text-[#a90000]">
+          className="rounded-sm border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:border-[#a90000] hover:text-[#a90000]">
           ＋ Handmatig toevoegen
         </button>
       </div>
@@ -127,10 +127,10 @@ export default function ToernooienClient({ entries: initial, slug, cfg }: {
         Interne deadline leden: {cfg.deadlineLeden} · Inleveren bij {cfg.organisator} uiterlijk: {cfg.deadlineShintai}.
       </p>
 
-      {melding && <p className="rounded-lg bg-[#f5f5f0] border border-gray-200 px-4 py-2 text-sm text-[#2a2a2a]">{melding}</p>}
+      {melding && <p className="rounded-sm bg-[#f5f5f0] border border-gray-200 px-4 py-2 text-sm text-[#2a2a2a]">{melding}</p>}
 
       {/* Tabel */}
-      <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm">
+      <div className="overflow-x-auto rounded-md border border-gray-200 bg-white shadow-sm">
         <table className="w-full text-sm min-w-[900px]">
           <thead>
             <tr className="bg-[#a90000] text-white">
@@ -181,11 +181,11 @@ export default function ToernooienClient({ entries: initial, slug, cfg }: {
                 <td className="px-3 py-1"><input className={inp} value={e.opmerking || ''} onChange={ev => set(e.id, 'opmerking', ev.target.value)} /></td>
                 <td className="px-3 py-1 text-right whitespace-nowrap">
                   <button onClick={() => bewaar(e.id)} disabled={!dirty[e.id] || busy === e.id}
-                    className={`rounded-md px-3 py-1.5 text-xs font-bold ${dirty[e.id] ? 'bg-[#a90000] text-white hover:bg-[#8c0000]' : 'bg-gray-100 text-gray-400'}`}>
+                    className={`rounded-sm px-3 py-1.5 text-xs font-bold ${dirty[e.id] ? 'bg-[#a90000] text-white hover:bg-[#8c0000]' : 'bg-gray-100 text-gray-400'}`}>
                     Bewaar
                   </button>
                   <button onClick={() => verwijder(e.id)} disabled={busy === e.id}
-                    className="ml-2 rounded-md border border-gray-300 px-3 py-1.5 text-xs font-bold text-gray-600 hover:border-red-500 hover:text-red-600">
+                    className="ml-2 rounded-sm border border-gray-300 px-3 py-1.5 text-xs font-bold text-gray-600 hover:border-red-500 hover:text-red-600">
                     ✕
                   </button>
                 </td>
@@ -203,7 +203,7 @@ export default function ToernooienClient({ entries: initial, slug, cfg }: {
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-lg border border-gray-200 bg-white px-4 py-2.5 shadow-sm">
+    <div className="rounded-sm border border-gray-200 bg-white px-4 py-2.5 shadow-sm">
       <div className="text-xs text-gray-500">{label}</div>
       <div className="text-lg font-bold text-[#2a2a2a]">{value}</div>
     </div>
