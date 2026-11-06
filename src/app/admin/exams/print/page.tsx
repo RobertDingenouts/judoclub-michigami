@@ -1,7 +1,7 @@
 import { db } from '@/lib/db'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { GROEP_LABELS, GROEP_SUBTEXT, kandidatenVoorGroep } from '@/lib/examens'
+import { GROEP_LABELS, GROEP_SUBTEXT, kandidatenVoorGroep, beltIndex } from '@/lib/examens'
 import { eisenVoorBelt, VAKVOLGORDE, KORT } from '@/lib/examen-eisen'
 import PrintKnop from './PrintKnop'
 
@@ -30,7 +30,7 @@ export default async function PrintExamenlijst({ searchParams }: { searchParams:
       doel: a.beltLevel,
       doelLabel: '',
       status: a.status,
-    }))
+    })).sort((x, y) => beltIndex(x.huidige || null) - beltIndex(y.huidige || null) || x.naam.localeCompare(y.naam, 'nl'))
     groepen = [{ label: GROEP_LABELS[s.group] || s.group, rijen }]
   } else if (q.groep) {
     const groepenLijst = q.groep === 'ALLES' ? Object.keys(GROEP_LABELS) : [q.groep]

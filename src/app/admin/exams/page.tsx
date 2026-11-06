@@ -73,18 +73,24 @@ export default async function ExamensHub({
           </div>
 
           <div>
-            <h2 className="mb-2 text-sm font-bold uppercase tracking-wide text-gray-500">Waar is iedereen nu voor op? (live)</h2>
+            <div className="mb-2 flex items-baseline gap-2">
+              <h2 className="text-sm font-bold uppercase tracking-wide text-gray-500">Waar is iedereen nu voor op?</h2>
+              <span className="text-xs text-gray-400">gesorteerd op huidige band · wit → bruin</span>
+            </div>
             <div className="grid gap-4 md:grid-cols-2">
               {doelenPerGroep.map(({ groep, kandidaten }) => (
-                <div key={groep} className="rounded-sm border border-gray-200 bg-white shadow-sm">
-                  <div className="flex items-center justify-between rounded-sm-t bg-[#a90000] px-4 py-2 text-white">
-                    <span className="text-sm font-semibold">{GROEP_LABELS[groep]}</span>
-                    <span className="text-xs">{kandidaten.length} leden met doel</span>
+                <div key={groep} className="overflow-hidden rounded-sm border border-gray-200 bg-white shadow-sm">
+                  <div className="flex items-center justify-between bg-[#a90000] px-4 py-2.5 text-white">
+                    <div>
+                      <span className="text-sm font-semibold">{GROEP_LABELS[groep]}</span>
+                      <p className="text-[11px] text-red-100">{GROEP_SUBTEXT[groep]}</p>
+                    </div>
+                    <span className="rounded-full bg-white/20 px-2.5 py-0.5 text-xs">{kandidaten.length} leden</span>
                   </div>
                   <div className="max-h-96 overflow-y-auto p-2">
-                    {kandidaten.length === 0 && <p className="p-2 text-xs text-gray-400">Geen kandidaten.</p>}
+                    {kandidaten.length === 0 && <p className="p-2 text-xs text-gray-400">Geen kandidaten in deze groep.</p>}
                     {kandidaten.map(k => (
-                      <div key={k.memberId} className="flex items-center justify-between gap-2 rounded-sm px-2 py-1 text-sm odd:bg-gray-50">
+                      <div key={k.memberId} className="mb-0.5 flex items-center justify-between gap-2 rounded-sm border-l-4 bg-gray-50/60 px-3 py-1.5 text-sm transition-colors hover:bg-gray-100" style={{ borderLeftColor: getBeltColor(k.doel as BeltLevel), borderColor: getBeltColor(k.doel as BeltLevel) }}>
                         <span className="font-medium text-[#2a2a2a]">{k.firstName} {k.lastName}</span>
                         <span className="flex items-center gap-1.5 text-xs text-gray-500">
                           <span className="inline-block h-3 w-3 rounded-full border border-gray-300" style={{ backgroundColor: getBeltColor(k.currentBelt as BeltLevel | null) }} />

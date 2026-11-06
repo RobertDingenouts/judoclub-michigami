@@ -3,6 +3,18 @@ import { BeltLevel } from '@prisma/client'
 import { isYouth, getNextBelt, getBeltLabel } from '@/lib/belt-utils'
 export { eisenVoorBelt, VAKVOLGORDE, BELT_SEQ, BELT_NL, KORT } from '@/lib/examen-eisen'
 export type { EisVak, DoelBelt } from '@/lib/examen-eisen'
+import { BELT_SEQ } from '@/lib/examen-eisen'
+
+// Sorteerindex: geen band eerst, daarna wit → bruin (incl. slips), zwart laatst
+export function beltIndex(belt: string | null | undefined): number {
+  if (!belt) return -1
+  const i = (BELT_SEQ as readonly string[]).indexOf(belt)
+  if (i >= 0) return i
+  return belt.startsWith('ZWART') ? 100 : 99
+}
+export function sorteerOpBelt<T extends { bandSortKey: string | null }>(rijen: T[]): T[] {
+  return [...rijen].sort((a, b) => beltIndex(a.bandSortKey) - beltIndex(b.bandSortKey))
+}
 
 export const GROEP_LABELS: Record<string, string> = {
   VRIJDAG_1E: 'Vrijdag 1e groep',
@@ -34,7 +46,7 @@ export async function kandidatenVoorGroep(groep: string): Promise<Kandidaat[]> {
       isActive: true, isTrainer: false, primaryGroup: groep,
       clubStatus: { in: ['LID', 'RESERVE'] },
     },
-    orderBy: [{ currentBelt: 'asc' }, { lastName: 'asc' }],
+    orderBy: [{ lastName: 'asc' }],
   })
   return leden
     .map(m => {
@@ -43,6 +55,7 @@ export async function kandidatenVoorGroep(groep: string): Promise<Kandidaat[]> {
       return { memberId: m.id, userId: m.userId, firstName: m.firstName, lastName: m.lastName, currentBelt: cb, doel: doel as BeltLevel | null, clubStatus: m.clubStatus }
     })
     .filter(k => k.doel !== null)
+    .sort((a, b) => beltIndex(a.currentBelt) - beltIndex(b.currentBelt) || a.lastName.localeCompare(b.lastName, 'nl'))
 }
 
 export function beltLabel(belt: BeltLevel | null) { return getBeltLabel(belt) }

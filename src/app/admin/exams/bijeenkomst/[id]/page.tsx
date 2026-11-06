@@ -1,6 +1,6 @@
 import { db } from '@/lib/db'
 import { notFound } from 'next/navigation'
-import { kandidatenVoorGroep, GROEP_LABELS } from '@/lib/examens'
+import { kandidatenVoorGroep, GROEP_LABELS, beltIndex } from '@/lib/examens'
 import Registratie from '../Registratie'
 
 export const dynamic = 'force-dynamic'
@@ -21,6 +21,20 @@ export default async function BijeenkomstPage({ params }: { params: Promise<{ id
   const inZitting = new Set(sitting.attempts.map(a => a.memberId))
   const kandidaten = (await kandidatenVoorGroep(sitting.group)).filter(k => !inZitting.has(k.memberId))
 
+  const rijen = sitting.attempts
+    .map(a => ({
+      id: a.id,
+      memberId: a.memberId,
+      naam: `${a.member.firstName} ${a.member.lastName}`,
+      huidigeBelt: (a.member.currentBelt === 'BRUIN_1' ? 'BRUIN' : a.member.currentBelt) as string | null,
+      beltLevel: a.beltLevel as string,
+      status: a.status as string,
+      examDate: a.examDate ? a.examDate.toISOString().slice(0, 10) : null,
+      categoryResults: (a.categoryResults as Record<string, boolean> | null) ?? {},
+      heeftDiploma: !!a.diploma,
+    }))
+    .sort((x, y) => beltIndex(x.huidigeBelt) - beltIndex(y.huidigeBelt) || x.naam.localeCompare(y.naam, 'nl'))
+
   return (
     <Registratie
       sitting={{
@@ -31,17 +45,7 @@ export default async function BijeenkomstPage({ params }: { params: Promise<{ id
         title: sitting.title,
         examiners: sitting.examiners,
       }}
-      attempts={sitting.attempts.map(a => ({
-        id: a.id,
-        memberId: a.memberId,
-        naam: `${a.member.firstName} ${a.member.lastName}`,
-        huidigeBelt: (a.member.currentBelt === 'BRUIN_1' ? 'BRUIN' : a.member.currentBelt) as string | null,
-        beltLevel: a.beltLevel as string,
-        status: a.status as string,
-        examDate: a.examDate ? a.examDate.toISOString().slice(0, 10) : null,
-        categoryResults: (a.categoryResults as Record<string, boolean> | null) ?? {},
-        heeftDiploma: !!a.diploma,
-      }))}
+      attempts={rijen}
       kandidaten={kandidaten.map(k => ({ memberId: k.memberId, naam: `${k.firstName} ${k.lastName}`, doel: k.doel as string }))}
     />
   )

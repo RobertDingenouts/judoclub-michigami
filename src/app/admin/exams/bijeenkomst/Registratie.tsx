@@ -90,7 +90,7 @@ export default function Registratie({ sitting, attempts: init, kandidaten }: Pro
         const goed = vakken.filter(v => a.categoryResults[v.id]).length
         const done = a.status !== 'SCHEDULED'
         return (
-          <div key={a.id} className={`rounded-sm border bg-white p-4 shadow-sm ${a.status === 'COMPLETED_PASSED' ? 'border-green-300 bg-green-50/40' : a.status === 'COMPLETED_FAILED' ? 'border-red-300 bg-red-50/40' : 'border-gray-200'}`}>
+          <div key={a.id} className={`rounded-sm border border-gray-200 bg-white p-4 shadow-sm ${a.status === 'COMPLETED_PASSED' ? 'bg-green-50/40' : a.status === 'COMPLETED_FAILED' ? 'bg-red-50/40' : ''}`} style={{ borderLeft: `5px solid ${getBeltColor(a.beltLevel as BeltLevel)}` }}>
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
               <span className="min-w-40 font-semibold text-[#2a2a2a]">{a.naam}</span>
               <span className="flex items-center gap-1.5 text-xs text-gray-500">
@@ -115,10 +115,10 @@ export default function Registratie({ sitting, attempts: init, kandidaten }: Pro
             {vakken.length > 0 && (
               <div className="mt-3 grid grid-cols-2 gap-x-6 gap-y-1.5 sm:grid-cols-3 lg:grid-cols-4">
                 {vakken.map(v => (
-                  <label key={v.id} className="flex cursor-pointer items-center gap-2 text-sm">
+                  <label key={v.id} className={`flex cursor-pointer items-center gap-2 rounded-sm px-2 py-1 text-sm transition-colors ${a.categoryResults[v.id] ? 'bg-green-50' : 'hover:bg-gray-50'}`}>
                     <input type="checkbox" checked={!!a.categoryResults[v.id]} disabled={done} onChange={() => toggleVak(a.id, v.id, a.categoryResults)} className="h-4 w-4 accent-[#a90000]" />
                     <span className="text-[#2a2a2a]">{v.naam}</span>
-                    <span className="text-xs text-gray-500">{v.aantal}×</span>
+                    <span className="ml-auto rounded-full bg-gray-100 px-1.5 text-[11px] font-medium text-gray-600">{v.aantal}×</span>
                   </label>
                 ))}
               </div>
