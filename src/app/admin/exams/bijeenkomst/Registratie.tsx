@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { eisenVoorBelt, BELT_SEQ, BELT_NL } from '@/lib/examen-eisen'
 import { getBeltColor } from '@/lib/belt-utils'
+import { BeltBadge } from '@/components/admin/BeltBadge'
 import type { BeltLevel } from '@prisma/client'
 
 interface Attempt {
@@ -17,9 +18,6 @@ interface Props {
   kandidaten: { memberId: string; naam: string; doel: string }[]
 }
 
-function Chip({ belt }: { belt: string | null }) {
-  return <span className="inline-block h-3.5 w-3.5 shrink-0 rounded-full border border-gray-400 align-middle" style={{ backgroundColor: getBeltColor(belt as BeltLevel | null) }} />
-}
 
 export default function Registratie({ sitting, attempts: init, kandidaten }: Props) {
   const router = useRouter()
@@ -69,7 +67,7 @@ export default function Registratie({ sitting, attempts: init, kandidaten }: Pro
           <h1 className="mt-1 text-xl font-bold text-[#2a2a2a]">Examenregistratie — {sitting.groepLabel}</h1>
           <p className="text-sm text-gray-500">{new Date(sitting.date + 'T12:00').toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} · {klaar}/{attempts.length} geregistreerd</p>
         </div>
-        <Link href={`/admin/exams/print?sitting=${sitting.id}`} className="rounded-sm bg-[#2a2a2a] px-4 py-2 text-sm font-medium text-white hover:bg-black">🖨 Print lijst</Link>
+        <Link href={`/print/examen?sitting=${sitting.id}`} className="rounded-sm bg-[#2a2a2a] px-4 py-2 text-sm font-medium text-white hover:bg-black">🖨 Print lijst</Link>
       </div>
 
       <div className="flex flex-wrap items-center gap-3 rounded-sm border border-gray-200 bg-white p-3 text-sm shadow-sm">
@@ -94,7 +92,7 @@ export default function Registratie({ sitting, attempts: init, kandidaten }: Pro
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
               <span className="min-w-40 font-semibold text-[#2a2a2a]">{a.naam}</span>
               <span className="flex items-center gap-1.5 text-xs text-gray-500">
-                <Chip belt={a.huidigeBelt} /> →
+                <BeltBadge belt={a.huidigeBelt} height="h-3.5" width="w-[1.6rem]" /> →
                 <select value={a.beltLevel} disabled={done} onChange={e => { setAttempts(x => x.map(y => y.id === a.id ? { ...y, beltLevel: e.target.value, categoryResults: {} } : y)); patch(a.id, { beltLevel: e.target.value }) }} className="rounded-sm border border-gray-300 px-1 py-0.5 text-xs disabled:opacity-60">
                   {BELT_SEQ.map(b => <option key={b} value={b}>{BELT_NL[b]}</option>)}
                 </select>

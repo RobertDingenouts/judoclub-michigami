@@ -1,6 +1,7 @@
 import { db } from '@/lib/db'
 import Link from 'next/link'
 import { GROEP_LABELS, GROEP_SUBTEXT, kandidatenVoorGroep, beltLabel } from '@/lib/examens'
+import { BeltBadge } from '@/components/admin/BeltBadge'
 import { getBeltColor } from '@/lib/belt-utils'
 import { BeltLevel } from '@prisma/client'
 import NieuweBijeenkomstForm from './NieuweBijeenkomstForm'
@@ -64,7 +65,7 @@ export default async function ExamensHub({
                     </div>
                     <div className="flex gap-2">
                       <Link href={`/admin/exams/bijeenkomst/${s.id}`} className="rounded-sm bg-[#a90000] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#8c0000]">Registreren</Link>
-                      <Link href={`/admin/exams/print?sitting=${s.id}`} className="rounded-sm border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50">Print</Link>
+                      <Link href={`/print/examen?sitting=${s.id}`} className="rounded-sm border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50">Print</Link>
                     </div>
                   </div>
                 )
@@ -90,19 +91,19 @@ export default async function ExamensHub({
                   <div className="max-h-96 overflow-y-auto p-2">
                     {kandidaten.length === 0 && <p className="p-2 text-xs text-gray-400">Geen kandidaten in deze groep.</p>}
                     {kandidaten.map(k => (
-                      <div key={k.memberId} className="mb-0.5 flex items-center justify-between gap-2 rounded-sm border-l-4 bg-gray-50/60 px-3 py-1.5 text-sm transition-colors hover:bg-gray-100" style={{ borderLeftColor: getBeltColor(k.doel as BeltLevel), borderColor: getBeltColor(k.doel as BeltLevel) }}>
-                        <span className="font-medium text-[#2a2a2a]">{k.firstName} {k.lastName}</span>
-                        <span className="flex items-center gap-1.5 text-xs text-gray-500">
-                          <span className="inline-block h-3 w-3 rounded-full border border-gray-300" style={{ backgroundColor: getBeltColor(k.currentBelt as BeltLevel | null) }} />
-                          <span>→</span>
-                          <span className="inline-block h-3 w-3 rounded-full border border-gray-300" style={{ backgroundColor: getBeltColor(k.doel as BeltLevel) }} />
-                          <span className="font-semibold text-[#2a2a2a]">{beltLabel(k.doel)}</span>
+                      <div key={k.memberId} className="mb-0.5 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 rounded-sm border-l-4 bg-gray-50/60 px-3 py-1.5 text-sm transition-colors hover:bg-gray-100" style={{ borderLeftColor: getBeltColor(k.doel as BeltLevel) }}>
+                        <span className="truncate font-medium text-[#2a2a2a]">{k.firstName} {k.lastName}</span>
+                        <span className="grid grid-cols-[1.8rem_0.8rem_1.8rem_minmax(0,7.5rem)] items-center gap-x-1 text-[11px]">
+                          <BeltBadge belt={k.currentBelt} height="h-3.5" width="w-[1.6rem]" />
+                          <span className="text-center text-gray-400">→</span>
+                          <BeltBadge belt={k.doel} height="h-3.5" width="w-[1.6rem]" />
+                          <span className="truncate font-semibold text-[#2a2a2a]">{beltLabel(k.doel)}</span>
                         </span>
                       </div>
                     ))}
                   </div>
                   <div className="border-t border-gray-100 px-4 py-2">
-                    <Link href={`/admin/exams/print?groep=${groep}`} className="text-xs text-[#a90000] hover:underline">Print doelenlijst →</Link>
+                    <Link href={`/print/examen?groep=${groep}`} className="text-xs text-[#a90000] hover:underline">Print doelenlijst →</Link>
                   </div>
                 </div>
               ))}
