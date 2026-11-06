@@ -126,6 +126,9 @@ model ExamAttempt {
   examiner     String?
   overallScore Int?
   notes        String?
+  categoryResults Json?     // categoryId -> boolean (voldaan bij de examinator)
+  sittingId    String?
+  sitting      ExamSitting? @relation(fields: [sittingId], references: [id], onDelete: SetNull)
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
   diploma      Diploma?
@@ -136,6 +139,20 @@ model ExamAttempt {
   @@index([memberId, beltLevel])
   @@index([userId, beltLevel])
   @@index([examDate])
+}
+
+model ExamSitting {
+  id        String   @id @default(cuid())
+  date      DateTime @db.Date
+  group     String   // VRIJDAG_1E | VRIJDAG_2E | WOENSDAG | SENIOREN
+  title     String?
+  examiners String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  attempts  ExamAttempt[]
+
+  @@unique([date, group])
+  @@index([date])
 }
 
 model ExamResult {
