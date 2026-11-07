@@ -40,6 +40,7 @@ export default async function ExamensHub({
         <div className="flex gap-2 text-sm">
           <Link href="/admin/exams" className={`rounded-sm px-3 py-1.5 ${tab === 'actueel' ? 'bg-[#a90000] text-white' : 'bg-white text-gray-600 border border-gray-200'}`}>Actueel</Link>
           <Link href="/admin/exams?tab=historie" className={`rounded-sm px-3 py-1.5 ${tab === 'historie' ? 'bg-[#a90000] text-white' : 'bg-white text-gray-600 border border-gray-200'}`}>Historie</Link>
+          <Link href="/admin/exams/formulieren" className="rounded-sm border border-[#a90000] bg-white px-3 py-1.5 font-medium text-[#a90000] hover:bg-red-50">📄 Formulieren</Link>
         </div>
       </div>
 
