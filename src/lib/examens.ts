@@ -46,8 +46,9 @@ export async function kandidatenVoorGroep(groep: string): Promise<Kandidaat[]> {
       isActive: true, isTrainer: false,
       // VRIJGESTELD = gewoon actief lid (bestuurs-/instructeurskinderen): meetellen bij examens
       clubStatus: { in: ['LID', 'RESERVE', 'VRIJGESTELD'] },
-      // Leden kunnen in meerdere groepen trainen (trainingGroups); primaryGroup is maar één groepsde.
-      OR: [{ primaryGroup: groep }, { trainingGroups: { array_contains: groep } }],
+      // Examenlijst = puur de hoofdgroep uit het dossier (Robert: examen doet men waar hoofdgroep staat).
+      // Lesaanwezigheid gebruikt wél alle trainingsgroepen (zie lessendata.ts) — daar bewust anders.
+      primaryGroup: groep,
     },
     orderBy: [{ lastName: 'asc' }],
   })
