@@ -25,28 +25,26 @@ export async function POST(request: NextRequest) {
 
   const datum = new Date(date + 'T12:00:00')
   const kandidaten = await kandidatenVoorGroep(group)
-  // Voervullen vanaf het meest recente proefexamen van deze groep (uitslagen blijven zo behouden)
+  // Info uit het meest recente proefexamen: vakken worden NIET voorgevinkt (op het examen wordt opnieuw gecheckt),
+  // alleen de klaar-vlag gaat mee als markering.
   const bronProef = zittingType === 'EXAMEN'
     ? await db.examSitting.findFirst({
         where: { group, type: 'PROEF', date: { lte: datum } },
         orderBy: { date: 'desc' },
-        include: { attempts: { select: { memberId: true, categoryResults: true, klaar: true } } },
+        include: { attempts: { select: { memberId: true, klaar: true } } },
       })
     : null
-  const proefResultaten = new Map((bronProef?.attempts ?? []).map(a => [a.memberId, a]))
+  const proefKlaar = new Map((bronProef?.attempts ?? []).map(a => [a.memberId, a.klaar]))
 
   const sitting = await db.examSitting.upsert({
     where: { date_group_type: { date: datum, group, type: zittingType } },
     create: {
       date: datum, group, type: zittingType, title: title || null,
       attempts: {
-        create: kandidaten.map(k => {
-          const proef = proefResultaten.get(k.memberId)
-          return {
-            memberId: k.memberId, userId: k.userId, beltLevel: k.doel as BeltLevel, status: ExamStatus.SCHEDULED,
-            ...(proef?.categoryResults ? { categoryResults: proef.categoryResults as object, klaar: proef.klaar } : {}),
-          }
-        }),
+        create: kandidaten.map(k => ({
+          memberId: k.memberId, userId: k.userId, beltLevel: k.doel as BeltLevel, status: ExamStatus.SCHEDULED,
+          ...(proefKlaar.get(k.memberId) ? { klaar: true } : {}),
+        })),
       },
     },
     update: {},

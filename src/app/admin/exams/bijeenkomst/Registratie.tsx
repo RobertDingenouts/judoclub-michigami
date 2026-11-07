@@ -95,9 +95,9 @@ export default function Registratie({ sitting, attempts: init, kandidaten }: Pro
 
       {!proef && sitting.proefTitel && (
         <div className="flex flex-wrap items-center gap-3 rounded-sm border border-amber-200 bg-amber-50 p-3 text-sm">
-          <span className="text-amber-800">Er is een proefexamen voor deze groep (<span className="font-medium">{sitting.proefTitel}</span>). Nieuwe kandidaten worden automatisch voorgevuld; bestaande vakken kun je hier overnemen.</span>
+          <span className="text-amber-800">Er is een proefexamen voor deze groep (<span className="font-medium">{sitting.proefTitel}</span>). Het examen start met <span className="font-medium">lege vakjes</span> — je checkt op de examendatum alles opnieuw. Kandidaten die op proef op "klaar" stonden, worden gemarkeerd.</span>
           <button onClick={neemProefOver} disabled={kopiëren} className="ml-auto rounded-sm border border-amber-400 bg-white px-3 py-1.5 text-xs font-medium text-amber-800 hover:bg-amber-100 disabled:opacity-50">
-            {kopiëren ? 'Overnemen…' : '↺ Uitslagen uit proef overnemen'}
+            {kopiëren ? 'Overnemen…' : '↺ Klaar-markeringen uit proef overnemen'}
           </button>
         </div>
       )}
@@ -131,6 +131,7 @@ export default function Registratie({ sitting, attempts: init, kandidaten }: Pro
               </span>
               {vakken.length > 0 && <span className={`text-xs ${goed === vakken.length && vakken.length > 0 ? 'font-medium text-green-700' : 'text-gray-500'}`}>{goed}/{vakken.length} vakken af</span>}
               {proef && a.klaar && <span className="rounded-sm bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-800">✓ Klaar voor examen</span>}
+              {!proef && a.klaar && a.status === 'SCHEDULED' && <span className="rounded-sm bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800" title="Stond op het proefexamen op klaar">✓ klaar volgens proef</span>}
               {a.status === 'COMPLETED_PASSED' && <span className="rounded-sm bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">✓ Geslaagd{a.heeftDiploma ? ' · diploma klaar' : ''}</span>}
               {a.status === 'COMPLETED_FAILED' && <span className="rounded-sm bg-red-100 px-2 py-0.5 text-xs font-medium text-red-800">✗ Niet geslaagd</span>}
               {a.status === 'SCHEDULED' && !proef && <span className="rounded-sm bg-yellow-100 px-2 py-0.5 text-xs font-medium text-yellow-800">Gepland</span>}

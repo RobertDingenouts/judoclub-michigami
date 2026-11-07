@@ -87,7 +87,7 @@ export default async function PrintExamenlijst({ searchParams }: { searchParams:
                   return (
                     <tr key={r.id} style={{ background: i % 2 ? '#f7f4f2' : '#fff', borderBottom: '1px solid #ddd', height: '8mm' }}>
                       <td style={{ padding: '1mm 1.5mm' }}>
-                        <div style={{ fontWeight: 700 }}>{r.naam}</div>
+                        <div style={{ fontWeight: 700 }}>{r.naam}{r.klaar ? <span style={{ color: '#1a7a1a' }}> ✓</span> : null}</div>
                         <div style={{ fontSize: '6.8pt', color: '#666', display: 'flex', alignItems: 'center', gap: '1mm', marginTop: '0.4mm' }}>
                           <BeltBadge belt={r.huidige || null} height="h-[3mm]" width="w-[5.5mm]" />
                           <span>→</span>
