@@ -10,7 +10,7 @@ import PrintKnop from './PrintKnop'
 
 export const dynamic = 'force-dynamic'
 
-interface Rij { id: string; naam: string; huidige: string; doel: string; status: string }
+interface Rij { id: string; naam: string; huidige: string; doel: string; status: string; klaar?: boolean; gevinkte?: Set<string> }
 
 export default async function PrintExamenlijst({ searchParams }: { searchParams: Promise<{ sitting?: string; groep?: string }> }) {
   if (!(await isAdmin())) redirect('/admin-login')
@@ -18,11 +18,13 @@ export default async function PrintExamenlijst({ searchParams }: { searchParams:
   let titel = ''
   let subtitel = ''
   let datumLabel = ''
+  let isProef = false
   let groepen: { label: string; rijen: Rij[] }[] = []
 
   if (q.sitting) {
     const s = await db.examSitting.findUnique({ where: { id: q.sitting }, include: { attempts: { orderBy: [{ member: { lastName: 'asc' } }], include: { member: { select: { firstName: true, lastName: true, currentBelt: true } } } } } })
     if (!s) notFound()
+    isProef = s.type === 'PROEF'
     titel = `${GROEP_LABELS[s.group] || s.group}${s.title ? ` — ${s.title}` : ''}`
     subtitel = GROEP_SUBTEXT[s.group] || ''
     datumLabel = new Date(s.date).toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
@@ -32,6 +34,8 @@ export default async function PrintExamenlijst({ searchParams }: { searchParams:
       huidige: (a.member.currentBelt === 'BRUIN_1' ? 'BRUIN' : a.member.currentBelt) ?? '',
       doel: a.beltLevel,
       status: a.status,
+      klaar: a.klaar,
+      gevinkte: new Set(Object.entries((a.categoryResults as Record<string, boolean> | null) ?? {}).filter(([, v]) => v).map(([k]) => k)),
     })).sort((x, y) => beltIndex(x.huidige || null) - beltIndex(y.huidige || null) || x.naam.localeCompare(y.naam, 'nl'))
     groepen = [{ label: GROEP_LABELS[s.group] || s.group, rijen }]
   } else if (q.groep) {
@@ -62,7 +66,7 @@ export default async function PrintExamenlijst({ searchParams }: { searchParams:
         {groepen.map((grp, gi) => (
           <div key={gi} style={{ breakAfter: gi === groepen.length - 1 ? 'auto' : 'page' }}>
             <div className="flex items-baseline justify-between border-b-[3px] border-[#a90000] pb-1.5" style={{ marginBottom: '2.5mm' }}>
-              <h1 style={{ fontSize: '14pt', color: '#a90000', fontWeight: 700 }}>Examenlijst — {grp.label}</h1>
+              <h1 style={{ fontSize: '14pt', color: '#a90000', fontWeight: 700 }}>{isProef ? 'Proefexamelijst' : 'Examenlijst'} — {grp.label}</h1>
               <span style={{ fontSize: '8pt', color: '#666' }}>{datumLabel}</span>
             </div>
             {subtitel && <p style={{ fontSize: '7.5pt', color: '#666', marginTop: '-1.5mm', marginBottom: '2mm' }}>{subtitel}</p>}
@@ -73,6 +77,7 @@ export default async function PrintExamenlijst({ searchParams }: { searchParams:
                 <tr style={{ background: '#a90000', color: '#fff' }}>
                   <th style={{ textAlign: 'left', padding: '1.2mm 1.5mm', width: '27%' }}>Lid · huidig → doel</th>
                   {VAKVOLGORDE.map(v => <th key={v} style={{ padding: '1.2mm .5mm', textAlign: 'center' }}>{KORT[v]}</th>)}
+                  {isProef && <th style={{ padding: '1.2mm .5mm', textAlign: 'center', width: '10mm' }}>KLAAR?</th>}
                 </tr>
               </thead>
               <tbody>
@@ -93,13 +98,19 @@ export default async function PrintExamenlijst({ searchParams }: { searchParams:
                       {VAKVOLGORDE.map(v => {
                         const eis = byId.get(v)
                         if (!eis) return <td key={v} style={{ textAlign: 'center', color: '#ccc' }}>–</td>
+                        const aangevinkt = r.gevinkte?.has(v)
                         return (
                           <td key={v} style={{ textAlign: 'center', padding: '1mm .5mm' }}>
                             <div style={{ fontWeight: 700 }}>{eis.aantal}×</div>
-                            <div style={{ margin: '0.6mm auto 0', width: '3.4mm', height: '3.4mm', border: '1px solid #777', borderRadius: '.5mm' }} />
+                            <div style={{ margin: '0.6mm auto 0', width: '3.4mm', height: '3.4mm', border: '1px solid #777', borderRadius: '.5mm', background: aangevinkt ? '#e5f3e5' : '#fff', color: '#1a7a1a', fontWeight: 700, fontSize: '7pt', lineHeight: '3.2mm' }}>{aangevinkt ? '✓' : ''}</div>
                           </td>
                         )
                       })}
+                      {isProef && (
+                        <td style={{ textAlign: 'center' }}>
+                          <div style={{ margin: '0 auto', width: '4mm', height: '4mm', border: '1.5px solid ' + (r.klaar ? '#1a7a1a' : '#777'), borderRadius: '.5mm', background: r.klaar ? '#e5f3e5' : '#fff', color: '#1a7a1a', fontWeight: 700, fontSize: '8pt', lineHeight: '3.8mm' }}>{r.klaar ? '✓' : ''}</div>
+                        </td>
+                      )}
                     </tr>
                   )
                 })}

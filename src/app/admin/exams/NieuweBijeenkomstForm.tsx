@@ -22,7 +22,7 @@ export default function NieuweBijeenkomstForm() {
     const res = await fetch('/api/admin/examens', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ date: fd.get('date'), group: fd.get('group'), title: fd.get('title') }),
+      body: JSON.stringify({ date: fd.get('date'), group: fd.get('group'), title: fd.get('title'), type: fd.get('type') }),
     })
     setBusy(false)
     if (!res.ok) { setFout((await res.json()).error || 'Mislukt'); return }
@@ -38,6 +38,12 @@ export default function NieuweBijeenkomstForm() {
       <label className="text-xs font-medium text-gray-600">Groep<br />
         <select name="group" required className="mt-1 block rounded-sm border border-gray-300 px-2 py-1.5 text-sm focus:border-[#a90000] focus:outline-none">
           {Object.entries(GROEPopties).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+        </select>
+      </label>
+      <label className="text-xs font-medium text-gray-600">Type<br />
+        <select name="type" className="mt-1 block rounded-sm border border-gray-300 px-2 py-1.5 text-sm focus:border-[#a90000] focus:outline-none">
+          <option value="PROEF">Proefexamen (weken testen, geen cijfer)</option>
+          <option value="EXAMEN">Examen (officieel, slagen/zakken)</option>
         </select>
       </label>
       <label className="text-xs font-medium text-gray-600">Titel (optioneel)<br />

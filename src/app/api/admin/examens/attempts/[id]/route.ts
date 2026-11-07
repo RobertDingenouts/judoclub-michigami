@@ -15,15 +15,20 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   const body = await request.json()
 
   const data: any = {}
-  for (const k of ['status', 'beltLevel', 'examDate', 'examiner', 'categoryResults', 'notes'] as const) {
+  for (const k of ['status', 'beltLevel', 'examDate', 'examiner', 'categoryResults', 'notes', 'klaar'] as const) {
     if (body[k] !== undefined) data[k] = body[k]
   }
   if (body.status === 'PASSED') data.status = ExamStatus.COMPLETED_PASSED
   if (body.status === 'FAILED') data.status = ExamStatus.COMPLETED_FAILED
   if (typeof data.examDate === 'string') data.examDate = new Date(data.examDate + 'T12:00:00')
 
-  const bestaand = await db.examAttempt.findUnique({ where: { id }, include: { member: { select: { id: true, firstName: true, lastName: true, userId: true } }, diploma: { select: { id: true } } } })
+  const bestaand = await db.examAttempt.findUnique({ where: { id }, include: { member: { select: { id: true, firstName: true, lastName: true, userId: true } }, diploma: { select: { id: true } }, sitting: { select: { type: true } } } })
   if (!bestaand) return NextResponse.json({ error: 'Examen niet gevonden' }, { status: 404 })
+
+  // Slagen/zakken kan alleen op een officiële examen-zitting; op een proefexamen blijft alles open.
+  if ((body.status === 'PASSED' || body.status === 'FAILED') && bestaand.sitting?.type === 'PROEF') {
+    return NextResponse.json({ error: 'Proefexamen: geen slaging mogelijk — gebruik "Klaar voor examen" en registreer het examen op de examen-zitting' }, { status: 400 })
+  }
 
   const probeerGeslaagd = body.status === 'PASSED' && bestaand.status !== ExamStatus.COMPLETED_PASSED
 

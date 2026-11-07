@@ -21,6 +21,12 @@ export default async function BijeenkomstPage({ params }: { params: Promise<{ id
   const inZitting = new Set(sitting.attempts.map(a => a.memberId))
   const kandidaten = (await kandidatenVoorGroep(sitting.group)).filter(k => !inZitting.has(k.memberId))
 
+  const proef = await db.examSitting.findFirst({
+    where: { group: sitting.group, type: 'PROEF', date: { lte: sitting.date }, id: { not: sitting.id } },
+    orderBy: { date: 'desc' },
+    select: { id: true, title: true, date: true },
+  })
+
   const rijen = sitting.attempts
     .map(a => ({
       id: a.id,
@@ -31,6 +37,7 @@ export default async function BijeenkomstPage({ params }: { params: Promise<{ id
       status: a.status as string,
       examDate: a.examDate ? a.examDate.toISOString().slice(0, 10) : null,
       categoryResults: (a.categoryResults as Record<string, boolean> | null) ?? {},
+      klaar: a.klaar,
       heeftDiploma: !!a.diploma,
     }))
     .sort((x, y) => beltIndex(x.huidigeBelt) - beltIndex(y.huidigeBelt) || x.naam.localeCompare(y.naam, 'nl'))
@@ -44,6 +51,8 @@ export default async function BijeenkomstPage({ params }: { params: Promise<{ id
         groepLabel: GROEP_LABELS[sitting.group] || sitting.group,
         title: sitting.title,
         examiners: sitting.examiners,
+        type: sitting.type,
+        proefTitel: sitting.type === 'EXAMEN' && proef ? (proef.title || `proefexamen ${proef.date.toISOString().slice(0, 10)}`) : null,
       }}
       attempts={rijen}
       kandidaten={kandidaten.map(k => ({ memberId: k.memberId, naam: `${k.firstName} ${k.lastName}`, doel: k.doel as string }))}

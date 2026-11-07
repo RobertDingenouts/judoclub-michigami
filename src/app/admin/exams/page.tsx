@@ -21,7 +21,7 @@ export default async function ExamensHub({
     Promise.all(groepen.map(async g => ({ groep: g, kandidaten: await kandidatenVoorGroep(g) }))),
     db.examSitting.findMany({
       orderBy: { date: 'desc' }, take: 12,
-      include: { attempts: { select: { id: true, status: true } } },
+      include: { attempts: { select: { id: true, status: true, klaar: true } } },
     }),
     db.examAttempt.findMany({
       orderBy: { examDate: 'desc' }, take: 40,
@@ -53,15 +53,20 @@ export default async function ExamensHub({
               {sittings.length === 0 && <p className="text-sm text-gray-400">Nog geen bijeenkomsten.</p>}
               {sittings.map(s => {
                 const totaal = s.attempts.length
-                const klaar = s.attempts.filter(a => a.status !== 'SCHEDULED').length
+                const af = s.attempts.filter(a => a.status !== 'SCHEDULED').length
+                const klaarVoorExamen = s.attempts.filter(a => a.klaar).length
+                const isProef = s.type === 'PROEF'
                 return (
-                  <div key={s.id} className="flex flex-wrap items-center justify-between gap-2 rounded-sm border border-gray-200 bg-white p-4 shadow-sm">
+                  <div key={s.id} className={`flex flex-wrap items-center justify-between gap-2 rounded-sm border bg-white p-4 shadow-sm ${isProef ? 'border-amber-200' : 'border-gray-200'}`}>
                     <div>
                       <p className="text-sm font-semibold text-[#2a2a2a]">
                         {new Date(s.date).toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+                        <span className={`ml-2 rounded-sm px-1.5 py-0.5 align-middle text-[10px] font-bold uppercase tracking-wide ${isProef ? 'bg-amber-100 text-amber-800' : 'bg-red-50 text-[#a90000]'}`}>{isProef ? 'proef' : 'examen'}</span>
                         <span className="ml-2 text-xs font-normal text-gray-500">{GROEP_LABELS[s.group]}{s.title ? ` · ${s.title}` : ''}</span>
                       </p>
-                      <p className="text-xs text-gray-500">{klaar}/{totaal} registratie af · {GROEP_SUBTEXT[s.group] || ''}</p>
+                      <p className="text-xs text-gray-500">
+                        {isProef ? <span className="font-medium text-green-700">{klaarVoorExamen}/{totaal} klaar voor examen</span> : `${af}/${totaal} registratie af`} · {GROEP_SUBTEXT[s.group] || ''}
+                      </p>
                     </div>
                     <div className="flex gap-2">
                       <Link href={`/admin/exams/bijeenkomst/${s.id}`} className="rounded-sm bg-[#a90000] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#8c0000]">Registreren</Link>

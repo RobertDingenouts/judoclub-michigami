@@ -36,6 +36,26 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     }
     return NextResponse.json({ ok: true, toegevoegd })
   }
+  if (body.action === 'copyProef') {
+    // Uitslagen (vak-afvinking + klaar-vlag) overnemen uit het meest recente proefexamen van dezelfde groep
+    const sitting = await db.examSitting.findUnique({ where: { id }, include: { attempts: { select: { id: true, memberId: true } } } })
+    if (!sitting) return NextResponse.json({ error: 'Niet gevonden' }, { status: 404 })
+    const proef = await db.examSitting.findFirst({
+      where: { group: sitting.group, type: 'PROEF', date: { lte: sitting.date } },
+      orderBy: { date: 'desc' },
+      include: { attempts: { select: { memberId: true, categoryResults: true, klaar: true } } },
+    })
+    if (!proef) return NextResponse.json({ error: 'Geen proefexamen gevonden voor deze groep' }, { status: 404 })
+    const source = new Map(proef.attempts.map(a => [a.memberId, a]))
+    let overgenomen = 0
+    for (const a of sitting.attempts) {
+      const src = source.get(a.memberId)
+      if (!src?.categoryResults) continue
+      await db.examAttempt.update({ where: { id: a.id }, data: { categoryResults: src.categoryResults as object, klaar: src.klaar } })
+      overgenomen++
+    }
+    return NextResponse.json({ ok: true, overgenomen })
+  }
   return NextResponse.json({ error: 'Onbekende actie' }, { status: 400 })
 }
 

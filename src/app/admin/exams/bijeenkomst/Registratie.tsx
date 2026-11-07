@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { eisenVoorBelt, BELT_SEQ, BELT_NL } from '@/lib/examen-eisen'
@@ -10,14 +10,13 @@ import type { BeltLevel } from '@prisma/client'
 
 interface Attempt {
   id: string; memberId: string; naam: string; huidigeBelt: string | null; beltLevel: string
-  status: string; examDate: string | null; categoryResults: Record<string, boolean>; heeftDiploma: boolean
+  status: string; examDate: string | null; categoryResults: Record<string, boolean>; heeftDiploma: boolean; klaar: boolean
 }
 interface Props {
-  sitting: { id: string; date: string; groep: string; groepLabel: string; title: string | null; examiners: string | null }
+  sitting: { id: string; date: string; groep: string; groepLabel: string; title: string | null; examiners: string | null; type: string; proefTitel?: string | null }
   attempts: Attempt[]
   kandidaten: { memberId: string; naam: string; doel: string }[]
 }
-
 
 export default function Registratie({ sitting, attempts: init, kandidaten }: Props) {
   const router = useRouter()
@@ -25,8 +24,11 @@ export default function Registratie({ sitting, attempts: init, kandidaten }: Pro
   const [kies, setKies] = useState('')
   const [examiners, setExaminers] = useState(sitting.examiners || 'Pascal, Robert')
   const [busy, setBusy] = useState<string | null>(null)
+  const [kopiëren, setKopiëren] = useState(false)
 
-  const klaar = attempts.filter(a => a.status !== 'SCHEDULED').length
+  const proef = sitting.type === 'PROEF'
+  const afgerond = attempts.filter(a => a.status !== 'SCHEDULED').length
+  const klaarVoorExamen = attempts.filter(a => a.klaar).length
 
   async function patch(id: string, body: Record<string, unknown>, refill = false) {
     setBusy(id)
@@ -41,6 +43,11 @@ export default function Registratie({ sitting, attempts: init, kandidaten }: Pro
     patch(id, { categoryResults: next })
   }
 
+  function toggleKlaar(id: string, current: boolean) {
+    setAttempts(a => a.map(x => x.id === id ? { ...x, klaar: !current } : x))
+    patch(id, { klaar: !current })
+  }
+
   async function status(id: string, s: 'PASSED' | 'FAILED') {
     setBusy(id)
     const res = await fetch(`/api/admin/examens/attempts/${id}`, {
@@ -48,6 +55,7 @@ export default function Registratie({ sitting, attempts: init, kandidaten }: Pro
       body: JSON.stringify({ status: s, examDate: sitting.date, examiner: examiners }),
     })
     if (res.ok) router.refresh()
+    else alert((await res.json()).error || 'Mislukt')
     setBusy(null)
   }
 
@@ -59,16 +67,40 @@ export default function Registratie({ sitting, attempts: init, kandidaten }: Pro
     router.refresh()
   }
 
+  async function neemProefOver() {
+    setKopiëren(true)
+    const res = await fetch(`/api/admin/examens/sittings/${sitting.id}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'copyProef' }) })
+    setKopiëren(false)
+    if (res.ok) router.refresh()
+    else alert((await res.json()).error || 'Overnemen mislukt')
+  }
+
   return (
     <div className="space-y-4 print:hidden">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <Link href="/admin/exams" className="text-xs text-[#a90000] hover:underline">← Terug naar examens</Link>
-          <h1 className="mt-1 text-xl font-bold text-[#2a2a2a]">Examenregistratie — {sitting.groepLabel}</h1>
-          <p className="text-sm text-gray-500">{new Date(sitting.date + 'T12:00').toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} · {klaar}/{attempts.length} geregistreerd</p>
+          <h1 className="mt-1 text-xl font-bold text-[#2a2a2a]">
+            {proef ? 'Proefexamen' : 'Examenregistratie'} — {sitting.groepLabel}
+            {proef && <span className="ml-2 rounded-sm bg-amber-100 px-2 py-0.5 align-middle text-xs font-medium text-amber-800">oefenfase · nog geen cijfer</span>}
+          </h1>
+          <p className="text-sm text-gray-500">
+            {new Date(sitting.date + 'T12:00').toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} ·{' '}
+            {proef ? `${klaarVoorExamen}/${attempts.length} klaar voor examen` : `${afgerond}/${attempts.length} geregistreerd`}
+          </p>
+          {proef && <p className="text-xs text-gray-400">Vink per week de vakken af die goed waren — alles blijft bewaard. Wordt er een examen-zitting aangemaakt, dan starten die vakken al afgevinkt.</p>}
         </div>
         <Link href={`/print/examen?sitting=${sitting.id}`} className="rounded-sm bg-[#2a2a2a] px-4 py-2 text-sm font-medium text-white hover:bg-black">🖨 Print lijst</Link>
       </div>
+
+      {!proef && sitting.proefTitel && (
+        <div className="flex flex-wrap items-center gap-3 rounded-sm border border-amber-200 bg-amber-50 p-3 text-sm">
+          <span className="text-amber-800">Er is een proefexamen voor deze groep (<span className="font-medium">{sitting.proefTitel}</span>). Nieuwe kandidaten worden automatisch voorgevuld; bestaande vakken kun je hier overnemen.</span>
+          <button onClick={neemProefOver} disabled={kopiëren} className="ml-auto rounded-sm border border-amber-400 bg-white px-3 py-1.5 text-xs font-medium text-amber-800 hover:bg-amber-100 disabled:opacity-50">
+            {kopiëren ? 'Overnemen…' : '↺ Uitslagen uit proef overnemen'}
+          </button>
+        </div>
+      )}
 
       <div className="flex flex-wrap items-center gap-3 rounded-sm border border-gray-200 bg-white p-3 text-sm shadow-sm">
         <label className="text-xs font-medium text-gray-600">Examenleiding<br />
@@ -88,7 +120,7 @@ export default function Registratie({ sitting, attempts: init, kandidaten }: Pro
         const goed = vakken.filter(v => a.categoryResults[v.id]).length
         const done = a.status !== 'SCHEDULED'
         return (
-          <div key={a.id} className={`rounded-sm border border-gray-200 bg-white p-4 shadow-sm ${a.status === 'COMPLETED_PASSED' ? 'bg-green-50/40' : a.status === 'COMPLETED_FAILED' ? 'bg-red-50/40' : ''}`} style={{ borderLeft: `5px solid ${getBeltColor(a.beltLevel as BeltLevel)}` }}>
+          <div key={a.id} className={`rounded-sm border border-gray-200 p-4 shadow-sm ${a.status === 'COMPLETED_PASSED' ? 'bg-green-50/40' : a.status === 'COMPLETED_FAILED' ? 'bg-red-50/40' : proef && a.klaar ? 'bg-green-50/60' : 'bg-white'}`} style={{ borderLeft: `5px solid ${getBeltColor(a.beltLevel as BeltLevel)}` }}>
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
               <span className="min-w-40 font-semibold text-[#2a2a2a]">{a.naam}</span>
               <span className="flex items-center gap-1.5 text-xs text-gray-500">
@@ -97,16 +129,22 @@ export default function Registratie({ sitting, attempts: init, kandidaten }: Pro
                   {BELT_SEQ.map(b => <option key={b} value={b}>{BELT_NL[b]}</option>)}
                 </select>
               </span>
-              {vakken.length > 0 && <span className="text-xs text-gray-500">{goed}/{vakken.length} vakken af</span>}
+              {vakken.length > 0 && <span className={`text-xs ${goed === vakken.length && vakken.length > 0 ? 'font-medium text-green-700' : 'text-gray-500'}`}>{goed}/{vakken.length} vakken af</span>}
+              {proef && a.klaar && <span className="rounded-sm bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-800">✓ Klaar voor examen</span>}
               {a.status === 'COMPLETED_PASSED' && <span className="rounded-sm bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">✓ Geslaagd{a.heeftDiploma ? ' · diploma klaar' : ''}</span>}
               {a.status === 'COMPLETED_FAILED' && <span className="rounded-sm bg-red-100 px-2 py-0.5 text-xs font-medium text-red-800">✗ Niet geslaagd</span>}
-              {a.status === 'SCHEDULED' && <span className="rounded-sm bg-yellow-100 px-2 py-0.5 text-xs font-medium text-yellow-800">Gepland</span>}
+              {a.status === 'SCHEDULED' && !proef && <span className="rounded-sm bg-yellow-100 px-2 py-0.5 text-xs font-medium text-yellow-800">Gepland</span>}
               <span className="ml-auto flex items-center gap-2">
                 {busy === a.id && <span className="text-xs text-gray-400">…</span>}
                 {done && <button onClick={() => patch(a.id, { status: 'SCHEDULED' }, true)} className="text-xs text-gray-500 hover:underline">Heropenen</button>}
-                {!done && <button onClick={() => patch(a.id, {}, false)} className="text-xs text-gray-500 hover:underline">Bewaar</button>}
-                {!done && <button onClick={() => status(a.id, 'PASSED')} className="rounded-sm bg-green-700 px-3 py-1 text-xs font-medium text-white hover:bg-green-800">✓ Geslaagd</button>}
-                {!done && <button onClick={() => status(a.id, 'FAILED')} className="rounded-sm bg-red-700 px-3 py-1 text-xs font-medium text-white hover:bg-red-800">✗ Gezakt</button>}
+                {!done && !proef && <button onClick={() => patch(a.id, {}, false)} className="text-xs text-gray-500 hover:underline">Bewaar</button>}
+                {proef && (
+                  a.klaar
+                    ? <button onClick={() => toggleKlaar(a.id, true)} className="rounded-sm border border-gray-300 bg-white px-3 py-1 text-xs font-medium text-gray-600 hover:bg-gray-50">Nog niet klaar</button>
+                    : <button onClick={() => toggleKlaar(a.id, false)} className="rounded-sm bg-green-700 px-3 py-1 text-xs font-medium text-white hover:bg-green-800">✓ Klaar voor examen</button>
+                )}
+                {!done && !proef && <button onClick={() => status(a.id, 'PASSED')} className="rounded-sm bg-green-700 px-3 py-1 text-xs font-medium text-white hover:bg-green-800">✓ Geslaagd</button>}
+                {!done && !proef && <button onClick={() => status(a.id, 'FAILED')} className="rounded-sm bg-red-700 px-3 py-1 text-xs font-medium text-white hover:bg-red-800">✗ Gezakt</button>}
                 <button onClick={() => { setAttempts(x => x.filter(y => y.id !== a.id)); fetch(`/api/admin/examens/attempts/${a.id}`, { method: 'DELETE' }) }} className="text-xs text-gray-400 hover:text-red-600">✕</button>
               </span>
             </div>
@@ -121,7 +159,11 @@ export default function Registratie({ sitting, attempts: init, kandidaten }: Pro
                 ))}
               </div>
             )}
-            <p className="mt-2 text-[11px] text-gray-400">Examendatum: {new Date(sitting.date + 'T12:00').toLocaleDateString('nl-NL')} · bij geslaagd: band automatisch bijgewerkt + verifieerbaar diploma</p>
+            <p className="mt-2 text-[11px] text-gray-400">
+              {proef
+                ? 'Proefexamen: hier wordt níét geslaagd of gezakt — zet kandidaten die er klaar voor zijn op "Klaar voor examen" en maak daarna een examen-zitting aan.'
+                : `Examendatum: ${new Date(sitting.date + 'T12:00').toLocaleDateString('nl-NL')} · bij geslaagd: band automatisch bijgewerkt + verifieerbaar diploma`}
+            </p>
           </div>
         )
       })}
