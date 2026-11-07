@@ -78,6 +78,7 @@ export default async function PrintExamenlijst({ searchParams }: { searchParams:
                   <th style={{ textAlign: 'left', padding: '1.2mm 1.5mm', width: '27%' }}>Lid · huidig → doel</th>
                   {VAKVOLGORDE.map(v => <th key={v} style={{ padding: '1.2mm .5mm', textAlign: 'center' }}>{KORT[v]}</th>)}
                   {isProef && <th style={{ padding: '1.2mm .5mm', textAlign: 'center', width: '10mm' }}>KLAAR?</th>}
+                  <th style={{ padding: '1.2mm .5mm', textAlign: 'center', width: '20mm', borderLeft: '2px solid #fff' }}>VOOR<br />EXAMEN?</th>
                 </tr>
               </thead>
               <tbody>
@@ -111,12 +112,22 @@ export default async function PrintExamenlijst({ searchParams }: { searchParams:
                           <div style={{ margin: '0 auto', width: '4mm', height: '4mm', border: '1.5px solid ' + (r.klaar ? '#1a7a1a' : '#777'), borderRadius: '.5mm', background: r.klaar ? '#e5f3e5' : '#fff', color: '#1a7a1a', fontWeight: 700, fontSize: '8pt', lineHeight: '3.8mm' }}>{r.klaar ? '✓' : ''}</div>
                         </td>
                       )}
+                      <td style={{ textAlign: 'center', padding: '1mm .5mm', borderLeft: '2px solid #eee' }}>
+                        <div style={{ display: 'inline-flex', gap: '2.5mm' }}>
+                          {[['wel', '#1a7a1a'], ['niet', '#a90000']].map(([label, kleur]) => (
+                            <div key={label} style={{ textAlign: 'center' }}>
+                              <div style={{ width: '4mm', height: '4mm', border: '1.5px solid #555', borderRadius: '.5mm', margin: '0 auto' }} />
+                              <div style={{ fontSize: '6pt', color: kleur, fontWeight: 700, marginTop: '.3mm' }}>{label}</div>
+                            </div>
+                          ))}
+                        </div>
+                      </td>
                     </tr>
                   )
                 })}
               </tbody>
             </table>
-            <p style={{ fontSize: '6.8pt', color: '#888', marginTop: '2mm' }}>Vakken: aantallen = aantal technieken dat gekend moet worden · □ = afvinken indien in orde · (–) = niet vereist voor dit niveau. Gemaakt {new Date().toLocaleDateString('nl-NL')} via de ledensite.</p>
+            <p style={{ fontSize: '6.8pt', color: '#888', marginTop: '2mm' }}>Vakken: aantallen = aantal technieken dat gekend moet worden · □ = afvinken indien in orde · (–) = niet vereist voor dit niveau · rechts: kruis aan of deze kandidaat deze ronde wél/niet op mag. Gemaakt {new Date().toLocaleDateString('nl-NL')} via de ledensite.</p>
           </div>
         ))}
       </div>
