@@ -95,7 +95,7 @@ export default function Registratie({ sitting, attempts: init, kandidaten }: Pro
 
       {!proef && sitting.proefTitel && (
         <div className="flex flex-wrap items-center gap-3 rounded-sm border border-amber-200 bg-amber-50 p-3 text-sm">
-          <span className="text-amber-800">Er is een proefexamen voor deze groep (<span className="font-medium">{sitting.proefTitel}</span>). Het examen start met <span className="font-medium">lege vakjes</span> — je checkt op de examendatum alles opnieuw. Kandidaten die op proef op "klaar" stonden, worden gemarkeerd.</span>
+          <span className="text-amber-800">Proefexamen gevonden (<span className="font-medium">{sitting.proefTitel}</span>): de lijst start met <span className="font-medium">alleen de kandidaten die daar op "klaar" stonden</span>, met lege vakjes — je checkt op de examendatum alles opnieuw. Iemand erbij? Handmatig toevoegen rechtsboven.</span>
           <button onClick={neemProefOver} disabled={kopiëren} className="ml-auto rounded-sm border border-amber-400 bg-white px-3 py-1.5 text-xs font-medium text-amber-800 hover:bg-amber-100 disabled:opacity-50">
             {kopiëren ? 'Overnemen…' : '↺ Klaar-markeringen uit proef overnemen'}
           </button>

@@ -35,15 +35,20 @@ export async function POST(request: NextRequest) {
       })
     : null
   const proefKlaar = new Map((bronProef?.attempts ?? []).map(a => [a.memberId, a.klaar]))
+  // Examenlijst = alleen kandidaten die op het proefexamen op "klaar" stonden; rest kan handmatig worden toegevoegd.
+  // Zonder proefexamen van tevoren: gewoon alle kandidaten (oude gedrag).
+  const kandidatenVoorZitting = zittingType === 'EXAMEN' && bronProef
+    ? kandidaten.filter(k => proefKlaar.get(k.memberId))
+    : kandidaten
 
   const sitting = await db.examSitting.upsert({
     where: { date_group_type: { date: datum, group, type: zittingType } },
     create: {
       date: datum, group, type: zittingType, title: title || null,
       attempts: {
-        create: kandidaten.map(k => ({
+        create: kandidatenVoorZitting.map(k => ({
           memberId: k.memberId, userId: k.userId, beltLevel: k.doel as BeltLevel, status: ExamStatus.SCHEDULED,
-          ...(proefKlaar.get(k.memberId) ? { klaar: true } : {}),
+          ...(zittingType === 'EXAMEN' && proefKlaar.get(k.memberId) ? { klaar: true } : {}),
         })),
       },
     },

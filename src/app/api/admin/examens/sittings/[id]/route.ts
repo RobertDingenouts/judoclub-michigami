@@ -26,12 +26,26 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     const { kandidatenVoorGroep } = await import('@/lib/examens')
     const sitting = await db.examSitting.findUnique({ where: { id }, include: { attempts: { select: { memberId: true, status: true } } } })
     if (!sitting) return NextResponse.json({ error: 'Niet gevonden' }, { status: 404 })
-    const kandidaten = await kandidatenVoorGroep(sitting.group)
+    let kandidaten = await kandidatenVoorGroep(sitting.group)
+    // Op een examen-zitting met voorafgaand proefexamen: alleen proef-klaare kandidaten automatisch syncen.
+    let onlyKlaar = false
+    if (sitting.type === 'EXAMEN') {
+      const proef = await db.examSitting.findFirst({
+        where: { group: sitting.group, type: 'PROEF', date: { lte: sitting.date }, id: { not: sitting.id } },
+        orderBy: { date: 'desc' },
+        include: { attempts: { select: { memberId: true, klaar: true } } },
+      })
+      if (proef) {
+        const klaarSet = new Set(proef.attempts.filter(a => a.klaar).map(a => a.memberId))
+        kandidaten = kandidaten.filter(k => klaarSet.has(k.memberId))
+        onlyKlaar = true
+      }
+    }
     const bestaand = new Set(sitting.attempts.map(a => a.memberId))
     let toegevoegd = 0
     for (const k of kandidaten) {
       if (bestaand.has(k.memberId)) continue
-      await db.examAttempt.create({ data: { sittingId: id, memberId: k.memberId, userId: k.userId, beltLevel: k.doel as BeltLevel, status: ExamStatus.SCHEDULED } })
+      await db.examAttempt.create({ data: { sittingId: id, memberId: k.memberId, userId: k.userId, beltLevel: k.doel as BeltLevel, status: ExamStatus.SCHEDULED, ...(onlyKlaar ? { klaar: true } : {}) } })
       toegevoegd++
     }
     return NextResponse.json({ ok: true, toegevoegd })
