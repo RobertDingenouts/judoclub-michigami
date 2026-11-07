@@ -11,7 +11,7 @@ import { usePropSync } from '@/lib/use-prop-sync'
 import type { BeltLevel } from '@prisma/client'
 
 export type DagCel = { id: string; datum: string; groep: string; locatie: string; cancelled: boolean; activity: string | null; vakantie?: boolean }
-export type LidRef = { id: string; naam: string; clubStatus: string; groep: string; dateOfBirth: string | null; currentBelt: string | null; joinDate?: string | null }
+export type LidRef = { id: string; naam: string; clubStatus: string; groep: string; groepen?: string[]; dateOfBirth: string | null; currentBelt: string | null; joinDate?: string | null }
 
 const CYCLE: (string | null)[] = ['AANWEZIG', 'AFGEMELD', 'ZIEK', 'NIET_AANWEZIG', 'PROEFLES', null]
 const LOC_KORT: Record<string, string> = { STEENBERGEN: 'Knotwilg', OUD_VOSSEMEER: 'Vossenkuil' }
@@ -189,7 +189,7 @@ export function KwartaalGrid({ dagen, leden, trainers = [], cellen }: { dagen: D
 
       {groepen.map(g => {
         const gdagen = dagen.filter(d => d.groep === g)
-        const gleden = sorteer(leden.filter(l => l.groep === g), gdagen)
+        const gleden = sorteer(leden.filter(l => (l.groepen?.length ? l.groepen : [l.groep]).includes(g)), gdagen)
         return (
           <div key={g} className="overflow-x-auto rounded-md border border-gray-200 bg-white">
             <div className="flex items-center justify-between border-b border-gray-100 px-3 py-2">
@@ -321,7 +321,7 @@ export function KwartaalGrid({ dagen, leden, trainers = [], cellen }: { dagen: D
                   ]
                 })}
                 {gleden.length === 0 && (
-                  <tr><td colSpan={gdagen.length + 2} className="px-3 py-4 text-center text-gray-400">Geen leden met deze groep als hoofdgroep</td></tr>
+                  <tr><td colSpan={gdagen.length + 2} className="px-3 py-4 text-center text-gray-400">Geen leden in deze groep</td></tr>
                 )}
                 {/* Trainers/instructeurs: altijd onderaan, kruisbaar bij elke les */}
                 {trainers.map(t => {

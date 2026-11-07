@@ -50,17 +50,22 @@ export async function lessenGridData(opts: {
       // kwartaal weer op. Regel: normale leden altijd; gestopten/verwijderden
       // ALLEEN in periodes waar ze daadwerkelijk aanwezigheid hebben.
       where: {
-        primaryGroup: { in: groepen },
-        OR: [
-          { isActive: true, clubStatus: { notIn: ['GESTOPT', 'PROEF'] }, isTrainer: false },
-          { attendance: { some: { trainingDay: { date: { gte: rangeStart, lt: rangeEnd } } } }, isTrainer: false },
-          // Proefleden (gasten) altijd in beeld zolang ze actief zijn, zodat
-          // proeflessen gekruist kunnen worden.
-          { clubStatus: 'PROEF', isActive: true, isTrainer: false },
+        // Actieve leden van deze groep(en): primaryGroup OF één van trainingGroups (meerdags-leden zoals Rayn)
+        AND: [
+          { OR: [{ primaryGroup: { in: groepen } }, ...groepen.map(g => ({ trainingGroups: { array_contains: g } }))] },
+          {
+            OR: [
+              { isActive: true, clubStatus: { notIn: ['GESTOPT', 'PROEF'] }, isTrainer: false },
+              { attendance: { some: { trainingDay: { date: { gte: rangeStart, lt: rangeEnd } } } }, isTrainer: false },
+              // Proefleden (gasten) altijd in beeld zolang ze actief zijn, zodat
+              // proeflessen gekruist kunnen worden.
+              { clubStatus: 'PROEF', isActive: true, isTrainer: false },
+            ],
+          },
         ],
       },
       orderBy: [{ lastName: 'asc' }],
-      select: { id: true, firstName: true, lastName: true, primaryGroup: true, clubStatus: true, dateOfBirth: true, currentBelt: true, joinDate: true },
+      select: { id: true, firstName: true, lastName: true, primaryGroup: true, trainingGroups: true, clubStatus: true, dateOfBirth: true, currentBelt: true, joinDate: true },
     }),
     // Trainers/instructeurs: onderaan elke lesgroep kruisbaar, ongeacht hun eigen groep.
     // Automatisch: isTrainer-vlag OF rol INSTRUCTOR. ADMIN is géén trainer —
@@ -94,7 +99,7 @@ export async function lessenGridData(opts: {
     groepen,
     alleLesGroepen,
     dagen: grid.map(({ statussen: _s, ...rest }) => rest),
-    leden: leden.map(m => ({ id: m.id, naam: `${m.firstName} ${m.lastName}`, clubStatus: m.clubStatus, groep: m.primaryGroup ?? '', dateOfBirth: m.dateOfBirth?.toISOString().slice(0, 10) ?? null, currentBelt: m.currentBelt, joinDate: m.joinDate?.toISOString().slice(0, 10) ?? null })) as LidRef[],
+    leden: leden.map(m => ({ id: m.id, naam: `${m.firstName} ${m.lastName}`, clubStatus: m.clubStatus, groep: m.primaryGroup ?? '', groepen: [...new Set([m.primaryGroup, ...(Array.isArray(m.trainingGroups) ? (m.trainingGroups as string[]) : [])].filter(Boolean) as string[])], dateOfBirth: m.dateOfBirth?.toISOString().slice(0, 10) ?? null, currentBelt: m.currentBelt, joinDate: m.joinDate?.toISOString().slice(0, 10) ?? null })) as LidRef[],
     trainers: trainers.map(t => ({ id: t.id, naam: `${t.firstName} ${t.lastName}`, clubStatus: t.clubStatus, groep: t.primaryGroup ?? '', dateOfBirth: t.dateOfBirth?.toISOString().slice(0, 10) ?? null, currentBelt: t.currentBelt, joinDate: t.joinDate?.toISOString().slice(0, 10) ?? null, trainer: true })) as LidRef[],
     cellen,
   }

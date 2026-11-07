@@ -43,8 +43,11 @@ export interface Kandidaat {
 export async function kandidatenVoorGroep(groep: string): Promise<Kandidaat[]> {
   const leden = await db.member.findMany({
     where: {
-      isActive: true, isTrainer: false, primaryGroup: groep,
-      clubStatus: { in: ['LID', 'RESERVE'] },
+      isActive: true, isTrainer: false,
+      // VRIJGESTELD = gewoon actief lid (bestuurs-/instructeurskinderen): meetellen bij examens
+      clubStatus: { in: ['LID', 'RESERVE', 'VRIJGESTELD'] },
+      // Leden kunnen in meerdere groepen trainen (trainingGroups); primaryGroup is maar één groepsde.
+      OR: [{ primaryGroup: groep }, { trainingGroups: { array_contains: groep } }],
     },
     orderBy: [{ lastName: 'asc' }],
   })
