@@ -38,6 +38,7 @@ export function eisenVoorBelt(belt: string | null): EisVak[] | null {
     let naam = KORT[catId] ?? catId
     if (catId === 'nage-komi') { aantal = req.nageKomi; naam = 'Nage-komi' }
     else if (catId === 'kanteltechnieken') { aantal = req.kantelTechnieken; naam = 'Kanteltechnieken' }
+    else if (catId === 'ukemi-waza') { aantal = req.ukemiWaza ?? 4; naam = 'Vallen' }
     else {
       aantal = req.requirements[catId] ?? 0
       const cat = techniqueCategories.find(c => c.id === catId)
