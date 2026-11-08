@@ -186,7 +186,7 @@ export const japaneseCourseData = {
     { uitspraak: 'Tani-otoshi', nederlands: 'Dalval', categorie: 'Sutemi-waza', level: 4 },
     { uitspraak: 'Gaeshi', nederlands: 'Overname', categorie: 'Bouwsteen', level: 4 },
     { uitspraak: 'Sumi-gaeshi', nederlands: 'Hoek-overname', categorie: 'Sutemi-waza', level: 4 },
-    { uitspraak: 'Uki-waza', nederlands: 'Drijvende techniek', categorie: 'Sutemi-waza', level: 4 },
+    { uitspraak: 'Uki-waza', nederlands: 'Drijvende offerworp', categorie: 'Sutemi-waza', level: 4 },
 
     // Niveau 5: BRUINE BAND
     { uitspraak: 'Soto-gake', nederlands: 'Buitenwaartse haak', categorie: 'Ashi-waza', level: 5 },
