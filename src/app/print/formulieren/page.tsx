@@ -211,7 +211,7 @@ export default async function PrintFormulieren({ searchParams }: { searchParams:
           <span style={{ float: 'right' }}>Datum examen: <span className="vak" />&nbsp;&nbsp;&nbsp;&nbsp;</span>
         </div>
         <div className="regel">
-          Gefeliciteerd! Je mag examen doen voor de <b>{f.doelLabel}</b>. Het examen wordt afgenomen tijdens de judoles op bovenstaande datum. Onder elk vak staat precies welke technieken je daarvoor moet kennen, in de examenvolgorde.
+          Gefeliciteerd! Je mag examen doen voor de <b>{f.doelLabel}</b>. Het examen wordt afgenomen tijdens de judoles op bovenstaande datum. Onder elk vak staat precies welke technieken je daarvoor moet kennen.
         </div>
         <Betaling f={f} />
         <div className="eisenGroot">
