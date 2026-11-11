@@ -84,6 +84,7 @@ export const TOERNOOIEN: Record<string, ToernooiConfig> = {
     },
     infoRegels: [
       '🥋 Puntentoernooi over drie wedstrijdbijeenkomsten — per bijeenkomst punten verzamelen, prijzen voor het totaalklassement worden na het derde toernooi uitgereikt',
+      "👥 Iedereen is welkom om mee te doen — ook oudere judoka's, mits de organisator tegenstanders in hun categorie heeft; dat stemmen wij vooraf af met Tokyokai",
       '📆 Ronde 1: vrijdag 27 november 2026 · ronde 2 medio maart 2027 · ronde 3 eind mei 2027 — exacte data volgen nog',
       '⚖️ Weeg je judoka thuis en geef het gewicht in kg op — de organisator werkt met zelf gewogen judoka',
       '💶 Bijdrage € {bedrag} per judoka voor alle 3 de toernooien — DIRECT overmaken bij inschrijving, naar Judoclub Michigami.',
