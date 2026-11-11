@@ -2,7 +2,7 @@
 // Elke toernooi-slug komt overeen met TournamentEntry.toernooi in de DB.
 // De per-toernooi-velden sturen formulier, validatie én het exportformaat.
 
-export type ExportFormat = 'shintai' | 'yoshikwai'
+export type ExportFormat = 'shintai' | 'yoshikwai' | 'tokyokai'
 
 export interface ToernooiConfig {
   titel: string
@@ -54,6 +54,39 @@ export const TOERNOOIEN: Record<string, ToernooiConfig> = {
       '⚖️ Start 09.40 uur, eerste weging 9.00–9.15 uur (jongsten eerst). Weegtijden komen ~1,5 week van tevoren.',
       '💶 Inschrijfgeld € {bedrag} per judoka — DIRECT overmaken bij inschrijving, naar Judoclub Michigami.',
       '👨‍👩‍👧 Ouders/familie zijn welkom als toeschouwer (€ 1,00 entree voor volwassenen, kinderen gratis)',
+    ],
+  },
+
+  'tokyokai-clubtoernooi-2026': {
+    titel: 'Clubtoernooi Tokyokai (ronde 1 van 3)',
+    shintaiTitel: 'CLUBTOERNOOI TOKYOKAI - 27 NOVEMBER 2026',
+    datum: 'vrijdag 27 november 2026',
+    toernooidatumISO: '2026-11-27',
+    leeftijdDatumLabel: '27-11-2026',
+    deadlineLeden: 'zondag 15 november 2026',
+    deadlineShintai: 'maandag 16 november 2026',
+    inschrijfgeld: 8,
+    organisator: 'Tokyokai',
+    locatie: 'Sporthal Halve Maan, Oostkapelle',
+    iban: 'NL13 RABO 0136 9125 08',
+    betalingskenmerk: 'naam judoka + Tokyokai clubtoernooi',
+    contact: {
+      naam: 'Robert Dingenouts',
+      telefoon: '0648649912',
+      email: 'judoclub_michigami@hotmail.com',
+    },
+    exportFormat: 'tokyokai',
+    vraagGeboortedatum: true,
+    verplichtBetalingBijInschrijving: true,
+    niveauOpties: {
+      Nieuw: 'Nog geen wedstrijdervaring',
+      Ervaring: 'Heeft al eens aan een toernooi deelgenomen',
+    },
+    infoRegels: [
+      '🥋 Puntentoernooi over drie wedstrijdbijeenkomsten — per bijeenkomst punten verzamelen, prijzen voor het totaalklassement worden na het derde toernooi uitgereikt',
+      '📆 Ronde 1: vrijdag 27 november 2026 · ronde 2 medio maart 2027 · ronde 3 eind mei 2027 — exacte data volgen nog',
+      '⚖️ Weeg je judoka thuis en geef het gewicht in kg op — de organisator werkt met zelf gewogen judoka',
+      '💶 Bijdrage € {bedrag} per judoka voor alle 3 de toernooien — DIRECT overmaken bij inschrijving, naar Judoclub Michigami.',
     ],
   },
 

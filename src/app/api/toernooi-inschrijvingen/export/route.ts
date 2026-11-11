@@ -87,6 +87,43 @@ export async function GET(req: NextRequest) {
     return downloadExcel(buf, `inschrijvingsformulier-Tornooi - Judoclub Michigami (${entries.length} deelnemers).xlsx`)
   }
 
+  // ---- Tokyokai-layout (eenvoudige deelnemerslijst: naam/geboortedatum/
+  // geslacht/gewicht/band — exact wat Ronald Versluijs per mail vraagt) ----
+  if (cfg.exportFormat === 'tokyokai') {
+    const ws = wb.addWorksheet('Deelnemers')
+
+    ws.getCell('A1').value = cfg.shintaiTitel
+    ws.getCell('A1').font = { bold: true, size: 14 }
+    ws.getCell('A2').value = 'Club: Judoclub Michigami'
+    ws.getCell('A3').value = `Contact: ${cfg.contact.naam} · ${cfg.contact.telefoon} · ${cfg.contact.email}`
+
+    const headers = ['Nr', 'Naam judoka', 'Geboortedatum', 'Geslacht', 'Gewicht (kg)', 'Band']
+    const hdrRow = ws.getRow(5)
+    headers.forEach((h, i) => { hdrRow.getCell(i + 1).value = h })
+    hdrRow.font = boldFont
+    hdrRow.eachCell(c => {
+      c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFEEEEEE' } }
+      c.border = { bottom: { style: 'thin' } }
+    })
+
+    entries.forEach((e, i) => {
+      const row = ws.getRow(6 + i)
+      row.values = [
+        i + 1,
+        e.naam,
+        e.geboortedatum ? isoNaarDmYyyy(e.geboortedatum) : '',
+        e.geslacht === 'Man' ? 'M' : 'V',
+        e.gewicht,
+        e.band,
+      ]
+    })
+
+    ;[6, 28, 14, 10, 13, 9].forEach((w, i) => { ws.getColumn(i + 1).width = w })
+
+    const buf = await wb.xlsx.writeBuffer()
+    return downloadExcel(buf, `tokyokai-deelnemers - Judoclub Michigami (${entries.length} deelnemers).xlsx`)
+  }
+
   // ---- Shintai-layout ----
   const ws = wb.addWorksheet('Inschrijfformulier')
 
