@@ -101,7 +101,7 @@ export default async function PrintFormulieren({ searchParams }: { searchParams:
     @page { size: A4 portrait; margin: 8mm 10mm; }
     @media print { body { background: #fff !important; } .scherm { display: none !important; } .vel { box-shadow: none !important; margin: 0 !important; border: none !important; } }
     body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .vel { width: 190mm; height: 281mm; display: flex; flex-direction: column; justify-content: space-between; background: #fff; margin: 0 auto 6mm; box-shadow: 0 1px 6px rgba(0,0,0,.18); page-break-after: always; }
+    .vel { width: 190mm; height: 281mm; display: flex; flex-direction: column; justify-content: space-between; background: #fff; margin: 0 auto 6mm; box-shadow: 0 1px 6px rgba(0,0,0,.18); page-break-after: always; overflow: hidden; }
     .vel:last-child { page-break-after: auto; }
     .form { flex: 1; display: flex; flex-direction: column; padding: 5mm 6mm; }
     .kop { display: flex; align-items: center; gap: 4mm; border-bottom: 2.5px solid #a90000; padding-bottom: 1.2mm; }
@@ -116,17 +116,31 @@ export default async function PrintFormulieren({ searchParams }: { searchParams:
     .voet { margin-top: 2.2mm; font-size: 9.3pt; color: #444; }
     .bandgroot .betalen { font-size: 9pt; margin-top: 2mm; }
     .bandgroot .regel { font-size: 10pt; margin-top: 2mm; }
-    .eisenGroot { margin-top: 2.6mm; flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 2mm; grid-auto-rows: 1fr; }
-    .vakkat { border: 1px solid #c9b8b0; border-radius: 1.6mm; padding: 1.6mm 2.4mm; display: flex; flex-direction: column; min-height: 0; }
+    .eisenGroot { margin-top: 2.6mm; display: grid; grid-template-columns: 1fr 1fr; gap: 2mm; align-content: start; }
+    .vakkat { border: 1px solid #c9b8b0; border-radius: 1.6mm; padding: 1.6mm 2.4mm; }
     .vakkat h3 { margin: 0 0 1mm 0; font-size: 9.2pt; color: #a90000; border-bottom: 1px solid #eee; padding-bottom: .5mm; display: flex; justify-content: space-between; align-items: baseline; gap: 2mm; }
     .vakkat h3 .sub { color: #999; font-weight: 400; font-size: 7.4pt; margin-left: 1.2mm; }
     .vakkat h3 .aantalkop { color: #222; white-space: nowrap; font-weight: 700; }
-    .vakkat ol { margin: 0; padding: 0; list-style: none; counter-reset: tech; font-size: 8.1pt; line-height: 1.55; flex: 1; }
+    .vakkat ol { margin: 0; padding: 0; list-style: none; counter-reset: tech; font-size: 8.1pt; line-height: 1.55; }
     .vakkat ol li { counter-increment: tech; display: flex; gap: 1.4mm; }
     .vakkat ol li::before { content: counter(tech) "."; color: #a90000; font-weight: 700; min-width: 5mm; text-align: right; }
     .vakkat .nd { color: #666; font-size: 7.2pt; margin-left: 1.2mm; }
-    .vakkat .uitleg { font-size: 8pt; color: #444; line-height: 1.5; flex: 1; display: flex; align-items: center; }
+    .vakkat .uitleg { font-size: 8pt; color: #444; line-height: 1.5; }
+    .midden .eisenGroot { gap: 1.4mm; margin-top: 2mm; display: block; columns: 2; column-gap: 2mm; }
+    .midden .vakkat { break-inside: avoid; margin-bottom: 1.2mm; padding: 1.2mm 2mm; }
+    .midden .vakkat h3 { font-size: 8.6pt; margin-bottom: .6mm; }
+    .midden .vakkat ol { font-size: 7.4pt; line-height: 1.32; }
+    .midden .vakkat .nd { font-size: 6.6pt; }
     .compact .vakkat { padding: .8mm 1.8mm; }
+    .super .eisenGroot { gap: .8mm; margin-top: 1.6mm; display: block; columns: 2; column-gap: 1.6mm; }
+    .super .vakkat { break-inside: avoid; margin-bottom: .8mm; padding: .6mm 1.4mm; }
+    .super .vakkat h3 { font-size: 7.8pt; margin-bottom: .3mm; }
+    .super .vakkat ol { font-size: 6.2pt; line-height: 1.16; }
+    .super .vakkat .nd { font-size: 5.6pt; margin-left: .8mm; }
+    .super .vakkat .uitleg { font-size: 6.8pt; line-height: 1.3; }
+    .super .regel { font-size: 9pt; }
+    .super .betalen { font-size: 8.2pt; }
+    .super .voet { font-size: 7.8pt; }
     .compact .vakkat h3 { font-size: 8.2pt; margin-bottom: .4mm; }
     .compact .vakkat ol { font-size: 6.9pt; line-height: 1.22; }
     .compact .vakkat .nd { font-size: 6.2pt; }
@@ -155,8 +169,9 @@ export default async function PrintFormulieren({ searchParams }: { searchParams:
       ...(f.kantelen > 0 ? [{ id: 'kantelen', titel: 'Kanteltechnieken', ja: '返', aantal: f.kantelen, technieken: [], uitleg: 'Wordt regelmatig in de les geoefend — je laat ze op verzoek correct zien.' }] : []),
     ]
     const technisch = alleKaarten.reduce((n, v) => n + v.technieken.length, 0)
+    const dichtheid = technisch > 90 ? ' super' : technisch > 46 ? ' compact' : technisch > 34 ? ' midden' : ''
     return (
-      <div className={'form bandgroot' + (technisch > 40 ? ' compact' : '')}>
+      <div className={'form bandgroot' + dichtheid}>
         <div className="kop">
           <img src={LOGO} alt="Judoclub Michigami" style={{ height: '17mm' }} />
           <div className="titelblok">
