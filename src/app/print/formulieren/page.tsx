@@ -47,7 +47,7 @@ interface Formulier {
 }
 
 // Zelfde officiële bron en snijde-logica als het site-dashboard: eerste N technieken per vak in examenvolgorde + altijd de 4 valbrekers
-function vakkenVoorDoel(doel: string, isSlip: boolean): { vakken: VakKaart[]; nageKomi: number; kantelen: number } {
+function vakkenVoorDoel(doel: string): { vakken: VakKaart[]; nageKomi: number; kantelen: number } {
   const reqId = NAAM_REQ_ID[doel]
   const req = beltRequirements.find(r => r.beltId === reqId)
   if (!req) return { vakken: [], nageKomi: 0, kantelen: 0 }
@@ -61,7 +61,7 @@ function vakkenVoorDoel(doel: string, isSlip: boolean): { vakken: VakKaart[]; na
       titel: CAT_NL[catId]?.nl ?? catId,
       ja: CAT_NL[catId]?.ja ?? '',
       aantal: count,
-      technieken: isSlip ? [] : alle.slice(0, count).map(t => ({ ja: t.nameJa, nl: t.nameNl, verboden: t.forbidden })),
+      technieken: alle.slice(0, count).map(t => ({ ja: t.nameJa, nl: t.nameNl, verboden: t.forbidden })),
     })
   }
   return { vakken, nageKomi: req.nageKomi, kantelen: req.kantelTechnieken }
@@ -81,7 +81,7 @@ export default async function PrintFormulieren({ searchParams }: { searchParams:
   const formulieren: Formulier[] = kandidaten.map(k => {
     const doel = k.doel as string
     const isSlip = doel.includes('_')
-    const { vakken, nageKomi, kantelen } = vakkenVoorDoel(doel, isSlip)
+    const { vakken, nageKomi, kantelen } = vakkenVoorDoel(doel)
     return {
       id: k.memberId,
       naam: `${k.firstName} ${k.lastName}`,
@@ -94,11 +94,8 @@ export default async function PrintFormulieren({ searchParams }: { searchParams:
     }
   })
 
-  // Slippen: 2 per A4-vel. Banden: 1 vel per persoon (uitgebreid met technieknamen).
-  const slips = formulieren.filter(f => f.isSlip)
-  const banden = formulieren.filter(f => !f.isSlip)
-  const vellen: Formulier[][] = [...banden.map(b => [b])]
-  for (let i = 0; i < slips.length; i += 2) vellen.push(slips.slice(i, i + 2))
+  // Ieder examenformulier = 1 volledig A4-vel (band én slip), uitgebreid met alle technieknamen.
+  const vellen: Formulier[][] = formulieren.map(f => [f])
 
   const css = `
     @page { size: A4 portrait; margin: 8mm 10mm; }
@@ -114,9 +111,6 @@ export default async function PrintFormulieren({ searchParams }: { searchParams:
     .titel { font-size: 17pt; font-weight: 800; color: #222; }
     .regel { margin-top: 2.2mm; font-size: 10.5pt; }
     .vak { display: inline-block; border-bottom: 1px solid #444; min-width: 34mm; }
-    .eisbox { margin-top: 2.4mm; border: 1.2px solid #a90000; border-radius: 2mm; padding: 2.2mm 3mm; }
-    .eiskop { font-size: 9pt; font-weight: 700; color: #a90000; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 1.2mm; }
-    .eisen { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: .8mm 4mm; font-size: 9.6pt; }
     .betalen { margin-top: 2.4mm; background: #f5f0ec; border-radius: 2mm; padding: 2.2mm 3mm; font-size: 9.6pt; }
     .betalen b.bedrag { color: #a90000; }
     .voet { margin-top: 2.2mm; font-size: 9.3pt; color: #444; }
@@ -153,43 +147,8 @@ export default async function PrintFormulieren({ searchParams }: { searchParams:
     </div>
   )
 
-  // Slipformulier:alletjes, 2 per vel
-  const Kaart = ({ f }: { f: Formulier }) => (
-    <div className="form">
-      <div className="kop">
-        <img src={LOGO} alt="Judoclub Michigami" />
-        <div className="titelblok">
-          <div className="clubnaam">JUDOCLUB MICHIGAMI · STEENBERGEN / OUD-VOSSEMEER</div>
-          <div className="titel">Slip-examen</div>
-        </div>
-        <BeltBadge belt={f.doel} height="h-[7mm]" width="w-[11mm]" />
-      </div>
-      <div className="regel">
-        Naam: <b style={{ fontSize: '12pt' }}>{f.naam}</b>
-        <span style={{ float: 'right' }}>Datum examen: <span className="vak" />&nbsp;&nbsp;&nbsp;&nbsp;</span>
-      </div>
-      <div className="regel">
-        Gefeliciteerd! Je mag examen doen voor de <b>{f.doelLabel}</b>. Het examen wordt afgenomen tijdens de judoles op bovenstaande datum.
-      </div>
-      <div className="eisbox">
-        <div className="eiskop">Wat je moet kunnen</div>
-        <div className="eisen">
-          {f.vakken.map(v => <div key={v.id}>{v.aantal} × {v.titel}</div>)}
-          {f.nageKomi > 0 && <div>{f.nageKomi} × Nage-komi</div>}
-          {f.kantelen > 0 && <div>{f.kantelen} × Kanteltechnieken</div>}
-        </div>
-        <div style={{ fontSize: '8.6pt', color: '#666', marginTop: '1.6mm' }}>
-          Nage-komi = herhaaldelijk werpen: om de beurt zo snel mogelijk een worp naar keuze — jij moet er <b>{f.nageKomi}</b> binnen 1 minuut laten zien.<br />
-          Oefenen thuis? Kijk op judoclubmichigami.nl onder 🥋 <b>Judo School → Exameneisen</b> (elke techniek per band/slip) en <b>Technieken</b> (filmpje bij elke techniek).
-        </div>
-      </div>
-      <Betaling f={f} />
-      <div className="voet">Veel succes!</div>
-    </div>
-  )
-
-  // Volledige A4 voor bandenexamens, met alle technieknamen in examenvolgorde
-  const BandVEL = ({ f }: { f: Formulier }) => {
+  // Volledige A4: alle technieknamen in examenvolgorde (voor band én slip identiek)
+  const FormulierVEL = ({ f }: { f: Formulier }) => {
     const alleKaarten: VakKaart[] = [
       ...f.vakken,
       ...(f.nageKomi > 0 ? [{ id: 'nage-komi', titel: 'Nage-komi', ja: '投込', aantal: f.nageKomi, technieken: [], uitleg: `Herhaaldelijk werpen: jij en je partner werpen om de beurt zo snel mogelijk en correct een worp naar keuze. Jij laat binnen 1 minuut ${f.nageKomi} worpen zien.` }] : []),
@@ -202,7 +161,7 @@ export default async function PrintFormulieren({ searchParams }: { searchParams:
           <img src={LOGO} alt="Judoclub Michigami" style={{ height: '17mm' }} />
           <div className="titelblok">
             <div className="clubnaam">JUDOCLUB MICHIGAMI · STEENBERGEN / OUD-VOSSEMEER</div>
-            <div className="titel">Banden examen — {f.doelLabel}</div>
+            <div className="titel">{f.isSlip ? 'Slip-examen' : 'Banden examen'} — {f.doelLabel}</div>
           </div>
           <BeltBadge belt={f.doel} height="h-[9mm]" width="w-[14mm]" />
         </div>
@@ -247,12 +206,7 @@ export default async function PrintFormulieren({ searchParams }: { searchParams:
         </div>
         {vellen.map((vel, i) => (
           <div className="vel" key={i}>
-            {vel.length === 1 && !vel[0].isSlip
-              ? <BandVEL f={vel[0]} />
-              : (<>
-                  {vel.map(f => <Kaart key={f.id} f={f} />)}
-                  {vel.length === 1 && <div style={{ flex: 1 }} />}
-                </>)}
+            <FormulierVEL f={vel[0]} />
           </div>
         ))}
       </div>
