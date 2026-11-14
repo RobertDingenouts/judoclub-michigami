@@ -146,7 +146,7 @@ export default function Registratie({ sitting, attempts: init, kandidaten }: Pro
                 )}
                 {!done && !proef && <button onClick={() => status(a.id, 'PASSED')} className="rounded-sm bg-green-700 px-3 py-1 text-xs font-medium text-white hover:bg-green-800">✓ Geslaagd</button>}
                 {!done && !proef && <button onClick={() => status(a.id, 'FAILED')} className="rounded-sm bg-red-700 px-3 py-1 text-xs font-medium text-white hover:bg-red-800">✗ Gezakt</button>}
-                <button onClick={() => { setAttempts(x => x.filter(y => y.id !== a.id)); fetch(`/api/admin/examens/attempts/${a.id}`, { method: 'DELETE' }) }} className="text-xs text-gray-400 hover:text-red-600">✕</button>
+                <button onClick={() => { if (!confirm('Kandidaat van deze bijeenkomst verwijderen?')) return; setAttempts(x => x.filter(y => y.id !== a.id)); fetch(`/api/admin/examens/attempts/${a.id}`, { method: 'DELETE' }).then(r => { if (!r.ok) alert('Verwijderen mislukt') }) }} className="rounded-sm border border-red-200 px-2 py-0.5 text-xs font-medium text-red-600 hover:bg-red-50">✕ Verwijderen</button>
               </span>
             </div>
             {vakken.length > 0 && (

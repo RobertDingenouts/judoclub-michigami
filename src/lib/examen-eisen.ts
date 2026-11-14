@@ -15,6 +15,7 @@ const BELT_REQ_ID: Record<string, string> = {
   ORANJE: 'oranje', ORANJE_GROEN: 'oranje-groene-slip', GROEN: 'groen', GROEN_BLAUW: 'groen-blauwe-slip',
   BLAUW: 'blauw', BLAUW_BRUIN: 'blauw-bruine-slip', BRUIN: 'bruin',
 }
+export { BELT_REQ_ID }
 
 export const KORT: Record<string, string> = {
   'te-waza': 'Armw.', 'kata-waza': 'Schouderw.', 'koshi-waza': 'Heupw.', 'ashi-waza': 'Beenw.',

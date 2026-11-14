@@ -66,6 +66,8 @@ model Member {
   emergencyContactPhone String?
   medicalNotes          String?
   bondsnummer           String?     @unique
+  beltSince             DateTime? // wanneer lid aan huidige band/slip begon (override; anders afgeleid)
+  examPrep              ExamPrep[]
   clubStatus            String      @default("LID") // LID | RESERVE | STOPPEND | GESTOPT
   isTrainer             Boolean     @default(false) // trainer/instructeur: onderaan elke les kruisbaar
   leaveDate             DateTime? // datum van uitschrijving (bij GESTOPT)
@@ -155,6 +157,18 @@ model ExamSitting {
 
   @@unique([date, group, type])
   @@index([date])
+}
+
+// Techniek-afvinklijst per lid + doelband, persistent over weken heen (voorbereiding los van een zitting)
+model ExamPrep {
+  id         String   @id @default(cuid())
+  memberId   String
+  targetBelt String // DoelBelt-slotnaam, bv. WIT_GEEL
+  checked    Json     @default("{}") // Record<string, true>, key = `${catId}|${nameJa}`
+  updatedAt  DateTime @updatedAt
+  member     Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([memberId, targetBelt])
 }
 
 model ExamResult {

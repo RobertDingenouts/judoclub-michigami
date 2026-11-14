@@ -44,8 +44,8 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
         create: { memberId: bestaand.memberId, belt, awardedAt: datum, source: 'EXAM' },
         update: { awardedAt: datum, source: 'EXAM' },
       })
-      // 2. huidige band optrekken
-      await tx.member.update({ where: { id: bestaand.memberId }, data: { currentBelt: belt } })
+      // 2. huidige band optrekken + band-sinds klok op examen-datum zetten
+      await tx.member.update({ where: { id: bestaand.memberId }, data: { currentBelt: belt, beltSince: datum } })
       await tx.user.update({ where: { id: bestaand.userId }, data: { currentBelt: belt } })
       // 3. diploma aanmaken als nog niet vorhanden
       if (!bestaand.diploma) {

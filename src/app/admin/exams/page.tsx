@@ -5,6 +5,8 @@ import { BeltBadge } from '@/components/admin/BeltBadge'
 import { getBeltColor } from '@/lib/belt-utils'
 import { BeltLevel } from '@prisma/client'
 import NieuweBijeenkomstForm from './NieuweBijeenkomstForm'
+import ZittingenLijst, { type ZittingRij } from './ZittingenLijst'
+import VoorbereidingsOverzicht, { type PrepGroep, type PrepRij } from './VoorbereidingsOverzicht'
 
 export const dynamic = 'force-dynamic'
 
@@ -15,6 +17,9 @@ export default async function ExamensHub({
 }) {
   const params = await searchParams
   const tab = params?.tab || 'actueel'
+
+  const nu = new Date()
+  nu.setHours(0, 0, 0, 0)
 
   const groepen = Object.keys(GROEP_LABELS)
   const [doelenPerGroep, sittings, historje] = await Promise.all([
@@ -30,12 +35,69 @@ export default async function ExamensHub({
     }),
   ])
 
+  // Data voor het voorbereidingsoverzicht: afvinklijst, band-sinds, planning
+  const ids = [...new Set(doelenPerGroep.flatMap(g => g.kandidaten.map(k => k.memberId)))]
+  const [prepRows, leden, geplandRows] = await Promise.all([
+    db.examPrep.findMany({ where: { memberId: { in: ids } } }),
+    db.member.findMany({ where: { id: { in: ids } }, select: { id: true, beltSince: true, joinDate: true } }),
+    db.examAttempt.findMany({
+      where: { memberId: { in: ids }, status: 'SCHEDULED', diploma: null, OR: [{ sitting: { date: { gte: nu } } }, { examDate: { gte: nu } }] },
+      orderBy: { createdAt: 'desc' },
+      include: { sitting: { select: { id: true, date: true } } },
+    }),
+  ])
+  const prepMap = new Map(prepRows.map(p => [`${p.memberId}|${p.targetBelt}`, p.checked as Record<string, true>]))
+  const lidMap = new Map(leden.map(m => [m.id, m]))
+  const plannedMap = new Map<string, { attemptId: string; sittingId: string | null; datum: string }>()
+  for (const a of geplandRows) {
+    if (plannedMap.has(a.memberId)) continue
+    const d = a.sitting?.date ?? a.examDate
+    if (!d) continue
+    plannedMap.set(a.memberId, { attemptId: a.id, sittingId: a.sittingId, datum: d.toISOString().slice(0, 10) })
+  }
+
+  const bereidGroepen: PrepGroep[] = doelenPerGroep.map(({ groep, kandidaten }) => ({
+    groep,
+    label: GROEP_LABELS[groep],
+    subtext: GROEP_SUBTEXT[groep] || '',
+    rijen: kandidaten.map<PrepRij>(k => {
+      const lid = lidMap.get(k.memberId)
+      const sinds = lid?.beltSince ?? lid?.joinDate ?? new Date()
+      return {
+        memberId: k.memberId,
+        firstName: k.firstName,
+        lastName: k.lastName,
+        currentBelt: k.currentBelt,
+        doel: k.doel as string,
+        sinds: sinds.toISOString(),
+        sindsBron: lid?.beltSince ? 'handmatig/automatisch ingesteld' : 'lidwording — pas aan als de band eerder behaald is',
+        checked: prepMap.get(`${k.memberId}|${k.doel}`) ?? {},
+        planned: plannedMap.get(k.memberId) ?? null,
+      }
+    }),
+  }))
+
+  const zittingen: ZittingRij[] = sittings.map(s => ({
+    id: s.id,
+    datum: s.date.toISOString().slice(0, 10),
+    isProef: s.type === 'PROEF',
+    groepLabel: GROEP_LABELS[s.group] || s.group,
+    title: s.title,
+    totaal: s.attempts.length,
+    af: s.attempts.filter(a => a.status !== 'SCHEDULED').length,
+    klaarVoorExamen: s.attempts.filter(a => a.klaar).length,
+    subtext: GROEP_SUBTEXT[s.group] || '',
+  }))
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-[#2a2a2a]">Examens</h1>
-          <p className="mt-1 text-sm text-gray-500">Bijeenkomst aanmaken → kandidaten worden automatisch voorgesteld op hun volgende band of slip</p>
+          <p className="mt-1 text-sm text-gray-500">
+            Klik op ▸ bij een lid en vink de technieken af — het blijft bewaard. Is iemand zover: <span className="font-medium text-green-700">✓ Klaar?</span> + examendatum, dan wordt het examenmoment automatisch aangemaakt.
+            <span className="ml-1 inline-flex items-center gap-1 align-middle text-[11px] text-gray-400">Klokje = tijd in huidige band/slip: <span className="font-bold text-green-700">groen</span> &lt;½ jr · <span className="font-bold text-orange-600">oranje</span> tot 1 jr · <span className="font-bold text-red-600">rood</span> &gt;1 jr</span>
+          </p>
         </div>
         <div className="flex gap-2 text-sm">
           <Link href="/admin/exams" className={`rounded-sm px-3 py-1.5 ${tab === 'actueel' ? 'bg-[#a90000] text-white' : 'bg-white text-gray-600 border border-gray-200'}`}>Actueel</Link>
@@ -46,75 +108,23 @@ export default async function ExamensHub({
 
       {tab === 'actueel' ? (
         <>
-          <NieuweBijeenkomstForm />
+          <div>
+            <h2 className="mb-2 text-sm font-bold uppercase tracking-wide text-gray-500">Voorbereiding — per lid technieken afvinken</h2>
+            <VoorbereidingsOverzicht groepen={bereidGroepen} />
+          </div>
 
           <div>
             <h2 className="mb-2 text-sm font-bold uppercase tracking-wide text-gray-500">Geplande examenbijeenkomsten</h2>
-            <div className="space-y-2">
-              {sittings.length === 0 && <p className="text-sm text-gray-400">Nog geen bijeenkomsten.</p>}
-              {sittings.map(s => {
-                const totaal = s.attempts.length
-                const af = s.attempts.filter(a => a.status !== 'SCHEDULED').length
-                const klaarVoorExamen = s.attempts.filter(a => a.klaar).length
-                const isProef = s.type === 'PROEF'
-                return (
-                  <div key={s.id} className={`flex flex-wrap items-center justify-between gap-2 rounded-sm border bg-white p-4 shadow-sm ${isProef ? 'border-amber-200' : 'border-gray-200'}`}>
-                    <div>
-                      <p className="text-sm font-semibold text-[#2a2a2a]">
-                        {new Date(s.date).toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
-                        <span className={`ml-2 rounded-sm px-1.5 py-0.5 align-middle text-[10px] font-bold uppercase tracking-wide ${isProef ? 'bg-amber-100 text-amber-800' : 'bg-red-50 text-[#a90000]'}`}>{isProef ? 'proef' : 'examen'}</span>
-                        <span className="ml-2 text-xs font-normal text-gray-500">{GROEP_LABELS[s.group]}{s.title ? ` · ${s.title}` : ''}</span>
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {isProef ? <span className="font-medium text-green-700">{klaarVoorExamen}/{totaal} klaar voor examen</span> : `${af}/${totaal} registratie af`} · {GROEP_SUBTEXT[s.group] || ''}
-                      </p>
-                    </div>
-                    <div className="flex gap-2">
-                      <Link href={`/admin/exams/bijeenkomst/${s.id}`} className="rounded-sm bg-[#a90000] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#8c0000]">Registreren</Link>
-                      <Link href={`/print/examen?sitting=${s.id}`} className="rounded-sm border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50">Print</Link>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
+            <ZittingenLijst zittingen={zittingen} />
           </div>
 
-          <div>
-            <div className="mb-2 flex items-baseline gap-2">
-              <h2 className="text-sm font-bold uppercase tracking-wide text-gray-500">Waar is iedereen nu voor op?</h2>
-              <span className="text-xs text-gray-400">gesorteerd op huidige band · wit → bruin</span>
+          <details className="rounded-sm border border-gray-200 bg-white shadow-sm">
+            <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-gray-600 select-none">+ Zelf een (proef)bijeenkomst aanmaken</summary>
+            <div className="border-t border-gray-100 p-4 pt-0">
+              <p className="pb-2 text-xs text-gray-400">Leden komen bij een examen vanzelf binnen via “Klaar voor examen” hierboven — een examenbijeenkomst is dan niet meer nodig. Alleen voor een proefexamen of een aparte examenbijeenkomst met eigen titel is dit handig.</p>
+              <NieuweBijeenkomstForm />
             </div>
-            <div className="grid gap-4 md:grid-cols-2">
-              {doelenPerGroep.map(({ groep, kandidaten }) => (
-                <div key={groep} className="overflow-hidden rounded-sm border border-gray-200 bg-white shadow-sm">
-                  <div className="flex items-center justify-between bg-[#a90000] px-4 py-2.5 text-white">
-                    <div>
-                      <span className="text-sm font-semibold">{GROEP_LABELS[groep]}</span>
-                      <p className="text-[11px] text-red-100">{GROEP_SUBTEXT[groep]}</p>
-                    </div>
-                    <span className="rounded-full bg-white/20 px-2.5 py-0.5 text-xs">{kandidaten.length} leden</span>
-                  </div>
-                  <div className="max-h-96 overflow-y-auto p-2">
-                    {kandidaten.length === 0 && <p className="p-2 text-xs text-gray-400">Geen kandidaten in deze groep.</p>}
-                    {kandidaten.map(k => (
-                      <div key={k.memberId} className="mb-0.5 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 rounded-sm border-l-4 bg-gray-50/60 px-3 py-1.5 text-sm transition-colors hover:bg-gray-100" style={{ borderLeftColor: getBeltColor(k.doel as BeltLevel) }}>
-                        <span className="truncate font-medium text-[#2a2a2a]">{k.firstName} {k.lastName}</span>
-                        <span className="grid grid-cols-[1.8rem_0.8rem_1.8rem_minmax(0,7.5rem)] items-center gap-x-1 text-[11px]">
-                          <BeltBadge belt={k.currentBelt} height="h-3.5" width="w-[1.6rem]" />
-                          <span className="text-center text-gray-400">→</span>
-                          <BeltBadge belt={k.doel} height="h-3.5" width="w-[1.6rem]" />
-                          <span className="truncate font-semibold text-[#2a2a2a]">{beltLabel(k.doel)}</span>
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="border-t border-gray-100 px-4 py-2">
-                    <Link href={`/print/examen?groep=${groep}`} className="text-xs text-[#a90000] hover:underline">Print doelenlijst →</Link>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          </details>
         </>
       ) : (
         <div className="overflow-hidden rounded-sm border border-gray-200 bg-white shadow-sm">
