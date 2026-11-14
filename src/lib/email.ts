@@ -12,6 +12,7 @@ type MailOptions = {
 }
 
 const FROM_ADDRESS = process.env.MAIL_FROM || 'webmaster@judoclubmichigami.nl'
+const REPLY_TO = process.env.MAIL_REPLY_TO || ''
 const APP_NAME = 'Judoclub Michigami'
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://judoclubmichigami.nl'
 
@@ -53,13 +54,14 @@ function getTransporter(): MailTransporter {
  * aanroepende route dit kan afvangen en netjes melden aan de gebruiker.
  */
 export async function sendEmail({ to, subject, html, text }: MailOptions): Promise<void> {
-  const mailOptions = {
+  const mailOptions: Record<string, string> = {
     from: `"${APP_NAME}" <${FROM_ADDRESS}>`,
     to,
     subject,
     text: text || html.replace(/<[^>]+>/g, ''),
     html,
   }
+  if (REPLY_TO) mailOptions.replyTo = REPLY_TO
 
   await getTransporter().sendMail(mailOptions)
 }
