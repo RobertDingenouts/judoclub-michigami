@@ -65,6 +65,7 @@ export default async function ExamensHub({
       const sinds = lid?.beltSince ?? lid?.joinDate ?? new Date()
       return {
         memberId: k.memberId,
+        groep,
         firstName: k.firstName,
         lastName: k.lastName,
         currentBelt: k.currentBelt,

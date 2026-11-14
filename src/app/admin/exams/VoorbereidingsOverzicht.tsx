@@ -11,6 +11,7 @@ import type { BeltLevel } from '@prisma/client'
 
 export interface PrepRij {
   memberId: string
+  groep: string
   firstName: string
   lastName: string
   currentBelt: string | null
@@ -95,7 +96,7 @@ function VoorbereidingsRij({ rij }: { rij: PrepRij }) {
     setBusy(true)
     const res = await fetch('/api/admin/examens/klaar', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ memberId: rij.memberId, date: klaarDatum, beltLevel: rij.doel }),
+      body: JSON.stringify({ memberId: rij.memberId, groep: rij.groep, date: klaarDatum, beltLevel: rij.doel }),
     })
     setBusy(false)
     if (!res.ok) { alert((await res.json()).error || 'Mislukt'); return }
