@@ -50,6 +50,10 @@ export default async function PrintExamenlijst({ searchParams }: { searchParams:
     notFound()
   }
 
+  // Officiële examenlijst: laatste kolom = resultaat (geslaagd ja/nee).
+  // Proefexamen & doelenlijst: blijft de op-mag-kolom (slagen kan niet op een proef).
+  const toonGeslaagd = Boolean(q.sitting) && !isProef
+
   return (
     <>
       <style>{`
@@ -78,7 +82,7 @@ export default async function PrintExamenlijst({ searchParams }: { searchParams:
                   <th style={{ textAlign: 'left', padding: '1.2mm 1.5mm', width: '27%' }}>Lid · huidig → doel</th>
                   {VAKVOLGORDE.map(v => <th key={v} style={{ padding: '1.2mm .5mm', textAlign: 'center' }}>{KORT[v]}</th>)}
                   {isProef && <th style={{ padding: '1.2mm .5mm', textAlign: 'center', width: '10mm' }}>KLAAR?</th>}
-                  <th style={{ padding: '1.2mm .5mm', textAlign: 'center', width: '20mm', borderLeft: '2px solid #fff' }}>VOOR<br />EXAMEN?</th>
+                  <th style={{ padding: '1.2mm .5mm', textAlign: 'center', width: '20mm', borderLeft: '2px solid #fff' }}>{toonGeslaagd ? 'GESLAAGD?' : <>VOOR<br />EXAMEN?</>}</th>
                 </tr>
               </thead>
               <tbody>
@@ -114,12 +118,18 @@ export default async function PrintExamenlijst({ searchParams }: { searchParams:
                       )}
                       <td style={{ textAlign: 'center', padding: '1mm .5mm', borderLeft: '2px solid #eee' }}>
                         <div style={{ display: 'inline-flex', gap: '2.5mm' }}>
-                          {[['wel', '#1a7a1a'], ['niet', '#a90000']].map(([label, kleur]) => (
-                            <div key={label} style={{ textAlign: 'center' }}>
-                              <div style={{ width: '4mm', height: '4mm', border: '1.5px solid #555', borderRadius: '.5mm', margin: '0 auto' }} />
-                              <div style={{ fontSize: '6pt', color: kleur, fontWeight: 700, marginTop: '.3mm' }}>{label}</div>
-                            </div>
-                          ))}
+                          {(toonGeslaagd
+                            ? ([['ja', '#1a7a1a', 'COMPLETED_PASSED'], ['nee', '#a90000', 'COMPLETED_FAILED']] as [string, string, string][])
+                            : ([['wel', '#1a7a1a', ''], ['niet', '#a90000', '']] as [string, string, string][])
+                          ).map(([label, kleur, statusKey]) => {
+                            const aan = toonGeslaagd && statusKey !== '' && r.status === statusKey
+                            return (
+                              <div key={label} style={{ textAlign: 'center' }}>
+                                <div style={{ width: '4mm', height: '4mm', border: `1.5px solid ${aan ? kleur : '#555'}`, borderRadius: '.5mm', margin: '0 auto', background: aan ? (statusKey === 'COMPLETED_PASSED' ? '#e5f3e5' : '#fbe7e7') : '#fff', color: kleur, fontWeight: 700, fontSize: '8pt', lineHeight: '3.8mm' }}>{aan ? '✓' : ''}</div>
+                                <div style={{ fontSize: '6pt', color: kleur, fontWeight: 700, marginTop: '.3mm' }}>{label}</div>
+                              </div>
+                            )
+                          })}
                         </div>
                       </td>
                     </tr>
@@ -127,7 +137,7 @@ export default async function PrintExamenlijst({ searchParams }: { searchParams:
                 })}
               </tbody>
             </table>
-            <p style={{ fontSize: '6.8pt', color: '#888', marginTop: '2mm' }}>Vakken: aantallen = aantal technieken dat gekend moet worden · □ = afvinken indien in orde · (–) = niet vereist voor dit niveau · rechts: kruis aan of deze kandidaat deze ronde wél/niet op mag. Gemaakt {new Date().toLocaleDateString('nl-NL')} via de ledensite.</p>
+            <p style={{ fontSize: '6.8pt', color: '#888', marginTop: '2mm' }}>Vakken: aantallen = aantal technieken dat gekend moet worden · □ = afvinken indien in orde · (–) = niet vereist voor dit niveau · {toonGeslaagd ? 'rechts: examenresultaat — kruis bij ja (geslaagd) of nee (gezakt).' : 'rechts: kruis aan of deze kandidaat deze ronde wél/niet op mag.'} Gemaakt {new Date().toLocaleDateString('nl-NL')} via de ledensite.</p>
           </div>
         ))}
       </div>
