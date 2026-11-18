@@ -1,4 +1,5 @@
 import { db } from '@/lib/db'
+import { archivePassedStops } from '@/lib/leden-status'
 import { LedenTable } from './LedenTable'
 import { BELT_ORDER } from '@/lib/student-progress-types'
 import type { BeltLevel } from '@prisma/client'
@@ -11,6 +12,7 @@ export default async function LedenPage({
   searchParams: Promise<{ q?: string; groep?: string; band?: string; status?: string }>
 }) {
   const params = await searchParams
+  await archivePassedStops()
 
   const [members, periods] = await Promise.all([
     db.member.findMany({

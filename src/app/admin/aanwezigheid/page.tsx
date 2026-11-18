@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { lessenGridData } from '@/lib/lessendata'
+import { archivePassedStops } from '@/lib/leden-status'
 import { KwartaalGrid } from './KwartaalGrid'
 import { GROEPEN, STATUS_INFO } from '@/lib/admin2'
 import { PlanBar } from './PlanBar'
@@ -12,6 +13,7 @@ export default async function AanwezigheidPage({
   searchParams,
 }: { searchParams: Promise<{ periode?: string; groepen?: string; van?: string; tot?: string }> }) {
   const params = await searchParams
+  await archivePassedStops()
   const g = await lessenGridData({
     periode: params.periode,
     van: params.van,

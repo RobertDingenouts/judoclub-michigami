@@ -65,14 +65,17 @@ export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: 
   // "Actief" = iedereen die nog meedoet. RESERVE, VRIJGESTELD en PROEFLES
   // horen hier bij: gasten met proeflessen moeten direct zichtbaar zijn in
   // de ledenlijst (eigen badge), het Proefles-chip filtert naar alleen hen.
-  const isActief = (s: string) => s !== 'GESTOPT'
+  // GESTOPT met stopdatum in de toekomst telt mee als actief t/m die dag
+  // (member-status API houdt isActive true; auto-archief de dag erna).
+  const vandaag = new Date().toISOString().slice(0, 10)
+  const stoptNogToekomstig = (r: Row) => r.clubStatus === 'GESTOPT' && !!r.leaveDate && r.leaveDate >= vandaag
       const filtered = useMemo(() => {
         const ql = q.toLowerCase()
         const out = rows.filter(r => {
           // Inactief (prullenbak) is een eigen status: die valt buiten alle andere filters.
           if (status === 'archief') { if (r.isActive) return false }
           else if (!r.isActive) return false
-          if (status === 'actief' && !isActief(r.clubStatus)) return false
+          if (status === 'actief' && !(r.clubStatus !== 'GESTOPT' || stoptNogToekomstig(r))) return false
       if (status === 'gestopt' && r.clubStatus !== 'GESTOPT') return false
       if (status === 'reserve' && r.clubStatus !== 'RESERVE') return false
       if (status === 'proef' && r.clubStatus !== 'PROEF') return false
@@ -107,7 +110,7 @@ export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: 
   const statusCount = (s: string) => rows.filter(r =>
     s === 'archief' ? !r.isActive :
     !r.isActive ? false :
-    s === 'actief' ? isActief(r.clubStatus) :
+    s === 'actief' ? (r.clubStatus !== 'GESTOPT' || stoptNogToekomstig(r)) :
     s === 'gestopt' ? r.clubStatus === 'GESTOPT' :
     s === 'reserve' ? r.clubStatus === 'RESERVE' :
     s === 'vrijgesteld' ? r.clubStatus === 'VRIJGESTELD' :
@@ -154,7 +157,7 @@ export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: 
         <Chip active={rol === 'lid'} onClick={() => setRol('lid')}>Leden ({rows.filter(r => r.role === 'MEMBER' && r.isActive).length})</Chip>
         <Chip active={rol === 'ouder'} onClick={() => setRol('ouder')}>Ouders ({rows.filter(r => r.role === 'PARENT').length})</Chip>
         <Chip active={rol === 'trainer'} onClick={() => setRol('trainer')}>Trainers ({rows.filter(r => r.isTrainer || r.role === 'INSTRUCTOR').length})</Chip>
-        <Chip active={rol === 'admin'} onClick={() => setRol('admin')}>Bestuur ({rows.filter(r => r.role === 'ADMIN').length})</Chip>
+        <Chip active={rol === 'admin'} onClick={() => setRol('admin')}>Bestuur ({rows.filter(r => r.role === 'ADMIN' && r.isActive).length})</Chip>
       </div>
       <div className={`flex flex-wrap gap-1.5 ${filtersOpen ? '' : 'hidden'} sm:flex`}>
         <Chip active={groep === ''} onClick={() => setGroep('')}>Alle groepen ({filtered.length})</Chip>
@@ -267,7 +270,7 @@ function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; on
                     className={`rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors ${
                       r.clubStatus === s ? `${CLUB_STATUS_INFO[s].klas} ring-1 ring-[#a90000]/40` : 'border-gray-200 bg-white text-gray-500 hover:border-[#a90000]/40'
                     }`}>
-                    {CLUB_STATUS_INFO[s].label}
+                    {CLUB_STATUS_INFO[s].label}{r.clubStatus === s && r.leaveDate ? ` per ${new Date(r.leaveDate).toLocaleDateString('nl-NL')}` : ''}
                   </button>
                 ))}
               </div>

@@ -1,5 +1,6 @@
 import { db } from '@/lib/db'
 import { kwartaalVan } from '@/lib/admin2'
+import { archivePassedStops } from '@/lib/leden-status'
 import { ensureUpcomingDays, markeerVakantieDagen } from '@/lib/lessen'
 import { getBeltLabel, getNextBelt, isSlipBelt, isYouth } from '@/lib/belt-utils'
 import { lessenGridData } from '@/lib/lessendata'
@@ -17,6 +18,7 @@ export default async function AdminStart() {
   // Lesdagen aanvullen én bestaande dagen markeren die in een vakantie vallen.
   await ensureUpcomingDays(12)
   await markeerVakantieDagen()
+  await archivePassedStops()
 
   const [
     actieveLeden, pendingApps, openPayments, nogTeBetalen, allePeriodes,

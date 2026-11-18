@@ -5,7 +5,9 @@ import { isAdmin } from '@/lib/auth'
 export const dynamic = 'force-dynamic'
 
 // POST { memberId, clubStatus, leaveDate? } — clubStatus: LID | RESERVE | STOPPEND | GESTOPT | PROEF | VRIJGESTELD
-// GESTOPT => isActive=false + leaveDate (archief); terug naar LID => leaveDate leeg.
+// GESTOPT + stopdatum in de toekomst => blijft actief t/m die dag (auto-archief
+// de dag erna via lib/leden-status). GESTOPT zonder/verleden datum => direct archief.
+// Terug naar LID => leaveDate leeg.
 // VRIJGESTELD => geen contributie: openstaande payments in lopende/toekomstige periodes -> VIJGESTELD.
 export async function POST(req: NextRequest) {
   if (!(await isAdmin())) return NextResponse.json({ error: 'Geen admin' }, { status: 403 })
@@ -14,11 +16,17 @@ export async function POST(req: NextRequest) {
   const valid = ['LID', 'RESERVE', 'STOPPEND', 'GESTOPT', 'PROEF', 'VRIJGESTELD']
   if (!valid.includes(clubStatus)) return NextResponse.json({ error: `Ongeldige status: ${clubStatus}` }, { status: 400 })
 
+  const dagStart = new Date(new Date().toISOString().slice(0, 10))
   const data: Record<string, unknown> = {
     clubStatus,
-    isActive: clubStatus !== 'GESTOPT',
+    isActive: true,
   }
-  if (clubStatus === 'GESTOPT') data.leaveDate = leaveDate ? new Date(leaveDate) : new Date()
+  if (clubStatus === 'GESTOPT') {
+    data.leaveDate = leaveDate ? new Date(leaveDate) : new Date()
+    // Toekomstige stopdatum: lid blijft actief t/m die dag; archivePassedStops
+    // maakt hem de dag erna automatisch inactief.
+    data.isActive = (data.leaveDate as Date) < dagStart
+  }
   if (clubStatus === 'LID') data.leaveDate = null
 
   const m = await db.member.update({ where: { id: memberId }, data })

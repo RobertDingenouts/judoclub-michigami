@@ -1,4 +1,5 @@
 import { contributieData } from '@/lib/contributiedata'
+import { archivePassedStops } from '@/lib/leden-status'
 import { ContributieBoard } from './ContributieBoard'
 import { PeriodeSelect } from './PeriodeSelect'
 
@@ -10,6 +11,7 @@ export default async function ContributiePage({
   searchParams,
 }: { searchParams: Promise<{ periode?: string; gestopt?: string }> }) {
   const params = await searchParams
+  await archivePassedStops()
   const nu = new Date()
   const label = params.periode || `${nu.getFullYear()}-Q${Math.floor(nu.getMonth() / 3) + 1}`
   const toonGestopt = params.gestopt === '1'
