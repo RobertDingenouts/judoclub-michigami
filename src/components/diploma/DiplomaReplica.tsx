@@ -29,7 +29,7 @@ export default function DiplomaReplica({ design, naam, datum, plaats }: {
       <img className="abs" src={`/diploma/${design}/bg.webp`} loading="eager" style={{ left: 0, top: 0, width: '100%', height: '100%' }} alt="" />
 
       <img className="abs" src="/logo/logo-michigami.png" loading="eager" style={{ left: mm(LOGO_BIG[0]), top: mm(LOGO_BIG[1]), width: mm(LOGO_BIG[2] - LOGO_BIG[0]), height: mm(LOGO_BIG[3] - LOGO_BIG[1]) }} alt="Judoclub Michigami" />
-      <img className="abs" src="/logo/logo-michigami.png" loading="eager" style={{ left: mm(lsx - LOGO_SMALL_SIZE / 2), top: mm(lsy - LOGO_SMALL_SIZE / 2), width: mm(LOGO_SMALL_SIZE), height: mm(LOGO_SMALL_SIZE) }} alt="" />
+      <img className="abs" src="/diploma/logo_small.png" loading="eager" style={{ left: mm(lsx - LOGO_SMALL_SIZE / 2), top: mm(lsy - LOGO_SMALL_SIZE / 2 - 0.09), width: mm(LOGO_SMALL_SIZE), height: mm(LOGO_SMALL_SIZE) }} alt="" />
 
       {design === 'bruin' && (<>
         <div className="txt abs" style={{ fontFamily: "'Diploma Anton'", left: mm(240), width: mm(120), top: mm(247 + O.kyu), height: mm(25.01), fontSize: mm(25.01), lineHeight: mm(25.01), color: '#000', textAlign: 'center' }}>{b.kyu}</div>
