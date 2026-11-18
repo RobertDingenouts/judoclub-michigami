@@ -255,6 +255,7 @@ export default function AdminDashboard({ d }: { d: DashData }) {
             </div>
             <Link href="/admin/aanwezigheid/les" className="rounded-md bg-[#a90000] px-3.5 py-2 text-xs font-semibold text-white shadow-sm hover:bg-[#8c0000]">✏️ Les invullen</Link>
                 <Link href="/admin/materiaal" className="rounded-md border border-gray-200 bg-white px-3.5 py-2 text-xs font-semibold text-gray-700 shadow-sm hover:border-[#a90000]/40">📦 Materiaal</Link>
+                <a href="/print/inschrijf" target="_blank" rel="noopener" className="rounded-md border border-gray-200 bg-white px-3.5 py-2 text-xs font-semibold text-gray-700 shadow-sm hover:border-[#a90000]/40">🖨 Inschrijf­formulier</a>
           </div>
         </div>
       </div>
@@ -748,6 +749,7 @@ function WSnel() {
     ['/admin/leden', '👥', 'Leden'],
     ['/admin/contributie', '💶', 'Contributie'],
     ['/admin/inschrijvingen', '📝', 'Inschrijvingen'],
+    ['/print/inschrijf', '🖨', 'Inschrijf­formulier printen'],
     ['/admin/exams', '🥇', 'Examens'],
     ['/admin/exams/new', '➕', 'Examen plannen'],
     ['/admin/diplomas', '🏆', "Diploma's"],
