@@ -137,6 +137,9 @@ export default function Registratie({ sitting, attempts: init, kandidaten }: Pro
               {a.status === 'SCHEDULED' && !proef && <span className="rounded-sm bg-yellow-100 px-2 py-0.5 text-xs font-medium text-yellow-800">Gepland</span>}
               <span className="ml-auto flex items-center gap-2">
                 {busy === a.id && <span className="text-xs text-gray-400">…</span>}
+                {!proef && ['WIT', 'GEEL', 'ORANJE', 'GROEN', 'BLAUW', 'BRUIN_1', 'BRUIN_2', 'BRUIN_3'].includes(a.beltLevel) && (
+                  <Link href={`/print/diploma/${a.id}`} target="_blank" className="rounded-sm border border-gray-300 bg-white px-3 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50">🖨 Diploma</Link>
+                )}
                 {done && <button onClick={() => patch(a.id, { status: 'SCHEDULED' }, true)} className="text-xs text-gray-500 hover:underline">Heropenen</button>}
                 {!done && !proef && <button onClick={() => patch(a.id, {}, false)} className="text-xs text-gray-500 hover:underline">Bewaar</button>}
                 {proef && (

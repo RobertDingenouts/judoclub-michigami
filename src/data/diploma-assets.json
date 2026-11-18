@@ -1,0 +1,92 @@
+{
+ "wit": {
+  "watermerk": "rgba_0.png",
+  "band": "rgba_1.png",
+  "sigA2": "rgba_2.png",
+  "sigA3": "rgba_3.png",
+  "sigA4": "rgba_4.png",
+  "sigA5": "rgba_5.png",
+  "kanji": [
+   "kanji_2.png",
+   "kanji_3.png",
+   "kanji_4.png",
+   "kanji_5.png"
+  ],
+  "belt_clip": "belt_clip.png"
+ },
+ "geel": {
+  "watermerk": "rgba_0.png",
+  "band": "rgba_1.png",
+  "sigA2": "rgba_2.png",
+  "sigA3": "rgba_3.png",
+  "sigA4": "rgba_4.png",
+  "sigA5": "rgba_5.png",
+  "kanji": [
+   "kanji_2.png",
+   "kanji_3.png",
+   "kanji_4.png",
+   "kanji_5.png"
+  ],
+  "belt_clip": "belt_clip.png"
+ },
+ "oranje": {
+  "watermerk": "rgba_0.png",
+  "band": "rgba_1.png",
+  "sigA2": "rgba_2.png",
+  "sigA3": "rgba_3.png",
+  "sigA4": "rgba_4.png",
+  "sigA5": "rgba_5.png",
+  "kanji": [
+   "kanji_2.png",
+   "kanji_3.png",
+   "kanji_4.png",
+   "kanji_5.png"
+  ],
+  "belt_clip": "belt_clip.png"
+ },
+ "groen": {
+  "watermerk": "rgba_0.png",
+  "band": "rgba_1.png",
+  "sigA2": "rgba_2.png",
+  "sigA3": "rgba_3.png",
+  "sigA4": "rgba_4.png",
+  "sigA5": "rgba_5.png",
+  "kanji": [
+   "kanji_2.png",
+   "kanji_3.png",
+   "kanji_4.png",
+   "kanji_5.png"
+  ],
+  "belt_clip": "belt_clip.png"
+ },
+ "blauw": {
+  "watermerk": "rgba_0.png",
+  "band": "rgba_1.png",
+  "sigA2": "rgba_2.png",
+  "sigA3": "rgba_3.png",
+  "sigA4": "rgba_4.png",
+  "sigA5": "rgba_5.png",
+  "kanji": [
+   "kanji_2.png",
+   "kanji_3.png",
+   "kanji_4.png",
+   "kanji_5.png"
+  ],
+  "belt_clip": "belt_clip.png"
+ },
+ "bruin": {
+  "watermerk": "rgba_0.png",
+  "band": "band_bruin.png",
+  "sigA2": "rgba_2.png",
+  "sigA3": "rgba_3.png",
+  "sigA4": "rgba_4.png",
+  "sigA5": "rgba_5.png",
+  "kanji": [
+   "kanji_2.png",
+   "kanji_3.png",
+   "kanji_4.png",
+   "kanji_5.png"
+  ],
+  "belt_clip": "belt_clip.png"
+ }
+}

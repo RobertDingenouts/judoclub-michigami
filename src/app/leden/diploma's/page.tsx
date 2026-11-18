@@ -49,7 +49,7 @@ export default async function DiplomasPage() {
                   </div>
                   <div className="flex flex-col items-end gap-2 ml-4">
                     <a
-                      href={`/api/diplomas/download?id=${diploma.id}`}
+                      href={diploma.type === 'BELT_EXAM' ? `/diploma/${diploma.id}` : `/api/diplomas/download?id=${diploma.id}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-[#a90000] transition-colors"
@@ -57,11 +57,12 @@ export default async function DiplomasPage() {
                       <T k="👁 Bekijken" />
                     </a>
                     <a
-                      href={`/api/diplomas/download?id=${diploma.id}`}
-                      download
+                      href={diploma.type === 'BELT_EXAM' ? `/diploma/${diploma.id}` : `/api/diplomas/download?id=${diploma.id}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 text-xs text-[#a90000] hover:underline font-medium"
                     >
-                      <T k="⬇ Download PDF" />
+                      <T k="⬇ Openen / printen" />
                     </a>
                   </div>
                 </div>
