@@ -5,6 +5,7 @@ import { isAdmin } from '@/lib/auth'
 import DiplomaReplica from '@/components/diploma/DiplomaReplica'
 import DiplomaNaamFitter from '@/components/diploma/DiplomaNaamFitter'
 import PrintKnop from '@/components/diploma/PrintKnop'
+import PrintFitter from '@/components/diploma/PrintFitter'
 import { BAND_DESIGN } from '@/lib/diploma-replica-data'
 import { diplomaPlaats } from '@/app/print/diploma/[attempt]/page'
 
@@ -44,7 +45,7 @@ export default async function PrintAlleDiploma({
       {metDiploma.length === 0 && (
         <p className="p-8 text-sm text-gray-600">Deze examenmomenten bevatten alleen slip-examens — die krijgen geen diploma.</p>
       )}
-      <div className="mx-auto w-fit py-6 print:py-0">
+      <div className="mx-auto w-fit py-6 print:py-0 print-fit">
         {metDiploma.map((a, i) => (
           <div key={a.id} style={{ breakAfter: i < metDiploma.length - 1 ? 'page' : 'auto' }}>
             <DiplomaReplica design={BAND_DESIGN[a.beltLevel]} naam={`${a.member.firstName} ${a.member.lastName}`} datum={datum} plaats={plaatsOptie} />
@@ -52,6 +53,7 @@ export default async function PrintAlleDiploma({
         ))}
       </div>
       <DiplomaNaamFitter />
+      <PrintFitter />
     </div>
   )
 }

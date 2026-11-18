@@ -19,7 +19,7 @@ export default function DiplomaReplica({ design, naam, datum, plaats }: {
       <style dangerouslySetInnerHTML={{ __html: `
         @page { size: A4; margin: 0; }
         .diploma-root { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-        .diploma-page { position: relative; width: 210mm; height: 297mm; background: #fff; overflow: hidden; }
+        .diploma-page { position: relative; width: 209.9mm; height: 296.9mm; background: #fff; overflow: hidden; }
         .diploma-page .abs { position: absolute; }
         .diploma-page .txt { white-space: pre; }
         @font-face { font-family: 'Diploma Anton'; src: url('/diploma/fonts/Anton-Regular.ttf'); }

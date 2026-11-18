@@ -184,7 +184,7 @@ export default function RootLayout({
         <HalloweenDecor />
         <PWARegister />
         {children}
-        <Toaster />
+        <div className="print:hidden"><Toaster /></div>
         <JsonLd />
       </body>
     </html>

@@ -111,6 +111,7 @@ export function PrijslijstClient() {
 
   return (
     <>
+      <style dangerouslySetInnerHTML={{ __html: `@media print { @page { size: A4 portrait; margin: 12mm; } }` }} />
       {/* Compacte print/PDF-versie: 2 A4-tjes, design gespiegeld aan huisstijl */}
       <div className="prijslijst-print hidden print:block">
         <div className="mb-3 grid grid-cols-2 gap-3">

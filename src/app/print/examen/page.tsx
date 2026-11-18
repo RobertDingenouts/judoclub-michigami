@@ -7,6 +7,7 @@ import { GROEP_LABELS, GROEP_SUBTEXT, kandidatenVoorGroep, beltIndex } from '@/l
 import { eisenVoorBelt, VAKVOLGORDE, KORT } from '@/lib/examen-eisen'
 import { BeltBadge } from '@/components/admin/BeltBadge'
 import PrintKnop from './PrintKnop'
+import PrintFitter from '@/components/diploma/PrintFitter'
 
 export const dynamic = 'force-dynamic'
 
@@ -61,7 +62,8 @@ export default async function PrintExamenlijst({ searchParams }: { searchParams:
         @media print { body { background: #fff !important; } .print-shell { margin: 0 !important; padding: 0 !important; } }
         body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
       `}</style>
-      <div className="print-shell mx-auto max-w-4xl bg-white p-6 text-[#222]" style={{ fontFamily: "'DejaVu Sans', sans-serif" }}>
+      <div className="print-shell print-fit mx-auto max-w-4xl bg-white p-6 text-[#222]" style={{ fontFamily: "'DejaVu Sans', sans-serif" }}>
+        <PrintFitter />
         <div className="mb-3 flex items-center justify-between print:hidden">
           <Link href="/admin/exams" className="text-sm text-[#a90000] hover:underline">← Terug</Link>
           <PrintKnop />

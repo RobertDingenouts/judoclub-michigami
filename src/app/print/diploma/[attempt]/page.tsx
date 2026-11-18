@@ -5,6 +5,7 @@ import { isAdmin } from '@/lib/auth'
 import DiplomaReplica from '@/components/diploma/DiplomaReplica'
 import DiplomaNaamFitter from '@/components/diploma/DiplomaNaamFitter'
 import PrintKnop from '@/components/diploma/PrintKnop'
+import PrintFitter from '@/components/diploma/PrintFitter'
 import { BAND_DESIGN } from '@/lib/diploma-replica-data'
 
 export const dynamic = 'force-dynamic'
@@ -57,10 +58,11 @@ export default async function PrintDiploma({
         </span>
         <PrintKnop />
       </div>
-      <div className="mx-auto w-fit py-6 print:py-0">
+      <div className="mx-auto w-fit py-6 print:py-0 print-fit">
         <DiplomaReplica design={design} naam={naam} datum={datum} plaats={plaatsOptie} />
       </div>
       <DiplomaNaamFitter />
+      <PrintFitter />
     </div>
   )
 }

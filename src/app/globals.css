@@ -229,6 +229,14 @@
     word-wrap: break-word;
     overflow-wrap: break-word;
   }
+  /* A4-printpagina's (diploma/lijsten) mogen wél voller dan de viewport zijn;
+     op mobiel worden ze via PrintFitter (zoom) passend gemaakt, print blijft 1:1 */
+  .diploma-page, .diploma-page * {
+    max-width: none;
+  }
+  @media print {
+    body { min-height: 0 !important; }
+  }
 
   /* Headings use Rokkitt (serif) */
   h1, h2, h3, h4, h5, h6 {
@@ -1495,8 +1503,8 @@ nextjs-portal {
 
 /* Prijslijst print: 2 A4-tjes, verticale Excel-tabellen in huisstijl */
 @media print {
-  @page { size: A4 portrait; margin: 12mm; }
   html, body { background: #fff !important; }
+  .print-fit { zoom: 1 !important; }
   .prijslijst-print .print-h2 { font-size: 11pt; font-weight: 800; color: #2a2a2a; border-left: 2.2mm solid #a90000; padding-left: 2.5mm; }
   .prijslijst-print .print-card { background: #fdf6f6; border-left: 1.2mm solid #a90000; border-radius: 1.5mm; padding: 2.6mm 3.2mm; }
   .prijslijst-print table { border-collapse: collapse; }
