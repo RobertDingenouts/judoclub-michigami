@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { isAdmin } from '@/lib/auth'
 import DiplomaReplica from '@/components/diploma/DiplomaReplica'
 import DiplomaNaamFitter from '@/components/diploma/DiplomaNaamFitter'
+import PrintKnop from '@/components/diploma/PrintKnop'
 import { BAND_DESIGN } from '@/lib/diploma-replica-data'
 
 export const dynamic = 'force-dynamic'
@@ -54,7 +55,7 @@ export default async function PrintDiploma({
             <Link key={p} href={`/print/diploma/${a.id}?plaats=${p}`} className={`rounded-sm px-2 py-1 ${plaatsOptie === p ? 'bg-white text-black' : 'bg-white/10 hover:bg-white/20'}`}>{p}</Link>
           ))}
         </span>
-        <button onClick={() => window.print()} className="ml-auto rounded-sm bg-white px-3 py-1 font-medium text-black hover:bg-gray-100">🖨 Printen</button>
+        <PrintKnop />
       </div>
       <div className="mx-auto w-fit py-6 print:py-0">
         <DiplomaReplica design={design} naam={naam} datum={datum} plaats={plaatsOptie} />

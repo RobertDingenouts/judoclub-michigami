@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { getCurrentUser, isAdmin } from '@/lib/auth'
 import DiplomaReplica from '@/components/diploma/DiplomaReplica'
 import DiplomaNaamFitter from '@/components/diploma/DiplomaNaamFitter'
+import PrintKnop from '@/components/diploma/PrintKnop'
 import { BAND_DESIGN } from '@/lib/diploma-replica-data'
 import { diplomaPlaats } from '@/app/print/diploma/[attempt]/page'
 
@@ -36,7 +37,7 @@ export default async function DiplomaView({ params }: { params: Promise<{ id: st
       <div className="print:hidden sticky top-0 z-10 flex flex-wrap items-center gap-3 bg-[#2a2a2a] px-4 py-2 text-sm text-white">
         <Link href="/leden/diploma's" className="text-white/80 hover:text-white">← Mijn diploma's</Link>
         <span className="font-medium">{naam} — {d.title}</span>
-        <button onClick={() => window.print()} className="ml-auto rounded-sm bg-white px-3 py-1 font-medium text-black hover:bg-gray-100">🖨 Printen / als PDF bewaren</button>
+        <PrintKnop label="🖨 Printen / als PDF bewaren" />
       </div>
       <div className="mx-auto w-fit py-6 print:py-0">
         <DiplomaReplica design={design} naam={naam} datum={datum} plaats={plaats} />

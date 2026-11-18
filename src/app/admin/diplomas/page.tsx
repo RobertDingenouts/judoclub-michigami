@@ -216,6 +216,9 @@ function DiplomaRij({ diploma }: { diploma: any }) {
       )}
       <span className="shrink-0 text-xs text-gray-500">{new Date(diploma.awardedAt).toLocaleDateString('nl-NL')}</span>
       <span className="hidden shrink-0 font-mono text-[11px] text-gray-400 md:inline">{diploma.verificationCode}</span>
+      {diploma.type === 'BELT_EXAM' && (
+        <a href={`/diploma/${diploma.id}`} target="_blank" rel="noopener noreferrer" className="shrink-0 rounded-sm border border-gray-300 bg-white px-2 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50">🖼 Diploma</a>
+      )}
       <CopyButton code={diploma.verificationCode} />
     </div>
   )

@@ -91,6 +91,7 @@ export default function Registratie({ sitting, attempts: init, kandidaten }: Pro
           {proef && <p className="text-xs text-gray-400">Vink per week de vakken af die goed waren — alles blijft bewaard. Wordt er een examen-zitting aangemaakt, dan starten die vakken al afgevinkt.</p>}
         </div>
         <Link href={`/print/examen?sitting=${sitting.id}`} className="rounded-sm bg-[#2a2a2a] px-4 py-2 text-sm font-medium text-white hover:bg-black">🖨 Print lijst</Link>
+        <Link href={`/print/diplomas?sitting=${sitting.id}`} className="rounded-sm bg-[#a90000] px-4 py-2 text-sm font-medium text-white hover:bg-[#8c0000]">🎓 Diploma's</Link>
       </div>
 
       {!proef && sitting.proefTitel && (

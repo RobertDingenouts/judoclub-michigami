@@ -49,6 +49,7 @@ export default function ZittingenLijst({ zittingen }: { zittingen: ZittingRij[] 
           <div className="flex gap-2">
             <Link href={`/admin/exams/bijeenkomst/${z.id}`} className="rounded-sm bg-[#a90000] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#8c0000]">Registreren</Link>
             <Link href={`/print/examen?sitting=${z.id}`} className="rounded-sm border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50">Print</Link>
+            <Link href={`/print/diplomas?sitting=${z.id}`} className="rounded-sm border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50">🎓 Diploma's</Link>
             <button
               onClick={() => verwijder(z)}
               disabled={busy === z.id}
