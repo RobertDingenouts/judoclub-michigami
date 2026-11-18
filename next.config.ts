@@ -24,6 +24,7 @@ const nextConfig: NextConfig = {
 
   // Optimize package imports - tree-shake unused exports
   experimental: {
+    agentUpgrade: "security",
     optimizePackageImports: [
       "lucide-react",
       "@radix-ui/react-dialog",
