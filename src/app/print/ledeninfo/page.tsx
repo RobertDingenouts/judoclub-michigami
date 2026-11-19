@@ -88,7 +88,6 @@ export default async function PrintLedeninfo() {
 
             <Kop>Bankrekening:</Kop>
             <p>
-              Rabobank Steenbergen<br />
               t.n.v. Judoclub Michigami Steenbergen<br />
               IBAN: {IBAN}
             </p>
@@ -125,7 +124,7 @@ export default async function PrintLedeninfo() {
               scan de QR-code of ga naar<br />
               <b className="text-[14px]">www.{SITE}/inschrijven</b><br />
               om je in te schrijven!<br />
-              <span className="text-[10.5px]">Na inschrijving krijgt elk lid een eigen account op de website, met al zijn of haar gegevens en prestaties (lessen, examens en diploma's). Gebruik daarom liefst één eigen e-mailadres per lid (ouders mogen er altijd bij zitten).</span>
+              <span className="text-[10.5px]">Na inschrijving krijgt elk lid een eigen account op de website, met al zijn of haar gegevens en prestaties (lessen, examens en diploma's). Gebruik daarom liefst één eigen e-mailadres per lid.</span>
             </p>
           </div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
