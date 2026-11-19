@@ -58,7 +58,7 @@ export default async function PrintDiploma({
         </span>
         <PrintKnop />
       </div>
-      <div className="mx-auto w-fit py-6 print:py-0 print:mx-0 print-fit">
+      <div className="mx-auto w-fit py-6 print:py-0 print-fit">
         <DiplomaReplica design={design} naam={naam} datum={datum} plaats={plaatsOptie} />
       </div>
       <DiplomaNaamFitter />

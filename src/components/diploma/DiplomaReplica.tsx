@@ -19,13 +19,12 @@ export default function DiplomaReplica({ design, naam, datum, plaats }: {
       <style dangerouslySetInnerHTML={{ __html: `
         @page { size: A4; margin: 0; }
         .diploma-root { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-        /* 1:1 Canva-venster 204.4×289.4 mm op [0.4;3.8]: past exact in printzone printer
-           (printzone printer gemeten: x 2,54..207,28 / y 3,44..293,0 — horizontaal gecentreerd op papier) → GEEN fit-scale,
-           randen komen op ~9,8/9,4/9,8/9,8 mm van papier. Witte marges rechts/boven/onder weggeclipd. */
-        .diploma-page { position: relative; width: 204.38mm; height: 289.4mm; margin: 3.76mm auto 0; background: #fff; overflow: hidden; }
-        @media print { .diploma-page { margin: 3.76mm 0 0 -0.23mm; } }
-        /* interieur 1:1 Canva-maten, 3,2 mm opgeschoven (witte boven-marge afgeknipt) */
-        .diploma-inner { position: absolute; left: 0; top: -3.2mm; width: 209.9mm; height: 296.9mm; }
+        /* 192×271.6 mm, gecentreerd: past binnen de onafdrukbare marge van de clubprinter
+           (links ~5, rechts ~9 mm) → afdrukken valt exact in 't midden, geen Canva-shift nodig */
+        .diploma-page { position: relative; width: 192mm; height: 271.6mm; margin: 13mm auto 0; background: #fff; overflow: hidden; }
+        @media print { .diploma-page { left: 2mm; } }  /* Robert 19 nov: printer zette ontwerp 2,5 mm te links */
+        /* interieur blijft op Canva-maten (209.9×296.9 mm) en schaalt als geheel naar 192 mm */
+        .diploma-inner { position: absolute; left: 0; top: 0; width: 209.9mm; height: 296.9mm; transform: scale(0.914721); transform-origin: top left; }
         .diploma-page .abs { position: absolute; }
         .diploma-page .txt { white-space: pre; }
         @font-face { font-family: 'Diploma Anton'; src: url('/diploma/fonts/Anton-Regular.ttf'); }
