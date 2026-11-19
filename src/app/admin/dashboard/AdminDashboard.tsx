@@ -14,6 +14,7 @@ import type { LayoutItem, ResponsiveLayouts } from 'react-grid-layout'
 import 'react-grid-layout/css/styles.css'
 import 'react-resizable/css/styles.css'
 import { GROEP_LABEL, STATUS_INFO, PAYMENT_INFO, groepNaam } from '@/lib/admin2'
+import { NAV_GROUPS, QUICK_ACTIONS } from '@/lib/admin-nav'
 import { BELT_ORDER as BAND_VOLGORDE } from '@/lib/student-progress-types'
 import { BeltVak } from '@/components/admin/BeltVak'
 import { KwartaalGrid } from '../aanwezigheid/KwartaalGrid'
@@ -92,19 +93,19 @@ type WDef = { i: string; titel: string; def: Omit<LayoutItem, 'i'> }
 // naast en onder elkaar op de pc. De layout-key is ge-bumpt: de oude widgetset
 // (met de eigen, afwijkende aanwezigheidslijst) bestaat niet meer.
 const WIDGETS: WDef[] = [
-  { i: 'lessen', titel: '📊 Lessen & aanwezigheid', def: { x: 0, y: 0, w: 12, h: 15, minW: 6, minH: 6 } },
+  { i: 'lessen', titel: '📅 Lessen & aanwezigheid', def: { x: 0, y: 0, w: 12, h: 15, minW: 6, minH: 6 } },
   { i: 'lesmodus', titel: '✏️ Les invullen', def: { x: 12, y: 0, w: 7, h: 15, minW: 4, minH: 6 } },
   { i: 'leden', titel: '👥 Leden', def: { x: 19, y: 0, w: 5, h: 15, minW: 4, minH: 4 } },
   { i: 'contributie', titel: '💶 Contributie', def: { x: 0, y: 15, w: 8, h: 9, minW: 3, minH: 3 } },
   { i: 'komende', titel: '📅 Komende lessen', def: { x: 8, y: 15, w: 4, h: 9, minW: 3, minH: 3 } },
   { i: 'vlaggen', titel: '⚠️ Reserve & stoppend', def: { x: 12, y: 15, w: 4, h: 9, minW: 2, minH: 2 } },
-  { i: 'examens', titel: '🥋 Examens', def: { x: 16, y: 15, w: 4, h: 9, minW: 2, minH: 2 } },
+  { i: 'examens', titel: '🎯 Examens', def: { x: 16, y: 15, w: 4, h: 9, minW: 2, minH: 2 } },
   { i: 'inschrijvingen', titel: '📝 Inschrijvingen', def: { x: 20, y: 15, w: 4, h: 5, minW: 2, minH: 2 } },
   { i: 'trend', titel: '📈 Trend 7 dagen', def: { x: 20, y: 20, w: 4, h: 4, minW: 2, minH: 2 } },
   { i: 'gestopt', titel: '🚪 Recent gestopt', def: { x: 0, y: 24, w: 5, h: 4, minW: 2, minH: 2 } },
   { i: 'betald', titel: '✅ Recent betaald', def: { x: 5, y: 24, w: 5, h: 4, minW: 2, minH: 2 } },
-  { i: 'snel', titel: '⚡ Snel naar', def: { x: 10, y: 24, w: 7, h: 4, minW: 2, minH: 2 } },
-  { i: 'groei', titel: '📈 Leden per kwartaal', def: { x: 17, y: 24, w: 7, h: 5, minW: 3, minH: 3 } },
+  { i: 'snel', titel: '⚡ Snel naar', def: { x: 10, y: 24, w: 7, h: 5, minW: 2, minH: 2 } },
+  { i: 'groei', titel: '📊 Leden per kwartaal', def: { x: 17, y: 24, w: 7, h: 5, minW: 3, minH: 3 } },
 ]
 
 const LS_LAYOUT = 'mj-dash-layout-v7'
@@ -220,11 +221,11 @@ export default function AdminDashboard({ d }: { d: DashData }) {
           {!mobiel && (
             <>
               <button onClick={() => setEdit(e => !e)}
-                className={`rounded-sm border px-3 py-2 text-xs font-semibold ${edit ? 'border-[#a90000] bg-[#fdf6f6] text-[#a90000]' : 'border-gray-300 bg-white text-gray-600'}`}>
+                className={`rounded-lg border px-3 py-2 text-xs font-semibold transition-colors ${edit ? 'border-[#a90000] bg-[#fdf6f6] text-[#a90000]' : 'border-gray-300 bg-white text-gray-600 hover:border-gray-400'}`}>
                 {edit ? '✓ Klaar' : '✋ Layout'}
               </button>
               <div className="relative">
-                <button onClick={() => setMenu(m => !m)} className="rounded-sm border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-600">
+                <button onClick={() => setMenu(m => !m)} className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-600 transition-colors hover:border-gray-400">
                   Widgets {zichtbaar.length}/{WIDGETS.length} ▾
                 </button>
                 {menu && (
@@ -243,7 +244,7 @@ export default function AdminDashboard({ d }: { d: DashData }) {
           )}
           <div className="flex items-center gap-2">
             <div className="relative">
-              <button onClick={() => setExportMenu(v => !v)} className="rounded-sm border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-600">⬇ Export ▾</button>
+              <button onClick={() => setExportMenu(v => !v)} className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-600 transition-colors hover:border-gray-400">⬇ Export ▾</button>
               {exportMenu && (
                 <div className="absolute right-0 z-40 mt-1 w-56 rounded-md border border-gray-200 bg-white p-1.5 shadow-xl">
                   {([['leden', '📋 Volledige ledenlijst'], ['inschrijvingen', '📝 Nieuwe inschrijvingen'], ['contributie', '💶 Contributie (Q4)'], ['aanwezigheid', '📊 Aanwezigheid (90d)']] as [string, string][]).map(([k, lbl]) => (
@@ -253,30 +254,31 @@ export default function AdminDashboard({ d }: { d: DashData }) {
                 </div>
               )}
             </div>
-            <Link href="/admin/aanwezigheid/les" className="rounded-md bg-[#a90000] px-3.5 py-2 text-xs font-semibold text-white shadow-sm hover:bg-[#8c0000]">✏️ Les invullen</Link>
-                <Link href="/admin/materiaal" className="rounded-md border border-gray-200 bg-white px-3.5 py-2 text-xs font-semibold text-gray-700 shadow-sm hover:border-[#a90000]/40">📦 Materiaal</Link>
-                <a href="/print/ledeninfo" target="_blank" rel="noopener" className="rounded-md border border-gray-200 bg-white px-3.5 py-2 text-xs font-semibold text-gray-700 shadow-sm hover:border-[#a90000]/40">📄 Ledeninfo</a>
+            <Link href="/admin/aanwezigheid/les" className="rounded-lg bg-[#a90000] px-3.5 py-2 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-[#8c0000]">✏️ Les invullen</Link>
           </div>
         </div>
       </div>
 
-      {/* KPI-rijen: altijd zichtbaar, compact, klikbaar */}
-      <div className="mb-3 grid grid-cols-4 gap-1.5 md:grid-cols-6 xl:grid-cols-8">
-        <Kpi href="/admin/leden" label="Leden" value={t.actieveLeden} />
-        <Kpi href="/admin/contributie" label="Nog te betalen" value={t.contributieNog} sub={`€${t.contributieNogSom.toFixed(0)}`} accent={t.contributieNog > 0 ? 'text-amber-600' : 'text-green-700'} />
-        <Kpi href="/admin/contributie" label="Schuldig" value={t.contributieOpen} sub={`€${t.contributieSom.toFixed(0)}`} accent={t.contributieOpen > 0 ? 'text-red-700' : 'text-green-700'} />
-        <Kpi href="/admin/contributie" label="Recent betaald" value={d.recentBetald.length} />
-        <Kpi href="/admin/aanwezigheid" label="Aanwezig" value={`${t.aanwPct}%`} sub={`${t.aanwVan}/${t.aanwNoem}`} />
-        <Kpi href="/admin/inschrijvingen" label="Nieuw" value={t.inschrijvingen} accent={t.inschrijvingen > 0 ? 'text-[#a90000]' : ''} />
-        <Kpi href="/admin/exams" label="Examens" value={t.examensGepland} />
-        <Kpi href="/admin/diplomas" label="Diploma's 6m" value={t.diplomaRecent} />
-        <Kpi href="/admin/leden" label="Reserve/stopt" value={d.vlaggen.length} accent={d.vlaggen.length > 0 ? 'text-amber-600' : ''} />
-      </div>
+      {/* KPI-rij: desktop — 8 strakke kaarten, korte labels (niet afkappen).
+          Op mobiel niet: de tegels hieronder tonen dezelfde metrics al. */}
+      {mounted && !mobiel && (
+        <div className="mb-3 grid grid-cols-4 gap-2 xl:grid-cols-8">
+          <Kpi href="/admin/leden" icon="👥" label="Leden" value={t.actieveLeden} />
+          <Kpi href="/admin/contributie" icon="⏳" label="Te betalen" value={t.contributieNog} sub={`€${t.contributieNogSom.toFixed(0)}`} accent={t.contributieNog > 0 ? 'text-amber-600' : 'text-green-700'} />
+          <Kpi href="/admin/contributie" icon="🔴" label="Schuld" value={t.contributieOpen} sub={`€${t.contributieSom.toFixed(0)}`} accent={t.contributieOpen > 0 ? 'text-red-700' : 'text-green-700'} />
+          <Kpi href="/admin/aanwezigheid" icon="📅" label="Aanwezig" value={`${t.aanwPct}%`} sub={`${t.aanwVan}/${t.aanwNoem}`} />
+          <Kpi href="/admin/inschrijvingen" icon="📝" label="Nieuw" value={t.inschrijvingen} accent={t.inschrijvingen > 0 ? 'text-[#a90000]' : ''} />
+          <Kpi href="/admin/exams" icon="🎯" label="Examens" value={t.examensGepland} />
+          <Kpi href="/admin/diplomas" icon="🎓" label="Diploma's" value={t.diplomaRecent} sub="6 mnd" />
+          <Kpi href="/admin/leden" icon="⚠️" label="Reserve" value={d.vlaggen.length} accent={d.vlaggen.length > 0 ? 'text-amber-600' : ''} />
+        </div>
+      )}
 
-      {/* Zoombalk */}
+      {/* Zoekbalk */}
       <div className="relative mb-3">
+        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-400">🔍</span>
         <input value={zoek} onChange={e => setZoek(e.target.value)} placeholder="Zoek lid… (2+ letters)"
-          className="w-full rounded-md border border-white/70 bg-white/60 px-3 py-2 text-sm shadow-sm backdrop-blur-md focus:border-[#a90000] focus:outline-none" />
+          className="w-full rounded-xl border border-white/70 bg-white/65 py-2.5 pl-9 pr-3 text-sm shadow-sm backdrop-blur-md transition-colors focus:border-[#a90000] focus:outline-none" />
         {zoekLeden.length > 0 && (
           <div className="absolute left-0 right-0 z-40 mt-1 overflow-hidden rounded-md border border-gray-200 bg-white shadow-xl">
             {zoekLeden.map(l => (
@@ -342,20 +344,20 @@ function TegelStart({ d }: { d: DashData }) {
   const t = d.tiles
   const vandaag = d.komendeLessen.filter(l => l.datum === d.nowIso.slice(0, 10))
   const tegels: { emoji: string; titel: string; href: string; metric: string; sub: string; accent?: string }[] = [
-    { emoji: '✏️', titel: 'Les invullen', href: '/admin/aanwezigheid/les', metric: vandaag.length ? `${vandaag.length} vandaag` : 'geen vandaag', sub: d.lesmodus ? `${d.lesmodus.leden.length} leden · ${d.lesmodus.dag.groep}` : 'kies een les', accent: vandaag.length ? 'text-[#a90000]' : '' },
-    { emoji: '📊', titel: 'Lessen & aanwezigheid', href: '/admin/aanwezigheid', metric: `${t.aanwPct}%`, sub: `aanwezig ${t.aanwVan}/${t.aanwNoem} (90d)` },
+    { emoji: '✏️', titel: 'Les invullen', href: '/admin/aanwezigheid/les', metric: vandaag.length ? `${vandaag.length} vandaag` : 'geen vandaag', sub: d.lesmodus ? `${d.lesmodus.leden.length} leden · ${groepNaam(d.lesmodus.dag.groep)}` : 'kies een les', accent: vandaag.length ? 'text-[#a90000]' : '' },
+    { emoji: '📅', titel: 'Lessen', href: '/admin/aanwezigheid', metric: `${t.aanwPct}%`, sub: `aanwezig ${t.aanwVan}/${t.aanwNoem} (90d)` },
     { emoji: '💶', titel: 'Contributie', href: '/admin/contributie', metric: t.contributieNog ? `${t.contributieNog} te betalen` : 'alles betaald', sub: t.contributieNog ? `€${t.contributieNogSom.toFixed(0)} · ${t.contributieOpen} schuldig` : `Q${d.contributie.periode} · ${d.contributie.rows.length} leden`, accent: t.contributieOpen ? 'text-red-700' : t.contributieNog ? 'text-amber-600' : 'text-green-700' },
     { emoji: '👥', titel: 'Leden', href: '/admin/leden', metric: `${t.actieveLeden}`, sub: 'actieve leden' },
     { emoji: '📝', titel: 'Inschrijvingen', href: '/admin/inschrijvingen', metric: t.inschrijvingen ? `${t.inschrijvingen} nieuw` : 'geen nieuw', sub: 'openstaande aanvragen', accent: t.inschrijvingen ? 'text-[#a90000]' : '' },
-    { emoji: '⚠️', titel: 'Reserve & stoppend', href: '/admin/leden', metric: `${d.vlaggen.length}`, sub: d.vlaggen.length ? d.vlaggen.slice(0, 2).map(v => v.naam.split(' ')[0]).join(', ') : 'niemands', accent: d.vlaggen.length ? 'text-amber-600' : '' },
-    { emoji: '🥋', titel: 'Examens', href: '/admin/exams', metric: `${t.examensGepland}`, sub: 'gepland' },
+    { emoji: '⚠️', titel: 'Reserve & stoppend', href: '/admin/leden', metric: `${d.vlaggen.length}`, sub: d.vlaggen.length ? d.vlaggen.slice(0, 2).map(v => v.naam.split(' ')[0]).join(', ') : 'niemand', accent: d.vlaggen.length ? 'text-amber-600' : '' },
+    { emoji: '🎯', titel: 'Examens', href: '/admin/exams', metric: `${t.examensGepland}`, sub: 'gepland' },
     { emoji: '🎓', titel: "Diploma's", href: '/admin/diplomas', metric: `${t.diplomaRecent}`, sub: 'laatste 6 maanden' },
   ]
   return (
-    <div className="grid grid-cols-2 gap-2.5 pb-24">
+    <div className="grid grid-cols-2 gap-2.5 pb-4">
       {tegels.map(tg => (
         <Link key={tg.href + tg.titel} href={tg.href}
-          className="flex flex-col gap-1 rounded-md border border-white/70 bg-white/60 p-3.5 shadow-sm backdrop-blur-md active:scale-[0.98] hover:border-[#a90000]/40">
+          className="flex flex-col gap-1 rounded-xl border border-white/70 bg-white/65 p-3.5 shadow-sm backdrop-blur-md active:scale-[0.98] hover:border-[#a90000]/40">
           <span className="text-2xl leading-none">{tg.emoji}</span>
           <span className="mt-1 text-[13px] font-bold leading-tight text-[#2a2a2a]">{tg.titel}</span>
           <span className={`text-lg font-extrabold leading-tight ${tg.accent || 'text-[#2a2a2a]'}`}>{tg.metric}</span>
@@ -366,11 +368,13 @@ function TegelStart({ d }: { d: DashData }) {
   )
 }
 
-function Kpi({ href, label, value, sub, accent = '' }: { href: string; label: string; value: string | number; sub?: string; accent?: string }) {
+function Kpi({ href, icon, label, value, sub, accent = '' }: { href: string; icon: string; label: string; value: string | number; sub?: string; accent?: string }) {
   return (
-    <Link href={href} className="rounded-md border border-white/70 bg-white/55 px-2 py-1 backdrop-blur-md hover:border-[#a90000]/40">
-      <p className="truncate text-[10px] font-medium uppercase tracking-wide text-gray-400">{label}</p>
-      <p className={`text-base font-bold leading-tight ${accent || 'text-[#2a2a2a]'}`}>{value}{sub && <span className="ml-1 text-[10px] font-medium text-gray-400">{sub}</span>}</p>
+    <Link href={href} className="rounded-xl border border-white/70 bg-white/65 px-3 py-2 shadow-sm backdrop-blur-md transition-colors hover:border-[#a90000]/40">
+      <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wide text-gray-400">
+        <span className="text-xs leading-none">{icon}</span><span className="truncate">{label}</span>
+      </p>
+      <p className={`mt-0.5 text-lg font-bold leading-tight ${accent || 'text-[#2a2a2a]'}`}>{value}{sub && <span className="ml-1.5 text-[10px] font-medium text-gray-400">{sub}</span>}</p>
     </Link>
   )
 }
@@ -741,28 +745,32 @@ function WRecentBetald({ d }: { d: DashData }) {
   )
 }
 
-// ── Snel naar ──────────────────────────────────────────────────────────────
+// ── Snel naar: exact dezelfde pagina's + acties als het menu ───────────────
 function WSnel() {
-  const links: [string, string, string][] = [
-    ['/admin/aanwezigheid/les', '🥋', 'Les invullen'],
-    ['/admin/aanwezigheid', '📊', 'Alle lessen'],
-    ['/admin/leden', '👥', 'Leden'],
-    ['/admin/contributie', '💶', 'Contributie'],
-    ['/admin/inschrijvingen', '📝', 'Inschrijvingen'],
-    ['/print/ledeninfo', '📄', 'Ledeninfo printen'],
-    ['/admin/exams', '🥇', 'Examens'],
-    ['/admin/exams/new', '➕', 'Examen plannen'],
-    ['/admin/diplomas', '🏆', "Diploma's"],
-    ['/admin/students/new', '🆕', 'Nieuw lid'],
-    ['/diploma/verifieren', '🔍', 'Verifiëren'],
-  ]
+  const paginas = NAV_GROUPS.flatMap(g => g.items).filter(i => i.href !== '/admin')
   return (
-    <div className="grid grid-cols-3 gap-1 lg:grid-cols-5">
-      {links.map(([h, ic, lbl]) => (
-        <Link key={h} href={h} className="flex items-center gap-1 rounded-sm border border-gray-100 px-1.5 py-1.5 text-[10px] font-semibold text-[#2a2a2a] hover:border-[#a90000]/40 hover:text-[#a90000]">
-          <span>{ic}</span><span className="truncate">{lbl}</span>
-        </Link>
-      ))}
+    <div className="space-y-2">
+      <div className="grid grid-cols-3 gap-1.5">
+        {QUICK_ACTIONS.map(a => (
+          <Link key={a.href} href={a.href}
+            className="flex items-center justify-center gap-1.5 rounded-lg border border-[#a90000]/25 bg-[#fdf6f6] px-2 py-2 text-[11px] font-semibold text-[#a90000] transition-colors hover:bg-[#fbeaea]">
+            <span>{a.icon}</span><span className="truncate">{a.label}</span>
+          </Link>
+        ))}
+      </div>
+      <div className="grid grid-cols-3 gap-1 lg:grid-cols-4">
+        {paginas.map(p => p.newTab ? (
+          <a key={p.href} href={p.href} target="_blank" rel="noopener"
+            className="flex items-center gap-1.5 rounded-lg border border-gray-200/70 bg-white/70 px-2 py-1.5 text-[10px] font-semibold text-[#2a2a2a] transition-colors hover:border-[#a90000]/40 hover:text-[#a90000]">
+            <span>{p.icon}</span><span className="truncate">{p.label}</span><span className="ml-auto text-[9px] text-gray-300">↗</span>
+          </a>
+        ) : (
+          <Link key={p.href} href={p.href}
+            className="flex items-center gap-1.5 rounded-lg border border-gray-200/70 bg-white/70 px-2 py-1.5 text-[10px] font-semibold text-[#2a2a2a] transition-colors hover:border-[#a90000]/40 hover:text-[#a90000]">
+            <span>{p.icon}</span><span className="truncate">{p.label}</span>
+          </Link>
+        ))}
+      </div>
     </div>
   )
 }

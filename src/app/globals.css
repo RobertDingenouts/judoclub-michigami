@@ -1261,18 +1261,18 @@ nextjs-portal {
 .w-card {
   display: flex; flex-direction: column;
   border-radius: 1rem;
-  border: 1px solid rgb(255 255 255 / 0.75);
-  background: rgb(255 255 255 / 0.55);
+  border: 1px solid rgb(255 255 255 / 0.8);
+  background: rgb(255 255 255 / 0.72);
   backdrop-filter: blur(16px) saturate(1.4);
   -webkit-backdrop-filter: blur(16px) saturate(1.4);
-  box-shadow: 0 1px 2px rgb(42 42 42 / 0.05), 0 14px 40px -18px rgb(42 42 42 / 0.18);
+  box-shadow: 0 1px 2px rgb(42 42 42 / 0.04), 0 12px 32px -16px rgb(42 42 42 / 0.16);
   overflow: hidden;
 }
 .w-drag {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 0.5rem 0.75rem; cursor: default;
+  padding: 0.55rem 0.85rem; cursor: default;
   border-bottom: 1px solid rgb(42 42 42 / 0.06);
-  background: linear-gradient(rgb(255 255 255 / 0.5), rgb(255 255 255 / 0.2));
+  background: linear-gradient(rgb(255 255 255 / 0.6), rgb(255 255 255 / 0.25));
   flex-shrink: 0;
 }
 .w-edit .w-drag { cursor: grab; }
@@ -1282,7 +1282,7 @@ nextjs-portal {
 .w-x { margin-left: auto; border: 0; background: transparent; color: #bbb; font-size: 0.85rem; line-height: 1; padding: 2px 6px; border-radius: 6px; cursor: pointer; flex-shrink: 0; }
 .w-x:hover { background: #fdecec; color: #a90000; }
 .w-edit .w-x { margin-left: 0.4rem; }
-.w-body { flex: 1; min-height: 0; overflow: auto; padding: 0.5rem 0.6rem; }
+.w-body { flex: 1; min-height: 0; overflow: auto; padding: 0.6rem 0.75rem; }
 /* Widget-body vult de hoogte; tabellen groeien mee */
 .w-body > * { min-height: 0; }
 /* react-grid-layout states */
