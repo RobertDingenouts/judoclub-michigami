@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { isAdmin } from '@/lib/auth'
 import DiplomaReplica from '@/components/diploma/DiplomaReplica'
 import DiplomaNaamFitter from '@/components/diploma/DiplomaNaamFitter'
-import PrintKnop from '@/components/diploma/PrintKnop'
+import DiplomaSelectie from '@/components/diploma/DiplomaSelectie'
 import PrintFitter from '@/components/diploma/PrintFitter'
 import { BAND_DESIGN } from '@/lib/diploma-replica-data'
 import { diplomaPlaats } from '@/app/print/diploma/[attempt]/page'
@@ -40,14 +40,17 @@ export default async function PrintAlleDiploma({
             <Link key={p} href={`/print/diplomas?sitting=${sitting.id}&plaats=${p}`} className={`rounded-sm px-2 py-1 ${plaatsOptie === p ? 'bg-white text-black' : 'bg-white/10 hover:bg-white/20'}`}>{p}</Link>
           ))}
         </span>
-        <PrintKnop label={`🖨 Alles printen (${metDiploma.length})`} />
+        <DiplomaSelectie items={metDiploma.map(a => ({ id: a.id, naam: `${a.member.firstName} ${a.member.lastName}` }))} />
       </div>
+      <style dangerouslySetInnerHTML={{ __html: `
+        @media print { .diploma-item.niet-geselecteerd { display: none !important; } }
+      ` }} />
       {metDiploma.length === 0 && (
         <p className="p-8 text-sm text-gray-600">Deze examenmomenten bevatten alleen slip-examens — die krijgen geen diploma.</p>
       )}
       <div className="mx-auto w-fit py-6 print:py-0 print-fit">
         {metDiploma.map((a, i) => (
-          <div key={a.id} style={{ breakAfter: i < metDiploma.length - 1 ? 'page' : 'auto' }}>
+          <div key={a.id} data-id={a.id} className="diploma-item" style={{ breakBefore: i > 0 ? 'page' : 'auto' }}>
             <DiplomaReplica design={BAND_DESIGN[a.beltLevel]} naam={`${a.member.firstName} ${a.member.lastName}`} datum={datum} plaats={plaatsOptie} />
           </div>
         ))}
