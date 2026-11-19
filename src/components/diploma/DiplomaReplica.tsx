@@ -23,7 +23,7 @@ export default function DiplomaReplica({ design, naam, datum, plaats }: {
            (printzone printer gemeten: x 2,54..207,28 / y 3,44..293,0 — horizontaal gecentreerd op papier) → GEEN fit-scale,
            randen komen op ~9,8/9,4/9,8/9,8 mm van papier. Witte marges rechts/boven/onder weggeclipd. */
         .diploma-page { position: relative; width: 204.38mm; height: 289.4mm; margin: 3.76mm auto 0; background: #fff; overflow: hidden; }
-        @media print { .diploma-page { margin: 3.76mm 0 0 1.77mm; } }  /* -0,23 + 2 mm rechts (Robert: print was 2 mm te links) */
+        @media print { .diploma-page { margin: 3.76mm 0 0 -0.23mm; } }  /* gecentreerd in printzone; +2 mm duwde bandpunt in onafdrukbare rechterrand */
         /* interieur 1:1 Canva-maten, 3,2 mm opgeschoven (witte boven-marge afgeknipt) */
         .diploma-inner { position: absolute; left: 0; top: -3.2mm; width: 209.9mm; height: 296.9mm; }
         .diploma-page .abs { position: absolute; }
