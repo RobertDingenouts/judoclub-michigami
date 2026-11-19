@@ -63,7 +63,7 @@ export default async function PrintLedeninfo() {
             </p>
 
             <Kop>Facturatie:</Kop>
-            <p>U ontvangt een factuur met een overzicht van de kosten.</p>
+            <p>Voor de eerste betaling ontvangt u een factuur met een overzicht van de kosten.</p>
           </div>
 
           <div>
