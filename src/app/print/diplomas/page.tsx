@@ -48,7 +48,7 @@ export default async function PrintAlleDiploma({
       {metDiploma.length === 0 && (
         <p className="p-8 text-sm text-gray-600">Deze examenmomenten bevatten alleen slip-examens — die krijgen geen diploma.</p>
       )}
-      <div className="mx-auto w-fit py-6 print:py-0 print-fit">
+      <div className="mx-auto w-fit py-6 print:py-0 print:mx-0 print-fit">
         {metDiploma.map((a, i) => (
           <div key={a.id} data-id={a.id} className="diploma-item" style={{ breakBefore: i > 0 ? 'page' : 'auto' }}>
             <DiplomaReplica design={BAND_DESIGN[a.beltLevel]} naam={`${a.member.firstName} ${a.member.lastName}`} datum={datum} plaats={plaatsOptie} />
