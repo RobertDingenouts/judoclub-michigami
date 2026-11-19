@@ -19,13 +19,18 @@ export default function DiplomaReplica({ design, naam, datum, plaats }: {
       <style dangerouslySetInnerHTML={{ __html: `
         @page { size: A4; margin: 0; }
         .diploma-root { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-        .diploma-page { position: relative; width: 209.9mm; height: 296.9mm; background: #fff; overflow: hidden; }
+        /* 192×271.6 mm, gecentreerd: past binnen de onafdrukbare marge van de clubprinter
+           (links ~5, rechts ~9 mm) → afdrukken valt exact in 't midden, geen Canva-shift nodig */
+        .diploma-page { position: relative; width: 192mm; height: 271.6mm; margin: 13mm auto 0; background: #fff; overflow: hidden; }
+        /* interieur blijft op Canva-maten (209.9×296.9 mm) en schaalt als geheel naar 192 mm */
+        .diploma-inner { position: absolute; left: 0; top: 0; width: 209.9mm; height: 296.9mm; transform: scale(0.914721); transform-origin: top left; }
         .diploma-page .abs { position: absolute; }
         .diploma-page .txt { white-space: pre; }
         @font-face { font-family: 'Diploma Anton'; src: url('/diploma/fonts/Anton-Regular.ttf'); }
         @font-face { font-family: 'Diploma Great Vibes'; src: url('/diploma/fonts/GreatVibes-Regular.ttf'); }
       ` }} />
 
+      <div className="diploma-inner">
       <img className="abs" src={`/diploma/${design}/bg.webp`} loading="eager" style={{ left: 0, top: 0, width: '100%', height: '100%' }} alt="" />
 
       <img className="abs" src="/logo/logo-michigami.png" loading="eager" style={{ left: mm(LOGO_BIG[0]), top: mm(LOGO_BIG[1]), width: mm(LOGO_BIG[2] - LOGO_BIG[0]), height: mm(LOGO_BIG[3] - LOGO_BIG[1]) }} alt="Judoclub Michigami" />
@@ -39,6 +44,7 @@ export default function DiplomaReplica({ design, naam, datum, plaats }: {
       <div className="txt abs" style={{ fontFamily: "'Diploma Great Vibes'", left: mm(190.05), width: mm(220), top: mm(372.2 + O.naam), height: mm(34.01), fontSize: mm(34.01), lineHeight: mm(34.01), color: '#000', textAlign: 'center' }}><span className="naam-waarde" style={{ display: 'inline-block', transformOrigin: 'center' }}>{naam}</span></div>
       <div className="txt abs" style={{ fontFamily: "'Diploma Great Vibes'", left: mm(190.05), width: mm(220), top: mm(411.1 + O.datum), height: mm(20), fontSize: mm(20), lineHeight: mm(20), color: '#000', textAlign: 'center', letterSpacing: '0.85pt' }}>{datum}</div>
       <div className="txt abs" style={{ fontFamily: "'Diploma Great Vibes'", left: mm(190.05), width: mm(220), top: mm(444.5 + O.plaats), height: mm(20), fontSize: mm(20), lineHeight: mm(20), color: '#000', textAlign: 'center' }}>{plaats}</div>
+      </div>
     </div>
   )
 }
