@@ -13,7 +13,7 @@ const INSCHRIJF_URL = `https://${SITE}/inschrijven`
 
 // Autoritatief: src/data/schedule.ts + src/data/legal.ts (bedragen)
 const LESTIJDEN = [
-  { dag: 'Woensdag', tijd: '19:00 – 20:00', groep: 'Algemene training · alle leeftijden', locatie: 'Sporthal De Vossenkuil, Oud-Vossemeer' },
+  { dag: 'Woensdag', tijd: '19:00 – 20:00', groep: 'Algemene training · alle leeftijden', locatie: 'Dorpshuis De Vossenkuil, Oud-Vossemeer' },
   { dag: 'Vrijdag', tijd: '18:45 – 19:45', groep: '1e groep · 6 t/m 9 jaar', locatie: 'Sporthal De Knotwilg, Steenbergen' },
   { dag: 'Vrijdag', tijd: '19:45 – 20:45', groep: '2e groep · 9 jaar en ouder', locatie: 'Sporthal De Knotwilg, Steenbergen' },
 ]

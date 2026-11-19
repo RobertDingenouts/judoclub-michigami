@@ -63,7 +63,7 @@ export default async function PrintLedeninfo() {
             </p>
 
             <Kop>Facturatie:</Kop>
-            <p>Per periode ontvangt u per e-mail een factuur met een overzicht van de kosten.</p>
+            <p>U ontvangt een factuur met een overzicht van de kosten.</p>
           </div>
 
           <div>
@@ -71,7 +71,6 @@ export default async function PrintLedeninfo() {
             <p>
               <b>secretaris/instructeur:</b><br />
               Robert Dingenouts<br />
-              Kerkstraat 42, 4651 XP Steenbergen<br />
               Tel: 06 48 64 99 12
             </p>
             <p className="mt-1.5">
@@ -96,19 +95,23 @@ export default async function PrintLedeninfo() {
           </div>
         </div>
 
-        {/* Trainingslocaties + tijden onder elkaar, als origineel */}
+        {/* Trainingslocaties + tijden: vrijdag en woensdag duidelijk gescheiden */}
         <div className="mt-3">
-          <Kop>Trainingslocaties:</Kop>
-          <div className="grid grid-cols-2 gap-4 text-[11px]">
-            <p>Sportcentrum De Knotwilg<br />Wipstraat 2, 4651 XW Steenbergen</p>
-            <p>Sporthal De Vossenkuil<br />Bou Kooijmanstraat 48, 4698 AM Oud-Vossemeer</p>
-          </div>
-
           <Kop>Trainingstijden:</Kop>
-          <div className="grid grid-cols-3 gap-4 text-[11px]">
-            <p><b>1e groep:</b> 6 t/m 9 jaar<br />vrijdag 18:45 - 19:45<br /><span className="text-gray-600">De Knotwilg, Steenbergen</span></p>
-            <p><b>2e groep:</b> 9 jaar en ouder<br />vrijdag 19:45 - 20:45<br /><span className="text-gray-600">De Knotwilg, Steenbergen</span></p>
-            <p><b>Algemene training:</b> alle leeftijden<br />woensdag 19:00 - 20:00<br /><span className="text-gray-600">De Vossenkuil, Oud-Vossemeer</span></p>
+          <div className="mt-1 grid grid-cols-2 gap-4">
+            <div className="border-l-[3px] border-[#a90000] pl-3">
+              <p className="text-[12px] font-extrabold">Vrijdagavond<br /><span className="font-semibold text-[10.5px] text-gray-600">Sportcentrum De Knotwilg · Wipstraat 2, 4651 XW Steenbergen</span></p>
+              <div className="mt-1 grid grid-cols-2 gap-3 text-[11px]">
+                <p><b>1e groep:</b> 6 t/m 9 jaar<br /><span className="font-semibold text-[#a90000]">18:45 - 19:45</span></p>
+                <p><b>2e groep:</b> 9 jaar en ouder<br /><span className="font-semibold text-[#a90000]">19:45 - 20:45</span></p>
+              </div>
+            </div>
+            <div className="border-l-[3px] border-[#a90000] pl-3">
+              <p className="text-[12px] font-extrabold">Woensdagavond<br /><span className="font-semibold text-[10.5px] text-gray-600">Dorpshuis &quot;De Vossenkuil&quot; · Bou Kooijmanstraat 48, 4698 AM Oud-Vossemeer</span></p>
+              <div className="mt-1 grid grid-cols-2 gap-3 text-[11px]">
+                <p><b>Algemene training:</b> alle leeftijden<br /><span className="font-semibold text-[#a90000]">19:00 - 20:00</span></p>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -121,7 +124,8 @@ export default async function PrintLedeninfo() {
               Schrijf u dan <b>uitsluitend online</b> in:<br />
               scan de QR-code of ga naar<br />
               <b className="text-[14px]">www.{SITE}/inschrijven</b><br />
-              om je in te schrijven!
+              om je in te schrijven!<br />
+              <span className="text-[10.5px]">Na inschrijving krijgt elk lid een eigen account op de website, met al zijn of haar gegevens en prestaties (lessen, examens en diploma's). Gebruik daarom liefst één eigen e-mailadres per lid (ouders mogen er altijd bij zitten).</span>
             </p>
           </div>
           {/* eslint-disable-next-line @next/next/no-img-element */}

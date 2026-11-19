@@ -17,7 +17,7 @@ export const clubInfo = {
       isPrimary: true,
     },
     {
-      name: "Sporthal De Vossenkuil",
+      name: "Dorpshuis De Vossenkuil",
       address: "Oud-Vossemeer",
       mapsUrl: "https://www.google.com/maps/search/?api=1&query=Bou+Kooijmanstraat+48+4698+AM+Oud-Vossemeer",
       isPrimary: false,
@@ -110,7 +110,7 @@ Of je nu 6 of 60 jaar bent, jongen of meisje, man of vrouw — judo is voor iede
 
 En dat op **twee locaties**:
 - 📍 **Steenbergen**: Sportcentrum De Knotwilg
-- 📍 **Oud-Vossemeer**: Sporthal De Vossenkuil
+- 📍 **Oud-Vossemeer**: Dorpshuis De Vossenkuil
 
 ## 🥋 Hoe ziet een judoles eruit?
 
