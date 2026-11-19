@@ -1,10 +1,14 @@
 import PrintFitter from '@/components/diploma/PrintFitter'
+import PrintKnop from '@/components/diploma/PrintKnop'
+import { isAdmin } from '@/lib/auth'
+import { redirect } from 'next/navigation'
 
 // Kalibratievel: lijntjes op exact 10 mm van elke papier_rand + kruisjes + schaalstok.
 // Eén keer printen op de clubprinter (instellingen zoals altijd), Foto -> meten -> juiste marge-berekening.
 export const dynamic = 'force-dynamic'
 
-export default function PrintKalib() {
+export default async function PrintKalib() {
+  if (!(await isAdmin())) redirect('/admin-login')
   const ticks = Array.from({ length: 19 }, (_, i) => (i + 1) * 10)
   const ticksY = Array.from({ length: 26 }, (_, i) => (i + 1) * 10)
   return (
@@ -12,7 +16,7 @@ export default function PrintKalib() {
       <div className="print:hidden sticky top-0 z-10 flex items-center gap-2 bg-[#2a2a2a] px-4 py-2 text-sm text-white">
         <a href="/admin/exams" className="text-white/80 hover:text-white">← Terug</a>
         <span className="font-medium">Kalibratievel printer</span>
-        <button onClick={() => window.print()} className="ml-auto rounded-sm bg-white px-3 py-1.5 text-black">🖨 Print</button>
+        <PrintKnop label="🖨 Print" />
       </div>
       <style dangerouslySetInnerHTML={{ __html: `
         @page { size: A4; margin: 0; }
