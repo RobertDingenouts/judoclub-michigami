@@ -40,9 +40,9 @@ export async function POST(req: NextRequest) {
       }
     }
     data.leaveDate = stop
-    // Toekomstige stopdatum: lid blijft actief t/m die dag; archivePassedStops
-    // maakt hem de dag erna automatisch inactief.
-    data.isActive = stop < dagStart
+    // Actief t/m de stopdatum zelf (archivePassedStops zet 'm de dag erna op
+    // inactief); een verleden/automatische stopdatum gaat direct naar archief.
+    data.isActive = stop >= dagStart
   }
   // Terug uit het archief (LID of welke andere actieve status dan ook): stopdatum leeg.
   if (clubStatus !== 'GESTOPT') data.leaveDate = null
