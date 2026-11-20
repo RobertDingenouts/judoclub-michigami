@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { eisenVoorBelt, BELT_SEQ, BELT_NL } from '@/lib/examen-eisen'
@@ -25,6 +25,11 @@ export default function Registratie({ sitting, attempts: init, kandidaten }: Pro
   const [examiners, setExaminers] = useState(sitting.examiners || 'Pascal, Robert')
   const [busy, setBusy] = useState<string | null>(null)
   const [kopiëren, setKopiëren] = useState(false)
+  const [opgeslagen, setOpgeslagen] = useState<string | null>(null)
+
+  // router.refresh() levert nieuwe props; knoop die aan de lokale state vast,
+  // anders blijft de UI op SCHEDULED staan terwijl de DB al COMPLETED_PASSED is.
+  useEffect(() => { setAttempts(init) }, [init])
 
   const proef = sitting.type === 'PROEF'
   const afgerond = attempts.filter(a => a.status !== 'SCHEDULED').length
@@ -32,9 +37,22 @@ export default function Registratie({ sitting, attempts: init, kandidaten }: Pro
 
   async function patch(id: string, body: Record<string, unknown>, refill = false) {
     setBusy(id)
-    await fetch(`/api/admin/examens/attempts/${id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
-    setBusy(null)
-    if (refill) router.refresh()
+    try {
+      const res = await fetch(`/api/admin/examens/attempts/${id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+      if (!res.ok) {
+        let boodschap = 'Mislukt'
+        try { boodschap = (await res.json()).error || boodschap } catch { /* html-foutpagina */ }
+        alert(boodschap)
+      } else {
+        setOpgeslagen(id)
+        setTimeout(() => setOpgeslagen(b => b === id ? null : b), 1600)
+      }
+    } catch {
+      alert('Geen verbinding — niet opgeslagen. Controleer de internetverbinding en probeer opnieuw.')
+    } finally {
+      setBusy(null)
+      if (refill) router.refresh()
+    }
   }
 
   function toggleVak(id: string, vakId: string, current: Record<string, boolean>) {
@@ -50,13 +68,27 @@ export default function Registratie({ sitting, attempts: init, kandidaten }: Pro
 
   async function status(id: string, s: 'PASSED' | 'FAILED') {
     setBusy(id)
-    const res = await fetch(`/api/admin/examens/attempts/${id}`, {
-      method: 'PATCH', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status: s, examDate: sitting.date, examiner: examiners }),
-    })
-    if (res.ok) router.refresh()
-    else alert((await res.json()).error || 'Mislukt')
-    setBusy(null)
+    try {
+      const res = await fetch(`/api/admin/examens/attempts/${id}`, {
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: s, examDate: sitting.date, examiner: examiners }),
+      })
+      if (res.ok) {
+        // meteen lokaal doorzetten én server-state opnieuw laten ophalen
+        setAttempts(a => a.map(x => x.id === id ? { ...x, status: s === 'PASSED' ? 'COMPLETED_PASSED' : 'COMPLETED_FAILED' } : x))
+        setOpgeslagen(id)
+        setTimeout(() => setOpgeslagen(b => b === id ? null : b), 1600)
+        router.refresh()
+      } else {
+        let boodschap = 'Mislukt'
+        try { boodschap = (await res.json()).error || boodschap } catch { /* html-foutpagina */ }
+        alert(boodschap)
+      }
+    } catch {
+      alert('Geen verbinding — er is NIET opgeslagen. Controleer de internetverbinding en klik opnieuw.')
+    } finally {
+      setBusy(null)
+    }
   }
 
   async function addKandidaat() {
@@ -137,7 +169,7 @@ export default function Registratie({ sitting, attempts: init, kandidaten }: Pro
               {a.status === 'COMPLETED_FAILED' && <span className="rounded-sm bg-red-100 px-2 py-0.5 text-xs font-medium text-red-800">✗ Niet geslaagd</span>}
               {a.status === 'SCHEDULED' && !proef && <span className="rounded-sm bg-yellow-100 px-2 py-0.5 text-xs font-medium text-yellow-800">Gepland</span>}
               <span className="ml-auto flex items-center gap-2">
-                {busy === a.id && <span className="text-xs text-gray-400">…</span>}
+                {busy === a.id ? <span className="text-xs text-gray-400">Bezig…</span> : opgeslagen === a.id && <span className="text-xs font-semibold text-green-700">✓ Opgeslagen</span>}
                 {!proef && ['WIT', 'GEEL', 'ORANJE', 'GROEN', 'BLAUW', 'BRUIN_1', 'BRUIN_2', 'BRUIN_3'].includes(a.beltLevel) && (
                   <Link href={`/print/diploma/${a.id}`} target="_blank" className="rounded-sm border border-gray-300 bg-white px-3 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50">🖨 Diploma</Link>
                 )}
