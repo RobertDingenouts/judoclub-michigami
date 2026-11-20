@@ -78,6 +78,8 @@ export function getDanColorClass(belt: BeltLevel): string {
 export function getNextBelt(currentBelt: BeltLevel | null, isYouthMember: boolean): BeltLevel | null {
   if (!currentBelt) return isYouthMember ? YOUTH_ORDER[0] : ADULT_ORDER[0]
   const order = isYouthMember ? YOUTH_ORDER : ADULT_ORDER
+  // Paarse startband is geen examengraad: het eerste examen is altijd voor de witte band
+  if (currentBelt === 'PAARS') return order[0]
   const currentIndex = order.indexOf(currentBelt)
   if (currentIndex === -1 || currentIndex >= order.length - 1) {
     return null // Max grade bereikt

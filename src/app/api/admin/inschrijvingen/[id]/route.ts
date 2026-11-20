@@ -74,7 +74,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
             return MAP[pg] ?? (['VRIJDAG_1E', 'VRIJDAG_2E', 'WOENSDAG', 'SENIOREN'].includes(pg) ? pg : null)
           })(),
           joinDate: new Date(),
-          currentBelt: 'WIT' as any,
+          currentBelt: 'PAARS' as any,
           isActive: true,
           portraitRights: application.portraitRights ?? true,
           nameMention: application.nameMention ?? true,

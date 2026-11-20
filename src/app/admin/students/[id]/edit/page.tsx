@@ -38,6 +38,7 @@ interface StudentData {
 }
 
 const BELTS = [
+  { value: 'PAARS', label: 'Paarse band (start)' },
   { value: 'WIT', label: 'Witte band' },
   { value: 'WIT_GEEL', label: 'Witte band met gele slip' },
   { value: 'GEEL', label: 'Gele band' },

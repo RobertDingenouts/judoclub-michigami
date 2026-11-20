@@ -61,6 +61,7 @@ export default async function VoortgangPage() {
 
 function beltLabel(belt: string): string {
   const labels: Record<string, string> = {
+    PAARS: 'Paarse band (start)',
     WIT: 'Witte band', GEEL: 'Gele band', ORANJE: 'Oranje band', GROEN: 'Groene band',
     BLAUW: 'Blauwe band', BRUIN: 'Bruine band',
     ZWART_1: 'Zwarte band 1e Dan', ZWART_2: 'Zwarte band 2e Dan', ZWART_3: 'Zwarte band 3e Dan',

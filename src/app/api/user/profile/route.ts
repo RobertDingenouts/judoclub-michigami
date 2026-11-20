@@ -46,7 +46,7 @@ export async function PATCH(request: Request) {
           lastName: lastName || (user.name || '').split(' ').slice(1).join(' ') || '',
           email: email || user.email || null,
           joinDate: new Date(),
-          currentBelt: 'WIT' as any,
+          currentBelt: 'PAARS' as any,
         },
       })
     }

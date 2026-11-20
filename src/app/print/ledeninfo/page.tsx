@@ -82,7 +82,8 @@ export default async function PrintLedeninfo() {
               <b>voorzitter/instructeur:</b><br />
               Pascal Hack<br />
               Tel: 06 15 66 26 30<br />
-              <span className="text-[10.5px]">Voor vragen over materiaal (Matsuru-judopakken e.d.): bij Pascal</span>
+              <span className="text-[10.5px]">Voor vragen over materiaal (Matsuru-judopakken e.d.): bij Pascal</span><br />
+              <span className="text-[10.5px]">Nieuwe leden starten met een paarse band; de witte band volgt bij het eerste examen.</span>
             </p>
             <p className="mt-1.5">Mail: {MAIL}</p>
 

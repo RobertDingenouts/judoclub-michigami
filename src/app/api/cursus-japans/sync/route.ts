@@ -109,7 +109,7 @@ export async function POST(request: NextRequest) {
         lastName: (user.name || '').split(' ').slice(1).join(' ') || '',
         email: user.email || null,
         joinDate: new Date(),
-        currentBelt: 'WIT' as any,
+        currentBelt: 'PAARS' as any,
       },
     })
 
@@ -248,7 +248,7 @@ export async function GET(request: NextRequest) {
         lastName: (user.name || '').split(' ').slice(1).join(' ') || '',
         email: user.email || null,
         joinDate: new Date(),
-        currentBelt: 'WIT' as any,
+        currentBelt: 'PAARS' as any,
       },
     })
 

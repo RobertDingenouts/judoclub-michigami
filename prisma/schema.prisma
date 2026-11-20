@@ -243,6 +243,7 @@ enum Role {
 }
 
 enum BeltLevel {
+  PAARS // startband nieuwe leden — eerste examen is voor de witte band
   WIT
   WIT_GEEL
   GEEL

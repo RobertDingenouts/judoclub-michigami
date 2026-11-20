@@ -510,7 +510,7 @@ export function ExamDashboard() {
             <GhostSpot className="absolute bottom-0.5 right-3 w-4 text-white/25" />
         <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'40\' height=\'40\' viewBox=\'0 0 40 40\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.05\'%3E%3Cpath d=\'M20 0L40 20L20 40L0 20z\'/%3E%3C/g%3E%3C/svg%3E")' }}></div>
         <h1 className="text-lg sm:text-xl md:text-2xl font-bold relative z-10">{t('Exameneisen')}</h1>
-        <p className="text-white/80 mt-1 text-xs sm:text-sm relative z-10">{t('Kies je bandniveau voor de exameneisen')}</p>
+        <p className="text-white/80 mt-1 text-xs sm:text-sm relative z-10">{t('Kies je bandniveau voor de exameneisen')} · {t('Nieuwe leden starten met een paarse band — het eerste examen is voor de witte band')}</p>
       </div>
 
       {/* Control Panel */}

@@ -40,6 +40,7 @@ export const BELT_ORDER: BeltLevel[] = [
 ]
 
 export const BELT_COLORS: Record<BeltLevel, string> = {
+  PAARS:         '#7C3AED',
   WIT:           '#FFFFFF',
   WIT_GEEL:      '#FFFFFF',
   GEEL:          '#FFD700',
@@ -71,6 +72,7 @@ export const BELT_COLORS: Record<BeltLevel, string> = {
 }
 
 export const BELT_LABELS_NL: Record<BeltLevel, string> = {
+  PAARS:         'Paarse band (start)',
   WIT:           'Witte band',
   WIT_GEEL:      'Witte band met gele slip',
   GEEL:          'Gele band',

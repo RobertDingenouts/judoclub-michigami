@@ -62,6 +62,7 @@ function ChapterHead({ kanji, eyebrow, title }: { kanji: string; eyebrow: string
 }
 
 const BELTS: Array<{ name: string; kyu: string; c: string; edge?: string; ink: string }> = [
+  { name: 'Paarse',  kyu: 'start',    c: '#7c3aed', ink: '#f6f3ea' },
   { name: 'Witte',   kyu: '6e kyu',     c: '#f6f3ea', edge: '#cfc7b2', ink: '#2a2a2a' },
   { name: 'Gele',    kyu: '5e kyu',     c: '#f2c200', ink: '#2a2a2a' },
   { name: 'Oranje',  kyu: '4e kyu',     c: '#e8791e', ink: '#2a2a2a' },
@@ -115,7 +116,7 @@ export function WhatIsJudoSection({ onNavigate }: { onNavigate?: (s: Section) =>
 
   const kit = [
     { jp: '最初', nl: t('Eerste les'), body: t('Een lange broek en een lang shirt zonder knopen, ritsen, gespen of scherpe delen, en waar een beetje aan getrokken mag worden — een trainings- of joggingpak is perfect. Meenemen: slippers voor erbij.') },
-    { jp: '柔道着', nl: t('Judogi'), body: t('Het witte judopak dat je later draagt, met daarin je band. Niet verplicht bij het starten, maar na een paar lessen wel zo handig — je kunt ze via de leraar bestellen.') },
+    { jp: '柔道着', nl: t('Judogi'), body: t('Het witte judopak dat je later draagt, met daarin je band — je begint met een paarse band. Niet verplicht bij het starten, maar na een paar lessen wel zo handig — je kunt ze via de leraar bestellen.') },
     { jp: '爪', nl: t('Verzorgd'), body: t('Judo doe je op blote voeten: korte nagels (vingers én tenen), geen sieraden en schone voeten. Zo bescherm je jezelf en je partner.') },
   ];
 
@@ -251,9 +252,12 @@ export function WhatIsJudoSection({ onNavigate }: { onNavigate?: (s: Section) =>
         <p className="waj-reveal waj-kaku mb-8 max-w-2xl text-sm leading-relaxed sm:text-base" style={{ color: 'var(--wj-ink-soft)' }}>
           {t('Je band (obi) laat zien hoe ver je al bent. Elke kleur is een etappe: bij elke band komen er nieuwe technieken bij, en bij elke overgang hoort een examen.')}
         </p>
+        <p className="waj-reveal waj-kaku -mt-6 mb-8 max-w-2xl text-sm font-semibold leading-relaxed sm:text-base" style={{ color: 'var(--wj-red)' }}>
+          {t('Nieuw bij Michigami? Dan begin je met een paarse band — de witte band behaal je bij je eerste examen.')}
+        </p>
 
         {/* banden-ladder */}
-        <div className="waj-reveal waj-beltrow" role="img" aria-label={t('Witte band, gele band, oranje band, groene band, blauwe band, bruine band, zwarte band')}>
+        <div className="waj-reveal waj-beltrow" role="img" aria-label={t('Paarse band (start), witte band, gele band, oranje band, groene band, blauwe band, bruine band, zwarte band')}>
           {BELTS.map((b, i) => (
             <div key={b.name} className="waj-belt-col">
               <div className="waj-belt" style={{ background: b.c, borderColor: b.edge ?? 'rgba(0,0,0,0.25)' }} aria-hidden>

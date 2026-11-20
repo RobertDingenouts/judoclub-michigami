@@ -5,6 +5,7 @@ export const BELT_SEQ = ['WIT','WIT_GEEL','GEEL','GEEL_ORANJE','ORANJE','ORANJE_
 export type DoelBelt = typeof BELT_SEQ[number]
 
 export const BELT_NL: Record<string, string> = {
+  PAARS: 'paarse band',
   WIT: 'witte band', WIT_GEEL: 'wit/gele slip', GEEL: 'gele band', GEEL_ORANJE: 'geel/oranje slip',
   ORANJE: 'oranje band', ORANJE_GROEN: 'oranje/groene slip', GROEN: 'groene band', GROEN_BLAUW: 'groen/blauwe slip',
   BLAUW: 'blauwe band', BLAUW_BRUIN: 'blauw/bruine slip', BRUIN: 'bruine band',

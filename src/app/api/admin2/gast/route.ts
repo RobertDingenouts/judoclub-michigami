@@ -31,6 +31,7 @@ export async function POST(req: NextRequest) {
     data: {
       userId: user.id, firstName, lastName,
       primaryGroup: groep, clubStatus: 'PROEF', isActive: true,
+      currentBelt: 'PAARS' as any, // startband voor nieuwe judoka's (ook bij proeflessen)
       remarks: 'Proefles / gast',
     },
   })

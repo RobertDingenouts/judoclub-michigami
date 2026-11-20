@@ -8,6 +8,7 @@ import { BELT_SEQ } from '@/lib/examen-eisen'
 // Sorteerindex: geen band eerst, daarna wit → bruin (incl. slips), zwart laatst
 export function beltIndex(belt: string | null | undefined): number {
   if (!belt) return -1
+  if (belt === 'PAARS') return -0.5 // startband vóór wit
   const i = (BELT_SEQ as readonly string[]).indexOf(belt)
   if (i >= 0) return i
   return belt.startsWith('ZWART') ? 100 : 99

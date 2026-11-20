@@ -64,7 +64,7 @@ const sectionMeta: Record<Section, { title: string; description: string }> = {
   },
   'wat-is-judo': {
     title: 'Wat is Judo? Uitleg over judo, banden en technieken | Judoclub Michigami',
-    description: 'Ontdek hoe judo werkt: opbouw van een judoles, het bandensysteem met slips en examens, en welke technieken je leert. Van witte band tot zwarte band bij Judoclub Michigami.',
+    description: 'Ontdek hoe judo werkt: opbouw van een judoles, het bandensysteem met paarse startband, slips en examens, en welke technieken je leert. Van je paarse startband tot zwarte band bij Judoclub Michigami.',
   },
   'technieken': {
     title: 'Judo Technieken | Judoclub Michigami',

@@ -162,6 +162,9 @@ function InschrijvenInner() {
           <p>
             {t('Eerst kijken of judo bevalt? Je hoeft je nog niet in te schrijven — je mag eerst 3 gratis proeflessen volgen. Inschrijven doe je pas als je zeker weet dat je lid wilt worden.')}
           </p>
+          <p className="mt-2">
+            {t('Je start meteen met een paarse band. De witte band behaal je bij je eerste examen.')}
+          </p>
           <a href="/?proefles=1" className="mt-3 inline-flex items-center gap-2 rounded-lg bg-[#a90000] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#8c0000]">
             {t('Gratis proefles aanvragen')}
           </a>
