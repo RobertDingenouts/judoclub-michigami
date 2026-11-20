@@ -266,7 +266,7 @@ function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; on
               <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-gray-400">Clubstatus</p>
               <div className="flex flex-wrap gap-1.5">
                 {(['LID', 'VRIJGESTELD', 'PROEF', 'RESERVE', 'STOPPEND', 'GESTOPT'] as const).map(s => (
-                  <button key={s} onClick={() => zetStatus(s, s === 'GESTOPT' ? (leave || new Date().toISOString().slice(0, 10)) : undefined)}
+                  <button key={s} onClick={() => zetStatus(s, s === 'GESTOPT' ? (leave || undefined) : undefined)}
                     className={`rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors ${
                       r.clubStatus === s ? `${CLUB_STATUS_INFO[s].klas} ring-1 ring-[#a90000]/40` : 'border-gray-200 bg-white text-gray-500 hover:border-[#a90000]/40'
                     }`}>
@@ -275,7 +275,7 @@ function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; on
                 ))}
               </div>
               <div className="mt-2 flex items-center gap-2">
-                <label className="text-[11px] text-gray-500">Uitschrijven per:</label>
+                <label className="text-[11px] text-gray-500">Uitschrijven per (leeg = automatisch laatste les):</label>
                 <input type="date" value={leave}
                   onChange={e => { setLeave(e.target.value) }}
                   className="rounded-sm border border-gray-300 px-2 py-1 text-xs" />

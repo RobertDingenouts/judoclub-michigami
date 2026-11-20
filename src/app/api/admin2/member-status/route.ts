@@ -22,12 +22,30 @@ export async function POST(req: NextRequest) {
     isActive: true,
   }
   if (clubStatus === 'GESTOPT') {
-    data.leaveDate = leaveDate ? new Date(leaveDate) : new Date()
+    // Zonder expliciet stopdatum: automatisch de datum van de laatst BEZOCHE les
+    // (AANWEZIG of PROEFLES, niet in de toekomst). Geen enkele les -> vandaag.
+    // Dat makes archief-op-proefleden one click: status Gestopt, klaar.
+    let stop = leaveDate ? new Date(leaveDate) : null
+    if (!stop || isNaN(stop.getTime())) {
+      const last = await db.attendance.findFirst({
+        where: { memberId, status: { in: ['AANWEZIG', 'PROEFLES'] }, trainingDay: { date: { lte: new Date() } } },
+        orderBy: { trainingDay: { date: 'desc' } },
+        select: { trainingDay: { select: { date: true } } },
+      })
+      if (last) stop = new Date(last.trainingDay.date)
+      else {
+        // Nooit les bezocht: inschrijfdatum is het archiefmoment, anders vandaag.
+        const m0 = await db.member.findUnique({ where: { id: memberId }, select: { joinDate: true } })
+        stop = m0?.joinDate ? new Date(m0.joinDate) : new Date()
+      }
+    }
+    data.leaveDate = stop
     // Toekomstige stopdatum: lid blijft actief t/m die dag; archivePassedStops
     // maakt hem de dag erna automatisch inactief.
-    data.isActive = (data.leaveDate as Date) < dagStart
+    data.isActive = stop < dagStart
   }
-  if (clubStatus === 'LID') data.leaveDate = null
+  // Terug uit het archief (LID of welke andere actieve status dan ook): stopdatum leeg.
+  if (clubStatus !== 'GESTOPT') data.leaveDate = null
 
   const m = await db.member.update({ where: { id: memberId }, data })
 
