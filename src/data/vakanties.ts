@@ -23,15 +23,23 @@ export const VAKANTIES: Vakantie[] = [
   { naam: 'Zomervakantie', van: '2026-07-08', tot: '2026-08-19', locatie: 'OUD_VOSSEMEER' },
   { naam: 'Herfstvakantie', van: '2026-10-16', tot: '2026-10-23', locatie: 'STEENBERGEN' },
   { naam: 'Herfstvakantie', van: '2026-10-21', tot: '2026-10-21', locatie: 'OUD_VOSSEMEER' },
-  { naam: 'Kerstvakantie', van: '2026-12-18', tot: '2026-12-25', locatie: 'STEENBERGEN' },
+  { naam: 'Kerstvakantie', van: '2026-12-18', tot: '2027-01-01', locatie: 'STEENBERGEN' },
   { naam: 'Kerstvakantie', van: '2026-12-23', tot: '2026-12-30', locatie: 'OUD_VOSSEMEER' },
 
-  // ── 2027 ──
+  // ── 2027 (schooljaar 2026-2027) ──
   { naam: 'Carnavalsvakantie', van: '2027-02-12', tot: '2027-02-12', locatie: 'BEIDE' },
   { naam: 'Meivakantie', van: '2027-05-05', tot: '2027-05-05', locatie: 'BEIDE' },
   { naam: 'Zomervakantie', van: '2027-07-05', tot: '2027-08-17', locatie: 'BEIDE' },
+  // ── schooljaar 2027-2028 (Noord: herfst 16-24 okt, kerst 25 dec t/m 9 jan,
+  //    voorjaar 19-27 feb, mei 29 apr t/m 7 mei, zomer 15 jul t/m 27 aug) ──
   { naam: 'Herfstvakantie', van: '2027-10-18', tot: '2027-10-22', locatie: 'BEIDE' },
-  { naam: 'Kerstvakantie', van: '2027-12-20', tot: '2027-12-24', locatie: 'BEIDE' },
+  // Kerst doorgetrokken t/m de eerste lesweken van januari: oud & nieuw vallen
+  // anders per ongeluk WÉL op een lesdag (zie Nieuwjaar-lesdag 1-1-2027 die
+  // handmatig weggehaald moest worden).
+  { naam: 'Kerstvakantie', van: '2027-12-20', tot: '2028-01-07', locatie: 'BEIDE' },
+  { naam: 'Carnavalsvakantie', van: '2028-03-03', tot: '2028-03-03', locatie: 'BEIDE' },
+  { naam: 'Meivakantie', van: '2028-05-03', tot: '2028-05-05', locatie: 'BEIDE' },
+  { naam: 'Zomervakantie', van: '2028-07-19', tot: '2028-08-25', locatie: 'BEIDE' },
 ]
 
 /** Groep → locatie, afgeleid van het weekrooster (src/data/schedule.ts).
@@ -56,4 +64,23 @@ export function vakantieOp(iso: string, groepOfLocatie: string): string | null {
     if (v.locatie === 'BEIDE' || v.locatie === loc) return v.naam
   }
   return null
+}
+
+/**
+ * Dubbel-controle op de lijst: twee inzendingen die dezelfde locatie delen en
+ * wier datumbereik overlappen (bv. per ongeluk twee keer een kerstvakantie).
+ * Levert beschrijvingen — lege list = ok. Draait op het admin-dashboard als
+ * waarschuwing, dus een tikfout in het bestand valt meteen op.
+ */
+export function vakantieOverlappen(): string[] {
+  const meldingen: string[] = []
+  const raakt = (a: Vakantie, b: Vakantie) =>
+    (a.locatie === 'BEIDE' || b.locatie === 'BEIDE' || a.locatie === b.locatie) &&
+    a.van <= b.tot && b.van <= a.tot
+  for (let i = 0; i < VAKANTIES.length; i++)
+    for (let j = i + 1; j < VAKANTIES.length; j++) {
+      const a = VAKANTIES[i], b = VAKANTIES[j]
+      if (raakt(a, b)) meldingen.push(`Overlap: "${a.naam}" (${a.van} t/m ${a.tot}, ${a.locatie}) en "${b.naam}" (${b.van} t/m ${b.tot}, ${b.locatie})`)
+    }
+  return meldingen
 }

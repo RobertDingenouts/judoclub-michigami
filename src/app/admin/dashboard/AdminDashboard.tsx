@@ -73,6 +73,7 @@ export type DashData = {
   vlaggen: { id: string; naam: string; status: string; groep: string }[]
   recentGestopt: { id: string; naam: string; leaveDate: string | null }[]
   groei: { kwartalen: { key: string; label: string; nieuw: number; gestopt: number; proef: number }[]; proefNu: number }
+  vakantieMeldingen: string[]
 }
 
 
@@ -259,6 +260,13 @@ export default function AdminDashboard({ d }: { d: DashData }) {
         </div>
       </div>
 
+      {/* Dubbele/overlappende vakanties in src/data/vakanties.ts → amber melding */}
+      {d.vakantieMeldingen.length > 0 && (
+        <div className="mb-3 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+          <p className="font-semibold">⚠️ Vakantielijst klopt niet:</p>
+          {d.vakantieMeldingen.map(m => <p key={m}>{m}</p>)}
+        </div>
+      )}
       {/* KPI-rij: desktop — 8 strakke kaarten, korte labels (niet afkappen).
           Op mobiel niet: de tegels hieronder tonen dezelfde metrics al. */}
       {mounted && !mobiel && (

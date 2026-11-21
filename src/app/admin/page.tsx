@@ -2,6 +2,7 @@ import { db } from '@/lib/db'
 import { kwartaalVan } from '@/lib/admin2'
 import { archivePassedStops } from '@/lib/leden-status'
 import { ensureUpcomingDays, markeerVakantieDagen } from '@/lib/lessen'
+import { vakantieOverlappen } from '@/data/vakanties'
 import { getBeltLabel, getNextBelt, isSlipBelt, isYouth } from '@/lib/belt-utils'
 import { lessenGridData } from '@/lib/lessendata'
 import { contributieData } from '@/lib/contributiedata'
@@ -270,6 +271,7 @@ export default async function AdminStart() {
       id: m.id, naam: `${m.firstName} ${m.lastName}`, leaveDate: m.leaveDate?.toISOString().slice(0, 10) ?? null,
     })),
     groei: { kwartalen: groeiKwartalen, proefNu },
+    vakantieMeldingen: vakantieOverlappen(),
   }
 
   return <AdminDashboard d={d} />
