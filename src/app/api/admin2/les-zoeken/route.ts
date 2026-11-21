@@ -31,6 +31,7 @@ export async function GET(req: NextRequest) {
     select: {
       id: true, firstName: true, lastName: true, clubStatus: true, isActive: true,
       primaryGroup: true, isTrainer: true, dateOfBirth: true, currentBelt: true,
+      portraitRights: true, nameMention: true,
       user: { select: { role: true } },
       attendance: { where: { trainingDayId: dag.id }, select: { status: true } },
     },
@@ -58,6 +59,8 @@ export async function GET(req: NextRequest) {
       alOpDag: m.attendance.length > 0,
       trainer: m.isTrainer || m.user?.role === 'INSTRUCTOR',
       band: bandInfo(m),
+      geenPortret: m.portraitRights === false,
+      geenNaam: m.nameMention === false,
     })),
   })
 }

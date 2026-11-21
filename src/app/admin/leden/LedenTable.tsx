@@ -21,6 +21,7 @@ type Row = {
   joinDate: string | null; remarks: string | null; medicalNotes: string | null
   emergencyContactName: string | null; emergencyContactPhone: string | null
   portretrecht: boolean | null
+  nameMention: boolean | null
   bandHistory: { belt: string; at: string }[]
   payments: { label: string; status: string; amount: number; note: string | null; start: string; due: string | null }[]
   exams: { belt: string; status: string; date: string | null; score: number | null }[]
@@ -57,6 +58,8 @@ export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: 
   const [status, setStatus] = useState('actief')
   // Rol-filter: ouders/trainers los van clubstatus filterbaar (okt 2026)
   const [rol, setRol] = useState('')
+  // Toestemming-filter: '' | 'nee' (expliciet geweigerd) | 'onbekend' (nooit vastgelegd)
+  const [toestemming, setToestemming] = useState('')
   const [sortKey, setSortKey] = useState<SortKey>('band')
   const [open, setOpen] = useState<string | null>(null)
   // mobiel: alle filterknoppen opgeklapt in één menu, niet een muur van chips
@@ -85,6 +88,9 @@ export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: 
       if (rol === 'ouder' && r.role !== 'PARENT') return false
       if (rol === 'admin' && r.role !== 'ADMIN') return false
       if (rol === 'lid' && !['MEMBER'].includes(r.role)) return false
+      // Toestemming-filter (nov 2026): expliciet 'nee' vs nooit vastgelegd.
+      if (toestemming === 'nee' && !(r.portretrecht === false || r.nameMention === false)) return false
+      if (toestemming === 'onbekend' && !(r.portretrecht === null || r.nameMention === null)) return false
       if (ql && !(`${r.firstName} ${r.lastName}`.toLowerCase().includes(ql))) return false
       return true
     })
@@ -105,7 +111,7 @@ export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: 
       }
     })
     return out
-  }, [rows, q, groep, status, rol, sortKey])
+  }, [rows, q, groep, status, rol, toestemming, sortKey])
 
   const statusCount = (s: string) => rows.filter(r =>
     s === 'archief' ? !r.isActive :
@@ -151,6 +157,15 @@ export function LedenTable({ rows, periodLabels }: { rows: Row[]; periodLabels: 
           <Chip active={status === 'archief'} onClick={() => setStatus('archief')}>🗑 Archief ({statusCount('archief')})</Chip>
           <Chip active={status === ''} onClick={() => setStatus('')}>Alle</Chip>
         </div>
+      </div>
+      <div className={`flex flex-wrap gap-1.5 ${filtersOpen ? '' : 'hidden'} sm:flex`}>
+        <Chip active={toestemming === ''} onClick={() => setToestemming('')}>Toestemming: alles</Chip>
+        <Chip active={toestemming === 'nee'} onClick={() => setToestemming('nee')}>
+          🚫 Geen toestemming ({rows.filter(r => r.isActive && (r.portretrecht === false || r.nameMention === false)).length})
+        </Chip>
+        <Chip active={toestemming === 'onbekend'} onClick={() => setToestemming('onbekend')}>
+          ❓ Nooit vastgelegd ({rows.filter(r => r.isActive && (r.portretrecht === null || r.nameMention === null)).length})
+        </Chip>
       </div>
       <div className={`flex flex-wrap gap-1.5 ${filtersOpen ? '' : 'hidden'} sm:flex`}>
         <Chip active={rol === ''} onClick={() => setRol('')}>Alle rollen</Chip>
@@ -222,6 +237,8 @@ function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; on
           <p className="truncate text-sm font-semibold text-[#2a2a2a]">
             {r.firstName} {r.lastName}
             {r.clubStatus !== 'LID' && <span className={`ml-2 rounded border px-1.5 py-0.5 text-[10px] font-medium ${si.klas}`}>{si.label}</span>}
+            {r.portretrecht === false && <span className="ml-1 text-xs" title="Geen toestemming portretrecht — niet fotograferen/filmen">📷🚫</span>}
+            {r.nameMention === false && <span className="ml-1 text-xs" title="Geen toestemming naamsvermelding (uitslagen, site, socials)">🏷️🚫</span>}
           </p>
           <p className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-gray-500">
             {r.groep && <span className="rounded bg-[#fdf6f6] px-1.5 py-0.5 font-medium text-[#a90000]">{GROEP_LABEL[r.groep as keyof typeof GROEP_LABEL] ?? r.groep}</span>}
@@ -259,6 +276,7 @@ function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; on
             <KV k="Lid sinds" v={r.joinDate ? nlDatum(r.joinDate) : null} />
             <KV k="Geboortedatum" v={r.dateOfBirth ? `${nlDatum(r.dateOfBirth)} (${age} jr)` : null} />
             <KV k="Portretrecht" v={r.portretrecht === null ? null : r.portretrecht ? 'ja' : 'nee'} />
+            <KV k="Naamsvermelding" v={r.nameMention === null ? null : r.nameMention ? 'ja' : 'nee'} />
             {r.medicalNotes && <KV k="Medisch" v={r.medicalNotes} />}
             {r.remarks && <KV k="Notities" v={r.remarks} />}
             {/* Clubstatus */}

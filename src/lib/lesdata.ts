@@ -11,7 +11,7 @@ import type { BeltLevel, TrainingDay } from '@prisma/client'
 
 export type LesModusProps = {
   dag: { id: string; datum: string; groep: string; groepLabel: string; activity: string | null; vakantie?: boolean; cancelled: boolean }
-  leden: { id: string; naam: string; status: string | null; gast?: boolean; trainer?: boolean; tijdelijk?: boolean; groep?: string; hist: Record<string, string>; band: { huidig: string | null; huidigKleur: string; volgende: string | null; volgendeKleur: string; slip: boolean } }[]
+  leden: { id: string; naam: string; status: string | null; gast?: boolean; trainer?: boolean; tijdelijk?: boolean; groep?: string; hist: Record<string, string>; band: { huidig: string | null; huidigKleur: string; volgende: string | null; volgendeKleur: string; slip: boolean }; geenPortret?: boolean; geenNaam?: boolean }[]
   historie: { id: string; label: string }[]
   recenteDagen: { id: string; label: string; actief: boolean }[]
 }
@@ -103,6 +103,9 @@ export async function lesModusProps(day: TrainingDay): Promise<LesModusProps> {
       groep: m.primaryGroup ?? undefined,
       hist: histMap[m.id] ?? {},
       band: bandInfo(m),
+      // Toestemming expliciet 'nee'? (null = onbekend → geen icoon)
+      geenPortret: m.portraitRights === false,
+      geenNaam: m.nameMention === false,
     })).sort((a, b) => Number(!!a.trainer) - Number(!!b.trainer) || BELT_ORDER.indexOf((a.band?.huidig ?? '') as any) - BELT_ORDER.indexOf((b.band?.huidig ?? '') as any) || a.naam.localeCompare(b.naam)),
     historie: histDagen.map(d => ({ id: d.id, label: d.date.toLocaleDateString('nl-NL', { weekday: 'short', day: 'numeric', month: 'short' }) })),
     recenteDagen: recenteDagen.map(d => ({

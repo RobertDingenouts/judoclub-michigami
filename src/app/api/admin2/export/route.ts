@@ -155,6 +155,27 @@ export async function GET(req: NextRequest) {
     }
     ws.addRows(wsKoppen)
     stijl(ws)
+  } else if (lijst === 'geentoestemming') {
+    // Automatische lijst: alle actieve leden bij wie portretrecht OF
+    // naamsvermelding níét ja is. Expliciet 'nee' eerst, dan 'niet vastgelegd'
+    // (oud-leden — bij eerstvolgende contact even navragen).
+    const ws = wb.addWorksheet('Zonder toestemming')
+    ws.addRows([['Naam', 'Groep', 'Band', 'Portretrecht', 'Naamsvermelding', 'Lid sinds']])
+    const leden = await db.member.findMany({
+      where: { isActive: true, clubStatus: { not: 'VRIJGESTELD' }, OR: [{ portraitRights: { not: true } }, { nameMention: { not: true } }] },
+      orderBy: [{ portraitRights: 'asc' }, { primaryGroup: 'asc' }, { lastName: 'asc' }],
+    })
+    for (const m of leden) {
+      ws.addRow([
+        `${m.firstName} ${m.lastName}`,
+        m.primaryGroup ? (GROEP_LABEL[m.primaryGroup] ?? m.primaryGroup) : '',
+        m.currentBelt ? getBeltLabel(m.currentBelt as BeltLevel) : 'geen band',
+        m.portraitRights === false ? 'NEE' : m.portraitRights === true ? 'ja' : 'onbekend',
+        m.nameMention === false ? 'NEE' : m.nameMention === true ? 'ja' : 'onbekend',
+        m.joinDate ? m.joinDate.toLocaleDateString('nl-NL') : '',
+      ])
+    }
+    stijl(ws)
   } else {
     return NextResponse.json({ error: `Onbekende lijst: ${lijst}` }, { status: 400 })
   }

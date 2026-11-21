@@ -66,6 +66,7 @@ export async function PATCH(
       ...(body.clubStatus !== undefined && body.clubStatus && { clubStatus: body.clubStatus }),
       ...(body.isTrainer !== undefined && { isTrainer: body.isTrainer }),
       ...(body.portraitRights !== undefined && { portraitRights: body.portraitRights }),
+      ...(body.nameMention !== undefined && { nameMention: body.nameMention }),
       ...(body.joinDate !== undefined && { joinDate: body.joinDate ? new Date(body.joinDate) : undefined }),
       ...(body.isActive !== undefined && { isActive: body.isActive }),
       ...(body.trainingGroups !== undefined && { trainingGroups: body.trainingGroups }),

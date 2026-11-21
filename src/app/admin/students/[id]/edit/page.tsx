@@ -23,6 +23,7 @@ interface StudentData {
   clubStatus: string
   isTrainer: boolean
   portraitRights: boolean | null
+  nameMention: boolean | null
   leaveDate: string | null
   remarks: string | null
   trainingGroups: string[] | null
@@ -164,6 +165,7 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
         clubStatus: formData.get('clubStatus') as string || null,
         isTrainer: formData.get('isTrainer') === 'on',
         portraitRights: formData.get('portraitRights') === 'on',
+        nameMention: formData.get('nameMention') === 'on',
         remarks: formData.get('remarks') as string || null,
         isActive: formData.get('isActive') === 'on',
         trainingGroups,
@@ -442,6 +444,15 @@ export default function StudentEditPage({ params }: { params: Promise<{ id: stri
               className="h-4 w-4 rounded border-gray-300 text-[#a90000] focus:ring-[#a90000]"
             />
             <span className="text-sm font-medium text-gray-700">Portretrecht (foto's mogen getoond worden)</span>
+          </label>
+          <label className="flex items-center gap-3">
+            <input
+              type="checkbox"
+              name="nameMention"
+              defaultChecked={student.nameMention !== false}
+              className="h-4 w-4 rounded border-gray-300 text-[#a90000] focus:ring-[#a90000]"
+            />
+            <span className="text-sm font-medium text-gray-700">Naamsvermelding (uitslagen, site, socials)</span>
           </label>
         </div>
 

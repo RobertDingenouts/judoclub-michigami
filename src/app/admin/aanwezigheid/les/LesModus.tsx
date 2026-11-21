@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { GROEP_LABEL, STATUS_INFO } from '@/lib/admin2'
 import { BeltVak } from '@/components/admin/BeltVak'
 
-type Lid = { id: string; naam: string; status: string | null; gast?: boolean; trainer?: boolean; tijdelijk?: boolean; groep?: string; hist: Record<string, string>; band?: { huidig: string | null; huidigKleur: string; volgende: string | null; volgendeKleur: string; slip: boolean } }
+type Lid = { id: string; naam: string; status: string | null; gast?: boolean; trainer?: boolean; tijdelijk?: boolean; groep?: string; hist: Record<string, string>; band?: { huidig: string | null; huidigKleur: string; volgende: string | null; volgendeKleur: string; slip: boolean }; geenPortret?: boolean; geenNaam?: boolean }
 type DagInfo = { id: string; datum: string; groep: string; groepLabel: string; activity: string | null; vakantie?: boolean; cancelled: boolean }
 type DagTab = { id: string; label: string; actief: boolean }
 type HistDag = { id: string; label: string }
@@ -84,11 +84,11 @@ export function LesModus({ dag, leden: initLeden, recenteDagen, historie }: { da
     return () => clearTimeout(t)
   }, [zoekQ, dag.id])
 
-  async function voegLidToe(s: { id: string; naam: string; groep: string | null; band: NonNullable<Lid['band']> }) {
+  async function voegLidToe(s: { id: string; naam: string; groep: string | null; band: NonNullable<Lid['band']>; geenPortret?: boolean; geenNaam?: boolean }) {
     setZoekBusy(true)
     try {
       // Alleen een attendance-rij voor deze dag: het lid blijft in zijn eigen groep.
-      setLeden(prev => prev.some(l => l.id === s.id) ? prev : [...prev, { id: s.id, naam: s.naam, status: null, tijdelijk: true, groep: s.groep ?? undefined, hist: {}, band: s.band }])
+      setLeden(prev => prev.some(l => l.id === s.id) ? prev : [...prev, { id: s.id, naam: s.naam, status: null, tijdelijk: true, groep: s.groep ?? undefined, hist: {}, band: s.band, geenPortret: s.geenPortret, geenNaam: s.geenNaam }])
       setZoekQ('')
       setZoekResult([])
       setOpgeslagen(`${s.naam} toegevoegd aan deze les (tijdelijk)`)
@@ -267,6 +267,8 @@ export function LesModus({ dag, leden: initLeden, recenteDagen, historie }: { da
             <div className="mb-2 flex items-center justify-between">
               <p className="flex items-center gap-2 text-sm font-semibold text-[#2a2a2a]">
                 <span>{l.naam}</span>
+                {l.geenPortret && <span className="text-xs" title="Geen toestemming portretrecht — niet fotograferen/filmen">📷🚫</span>}
+                {l.geenNaam && <span className="text-xs" title="Geen toestemming naamsvermelding (uitslagen, site, socials)">🏷️🚫</span>}
                 {l.band && (
                   <span title={`Band: ${l.band.huidig ?? 'nog geen band'} → volgende: ${l.band.volgende ?? '—'}${l.band.slip ? ' (met slip)' : ''}`}>
                     <BeltVak belt={l.band.huidig} size={10} />

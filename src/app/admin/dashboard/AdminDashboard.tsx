@@ -248,7 +248,7 @@ export default function AdminDashboard({ d }: { d: DashData }) {
               <button onClick={() => setExportMenu(v => !v)} className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-600 transition-colors hover:border-gray-400">⬇ Export ▾</button>
               {exportMenu && (
                 <div className="absolute right-0 z-40 mt-1 w-56 rounded-md border border-gray-200 bg-white p-1.5 shadow-xl">
-                  {([['leden', '📋 Volledige ledenlijst'], ['inschrijvingen', '📝 Nieuwe inschrijvingen'], ['contributie', '💶 Contributie (Q4)'], ['aanwezigheid', '📊 Aanwezigheid (90d)']] as [string, string][]).map(([k, lbl]) => (
+                  {([['leden', '📋 Volledige ledenlijst'], ['geentoestemming', '🚫 Zonder toestemming (portret/naam)'], ['inschrijvingen', '📝 Nieuwe inschrijvingen'], ['contributie', '💶 Contributie (Q4)'], ['aanwezigheid', '📊 Aanwezigheid (90d)']] as [string, string][]).map(([k, lbl]) => (
                     <a key={k} href={`/api/admin2/export?lijst=${k}`} onClick={() => setExportMenu(false)}
                       className="block rounded-sm px-2.5 py-2 text-xs font-medium text-[#2a2a2a] hover:bg-[#fdf6f6]">{lbl}</a>
                   ))}

@@ -49,6 +49,7 @@ export default async function LedenPage({
     remarks: m.remarks, medicalNotes: m.medicalNotes,
     emergencyContactName: m.emergencyContactName, emergencyContactPhone: m.emergencyContactPhone,
     portretrecht: m.portraitRights,
+    nameMention: m.nameMention,
     bandHistory: m.bondHistory.map(b => ({ belt: b.belt, at: b.awardedAt.toISOString() })),
     payments: m.payments.map(p => ({
       label: p.period.label, status: p.status,
