@@ -1,5 +1,6 @@
 import { db } from '@/lib/db'
 import { archivePassedStops } from '@/lib/leden-status'
+import { toestemmingToken } from '@/lib/toestemming-token'
 import { LedenTable } from './LedenTable'
 import { BELT_ORDER } from '@/lib/student-progress-types'
 import type { BeltLevel } from '@prisma/client'
@@ -49,6 +50,7 @@ export default async function LedenPage({
     remarks: m.remarks, medicalNotes: m.medicalNotes,
     emergencyContactName: m.emergencyContactName, emergencyContactPhone: m.emergencyContactPhone,
     portretrecht: m.portraitRights,
+    toestemmingToken: toestemmingToken(m.id),
     nameMention: m.nameMention,
     bandHistory: m.bondHistory.map(b => ({ belt: b.belt, at: b.awardedAt.toISOString() })),
     payments: m.payments.map(p => ({

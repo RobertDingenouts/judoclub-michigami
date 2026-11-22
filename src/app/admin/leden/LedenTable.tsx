@@ -21,6 +21,7 @@ type Row = {
   joinDate: string | null; remarks: string | null; medicalNotes: string | null
   emergencyContactName: string | null; emergencyContactPhone: string | null
   portretrecht: boolean | null
+  toestemmingToken?: string
   nameMention: boolean | null
   bandHistory: { belt: string; at: string }[]
   payments: { label: string; status: string; amount: number; note: string | null; start: string; due: string | null }[]
@@ -279,6 +280,19 @@ function LidRij({ r, open, onToggle, periodLabels }: { r: Row; open: boolean; on
             <KV k="Naamsvermelding" v={r.nameMention === null ? null : r.nameMention ? 'ja' : 'nee'} />
             {r.medicalNotes && <KV k="Medisch" v={r.medicalNotes} />}
             {r.remarks && <KV k="Notities" v={r.remarks} />}
+            {r.toestemmingToken && (
+              <div className="mt-2">
+                <button
+                  onClick={async () => {
+                    const link = `${window.location.origin}/toestemming/${r.id}.${r.toestemmingToken}`
+                    try { await navigator.clipboard.writeText(link); } catch { window.prompt('Link kopiëren:', link) }
+                  }}
+                  className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 hover:border-[#a90000] hover:text-[#a90000]"
+                  title="Link kopiëren om naar dit lid (of de ouders) te sturen — invullen zonder account">
+                  🔗 Toestemmingslink kopiëren
+                </button>
+              </div>
+            )}
             {/* Clubstatus */}
             <div className="mt-3 border-t border-gray-100 pt-2">
               <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-gray-400">Clubstatus</p>
