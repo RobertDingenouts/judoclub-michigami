@@ -139,7 +139,7 @@ export default async function PrintFormulieren({ searchParams }: { searchParams:
     .super .vakkat .nd { font-size: 5.6pt; margin-left: .8mm; }
     .super .vakkat .uitleg { font-size: 6.8pt; line-height: 1.3; }
     .super .regel { font-size: 9pt; }
-    .super .betalen { font-size: 8.2pt; }
+    .super .betalen { font-size: 7.6pt; }
     .super .voet { font-size: 7.8pt; }
     .compact .vakkat h3 { font-size: 8.2pt; margin-bottom: .4mm; }
     .compact .vakkat ol { font-size: 6.9pt; line-height: 1.22; }
@@ -158,7 +158,7 @@ export default async function PrintFormulieren({ searchParams }: { searchParams:
       Kosten examen: <b className="bedrag">{f.kosten}</b>{!f.isSlip ? ' (inclusief band)' : ''}.
       Belangrijk: <b>betaling uiterlijk 1 dag vóór het examen</b>, zodat we kunnen controleren of alles binnen is.
       Overmaken op <b>{IBAN}</b> t.n.v. Judoclub Michigami Steenbergen, omt. “{f.omschrijving}”.
-      <br />Meedoen is <b>nooit verplicht</b> — niet helemaal fit of iets aan de hand? Zeg het vooraf, dan plannen we een moment later.
+      <br />Op de dag zelf niet helemaal fit? Laat het ons van tevoren weten. Meedoen is <b>nooit verplicht</b> en een examen schuiven we gewoon op naar een andere les.
     </div>
   )
 
