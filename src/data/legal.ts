@@ -36,12 +36,12 @@ export const legalDocuments: LegalDocument[] = [
       {
         heading: '4. Contributie en Kosten',
         content:
-          '4.1 Lidmaatschapsbijdrage: De lidmaatschapsbijdrage bedraagt €42 per kwartaal of €168 per jaar, vooraf te betalen aan het begin van elke periode.\n\n4.2 Eenmalige Kosten: Eenmalige inschrijfkosten van €15 zijn van toepassing bij inschrijving. Tijdelijke actie: bij inschrijving vóór 31 december 2026 wordt het inschrijfgeld verwaard (gratis inschrijven).\n\n4.3 Jaarlijkse Bijdrage: Daarnaast is er een jaarlijkse bijdrage van €15 voor de verzekering van de club (voorheen bijdrage CJJF (Centrale Judo Jiu-Jitsu Federatie)), te betalen bij de eerste periode van het jaar.\n\n4.4 Wijzigingen: Het bestuur evalueert elk jaar de kosten voor het lidmaatschap tijdens de bestuursvergadering en behoudt zich het recht voor om de contributie en andere kosten te wijzigen. Eventuele wijzigingen worden minimaal één maand van tevoren en op een transparante manier gecommuniceerd naar de leden.',
+          '4.1 Lidmaatschapsbijdrage: De lidmaatschapsbijdrage bedraagt €42 per kwartaal of €168 per jaar, vooraf te betalen aan het begin van elke periode.\n\n4.2 Eenmalige Kosten: Eenmalige inschrijfkosten van €15 zijn van toepassing bij inschrijving. Tijdelijke actie: bij inschrijving vóór 31 december 2026 wordt het inschrijfgeld verwaard (gratis inschrijven).\n\n4.3 Jaarlijkse Bijdrage: Daarnaast is er een jaarlijkse bijdrage van €15 voor de verzekering van de club, te betalen bij de eerste periode van het jaar.\n\n4.4 Wijzigingen: Het bestuur evalueert elk jaar de kosten voor het lidmaatschap tijdens de bestuursvergadering en behoudt zich het recht voor om de contributie en andere kosten te wijzigen. Eventuele wijzigingen worden minimaal één maand van tevoren en op een transparante manier gecommuniceerd naar de leden.',
       },
       {
-        heading: '5. Verzekering',
+        heading: '5. Verzekering en gezondheid',
         content:
-          '5.1 Alle leden zijn verzekerd via de CVZ (Centrale Verzekering Instantie) tijdens het lidmaatschap.\n\n5.2 Bij letsel tijdens het lidmaatschap dient het bestuur op de hoogte te worden gesteld. De verzekering kan dan de schade afwikkelen.',
+          '5.1 Alle leden zijn verzekerd via de door de club afgesloten verzekering (Everion) tijdens het lidmaatschap.\n\n5.2 Bij letsel tijdens het lidmaatschap dient het bestuur op de hoogte te worden gesteld. De verzekering kan dan de schade afwikkelen.\n\n5.3 Deelname aan trainingen, examens en toernooien is altijd vrijwillig; wij verplichten niemand aan iets. Geef gezondheid of een blessure vooraf aan ons door, dan houden we daar rekening mee, en een examen kan altijd op een ander moment worden afgelegd. Na een val of een klap op het hoofd doen we die dag niet meer mee en komen we pas terug als de klachten zijn verdwenen; na een hersenschudding eerst overleg met de huisarts. De trainer beslist ter plaatse en houdt iemand bij twijfel apart.',
       },
       {
         heading: '6. Aansprakelijkheid',
