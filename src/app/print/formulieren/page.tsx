@@ -158,6 +158,7 @@ export default async function PrintFormulieren({ searchParams }: { searchParams:
       Kosten examen: <b className="bedrag">{f.kosten}</b>{!f.isSlip ? ' (inclusief band)' : ''}.
       Belangrijk: <b>betaling uiterlijk 1 dag vóór het examen</b>, zodat we kunnen controleren of alles binnen is.
       Overmaken op <b>{IBAN}</b> t.n.v. Judoclub Michigami Steenbergen, omt. “{f.omschrijving}”.
+      <br />Meedoen is <b>nooit verplicht</b> — niet helemaal fit of iets aan de hand? Zeg het vooraf, dan plannen we een moment later.
     </div>
   )
 

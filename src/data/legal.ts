@@ -41,7 +41,7 @@ export const legalDocuments: LegalDocument[] = [
       {
         heading: '5. Verzekering en gezondheid',
         content:
-          '5.1 Alle leden zijn verzekerd via de door de club afgesloten verzekering (Everion) tijdens het lidmaatschap.\n\n5.2 Bij letsel tijdens het lidmaatschap dient het bestuur op de hoogte te worden gesteld. De verzekering kan dan de schade afwikkelen.\n\n5.3 Deelname aan trainingen, examens en toernooien is altijd vrijwillig; wij verplichten niemand aan iets. Geef gezondheid of een blessure vooraf aan ons door, dan houden we daar rekening mee, en een examen kan altijd op een ander moment worden afgelegd. Na een val of een klap op het hoofd doen we die dag niet meer mee en komen we pas terug als de klachten zijn verdwenen; na een hersenschudding eerst overleg met de huisarts. De trainer beslist ter plaatse en houdt iemand bij twijfel apart.',
+          '5.1 Alle leden zijn verzekerd via de door de club afgesloten verzekering (Everion) tijdens het lidmaatschap.\n\n5.2 Bij letsel tijdens het lidmaatschap dient het bestuur op de hoogte te worden gesteld. De verzekering kan dan de schade afwikkelen.\n\n5.3 Deelname aan trainingen, examens en toernooien is altijd vrijwillig; wij verplichten niemand aan iets. Ouders en verzorgers beoordelen of hun kind aan een les, examen of toernooi kan meedoen en geven dat, samen met gezondheidszaken en blessures, vooraf aan ons door. Bij een blessure of twijfel doet iemand niet mee en wordt een ander moment gepland; bij de vraag of iemand weer kan sporten na een blessure adviseren we overleg met de huisarts. De trainer beslist ter plaatse en houdt iemand bij twijfel apart.',
       },
       {
         heading: '6. Aansprakelijkheid',
