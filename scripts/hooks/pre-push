@@ -1,0 +1,11 @@
+#!/bin/sh
+# Zachte pre-push code-review (open-code-review op eigen :8890).
+# Nooit blokkerend: altijd exit 0. Overslaan: OCR_SKIP=1 git push
+[ "$OCR_SKIP" = "1" ] && exit 0
+command -v ocr >/dev/null 2>&1 || { echo "pre-push: ocr niet geinstalleerd - overgeslagen"; exit 0; }
+curl -sf --max-time 2 http://127.0.0.1:8890/v1/models >/dev/null 2>&1 || { echo "pre-push: backend :8890 uit - review overgeslagen"; exit 0; }
+echo "pre-push: ocr review --from main (concurrency 1) ..."
+ocr review --from main --concurrency 1 --format json --output /tmp/ocr-prepush.json >/dev/null 2>&1
+n=$(node -e "try{console.log((JSON.parse(require(\"fs\").readFileSync(\"/tmp/ocr-prepush.json\",\"utf8\")).summary||{}).comments||0)}catch(e){console.log(\"?\")}")
+echo "pre-push: klaar - $n bevindingen (zie /tmp/ocr-prepush.json). Push gaat door."
+exit 0
