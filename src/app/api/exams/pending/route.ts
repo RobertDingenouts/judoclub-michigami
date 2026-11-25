@@ -14,6 +14,7 @@ import type { BeltLevel } from '@prisma/client'
 export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest) {
+  if (!(await isAdmin())) return NextResponse.json({ error: 'Not authorized' }, { status: 401 })
   try {
     // Get all scheduled (pending) exam attempts
     const exams = await db.examAttempt.findMany({

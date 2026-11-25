@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { generateToken } from '@/lib/auth'
 import { sendEmail, buildPasswordResetEmail } from '@/lib/email'
+import { rateLimit, clientIp } from '@/lib/ratelimit'
 
 export const dynamic = 'force-dynamic'
 
@@ -10,6 +11,9 @@ export const dynamic = 'force-dynamic'
 export async function POST(request: Request) {
   try {
     const { email } = await request.json()
+    if (!rateLimit('forgot:' + clientIp(request), 5, 15 * 60 * 1000)) {
+      return NextResponse.json({ success: false, error: 'Te veel pogingen — probeer later opnieuw.' }, { status: 429 })
+    }
     if (!email) {
       return NextResponse.json({ success: true })
     }

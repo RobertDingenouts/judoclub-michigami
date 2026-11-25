@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { migrateGuard } from '@/lib/migrate-guard'
 
 export const dynamic = 'force-dynamic'
 

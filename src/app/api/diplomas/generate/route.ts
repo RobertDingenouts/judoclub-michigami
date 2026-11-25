@@ -8,10 +8,12 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createDiplomaOnExamPass } from '@/lib/diploma-generator'
+import { isAdmin } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
+  if (!(await isAdmin())) return NextResponse.json({ error: 'Not authorized' }, { status: 401 })
   try {
     const body = await request.json()
     const { examAttemptId } = body as { examAttemptId: string }

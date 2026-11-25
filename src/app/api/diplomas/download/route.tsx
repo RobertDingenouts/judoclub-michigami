@@ -6,6 +6,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { getSession } from '@/lib/auth'
 import { generateDiplomaPDF, getBeltLabel } from '@/lib/diploma-generator'
 
 export const dynamic = 'force-dynamic'
@@ -35,6 +36,15 @@ export async function GET(request: NextRequest) {
         { error: 'Diploma not found' },
         { status: 404 }
       )
+    }
+
+    // Autorisatie: eigenaar of admin/lesgever (IDOR-fix — docstring beloofde dit al)
+    const session = await getSession()
+    if (!session.userId) {
+      return NextResponse.json({ error: 'Niet ingelogd' }, { status: 401 })
+    }
+    if (diploma.userId !== session.userId && !['ADMIN', 'INSTRUCTOR'].includes(session.role)) {
+      return NextResponse.json({ error: 'Geen toegang' }, { status: 403 })
     }
 
     // If diploma has an uploaded file (base64 data URI), serve it directly

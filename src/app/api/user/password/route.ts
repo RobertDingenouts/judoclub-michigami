@@ -3,6 +3,7 @@ import { getCurrentUser } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { verifyPassword, hashPassword } from '@/lib/auth'
 import { sendEmail, buildPasswordChangedEmail } from '@/lib/email'
+import { rateLimit, clientIp } from '@/lib/ratelimit'
 
 export const dynamic = 'force-dynamic'
 
@@ -10,6 +11,10 @@ export const dynamic = 'force-dynamic'
 export async function POST(request: Request) {
   const user = await getCurrentUser()
   if (!user) return NextResponse.json({ error: 'Niet ingelogd' }, { status: 401 })
+
+  if (!rateLimit('pwchange:' + clientIp(request), 5, 60 * 60 * 1000)) {
+    return NextResponse.json({ error: 'Te veel pogingen — probeer later opnieuw.' }, { status: 429 })
+  }
 
   try {
     const body = await request.json()
@@ -23,12 +28,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Nieuw wachtwoord moet minimaal 8 tekens zijn' }, { status: 400 })
     }
 
-    // Verify current password
-    if (!user.passwordHash) {
+    // Verify current password (getCurrentUser bevat bewust geen hash — vers opzoeken)
+    const dbUser = await db.user.findUnique({ where: { id: user.id }, select: { passwordHash: true } })
+    if (!dbUser?.passwordHash) {
       return NextResponse.json({ error: 'Wachtwoord wijzigen niet mogelijk (geen wachtwoord ingesteld)' }, { status: 400 })
     }
 
-    const valid = await verifyPassword(currentPassword, user.passwordHash)
+    const valid = await verifyPassword(currentPassword, dbUser.passwordHash)
     if (!valid) {
       return NextResponse.json({ error: 'Huidig wachtwoord is onjuist' }, { status: 401 })
     }

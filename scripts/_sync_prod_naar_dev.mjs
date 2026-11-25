@@ -30,7 +30,7 @@ for (const t of TABELLEN) {
     })
     await d.$executeRawUnsafe(`INSERT INTO "${t}" (${common.map(c => `"${c}"`).join(',')}) VALUES (${ph})`, ...vals)
   }
-  console.log(t, '→', missend.length, 'rijen overgezet:', missend.map(r => r.email || `${r.firstName || ''} ${r.lastName || ''}`.trim() || r.id).join(' | '))
+  console.log(t, '→', missend.length, 'rijen overgezet') // geen PII in het logboek (minderjarigen!)
   totaal += missend.length
 }
 console.log('TOTAAL overgezet:', totaal)

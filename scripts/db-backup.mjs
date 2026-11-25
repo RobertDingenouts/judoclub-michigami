@@ -36,6 +36,7 @@ await db.$disconnect()
 
 const gzip = (await import('node:zlib')).gzipSync
 fs.writeFileSync(bestand, gzip(Buffer.from(JSON.stringify(dump))))
+fs.chmodSync(bestand, 0o600) // dump bevat hashes/PII — alleen eigenaar leesbaar
 
 // behoud: 21 nieuwste backups
 const alle = fs.readdirSync(DIR).filter(f => f.startsWith('db-') && f.endsWith('.json.gz')).sort()

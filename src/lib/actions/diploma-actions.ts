@@ -8,6 +8,7 @@
 import { db } from '@/lib/db'
 import { createDiplomaOnExamPass, getUserDiplomas } from '@/lib/diploma-generator'
 import { ExamStatus } from '@prisma/client'
+import { requireAdmin, getCurrentUser } from '@/lib/auth'
 
 // ============================================================================
 // Approve exam → auto-generate diploma
@@ -19,6 +20,8 @@ export async function approveExam(examAttemptId: string): Promise<{
   diplomaId?: string
   verificationCode?: string
 }> {
+  const admin = await requireAdmin()
+  if (!admin) return { success: false, message: 'Geen toegang' }
   try {
     // Update exam status to PASSED
     await db.examAttempt.update({
@@ -69,6 +72,8 @@ export async function failExam(examAttemptId: string): Promise<{
   success: boolean
   message: string
 }> {
+  const admin = await requireAdmin()
+  if (!admin) return { success: false, message: 'Geen toegang' }
   try {
     await db.examAttempt.update({
       where: { id: examAttemptId },
@@ -96,6 +101,9 @@ export async function failExam(examAttemptId: string): Promise<{
 
 export async function fetchUserDiplomas(userId: string) {
   try {
+    const current = await getCurrentUser()
+    if (!current) return []
+    if (current.id !== userId && !['ADMIN', 'INSTRUCTOR'].includes(current.role)) return []
     return await getUserDiplomas(userId)
   } catch (error: any) {
     console.error('Fetch diplomas error:', error)
@@ -110,11 +118,11 @@ export async function fetchUserDiplomas(userId: string) {
 export async function getDiplomaDownloadUrl(diplomaId: string): Promise<string> {
   // NEXT_PUBLIC_BASE_URL is available in both server and client context
   if (typeof process !== 'undefined' && process.env.NEXT_PUBLIC_BASE_URL) {
-    return `${process.env.NEXT_PUBLIC_BASE_URL}/api/diplomas/download?id=${diplomaId}`
+    return `${process.env.NEXT_PUBLIC_BASE_URL}/api/diplomas/download?id=${encodeURIComponent(diplomaId)}`
   }
   // Client-side fallback
   if (typeof window !== 'undefined') {
-    return `${window.location.origin}/api/diplomas/download?id=${diplomaId}`
+    return `${window.location.origin}/api/diplomas/download?id=${encodeURIComponent(diplomaId)}`
   }
   // Ultimate fallback
   return `/api/diplomas/download?id=${diplomaId}`

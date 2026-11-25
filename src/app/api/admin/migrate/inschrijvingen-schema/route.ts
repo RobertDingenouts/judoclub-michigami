@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { isAdmin } from '@/lib/auth'
+import { migrateGuard } from '@/lib/migrate-guard'
 
 export const dynamic = 'force-dynamic'
 
@@ -8,6 +9,8 @@ export const dynamic = 'force-dynamic'
 // Run via: fetch('/api/admin/migrate/inschrijvingen-schema', {method:'POST'}).then(r=>r.json()).then(console.log)
 // Migratie is uitgevoerd op 2026-08-19 (production). Alleen admin-sessie.
 export async function POST(request: NextRequest) {
+  const guard = await migrateGuard(request)
+  if (guard) return guard
   let admin = false
   try {
     admin = await isAdmin()

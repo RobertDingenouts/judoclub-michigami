@@ -12,10 +12,13 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { migrateGuard } from '@/lib/migrate-guard'
 
 export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
+  const guard = await migrateGuard(request)
+  if (guard) return guard
   try {
     // No auth required - one-time migration endpoint
     // Delete this file after running!

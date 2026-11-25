@@ -139,7 +139,10 @@ export async function getCurrentUser() {
     where: { id: session.userId },
     include: { member: true },
   })
-  return user
+  if (!user) return null
+  // Geen geheimen naar de browser: hash & resettoken only-ever meesturen als expliciet nodig
+  const { passwordHash, resetToken, resetTokenExpires, ...safeUser } = user
+  return safeUser
 }
 
 // ============================================================================

@@ -13,5 +13,6 @@ const backup = {
   bondHistory: await db.bondHistory.findMany({ where: { memberId: mid } }),
 }
 fs.writeFileSync('/home/suffie/.hermes/profiles/michigami/cache/backup-test-robinhack1.json', JSON.stringify(backup, null, 2))
+fs.chmodSync('/home/suffie/.hermes/profiles/michigami/cache/backup-test-robinhack1.json', 0o600) // bevat hashes/PII
 console.log('BACKUP GESCHREVEN:', fs.statSync('/home/suffie/.hermes/profiles/michigami/cache/backup-test-robinhack1.json').size, 'bytes')
 await db.$disconnect()

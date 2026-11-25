@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic'
  */
 export async function POST() {
   try {
-    if (!isAdmin()) {
+    if (!(await isAdmin())) {
       return NextResponse.json({ error: 'Alleen admin' }, { status: 403 })
     }
 

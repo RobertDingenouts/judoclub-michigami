@@ -8,6 +8,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { exec } from 'child_process'
 import { promisify } from 'util'
+import { migrateGuard } from '@/lib/migrate-guard'
 
 const execAsync = promisify(exec)
 
@@ -16,13 +17,8 @@ export const maxDuration = 60 // Allow up to 60 seconds for migrations
 
 export async function POST(request: NextRequest) {
   try {
-    const authHeader = request.headers.get('authorization')
-    if (authHeader !== 'Bearer MIGRATE-PRISMA-2026') {
-      return NextResponse.json(
-        { success: false, error: 'Ongeldig auth token' },
-        { status: 401 }
-      )
-    }
+  const guard = await migrateGuard(request)
+  if (guard) return guard
 
     // Run Prisma migration
     const { stdout, stderr } = await execAsync('npx prisma migrate deploy', {

@@ -138,7 +138,7 @@ export async function PATCH(request: Request) {
     const updatedMember = await db.member.update({
       where: { id: member.id },
       data: memberData,
-      include: { user: true },
+      include: { user: { omit: { passwordHash: true, resetToken: true, resetTokenExpires: true } } },
     })
 
     // Sync name to user if changed

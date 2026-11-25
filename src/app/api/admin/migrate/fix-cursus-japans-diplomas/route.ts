@@ -3,6 +3,7 @@ import { getCurrentUser } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { DiplomaType } from '@prisma/client'
 import crypto from 'crypto'
+import { migrateGuard } from '@/lib/migrate-guard'
 
 export const dynamic = 'force-dynamic'
 

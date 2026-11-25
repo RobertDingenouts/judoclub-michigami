@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { migrateGuard } from '@/lib/migrate-guard'
 
 export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
-  const token = request.headers.get('x-migrate-token')
-  if (token !== 'michigami-migrate-2026') {
-    return NextResponse.json({ error: 'Geen toegang' }, { status: 403 })
-  }
+  const guard = await migrateGuard(request)
+  if (guard) return guard
 
   const results: string[] = []
 

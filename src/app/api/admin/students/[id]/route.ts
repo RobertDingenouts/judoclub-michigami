@@ -19,7 +19,7 @@ export async function GET(
   const member = await db.member.findUnique({
     where: { id },
     include: {
-      user: true,
+      user: { omit: { passwordHash: true, resetToken: true, resetTokenExpires: true } },
       examAttempts: { include: { results: true }, orderBy: { examDate: 'desc' } },
       courseProgress: true,
       diplomas: { orderBy: { awardedAt: 'desc' } },
