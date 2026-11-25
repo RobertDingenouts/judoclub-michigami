@@ -761,7 +761,7 @@ export default function ProfileEditPage() {
                 <p className="text-sm text-gray-600">
                   {t('Ga je akkoord met het gebruik van je persoonsgegevens zoals beschreven in de privacyverklaring?')}
                 </p>
-                <a href="/#juridisch" target="_blank" className="text-sm text-[#a90000] hover:underline inline-block">
+                <a href="/#juridisch" target="_blank" rel="noopener noreferrer" className="text-sm text-[#a90000] hover:underline inline-block">
                   📄 {t('Privacyverklaring lezen')} →
                 </a>
                 <div className="flex items-center gap-3">
@@ -789,7 +789,7 @@ export default function ProfileEditPage() {
                 <p className="text-sm text-gray-600">
                   {t('Ga je akkoord met de algemene voorwaarden van Judoclub Michigami?')}
                 </p>
-                <a href="/#juridisch" target="_blank" className="text-sm text-[#a90000] hover:underline inline-block">
+                <a href="/#juridisch" target="_blank" rel="noopener noreferrer" className="text-sm text-[#a90000] hover:underline inline-block">
                   📄 {t('Algemene voorwaarden lezen')} →
                 </a>
                 <div className="flex items-center gap-3">
@@ -817,7 +817,7 @@ export default function ProfileEditPage() {
                 <p className="text-sm text-gray-600">
                   {t('Ga je akkoord met de gedragscode van Judoclub Michigami?')}
                 </p>
-                <a href="/#juridisch" target="_blank" className="text-sm text-[#a90000] hover:underline inline-block">
+                <a href="/#juridisch" target="_blank" rel="noopener noreferrer" className="text-sm text-[#a90000] hover:underline inline-block">
                   📄 {t('Gedragscode lezen')} →
                 </a>
                 <div className="flex items-center gap-3">

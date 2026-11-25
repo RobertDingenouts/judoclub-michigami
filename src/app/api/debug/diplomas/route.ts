@@ -5,6 +5,9 @@ import { db } from '@/lib/db'
 import { isAdmin } from '@/lib/auth'
 
 export async function GET() {
+  if (process.env.NODE_ENV === 'production') {
+    return NextResponse.json({ error: 'Niet beschikbaar' }, { status: 404 })
+  }
   const admin = await isAdmin()
   if (!admin) {
     return NextResponse.json({ error: 'Admin required' }, { status: 401 })

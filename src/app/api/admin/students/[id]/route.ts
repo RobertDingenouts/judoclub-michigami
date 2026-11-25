@@ -136,7 +136,7 @@ export async function PATCH(
     return NextResponse.json({ success: true, member: updatedMember })
   } catch (error) {
     console.error('Update student error:', error)
-    const msg = error instanceof Error ? error.message : 'Onbekende fout'
+    const msg = 'Bewerken mislukt (details in serverlogboek)'
     return NextResponse.json({ error: `Fout bij bijwerken student: ${msg}` }, { status: 500 })
   }
 }

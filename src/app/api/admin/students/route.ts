@@ -72,7 +72,7 @@ export async function POST(request: Request) {
     // Met e-mail = direct inlogbaar account: tijdelijk wachtwoord + welkomstmail.
     let passwordHash: string | null = null
     if (hasEmail) {
-      tempPassword = `${firstName.substring(0, 3).toLowerCase()}${lastName.substring(0, 3).toLowerCase()}${new Date().getFullYear()}!`
+      tempPassword = crypto.randomUUID().replace(/-/g, '').slice(0, 8)
       passwordHash = await hashPassword(tempPassword)
     }
 

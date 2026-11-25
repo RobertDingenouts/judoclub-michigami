@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { getBeltLabel } from '@/lib/diploma-generator'
+import { rateLimit, clientIp } from '@/lib/ratelimit'
 
 export const dynamic = 'force-dynamic'
 
@@ -8,6 +9,9 @@ export const dynamic = 'force-dynamic'
 // Public diploma verification - no auth required
 export async function GET(request: Request) {
   try {
+    if (!rateLimit(`diploma-verify:${clientIp(request)}`, 30, 60_000)) {
+      return NextResponse.json({ valid: false, error: 'Te veel verificatiepogingen' }, { status: 429 })
+    }
     const searchParams = new URL(request.url).searchParams
     const code = searchParams.get('code')
 

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { isAdmin } from '@/lib/auth'
+import { rateLimit, clientIp } from '@/lib/ratelimit'
 import { TOERNOOIEN, niveauOptiesVoor, BANDEN } from '@/lib/toernooien'
 
 export const dynamic = 'force-dynamic'
@@ -20,6 +21,10 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json() as Record<string, any>
+
+    if (!rateLimit(`toernooi:${clientIp(req)}`, 10, 3_600_000)) {
+      return NextResponse.json({ success: false, error: 'Te veel inschrijvingen vanaf dit netwerk' }, { status: 429 })
+    }
 
     // Honeypot: stille tuimelvanger voor bots
     if (body.firmenaam) {

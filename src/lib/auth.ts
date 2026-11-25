@@ -20,12 +20,18 @@ export interface SessionData {
   loginTime: number
 }
 
-const SESSION_SECRET = process.env.SESSION_SECRET || 'michigami-admin-session-secret-change-in-production'
+function getSessionSecret(): string {
+  if (process.env.SESSION_SECRET) return process.env.SESSION_SECRET
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('SESSION_SECRET ontbreekt — configureer deze in Vercel Environment Variables')
+  }
+  return 'dev-only-insecure-session-secret'
+}
 
 export async function getSession() {
   const cookieStore = await cookies()
   const session = await getIronSession<SessionData>(cookieStore, {
-    password: SESSION_SECRET,
+    password: getSessionSecret(),
     cookieName: 'michigami-admin',
     cookieOptions: {
       // Op de lokale testserver (next start via http://Tailscale-IP) MOET secure uit,
@@ -87,6 +93,8 @@ export async function login(email: string, password: string) {
   })
 
   if (!user || !user.passwordHash) {
+    // Timing-oracle dempen: ook bij onbekende gebruiker gaat er een bcrypt-vergelijking door
+    await verifyPassword(password, '$2b$12$AOSKPxny1lSSHF2kk0M6auxcP1wKTwcyLyN9gWGVsD1IAZVDvrYBi')
     return { error: 'Ongeldig e-mailadres of wachtwoord', success: false }
   }
 

@@ -38,7 +38,11 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'Bestand te groot (max 10MB)' }, { status: 400 })
       }
       const buffer = Buffer.from(await file.arrayBuffer())
-      const mimeType = file.type || 'application/pdf'
+      const ALLOWED_MIME = ['application/pdf', 'image/png', 'image/jpeg', 'image/webp']
+      if (!ALLOWED_MIME.includes(file.type)) {
+        return NextResponse.json({ error: 'Ongeldig bestandstype (pdf, png, jpg of webp)' }, { status: 400 })
+      }
+      const mimeType = file.type
       const base64 = buffer.toString('base64')
       pdfUrl = `data:${mimeType};base64,${base64}`
     }
@@ -72,7 +76,7 @@ export async function POST(request: Request) {
     })
   } catch (error) {
     console.error('Diploma upload error:', error)
-    const msg = error instanceof Error ? error.message : 'Onbekende fout'
+    const msg = 'Upload mislukt (details in serverlogboek)'
     return NextResponse.json({ error: `Fout bij uploaden diploma: ${msg}` }, { status: 500 })
   }
 }

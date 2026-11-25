@@ -66,7 +66,7 @@ export async function POST() {
     console.error('Member-for-admin migration error:', error)
     return NextResponse.json({
       success: false,
-      error: error.message || 'Fout bij migratie',
+      error: 'Fout bij migratie (details in serverlogboek)',
     }, { status: 500 })
   }
 }

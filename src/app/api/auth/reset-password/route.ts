@@ -23,15 +23,20 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Deze link is ongeldig of verlopen' }, { status: 400 })
     }
 
+    // Token atomisch claimen: een tweede (gelijktijdige) poging met dezelfde link grijpt mis
+    const claimed = await db.user.updateMany({
+      where: { id: user.id, resetToken: token, resetTokenExpires: { gt: new Date() } },
+      data: { resetToken: null, resetTokenExpires: null },
+    })
+    if (claimed.count === 0) {
+      return NextResponse.json({ error: 'Deze link is ongeldig of verlopen' }, { status: 400 })
+    }
+
     const passwordHash = await hashPassword(newPassword)
 
     await db.user.update({
       where: { id: user.id },
-      data: {
-        passwordHash,
-        resetToken: null,
-        resetTokenExpires: null,
-      },
+      data: { passwordHash },
     })
 
     // Beveiligingsmelding
