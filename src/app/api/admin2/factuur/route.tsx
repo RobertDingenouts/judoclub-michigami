@@ -144,7 +144,9 @@ export async function GET(req: NextRequest) {
   const today = new Date().toLocaleDateString('nl-NL')
   const facts: Fact[] = []
   for (const p of payments) {
-    const pl = periode ?? p.period.label
+    // Altijd de eigen periode van deze payment: een ?periode=... parameter mag nooit een
+    // factuur uit een andere periode een verkeerd nummer/label geven.
+    const pl = p.period.label
     let nr = p.invoiceNumber
     if (!nr) {
       nr = await volgendeNr(pl)

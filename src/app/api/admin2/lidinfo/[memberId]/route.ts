@@ -10,6 +10,9 @@ export const dynamic = 'force-dynamic'
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ memberId: string }> }) {
   if (!(await isAdmin())) return NextResponse.json({ error: 'Geen admin' }, { status: 403 })
   const { memberId } = await params
+  if (!memberId || !/^[a-z0-9_]+$/i.test(memberId) || memberId.length > 40) {
+    return NextResponse.json({ error: 'Ongeldig lid-id' }, { status: 400 })
+  }
 
   const [member, examens, betalingen, materiaal] = await Promise.all([
     db.member.findUnique({

@@ -46,13 +46,20 @@ export async function PATCH(
     const member = await db.member.findUnique({ where: { id } })
     if (!member) return NextResponse.json({ error: 'Student niet gevonden' }, { status: 404 })
 
+    // Datumvelden: lege string/null mag wissen; onparsebare invoer afwijzen i.p.v. Invalid Date
+    for (const veld of ['dateOfBirth', 'joinDate'] as const) {
+      if (body[veld] !== undefined && body[veld] !== null && body[veld] !== '' && isNaN(new Date(body[veld]).getTime())) {
+        return NextResponse.json({ error: `Ongeldige datum in ${veld}` }, { status: 400 })
+      }
+    }
+
     // Update member fields
     const memberData: any = {
       ...(body.firstName !== undefined && { firstName: body.firstName }),
       ...(body.lastName !== undefined && { lastName: body.lastName }),
-      ...(body.email !== undefined && { email: body.email }),
+      ...(body.email !== undefined && { email: body.email ? String(body.email).trim().toLowerCase() : null }),
       ...(body.phone !== undefined && { phone: body.phone }),
-      ...(body.dateOfBirth !== undefined && { dateOfBirth: body.dateOfBirth ? new Date(body.dateOfBirth) : undefined }),
+      ...(body.dateOfBirth !== undefined && { dateOfBirth: body.dateOfBirth ? new Date(body.dateOfBirth) : null }),
       ...(body.currentBelt !== undefined && body.currentBelt !== '' && { currentBelt: body.currentBelt as BeltLevel }),
       ...(body.currentBelt === '' && { currentBelt: null }),
       ...(body.location !== undefined && { location: body.location || null }),
@@ -67,7 +74,7 @@ export async function PATCH(
       ...(body.isTrainer !== undefined && { isTrainer: body.isTrainer }),
       ...(body.portraitRights !== undefined && { portraitRights: body.portraitRights }),
       ...(body.nameMention !== undefined && { nameMention: body.nameMention }),
-      ...(body.joinDate !== undefined && { joinDate: body.joinDate ? new Date(body.joinDate) : undefined }),
+      ...(body.joinDate !== undefined && { joinDate: body.joinDate ? new Date(body.joinDate) : undefined }), // joinDate is niet-nullbaar: legen kan niet wissen, only set
       ...(body.isActive !== undefined && { isActive: body.isActive }),
       ...(body.trainingGroups !== undefined && { trainingGroups: body.trainingGroups }),
       ...(body.primaryGroup !== undefined && { primaryGroup: body.primaryGroup || null }),

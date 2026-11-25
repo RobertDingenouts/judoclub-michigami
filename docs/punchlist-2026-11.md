@@ -34,7 +34,7 @@
 
 (alle 111 security-bevindingen staan in ../michigami-scan-2026-11-25.json, filter category=security)
 
-## Fase C — belangrijkste bugs (top 25 van de 972, op signaal):
+## Fase C — belangrijkste bugs (top 25 van de 972) — ✅ GEDAAN 25 nov, zie commit "Fase C"
 1. `src/app/api/admin2/inventory/verkoop/route.ts:23` — Classic check-then-create race on a `@unique` column: two concurrent POSTs in January (both hit the `materiaal` branch, e.g. two tabs in the materiaal
 2. `src/app/api/admin2/lidinfo/[memberId]/route.ts:12` — `memberId` is taken straight from the URL and used as a query key without any validation. `findUnique` on an arbitrary value is safe against injection
 3. `src/app/api/admin2/member-status/route.ts:76` — Only `LID` reopens previously exempted payments. A member who was `RESERVE`/`VRIJGESTELD` and is then set to `STOPPEND` or `PROEF` keeps the stale `VI

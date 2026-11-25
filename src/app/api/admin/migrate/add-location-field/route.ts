@@ -38,11 +38,10 @@ export async function POST() {
       success: true,
       message: 'Location field added to Member table successfully',
     })
-  } catch (error: any) {
+  } catch (error) {
     console.error('Migration error:', error)
     return NextResponse.json({
-      error: 'Migration failed',
-      details: error.message,
+      error: 'Migration failed (details in serverlogboek)',
     }, { status: 500 })
   }
 }

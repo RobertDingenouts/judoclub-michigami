@@ -17,7 +17,7 @@ export async function POST() {
 
     // Find admin users without Member records
     const adminUsers = await db.user.findMany({
-      where: { role: 'ADMIN' },
+      where: { role: 'ADMIN', is_active: true },
       include: { member: true },
     })
 

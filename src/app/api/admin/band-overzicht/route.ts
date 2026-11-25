@@ -113,6 +113,6 @@ export async function GET(request: NextRequest) {
     })
   } catch (e: any) {
     console.error('Band overzicht error:', e)
-    return NextResponse.json({ error: e.message }, { status: 500 })
+    return NextResponse.json({ error: 'Bandoverzicht mislukt (details in serverlogboek)' }, { status: 500 })
   }
 }

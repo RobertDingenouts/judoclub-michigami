@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { requireAdmin } from '@/lib/auth'
-import { BeltLevel, ExamStatus } from '@prisma/client'
+import { Prisma, BeltLevel, ExamStatus } from '@prisma/client'
 
 export const dynamic = 'force-dynamic'
 
@@ -11,46 +11,67 @@ export const dynamic = 'force-dynamic'
 export async function POST(request: NextRequest) {
   const admin = await requireAdmin()
   if (!admin) return NextResponse.json({ error: 'Geen toegang' }, { status: 403 })
-  const { memberId, groep, date, beltLevel } = await request.json() as { memberId?: string; groep?: string; date?: string; beltLevel?: string }
+  let body: { memberId?: string; groep?: string; date?: string; beltLevel?: string }
+  try { body = await request.json() } catch { return NextResponse.json({ error: 'Ongeldige JSON' }, { status: 400 }) }
+  const { memberId, groep, date, beltLevel } = body
   if (!memberId || !groep || !date) return NextResponse.json({ error: 'memberId, groep en date verplicht' }, { status: 400 })
 
-  const member = await db.member.findUnique({ where: { id: memberId } })
-  if (!member) return NextResponse.json({ error: 'Lid niet gevonden' }, { status: 404 })
-  const doel = beltLevel as BeltLevel | null
-  if (!doel) return NextResponse.json({ error: 'Geen doelband' }, { status: 400 })
+  try {
+    const member = await db.member.findUnique({ where: { id: memberId } })
+    if (!member) return NextResponse.json({ error: 'Lid niet gevonden' }, { status: 404 })
+    const doel = beltLevel as BeltLevel | null
+    if (!doel) return NextResponse.json({ error: 'Geen doelband' }, { status: 400 })
 
-  const datum = new Date(date + 'T12:00:00')
-  const sitting = await db.examSitting.upsert({
-    where: { date_group_type: { date: datum, group: groep, type: 'EXAMEN' } },
-    create: { date: datum, group: groep, type: 'EXAMEN', title: 'Examen (automatisch aangemaakt)' },
-    update: {},
-  })
-
-  // Bestaande open poging van dit lid hergebruiken (anders dubbele regels), anders aanmaken.
-  const open = await db.examAttempt.findFirst({
-    where: { memberId, status: ExamStatus.SCHEDULED, diploma: null },
-    orderBy: { createdAt: 'desc' },
-  })
-  const attempt = open
-    ? await db.examAttempt.update({
-        where: { id: open.id },
-        data: { sittingId: sitting.id, beltLevel: doel, examDate: datum, klaar: true },
-      })
-    : await db.examAttempt.create({
-        data: { memberId, userId: member.userId, sittingId: sitting.id, beltLevel: doel, status: ExamStatus.SCHEDULED, examDate: datum, klaar: true },
+    const datum = new Date(date + 'T12:00:00')
+    // Alles in één transactie: twee klikken tegelijk maken nooit twee pogingen.
+    const { sitting, attempt } = await db.$transaction(async (tx) => {
+      const sitting = await tx.examSitting.upsert({
+        where: { date_group_type: { date: datum, group: groep, type: 'EXAMEN' } },
+        create: { date: datum, group: groep, type: 'EXAMEN', title: 'Examen (automatisch aangemaakt)' },
+        update: {},
       })
 
-  return NextResponse.json({ ok: true, attemptId: attempt.id, sittingId: sitting.id })
+      // Bestaande open poging van dit lid hergebruiken (anders dubbele regels), anders aanmaken.
+      const open = await tx.examAttempt.findFirst({
+        where: { memberId, status: ExamStatus.SCHEDULED, diploma: null },
+        orderBy: { createdAt: 'desc' },
+      })
+      const attempt = open
+        ? await tx.examAttempt.update({
+            where: { id: open.id },
+            // Oude examendata (bijv. van een proefexamen) wissen: anders lekt de vorige run
+            // met scores/notes door op het officiële examen.
+            data: { sittingId: sitting.id, beltLevel: doel, examDate: datum, klaar: true, examiner: null, overallScore: null, notes: null, categoryResults: Prisma.DbNull },
+          })
+        : await tx.examAttempt.create({
+            data: { memberId, userId: member.userId, sittingId: sitting.id, beltLevel: doel, status: ExamStatus.SCHEDULED, examDate: datum, klaar: true },
+          })
+      return { sitting, attempt }
+    })
+
+    return NextResponse.json({ ok: true, attemptId: attempt.id, sittingId: sitting.id })
+  } catch (error) {
+    console.error('examens/klaar POST:', error)
+    return NextResponse.json({ error: 'Inplannen mislukt (details in serverlogboek)' }, { status: 500 })
+  }
 }
 
 // DELETE /api/admin/examens/klaar  { attemptId }  — planning terugdraaien (alleen open pogingen)
 export async function DELETE(request: NextRequest) {
   const admin = await requireAdmin()
   if (!admin) return NextResponse.json({ error: 'Geen toegang' }, { status: 403 })
-  const { attemptId } = await request.json()
-  const a = await db.examAttempt.findUnique({ where: { id: attemptId } })
-  if (!a) return NextResponse.json({ error: 'Niet gevonden' }, { status: 404 })
-  if (a.status !== ExamStatus.SCHEDULED) return NextResponse.json({ error: 'Afgerond examen kan niet weg' }, { status: 400 })
-  await db.examAttempt.delete({ where: { id: attemptId } })
-  return NextResponse.json({ ok: true })
+  let body: { attemptId?: unknown }
+  try { body = await request.json() } catch { return NextResponse.json({ error: 'Ongeldige JSON' }, { status: 400 }) }
+  const { attemptId } = body
+  if (typeof attemptId !== 'string' || !attemptId) return NextResponse.json({ error: 'attemptId verplicht' }, { status: 400 })
+  try {
+    const a = await db.examAttempt.findUnique({ where: { id: attemptId } })
+    if (!a) return NextResponse.json({ error: 'Niet gevonden' }, { status: 404 })
+    if (a.status !== ExamStatus.SCHEDULED) return NextResponse.json({ error: 'Afgerond examen kan niet weg' }, { status: 400 })
+    await db.examAttempt.delete({ where: { id: attemptId } })
+    return NextResponse.json({ ok: true })
+  } catch (error) {
+    console.error('examens/klaar DELETE:', error)
+    return NextResponse.json({ error: 'Terugdraaien mislukt (details in serverlogboek)' }, { status: 500 })
+  }
 }

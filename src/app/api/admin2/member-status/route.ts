@@ -73,8 +73,9 @@ export async function POST(req: NextRequest) {
       })
     }
   }
-  // Terug naar LID: eerdere vrijstellingen in lopende/toekomstige periodes weer openzetten.
-  if (clubStatus === 'LID') {
+  // Terug van vrijstelling naar élke status die contributie verwacht (LID, PROEF, STOPPEND…):
+  // eerdere vrijstellingen in lopende/toekomstige periodes weer openzetten.
+  if (!['VRIJGESTELD', 'RESERVE'].includes(clubStatus)) {
     const nu = new Date(new Date().toISOString().slice(0, 10))
     const periodes = await db.contributionPeriod.findMany({ where: { end: { gte: nu } }, select: { id: true } })
     if (periodes.length) {

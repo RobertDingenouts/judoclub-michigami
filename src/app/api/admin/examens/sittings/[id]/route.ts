@@ -13,6 +13,12 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
   const body = await request.json()
 
   if (body.action === 'add') {
+    if (typeof body.memberId !== 'string' || !body.memberId) {
+      return NextResponse.json({ error: 'memberId verplicht' }, { status: 400 })
+    }
+    if (!(body.beltLevel in BeltLevel)) {
+      return NextResponse.json({ error: 'Ongeldige band' }, { status: 400 })
+    }
     const m = await db.member.findUnique({ where: { id: body.memberId } })
     if (!m) return NextResponse.json({ error: 'Lid niet gevonden' }, { status: 404 })
     const existing = await db.examAttempt.findFirst({ where: { sittingId: id, memberId: m.id } })

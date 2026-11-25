@@ -17,6 +17,9 @@ export async function POST(request: Request) {
     if (!Array.isArray(studentIds) || studentIds.length === 0) {
       return NextResponse.json({ error: 'Geen studenten geselecteerd' }, { status: 400 })
     }
+    if (studentIds.length > 1000 || !studentIds.every((s: unknown) => typeof s === 'string' && s.length > 0)) {
+      return NextResponse.json({ error: 'Ongelerste studentIds (max 1000)' }, { status: 400 })
+    }
 
     // Verify all students exist
     const students = await db.member.findMany({

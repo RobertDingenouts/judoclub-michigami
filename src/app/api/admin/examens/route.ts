@@ -9,18 +9,29 @@ export const dynamic = 'force-dynamic'
 export async function GET() {
   const admin = await requireAdmin()
   if (!admin) return NextResponse.json({ error: 'Geen toegang' }, { status: 403 })
-  const sittings = await db.examSitting.findMany({
-    orderBy: { date: 'desc' },
-    include: { attempts: { select: { id: true, status: true } } },
-  })
-  return NextResponse.json(sittings)
+  try {
+    const sittings = await db.examSitting.findMany({
+      orderBy: { date: 'desc' },
+      include: { attempts: { select: { id: true, status: true } } },
+    })
+    return NextResponse.json(sittings)
+  } catch (error) {
+    console.error('examens GET:', error)
+    return NextResponse.json({ error: 'Ophalen mislukt (details in serverlogboek)' }, { status: 500 })
+  }
 }
 
 export async function POST(request: NextRequest) {
   const admin = await requireAdmin()
   if (!admin) return NextResponse.json({ error: 'Geen toegang' }, { status: 403 })
-  const { date, group, title, type } = await request.json() as { date?: string; group?: string; title?: string; type?: string }
+  let body: { date?: string; group?: string; title?: string; type?: string }
+  try { body = await request.json() } catch { return NextResponse.json({ error: 'Ongeldige JSON' }, { status: 400 }) }
+  const { date, group, title, type } = body
   if (!date || !group) return NextResponse.json({ error: 'date en group zijn verplicht' }, { status: 400 })
+  // Geen stille fallback: alleen geldige types, anders had je per ongeluk een examen i.p.v. proef
+  if (type !== undefined && type !== 'PROEF' && type !== 'EXAMEN') {
+    return NextResponse.json({ error: 'type moet PROEF of EXAMEN zijn' }, { status: 400 })
+  }
   const zittingType = type === 'PROEF' ? 'PROEF' : 'EXAMEN'
 
   const datum = new Date(date + 'T12:00:00')
@@ -30,6 +41,7 @@ export async function POST(request: NextRequest) {
   // of handmatig via "+ Kandidaat toevoegen". (Robert: niet automatisch iedereen op een examenmoment.)
   const kandidatenVoorZitting = zittingType === 'PROEF' ? kandidaten : []
 
+  try {
   const sitting = await db.examSitting.upsert({
     where: { date_group_type: { date: datum, group, type: zittingType } },
     create: {
@@ -44,4 +56,8 @@ export async function POST(request: NextRequest) {
     include: { attempts: true },
   })
   return NextResponse.json({ id: sitting.id, toegevoegd: sitting.attempts.length })
+  } catch (error) {
+    console.error('examens POST:', error)
+    return NextResponse.json({ error: 'Zitting aanmaken mislukt (details in serverlogboek)' }, { status: 500 })
+  }
 }

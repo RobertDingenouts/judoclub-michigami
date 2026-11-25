@@ -9,9 +9,14 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
   const admin = await isAdmin()
   if (!admin) return NextResponse.json({ error: 'Not authorized' }, { status: 401 })
   const { slug } = await params
-  const row = await db.tournamentSetup.findUnique({ where: { toernooi: slug } })
-  if (!row) return NextResponse.json({ error: 'not found' }, { status: 404 })
-  return NextResponse.json({ data: row.data, updatedAt: row.updatedAt })
+  try {
+    const row = await db.tournamentSetup.findUnique({ where: { toernooi: slug } })
+    if (!row) return NextResponse.json({ error: 'not found' }, { status: 404 })
+    return NextResponse.json({ data: row.data, updatedAt: row.updatedAt })
+  } catch (error) {
+    console.error('tournament GET:', error)
+    return NextResponse.json({ error: 'Ophalen mislukt (details in serverlogboek)' }, { status: 500 })
+  }
 }
 
 // PUT /api/admin/tournament/[slug] — bewaar poelsetup (volledige state)

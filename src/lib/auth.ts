@@ -48,9 +48,8 @@ export async function getSession() {
 
 export async function setSession(data: SessionData) {
   const session = await getSession()
-  Object.assign(session, data)
   session.userId = data.userId
-  session.email = data.email || undefined
+  session.email = data.email
   session.name = data.name
   session.role = data.role
   session.loginTime = Date.now()

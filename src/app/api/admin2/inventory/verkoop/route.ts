@@ -44,7 +44,20 @@ function standaardItems(periode: { label: string; amount: unknown }): FactItem[]
 
 function parseItems(raw: string | null, periode: { label: string; amount: unknown }): FactItem[] {
   if (raw) {
-    try { return JSON.parse(raw) as FactItem[] } catch { /* val terug op standaard */ }
+    try {
+      const arr = JSON.parse(raw)
+      if (Array.isArray(arr)) {
+        // Normalizeer: vreemde entry's (null, string, ontbrekende bedragen) mogen nooit NaN geven
+        return arr
+          .filter((x): x is Record<string, unknown> => !!x && typeof x === 'object')
+          .map((x) => ({
+            omschrijving: String(x.omschrijving ?? ''),
+            bedrag: Number(x.bedrag) || 0,
+            ...(x.artikelNr ? { artikelNr: String(x.artikelNr) } : {}),
+            ...(typeof x.aantal === 'number' && Number.isFinite(x.aantal) ? { aantal: x.aantal } : {}),
+          }))
+      }
+    } catch { /* val terug op standaard */ }
   }
   return standaardItems(periode)
 }
@@ -85,13 +98,16 @@ export async function POST(req: NextRequest) {
   if (!periode) return NextResponse.json({ error: 'geen contributieperiode gevonden' }, { status: 500 })
   const n = Math.max(1, Math.floor(Number(aantal) || 1))
 
-  let payment = await db.payment.findUnique({ where: { memberId_periodId: { memberId, periodId: periode.id } } })
-  if (!payment) {
-    payment = await db.payment.create({
-      data: { memberId, periodId: periode.id, amount: periode.amount, status: 'OPEN', dueDate: periode.end },
-    })
-  }
+  // upsert = race-vrij: twee tabbladen die elkaar voor zijn, krijgen dezelfde factuur
+  let payment = await db.payment.upsert({
+    where: { memberId_periodId: { memberId, periodId: periode.id } },
+    create: { memberId, periodId: periode.id, amount: periode.amount, status: 'OPEN', dueDate: periode.end },
+    update: {},
+  })
 
+  if (!['OPEN', 'HERINNERING1', 'HERINNERING2'].includes(payment.status)) {
+    return NextResponse.json({ error: 'Factuur is al betaald of vrijgesteld — bedrag niet meer aanpassen' }, { status: 409 })
+  }
   const items = parseItems(payment.items, periode)
   const bestaand = items.find(x => x.artikelNr === item.artikelNr)
   const clubPrijs = Number(item.clubPrijs)
@@ -128,6 +144,9 @@ export async function DELETE(req: NextRequest) {
 
   const p = await db.payment.findUnique({ where: { id: paymentId }, include: { period: true } })
   if (!p) return NextResponse.json({ error: 'payment niet gevonden' }, { status: 404 })
+  if (!['OPEN', 'HERINNERING1', 'HERINNERING2'].includes(p.status)) {
+    return NextResponse.json({ error: 'Factuur is al betaald of vrijgesteld — regel niet meer verwijderen' }, { status: 409 })
+  }
   const items = parseItems(p.items, p.period)
   const lijn = items.find(x => x.artikelNr === artikelNr)
   if (!lijn) return NextResponse.json({ error: 'lijn niet op deze factuur' }, { status: 404 })

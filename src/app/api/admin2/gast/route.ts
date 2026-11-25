@@ -26,14 +26,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true, id: bestaand.id, nieuw: false, naam: `${bestaand.firstName} ${bestaand.lastName}` })
   }
 
-  const user = await db.user.create({ data: { role: 'MEMBER', is_active: true } })
-  const m = await db.member.create({
-    data: {
-      userId: user.id, firstName, lastName,
-      primaryGroup: groep, clubStatus: 'PROEF', isActive: true,
-      currentBelt: 'PAARS' as any, // startband voor nieuwe judoka's (ook bij proeflessen)
-      remarks: 'Proefles / gast',
-    },
+  // Beide writes samen in één transaction: bij een fout blijft er geen wees-User achter
+  const m = await db.$transaction(async (tx) => {
+    const user = await tx.user.create({ data: { role: 'MEMBER', is_active: true } })
+    return tx.member.create({
+      data: {
+        userId: user.id, firstName, lastName,
+        primaryGroup: groep, clubStatus: 'PROEF', isActive: true,
+        currentBelt: 'PAARS' as any, // startband voor nieuwe judoka's (ook bij proeflessen)
+        remarks: 'Proefles / gast',
+      },
+    })
   })
   return NextResponse.json({ ok: true, id: m.id, nieuw: true, naam: `${m.firstName} ${m.lastName}` })
 }

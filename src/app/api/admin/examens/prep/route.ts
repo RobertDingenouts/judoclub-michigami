@@ -24,6 +24,8 @@ export async function POST(request: NextRequest) {
   if (!memberId || !targetBelt || !key) return NextResponse.json({ error: 'memberId, targetBelt en key verplicht' }, { status: 400 })
 
   const result = await db.$transaction(async (tx) => {
+    // advisory lock op deze lid+band: twee trainers die tegelijk toggelen overschrijven elkaar niet
+    await tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtext(${memberId + ':' + targetBelt}))`
     const row = await tx.examPrep.findUnique({ where: { memberId_targetBelt: { memberId, targetBelt } } })
     const map = { ...((row?.checked as Record<string, boolean>) ?? {}) }
     if (checked) map[key] = true

@@ -33,6 +33,15 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       return NextResponse.json({ error: 'Deze inschrijving is al verwerkt' }, { status: 409 })
     }
 
+    // Claim atomisch: een dubbelklik/tweede tab grijpt hier mis en dubbele accounts blijven uit
+    const claim = await db.membershipApplication.updateMany({
+      where: { id, status: 'PENDING' },
+      data: { status: action === 'APPROVE' ? 'APPROVED' : 'REJECTED' },
+    })
+    if (claim.count === 0) {
+      return NextResponse.json({ error: 'Deze inschrijving is al verwerkt' }, { status: 409 })
+    }
+
     if (action === 'APPROVE') {
       // Generate temp password
       const tempPassword = `${application.firstName.substring(0, 3).toLowerCase()}${application.lastName.substring(0, 3).toLowerCase()}${new Date().getFullYear()}`

@@ -29,10 +29,10 @@ export async function POST() {
       success: true,
       message: 'pdfUrl kolom toegevoegd aan Diploma tabel',
     })
-  } catch (error: any) {
+  } catch (error) {
     console.error('Migration error:', error)
     return NextResponse.json({
-      error: error.message || 'Migration failed',
+      error: 'Migration failed (details in serverlogboek)',
     }, { status: 500 })
   }
 }
