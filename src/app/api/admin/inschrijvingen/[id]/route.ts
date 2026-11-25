@@ -43,8 +43,8 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     }
 
     if (action === 'APPROVE') {
-      // Generate temp password
-      const tempPassword = `${application.firstName.substring(0, 3).toLowerCase()}${application.lastName.substring(0, 3).toLowerCase()}${new Date().getFullYear()}`
+      // Generate temp password (liefs willekeurig i.p.v. of naam+jaar: anders raden ouders van het volgende kind)
+      const tempPassword = crypto.randomUUID().replace(/-/g, '').slice(0, 8)
       const passwordHash = await hashPassword(tempPassword)
       const memberEmail = application.email.toLowerCase().trim()
 
